@@ -1,10 +1,44 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <title>Mi Tienda</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Tienda de Ropa</title>
+    <link rel="stylesheet" href="css/estilo-comun.css">
 </head>
 <body>
-    <h1>¡Mi primera página en GitHub!</h1>
-    <p>Hola mundo, esta es mi tienda de ropa 🐻</p>
+    <header>
+        <h1>🐻 MI LOCAL DE ROPA</h1>
+        <nav>
+            <a href="index.html">Inicio</a>
+            <a href="#novedades">Novedades</a>
+            <a href="#ofertas">Ofertas</a>
+            <a href="admin/login.html">👑 Administrador</a>
+        </nav>
+    </header>
+    
+    <main>
+        <h2>Bienvenidos a nuestra tienda</h2>
+        <p>Estamos construyendo nuestro catálogo en línea. ¡Pronto tendremos novedades!</p>
+        
+        <div class="grid-productos" id="catalogo">
+            <!-- Aquí irán los productos cuando conectemos Supabase -->
+            <div class="producto-placeholder">
+                <h3>Producto de ejemplo</h3>
+                <p>$25.000</p>
+            </div>
+            <div class="producto-placeholder">
+                <h3>Producto de ejemplo</h3>
+                <p>$32.000</p>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <p>© 2026 Mi Local de Ropa - Todos los derechos reservados</p>
+    </footer>
+    
+    <script src="js/supabase-config.js"></script>
+    <script src="js/catalogo.js"></script>
 </body>
 </html>
