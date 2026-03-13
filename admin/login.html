@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso Administrador - Mi Tienda</title>
+    <link rel="stylesheet" href="../css/estilo-comun.css">
+</head>
+<body>
+    <header>
+        <h1>🐻 MI LOCAL DE ROPA</h1>
+    </header>
+    
+    <main>
+        <div class="login-container">
+            <h2>👑 Acceso Administrador</h2>
+            
+            <label for="email">Correo electrónico:</label>
+            <input type="email" id="email" placeholder="admin@mitienda.com">
+            
+            <label for="password">Contraseña:</label>
+            <input type="password" id="password" placeholder="••••••••">
+            
+            <button onclick="loginAdmin()">Iniciar sesión</button>
+            
+            <p style="text-align: center; margin-top: 1rem;">
+                <a href="../index.html">← Volver al catálogo</a>
+            </p>
+        </div>
+    </main>
+    
+    <script src="../js/supabase-config.js"></script>
+    <script>
+        async function loginAdmin() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            if (!email || !password) {
+                alert('Por favor completa todos los campos');
+                return;
+            }
+            
+            // Aquí conectaremos con Supabase después
+            alert('Funcionalidad de login próximamente');
+        }
+    </script>
+</body>
+</html>
