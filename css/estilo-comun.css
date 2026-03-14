@@ -8,7 +8,7 @@ body {
 }
 
 header {
-    background-color: #d194d4;
+    background-color: #2c3e50;
     color: white;
     padding: 1rem;
     text-align: center;
@@ -95,51 +95,5 @@ footer {
 }
 
 .login-container button:hover {
-    background-color: #d194d4;
-}
-/* Tarjetas de productos */
-.producto-card {
-    background: white;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 1rem;
-    text-align: center;
-    transition: transform 0.2s;
-}
-
-.producto-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-}
-
-.producto-card h3 {
-    margin: 0.5rem 0;
-    color: #2c3e50;
-}
-
-.talla-color {
-    color: #666;
-    font-size: 0.9rem;
-    margin: 0.3rem 0;
-}
-
-.precio {
-    font-size: 1.3rem;
-    font-weight: bold;
-    color: #27ae60;
-    margin: 0.5rem 0;
-}
-
-.btn-consultar {
-    background-color: #3498db;
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    cursor: pointer;
-    width: 100%;
-}
-
-.btn-consultar:hover {
-    background-color: #2980b9;
+    background-color: #2ecc71;
 }
