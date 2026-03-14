@@ -51,35 +51,6 @@
         tr:hover {
             background-color: #f5f5f5;
         }
-
-        .dashboard-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin: 2rem 0;
-        }
-
-        .card {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            text-align: center;
-        }    
-
-        .card h3 {
-            margin: 0;
-            color: #666;
-            font-size: 1rem;
-        }
-        
-        .card-number {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #2c3e50;
-            margin: 0.5rem 0 0;
-        }
-        
     </style>
 </head>
 <body>
@@ -93,20 +64,6 @@
     
     <main>
         <h2>Gestión de Productos</h2>
-        <div class="dashboard-cards">
-    <div class="card">
-        <h3>Total productos</h3>
-        <p class="card-number" id="total-productos">-</p>
-    </div>
-    <div class="card">
-        <h3>Stock bajo</h3>
-        <p class="card-number" id="stock-bajo">-</p>
-    </div>
-    <div class="card">
-        <h3>Valor inventario</h3>
-        <p class="card-number" id="valor-inventario">-</p>
-    </div>
-</div>
         
         <button class="btn-agregar" onclick="mostrarFormulario()">➕ Nuevo Producto</button>
         
@@ -159,26 +116,6 @@
                 window.location.href = 'login.html';
             }
         }
-        async function actualizarResumen() {
-            const response = await supabaseFetch('/rest/v1/productos', {
-                headers: getAuthHeaders()
-            });
-            const productos = await response.json();
-            
-            const total = productos.length;
-            const stockBajo = productos.filter(p => p.stock_actual <= p.stock_minimo).length;
-            const valorTotal = productos.reduce((sum, p) => sum + (p.precio_venta * p.stock_actual), 0);
-            
-            document.getElementById('total-productos').textContent = total;
-            document.getElementById('stock-bajo').textContent = stockBajo;
-            document.getElementById('valor-inventario').textContent = '$' + valorTotal.toLocaleString();
-        }
-        
-        // Llamarla junto con cargarProductos
-        document.addEventListener('DOMContentLoaded', () => {
-            cargarProductos();
-            actualizarResumen();
-        });
     </script>
 </body>
 </html>
