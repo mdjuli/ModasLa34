@@ -1,9 +1,11 @@
-// Función para cargar productos del catálogo
 async function cargarCatalogo() {
     const contenedor = document.getElementById('catalogo');
     
+    if (!contenedor) return;
+    
     try {
-        const response = await supabaseFetch('/rest/v1/productos?select=*&stock_actual.gt.0');
+         contenedor.innerHTML = '<p style="text-align: center;">Cargando productos...</p>';
+        const response = await supabaseRequest('productos?select=*&stock_actual.gt.0&order=created_at');
         
         if (!response.ok) {
             throw new Error('Error al cargar productos');
@@ -12,33 +14,28 @@ async function cargarCatalogo() {
         const productos = await response.json();
         
         if (productos.length === 0) {
-            contenedor.innerHTML = '<p>No hay productos disponibles</p>';
+            contenedor.innerHTML = '<p style="text-align: center;">No hay productos disponibles en este momento.</p>';
             return;
         }
         
-        contenedor.innerHTML = productos.map(p => `
+            contenedor.innerHTML = productos.map(producto => `
             <div class="producto-card">
-                <img src="${p.imagen_url || 'https://placehold.co/300x300/ccc/white?text=Sin+imagen'}" 
-                     alt="${p.nombre}"
-                     style="width: 100%; height: 200px; object-fit: cover; border-radius: 4px;">
-                <h3>${p.nombre}</h3>
-                <p class="talla-color">${p.talla || ''} ${p.color ? '| ' + p.color : ''}</p>
-                <p class="precio">$${Number(p.precio_venta).toLocaleString()}</p>
-                <button onclick="consultarProducto(${p.id})" class="btn-consultar">
-                    📞 Consultar
-                </button>
+                <h3>${producto.nombre}</h3>
+                <p class="precio">$${Number(producto.precio_venta).toLocaleString()}</p>
+                <p class="detalles">
+                    ${producto.talla ? `Talla: ${producto.talla}<br>` : ''}
+                    ${producto.color ? `Color: ${producto.color}` : ''}
+                </p>
+                <button onclick="verProducto(${producto.id})">Ver detalles</button>
             </div>
         `).join('');
         
     } catch (error) {
         console.error('Error:', error);
-        contenedor.innerHTML = '<p>Error al cargar productos</p>';
+        contenedor.innerHTML = '<p style="color: red;">Error al cargar productos. Intenta más tarde.</p>';
     }
 }
-
-function consultarProducto(id) {
-    alert('Función: consultar producto ' + id + ' (puedes enlazar a WhatsApp)');
+function verProducto(id) {
+    alert(`Ver producto ${id} - Funcionalidad próximamente`);
 }
-
-// Cargar cuando la página esté lista
 document.addEventListener('DOMContentLoaded', cargarCatalogo);
