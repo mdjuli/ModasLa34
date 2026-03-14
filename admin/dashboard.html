@@ -159,6 +159,26 @@
                 window.location.href = 'login.html';
             }
         }
+        async function actualizarResumen() {
+            const response = await supabaseFetch('/rest/v1/productos', {
+                headers: getAuthHeaders()
+            });
+            const productos = await response.json();
+            
+            const total = productos.length;
+            const stockBajo = productos.filter(p => p.stock_actual <= p.stock_minimo).length;
+            const valorTotal = productos.reduce((sum, p) => sum + (p.precio_venta * p.stock_actual), 0);
+            
+            document.getElementById('total-productos').textContent = total;
+            document.getElementById('stock-bajo').textContent = stockBajo;
+            document.getElementById('valor-inventario').textContent = '$' + valorTotal.toLocaleString();
+        }
+        
+        // Llamarla junto con cargarProductos
+        document.addEventListener('DOMContentLoaded', () => {
+            cargarProductos();
+            actualizarResumen();
+        });
     </script>
 </body>
 </html>
