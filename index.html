@@ -39,6 +39,47 @@
     </footer>
     
     <script src="js/supabase-config.js"></script>
-    <script src="js/catalogo.js"></script>
+<script>
+  async function cargarProductos() {
+    const contenedor = document.getElementById('catalogo');
+    
+    // Mostrar carga
+    contenedor.innerHTML = '<p style="text-align: center;">Cargando productos...</p>';
+    
+    try {
+      // Consultar productos de Supabase
+      const productos = await supabaseClient.query('productos', {
+        select: 'nombre, precio_venta, imagen_url, talla, color',
+        order: 'nombre.asc'
+      });
+      
+      if (productos.length === 0) {
+        contenedor.innerHTML = '<p style="text-align: center;">No hay productos disponibles</p>';
+        return;
+      }
+      
+      // Generar HTML de productos
+      let html = '';
+      productos.forEach(p => {
+        html += `
+          <div class="producto-card">
+            <img src="${p.imagen_url || 'https://via.placeholder.com/200'}" alt="${p.nombre}" style="width:100%; max-width:200px;">
+            <h3>${p.nombre}</h3>
+            <p class="talla-color">${p.talla || ''} ${p.color || ''}</p>
+            <p class="precio">$${p.precio_venta?.toLocaleString() || '0'}</p>
+          </div>
+        `;
+      });
+      
+      contenedor.innerHTML = html;
+    } catch (error) {
+      console.error('Error al cargar productos:', error);
+      contenedor.innerHTML = '<p style="color: red;">Error al cargar productos</p>';
+    }
+  }
+  
+  // Cargar al iniciar
+  cargarProductos();
+</script>
 </body>
 </html>
