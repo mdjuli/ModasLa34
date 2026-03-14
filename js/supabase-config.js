@@ -1,31 +1,40 @@
 const SUPABASE_URL = 'https://frvcpaymckwyxwcvmugl.supabase.co”></script';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZydmNwYXltY2t3eXh3Y3ZtdWdsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzNTU0MjgsImV4cCI6MjA4ODkzMTQyOH0.9sT1fV333AunNH0X__tXuIaeXM3Qrd_jp12ljFpOWzM';
 
-async function supabaseRequest(tabla, options = {}) {
-    const {
-        method = 'GET',
-        data = null,
-        token = null
-    } = options;
-
-    const headers = {
-        'apikey': SUPABASE_KEY,
-        'Content-Type': 'application/json'
-    };
-
-    if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
-    }
-
-    const url = `${SUPABASE_URL}/rest/v1/${tabla}`;
+const supabaseClient = {
+  async query(tabla, opciones = {}) {
+    let url = `${SUPABASE_URL}/rest/v1/${tabla}`;
+    
+    // Construir query params
+    const params = new URLSearchParams();
+    if (opciones.select) params.append('select', opciones.select);
+    if (opciones.order) params.append('order', opciones.order);
+    if (opciones.limit) params.append('limit', opciones.limit);
+    
+    if (params.toString()) url += `?${params.toString()}`;
     
     const response = await fetch(url, {
-        method: method,
-        headers: headers,
-        body: data ? JSON.stringify(data) : null
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`
+      }
     });
+    return response.json();
+  },
+  
+  async insert(tabla, datos) {
+    const response = await fetch(`${SUPABASE_URL}/rest/v1/${tabla}`, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify(datos)
+    });
+    return response.ok;
+  }
+};
 
-    return response;
-}
-
-console.log('✅ Configuración de Supabase lista');
+console.log('✅ Configuración de Supabase cargada');
