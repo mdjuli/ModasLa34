@@ -98,24 +98,122 @@
     
     <script src="../js/supabase-config.js"></script>
     <script>
-        // Verificar si hay sesión activa (simulado por ahora)
-        function verificarSesion() {
-            // Aquí después verificaremos con Supabase
-        }
+// Verificar autenticación
+let token = localStorage.getItem('admin_token');
+
+if (!token) {
+    window.location.href = 'login.html';
+}
+
+// Configurar headers con autenticación
+function getAuthHeaders() {
+    const tokenData = JSON.parse(token);
+    return {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${tokenData.access_token}`
+    };
+}
+
+// Cargar productos
+async function cargarProductos() {
+    const tbody = document.getElementById('tabla-productos');
+    
+    try {
+        const response = await supabaseFetch('/rest/v1/productos?order=id.desc', {
+            headers: getAuthHeaders()
+        });
         
-        function mostrarFormulario() {
-            document.getElementById('form-producto').style.display = 'block';
-        }
+        const productos = await response.json();
         
-        function guardarProducto() {
-            alert('Funcionalidad de guardado próximamente');
-        }
+        tbody.innerHTML = productos.map(p => `
+            <tr>
+                <td>${p.id}</td>
+                <td>${p.nombre}</td>
+                <td>$${Number(p.precio_venta).toLocaleString()}</td>
+                <td>${p.talla || '-'}</td>
+                <td style="color: ${p.stock_actual <= p.stock_minimo ? 'red' : 'inherit'}; font-weight: ${p.stock_actual <= p.stock_minimo ? 'bold' : 'normal'}">
+                    ${p.stock_actual}
+                    ${p.stock_actual <= p.stock_minimo ? '⚠️' : ''}
+                </td>
+                <td>
+                    <button onclick="editarProducto(${p.id})">✏️</button>
+                    <button onclick="eliminarProducto(${p.id})">🗑️</button>
+                </td>
+            </tr>
+        `).join('');
         
-        function logout() {
-            if (confirm('¿Cerrar sesión?')) {
-                window.location.href = 'login.html';
-            }
+    } catch (error) {
+        console.error('Error:', error);
+        tbody.innerHTML = '<tr><td colspan="6">Error al cargar productos</td></tr>';
+    }
+}
+
+// Guardar nuevo producto
+async function guardarProducto() {
+    const producto = {
+        nombre: document.getElementById('nombre').value,
+        precio_venta: parseFloat(document.getElementById('precio').value),
+        talla: document.getElementById('talla').value,
+        color: document.getElementById('color').value,
+        stock_actual: parseInt(document.getElementById('stock').value)
+    };
+    
+    try {
+        const response = await supabaseFetch('/rest/v1/productos', {
+            method: 'POST',
+            headers: getAuthHeaders(),
+            body: JSON.stringify(producto)
+        });
+        
+        if (response.ok) {
+            alert('Producto guardado');
+            document.getElementById('form-producto').style.display = 'none';
+            // Limpiar campos
+            ['nombre', 'precio', 'talla', 'color', 'stock'].forEach(id => 
+                document.getElementById(id).value = ''
+            );
+            cargarProductos(); // Recargar lista
+        } else {
+            alert('Error al guardar');
         }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error de conexión');
+    }
+}
+
+// Login real
+async function loginAdmin() {
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    
+    const response = await supabaseFetch('/auth/v1/token?grant_type=password', {
+        method: 'POST',
+        body: JSON.stringify({ email, password })
+    });
+    
+    if (response.ok) {
+        const data = await response.json();
+        localStorage.setItem('admin_token', JSON.stringify(data));
+        window.location.href = 'dashboard.html';
+    } else {
+        alert('Credenciales incorrectas');
+    }
+}
+
+// Logout
+function logout() {
+    localStorage.removeItem('admin_token');
+    window.location.href = 'login.html';
+}
+
+// Mostrar formulario
+function mostrarFormulario() {
+    document.getElementById('form-producto').style.display = 'block';
+}
+
+// Cargar productos al iniciar
+document.addEventListener('DOMContentLoaded', cargarProductos);
     </script>
 </body>
 </html>
