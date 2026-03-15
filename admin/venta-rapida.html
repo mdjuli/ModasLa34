@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Venta Rápida - Mi Tienda</title>
+    <link rel="stylesheet" href="../css/estilo-comun.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f0f2f5;
+        }
+
+        .venta-container {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 20px;
+            max-width: 1400px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        /* Panel izquierdo - Productos */
+        .productos-panel {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .buscador {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .buscador input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .buscador input:focus {
+            border-color: #27ae60;
+            outline: none;
+        }
+
+        .buscador button {
+            padding: 12px 20px;
+            background: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .buscador button:hover {
+            background: #2ecc71;
+        }
+
+        .productos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            max-height: 600px;
+            overflow-y: auto;
+            padding: 5px;
+        }
+
+        .producto-card {
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .producto-card:hover {
+            border-color: #27ae60;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .producto-card h3 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .producto-card .codigo {
+            color: #7f8c8d;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+
+        .producto-card .precio {
+            color: #27ae60;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .producto-card .stock {
+            color: #e74c3c;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        /* Panel derecho - Carrito */
+        .carrito-panel {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .carrito-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #27ae60;
+        }
+
+        .carrito-header h2 {
+            color: #2c3e50;
+        }
+
+        .carrito-header span {
+            background: #27ae60;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        .carrito-items {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        .carrito-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        .item-info {
+            flex: 2;
+        }
+
+        .item-info h4 {
+            color: #2c3e50;
+            font-size: 14px;
+        }
+
+        .item-info small {
+            color: #7f8c8d;
+        }
+
+        .item-cantidad {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin: 0 10px;
+        }
+
+        .item-cantidad button {
+            width: 25px;
+            height: 25px;
+            background: #ecf0f1;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .item-cantidad span {
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .item-precio {
+            font-weight: bold;
+            color: #27ae60;
+            min-width: 70px;
+            text-align: right;
+        }
+
+        .item-eliminar {
+            color: #e74c3c;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .carrito-totales {
+            border-top: 2px solid #27ae60;
+            padding-top: 15px;
+        }
+
+        .total-line {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+            font-size: 16px;
+        }
+
+        .total-final {
+            font-size: 24px;
+            font-weight: bold;
+            color: #27ae60;
+        }
+
+        .metodo-pago {
+            margin: 20px 0;
+        }
+
+        .metodo-pago select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .acciones-carrito {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .btn-finalizar {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            grid-column: span 2;
+        }
+
+        .btn-finalizar:hover {
+            background: #2ecc71;
+        }
+
+        .btn-cancelar {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn-vaciar {
+            background: #95a5a6;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Modal de confirmación */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            max-width: 500px;
+            margin: 100px auto;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .modal h2 {
+            color: #27ae60;
+            margin-bottom: 20px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .modal-buttons button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .btn-ver-factura {
+            background: #27ae60;
+            color: white;
+        }
+
+        .btn-nueva-venta {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-cerrar {
+            background: #95a5a6;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .venta-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .carrito-panel {
+                position: static;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="admin-header">
+        <h1>
+            🛒 VENTA RÁPIDA 
+            <span>Nueva venta</span>
+        </h1>
+        <div class="user-info">
+            <span class="user-name" id="userNameDisplay">Cargando...</span>
+            <button class="logout-btn" onclick="volverDashboard()">⬅️ Volver al panel</button>
+        </div>
+    </header>
+
+    <div class="venta-container">
+        <!-- Panel izquierdo: Búsqueda y productos -->
+        <div class="productos-panel">
+            <div class="buscador">
+                <input type="text" id="buscador" placeholder="🔍 Buscar por código o nombre..." autofocus>
+                <button onclick="buscarProductos()">Buscar</button>
+            </div>
+            
+            <div class="productos-grid" id="productosGrid">
+                <!-- Productos cargados dinámicamente -->
+                <div style="text-align: center; grid-column: span 3;">Cargando productos...</div>
+            </div>
+        </div>
+
+        <!-- Panel derecho: Carrito de compras -->
+        <div class="carrito-panel">
+            <div class="carrito-header">
+                <h2>🛒 Carrito</h2>
+                <span id="carritoCantidad">0</span>
+            </div>
+
+            <div class="carrito-items" id="carritoItems">
+                <div style="text-align: center; color: #7f8c8d; padding: 20px;">
+                    El carrito está vacío
+                </div>
+            </div>
+
+            <div class="carrito-totales">
+                <div class="total-line">
+                    <span>Subtotal:</span>
+                    <span id="subtotal">$0</span>
+                </div>
+                <div class="total-line">
+                    <span>IVA (19%):</span>
+                    <span id="iva">$0</span>
+                </div>
+                <div class="total-line total-final">
+                    <span>TOTAL:</span>
+                    <span id="total">$0</span>
+                </div>
+            </div>
+
+            <div class="metodo-pago">
+                <select id="metodoPago">
+                    <option value="Efectivo">💵 Efectivo</option>
+                    <option value="Tarjeta débito">💳 Tarjeta débito</option>
+                    <option value="Tarjeta crédito">💳 Tarjeta crédito</option>
+                    <option value="Transferencia">🏦 Transferencia</option>
+                    <option value="Nequi">📱 Nequi</option>
+                    <option value="Daviplata">📱 Daviplata</option>
+                </select>
+            </div>
+
+            <div class="acciones-carrito">
+                <button class="btn-vaciar" onclick="vaciarCarrito()">🗑️ Vaciar</button>
+                <button class="btn-cancelar" onclick="volverDashboard()">❌ Cancelar</button>
+                <button class="btn-finalizar" onclick="finalizarVenta()">💰 FINALIZAR VENTA</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de éxito -->
+    <div id="modalExito" class="modal">
+        <div class="modal-content">
+            <h2>✅ ¡Venta realizada con éxito!</h2>
+            <p id="modalTotal"></p>
+            <div class="modal-buttons">
+                <button class="btn-ver-factura" onclick="verFactura()">🧾 Ver factura</button>
+                <button class="btn-nueva-venta" onclick="nuevaVenta()">➕ Nueva venta</button>
+                <button class="btn-cerrar" onclick="cerrarModal()">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/supabase-config.js"></script>
+    <script>
+        // Variables globales
+        let carrito = [];
+        let ultimaVentaId = null;
+        let currentUser = null;
+
+        // Cargar datos al iniciar
+        document.addEventListener('DOMContentLoaded', async () => {
+            await verificarSesion();
+            await cargarProductos();
+        });
+
+        // Verificar sesión
+        async function verificarSesion() {
+            const tokenData = localStorage.getItem('admin_token');
+            if (!tokenData) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            try {
+                const token = JSON.parse(tokenData);
+                const response = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${token.access_token}`
+                    }
+                });
+
+                if (!response.ok) throw new Error('Sesión inválida');
+
+                const user = await response.json();
+                currentUser = user;
+                
+                document.getElementById('userNameDisplay').textContent = user.email || 'Administrador';
+                
+            } catch (error) {
+                localStorage.removeItem('admin_token');
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Cargar productos desde Supabase
+        async function cargarProductos() {
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/productos?select=*&stock_actual.gt=0&order=nombre`, {
+                    headers: { 'apikey': SUPABASE_KEY }
+                });
+                const productos = await response.json();
+                
+                const grid = document.getElementById('productosGrid');
+                
+                if (productos.length === 0) {
+                    grid.innerHTML = '<div style="grid-column: span 3; text-align: center;">No hay productos disponibles</div>';
+                    return;
+                }
+                
+                grid.innerHTML = productos.map(p => `
+                    <div class="producto-card" onclick="agregarAlCarrito(${JSON.stringify(p).replace(/"/g, '&quot;')})">
+                        <h3>${p.nombre}</h3>
+                        <div class="codigo">${p.codigo || 'Sin código'}</div>
+                        <div class="precio">$${(p.precio_venta || 0).toLocaleString()}</div>
+                        <div class="stock">Stock: ${p.stock_actual || 0}</div>
+                    </div>
+                `).join('');
+                
+            } catch (error) {
+                console.error('Error cargando productos:', error);
+            }
+        }
+
+        // Buscar productos
+        async function buscarProductos() {
+            const termino = document.getElementById('buscador').value.toLowerCase();
+            
+            if (!termino) {
+                cargarProductos();
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/productos?or=(nombre.ilike.*${termino}*,codigo.ilike.*${termino}*)&stock_actual.gt.0`, {
+                    headers: { 'apikey': SUPABASE_KEY }
+                });
+                const productos = await response.json();
+                
+                const grid = document.getElementById('productosGrid');
+                
+                if (productos.length === 0) {
+                    grid.innerHTML = '<div style="grid-column: span 3; text-align: center;">No se encontraron productos</div>';
+                    return;
+                }
+                
+                grid.innerHTML = productos.map(p => `
+                    <div class="producto-card" onclick="agregarAlCarrito(${JSON.stringify(p).replace(/"/g, '&quot;')})">
+                        <h3>${p.nombre}</h3>
+                        <div class="codigo">${p.codigo || 'Sin código'}</div>
+                        <div class="precio">$${(p.precio_venta || 0).toLocaleString()}</div>
+                        <div class="stock">Stock: ${p.stock_actual || 0}</div>
+                    </div>
+                `).join('');
+                
+            } catch (error) {
+                console.error('Error en búsqueda:', error);
+            }
+        }
+
+        // Agregar producto al carrito
+        function agregarAlCarrito(producto) {
+            const existente = carrito.find(item => item.id === producto.id);
+            
+            if (existente) {
+                if (existente.cantidad < producto.stock_actual) {
+                    existente.cantidad++;
+                } else {
+                    alert('No hay suficiente stock disponible');
+                    return;
+                }
+            } else {
+                carrito.push({
+                    id: producto.id,
+                    nombre: producto.nombre,
+                    codigo: producto.codigo,
+                    precio: producto.precio_venta,
+                    cantidad: 1,
+                    stock: producto.stock_actual
+                });
+            }
+            
+            actualizarCarrito();
+        }
+
+        // Actualizar visualización del carrito
+        function actualizarCarrito() {
+            const carritoDiv = document.getElementById('carritoItems');
+            const cantidadSpan = document.getElementById('carritoCantidad');
+            
+            if (carrito.length === 0) {
+                carritoDiv.innerHTML = '<div style="text-align: center; color: #7f8c8d; padding: 20px;">El carrito está vacío</div>';
+                cantidadSpan.textContent = '0';
+            } else {
+                let html = '';
+                carrito.forEach((item, index) => {
+                    html += `
+                        <div class="carrito-item">
+                            <div class="item-info">
+                                <h4>${item.nombre}</h4>
+                                <small>${item.codigo || ''}</small>
+                            </div>
+                            <div class="item-cantidad">
+                                <button onclick="cambiarCantidad(${index}, -1)">-</button>
+                                <span>${item.cantidad}</span>
+                                <button onclick="cambiarCantidad(${index}, 1)">+</button>
+                            </div>
+                            <div class="item-precio">
+                                $${(item.precio * item.cantidad).toLocaleString()}
+                            </div>
+                            <div class="item-eliminar" onclick="eliminarDelCarrito(${index})">
+                                ❌
+                            </div>
+                        </div>
+                    `;
+                });
+                carritoDiv.innerHTML = html;
+                cantidadSpan.textContent = carrito.reduce((sum, item) => sum + item.cantidad, 0);
+            }
+            
+            calcularTotales();
+        }
+
+        // Cambiar cantidad de un producto
+        function cambiarCantidad(index, cambio) {
+            const item = carrito[index];
+            const nuevaCantidad = item.cantidad + cambio;
+            
+            if (nuevaCantidad <= 0) {
+                eliminarDelCarrito(index);
+            } else if (nuevaCantidad <= item.stock) {
+                item.cantidad = nuevaCantidad;
+                actualizarCarrito();
+            } else {
+                alert('No hay suficiente stock');
+            }
+        }
+
+        // Eliminar producto del carrito
+        function eliminarDelCarrito(index) {
+            carrito.splice(index, 1);
+            actualizarCarrito();
+        }
+
+        // Vaciar carrito completo
+        function vaciarCarrito() {
+            if (carrito.length > 0 && confirm('¿Vaciar el carrito?')) {
+                carrito = [];
+                actualizarCarrito();
+            }
+        }
+
+        // Calcular totales
+        function calcularTotales() {
+            const subtotal = carrito.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
+            const iva = subtotal * 0.19; // 19% IVA
+            const total = subtotal + iva;
+            
+            document.getElementById('subtotal').textContent = `$${subtotal.toLocaleString()}`;
+            document.getElementById('iva').textContent = `$${iva.toLocaleString()}`;
+            document.getElementById('total').textContent = `$${total.toLocaleString()}`;
+        }
+
+        // Finalizar venta
+        async function finalizarVenta() {
+            if (carrito.length === 0) {
+                alert('Agrega productos al carrito');
+                return;
+            }
+            
+            if (!confirm('¿Confirmar venta?')) return;
+            
+            const metodoPago = document.getElementById('metodoPago').value;
+            const subtotal = carrito.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
+            const iva = subtotal * 0.19;
+            const total = subtotal + iva;
+            
+            try {
+                const token = JSON.parse(localStorage.getItem('admin_token'));
+                
+                // 1. Crear la venta
+                const ventaData = {
+                    fecha: new Date().toISOString(),
+                    total: total,
+                    subtotal: subtotal,
+                    iva: iva,
+                    metodo_pago: metodoPago,
+                    vendedor: currentUser?.email || 'admin',
+                    productos: carrito.map(p => `${p.cantidad} x ${p.nombre}`).join(', ')
+                };
+                
+                const ventaRes = await fetch(`${SUPABASE_URL}/rest/v1/ventas`, {
+                    method: 'POST',
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${token.access_token}`,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'return=representation'
+                    },
+                    body: JSON.stringify(ventaData)
+                });
+                
+                if (!ventaRes.ok) throw new Error('Error al crear venta');
+                
+                const venta = await ventaRes.json();
+                ultimaVentaId = venta[0].id;
+                
+                // 2. Guardar detalles y actualizar stock
+                for (const item of carrito) {
+                    // Guardar detalle
+                    await fetch(`${SUPABASE_URL}/rest/v1/detalle_ventas`, {
+                        method: 'POST',
+                        headers: {
+                            'apikey': SUPABASE_KEY,
+                            'Authorization': `Bearer ${token.access_token}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            venta_id: ultimaVentaId,
+                            producto_id: item.id,
+                            cantidad: item.cantidad,
+                            precio_unitario: item.precio,
+                            subtotal: item.precio * item.cantidad
+                        })
+                    });
+                    
+                    // Actualizar stock
+                    await fetch(`${SUPABASE_URL}/rest/v1/productos?id=eq.${item.id}`, {
+                        method: 'PATCH',
+                        headers: {
+                            'apikey': SUPABASE_KEY,
+                            'Authorization': `Bearer ${token.access_token}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            stock_actual: item.stock - item.cantidad
+                        })
+                    });
+                }
+                
+                // Mostrar modal de éxito
+                document.getElementById('modalTotal').textContent = `Total: $${total.toLocaleString()}`;
+                document.getElementById('modalExito').style.display = 'block';
+                
+            } catch (error) {
+                console.error('Error en venta:', error);
+                alert('Error al procesar la venta: ' + error.message);
+            }
+        }
+
+        // Ver factura de la venta recién hecha
+        function verFactura() {
+            if (ultimaVentaId) {
+                window.open(`factura.html?id=${ultimaVentaId}`, '_blank');
+            }
+        }
+
+        // Nueva venta (limpiar carrito)
+        function nuevaVenta() {
+            carrito = [];
+            actualizarCarrito();
+            document.getElementById('buscador').value = '';
+            document.getElementById('buscador').focus();
+            cerrarModal();
+        }
+
+        // Cerrar modal
+        function cerrarModal() {
+            document.getElementById('modalExito').style.display = 'none';
+        }
+
+        // Volver al dashboard
+        function volverDashboard() {
+            window.location.href = 'dashboard.html';
+        }
+
+        // Enter en el buscador
+        document.getElementById('buscador').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') buscarProductos();
+        });
+    </script>
+</body>
+</html>
