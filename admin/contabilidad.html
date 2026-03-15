@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contabilidad - Estado de Resultados</title>
+    <link rel="stylesheet" href="../css/estilo-comun.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f2f5;
+        }
+
+        /* Header */
+        .finance-header {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .finance-header h1 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.8rem;
+        }
+
+        .back-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .back-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        /* Selector de período */
+        .period-selector {
+            background: white;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .period-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .period-group label {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .period-group select, .period-group input {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .apply-btn {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .apply-btn:hover {
+            background: #2ecc71;
+        }
+
+        /* Dashboard de indicadores */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            padding: 2rem;
+        }
+
+        .kpi-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-left: 4px solid;
+            transition: transform 0.3s;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .kpi-card.ingresos { border-left-color: #27ae60; }
+        .kpi-card.egresos { border-left-color: #e74c3c; }
+        .kpi-card.utilidad { border-left-color: #3498db; }
+        .kpi-card.margen { border-left-color: #f39c12; }
+
+        .kpi-label {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .kpi-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 0.5rem 0;
+        }
+
+        .kpi-trend {
+            font-size: 0.9rem;
+        }
+
+        .trend-up { color: #27ae60; }
+        .trend-down { color: #e74c3c; }
+
+        /* Estado de Resultados */
+        .financial-statement {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+            padding: 0 2rem 2rem 2rem;
+        }
+
+        .statement-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .statement-card h2 {
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #ecf0f1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .statement-card h2 span {
+            font-size: 1rem;
+            background: #3498db;
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+        }
+
+        .statement-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-weight: 600;
+            color: #34495e;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .line-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px dashed #ecf0f1;
+        }
+
+        .line-item.total {
+            font-weight: bold;
+            border-bottom: 2px solid #bdc3c7;
+            margin-top: 0.5rem;
+        }
+
+        .line-item.grand-total {
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: #27ae60;
+            border-top: 2px solid #27ae60;
+            border-bottom: none;
+            padding-top: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .amount {
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+        }
+
+        .amount.positive { color: #27ae60; }
+        .amount.negative { color: #e74c3c; }
+
+        .indent {
+            padding-left: 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        /* Gráficos */
+        .charts-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 1.5rem;
+            padding: 0 2rem 2rem 2rem;
+        }
+
+        .chart-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .chart-card h3 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+
+        .chart-placeholder {
+            height: 250px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #7f8c8d;
+        }
+
+        /* Tabla de evolución mensual */
+        .evolution-table {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin: 0 2rem 2rem 2rem;
+            overflow-x: auto;
+        }
+
+        .evolution-table h3 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #f8f9fa;
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 2px solid #27ae60;
+        }
+
+        td {
+            padding: 0.8rem 1rem;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        /* Ratios financieros */
+        .ratios-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .ratio-item {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .ratio-label {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+
+        .ratio-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        @media (max-width: 768px) {
+            .financial-statement {
+                grid-template-columns: 1fr;
+            }
+            
+            .kpi-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="finance-header">
+        <h1>
+            📊 ESTADOS FINANCIEROS
+            <span style="font-size: 1rem; background: #27ae60; padding: 0.3rem 0.8rem; border-radius: 20px;">
+                MI LOCAL DE ROPA
+            </span>
+        </h1>
+        <a href="dashboard.html" class="back-btn">← Volver al Panel</a>
+    </header>
+
+    <!-- Selector de período -->
+    <div class="period-selector">
+        <div class="period-group">
+            <label>Período:</label>
+            <select id="periodType" onchange="cambiarTipoPeriodo()">
+                <option value="month">Mensual</option>
+                <option value="quarter">Trimestral</option>
+                <option value="year">Anual</option>
+                <option value="custom">Personalizado</option>
+            </select>
+        </div>
+        
+        <div class="period-group" id="monthSelector">
+            <label>Mes:</label>
+            <select id="month">
+                <option value="1">Enero</option>
+                <option value="2">Febrero</option>
+                <option value="3">Marzo</option>
+                <option value="4">Abril</option>
+                <option value="5">Mayo</option>
+                <option value="6">Junio</option>
+                <option value="7">Julio</option>
+                <option value="8">Agosto</option>
+                <option value="9">Septiembre</option>
+                <option value="10">Octubre</option>
+                <option value="11">Noviembre</option>
+                <option value="12">Diciembre</option>
+            </select>
+        </div>
+        
+        <div class="period-group">
+            <label>Año:</label>
+            <select id="year">
+                <option value="2026">2026</option>
+                <option value="2025">2025</option>
+                <option value="2024">2024</option>
+            </select>
+        </div>
+        
+        <div class="period-group" id="customRange" style="display: none;">
+            <label>Desde:</label>
+            <input type="date" id="startDate">
+            <label>Hasta:</label>
+            <input type="date" id="endDate">
+        </div>
+        
+        <button class="apply-btn" onclick="cargarEstadosFinancieros()">Aplicar</button>
+    </div>
+
+    <!-- KPIs Principales -->
+    <div class="kpi-grid" id="kpiContainer">
+        <div class="kpi-card ingresos">
+            <div class="kpi-label">INGRESOS TOTALES</div>
+            <div class="kpi-value" id="kpiIngresos">$0</div>
+            <div class="kpi-trend" id="trendIngresos"></div>
+        </div>
+        <div class="kpi-card egresos">
+            <div class="kpi-label">EGRESOS TOTALES</div>
+            <div class="kpi-value" id="kpiEgresos">$0</div>
+            <div class="kpi-trend" id="trendEgresos"></div>
+        </div>
+        <div class="kpi-card utilidad">
+            <div class="kpi-label">UTILIDAD NETA</div>
+            <div class="kpi-value" id="kpiUtilidad">$0</div>
+            <div class="kpi-trend" id="trendUtilidad"></div>
+        </div>
+        <div class="kpi-card margen">
+            <div class="kpi-label">MARGEN DE UTILIDAD</div>
+            <div class="kpi-value" id="kpiMargen">0%</div>
+            <div class="kpi-trend" id="trendMargen"></div>
+        </div>
+    </div>
+
+    <!-- Estados Financieros -->
+    <div class="financial-statement">
+        <!-- Estado de Resultados -->
+        <div class="statement-card">
+            <h2>
+                ESTADO DE RESULTADOS
+                <span id="periodoActual"></span>
+            </h2>
+            
+            <div class="statement-section">
+                <div class="section-title">INGRESOS</div>
+                <div class="line-item">
+                    <span>Ventas totales</span>
+                    <span class="amount" id="ventasTotales">$0</span>
+                </div>
+                <div class="line-item indent">
+                    <span>Ventas de contado</span>
+                    <span class="amount" id="ventasContado">$0</span>
+                </div>
+                <div class="line-item indent">
+                    <span>Ventas con tarjeta</span>
+                    <span class="amount" id="ventasTarjeta">$0</span>
+                </div>
+                <div class="line-item indent">
+                    <span>Ventas con transferencia</span>
+                    <span class="amount" id="ventasTransferencia">$0</span>
+                </div>
+                <div class="line-item total">
+                    <span>TOTAL INGRESOS</span>
+                    <span class="amount positive" id="totalIngresos">$0</span>
+                </div>
+            </div>
+            
+            <div class="statement-section">
+                <div class="section-title">COSTOS Y GASTOS</div>
+                <div class="line-item">
+                    <span>Costo de ventas (compras)</span>
+                    <span class="amount" id="costoVentas">$0</span>
+                </div>
+                <div class="line-item">
+                    <span>Gastos operativos</span>
+                    <span class="amount" id="gastosOperativos">$0</span>
+                </div>
+                <div class="line-item indent">
+                    <span>Alquiler</span>
+                    <span class="amount" id="gastoAlquiler">$0</span>
+                </div>
+                <div class="line-item indent">
+                    <span>Servicios (luz, agua, internet)</span>
+                    <span class="amount" id="gastoServicios">$0</span>
+                </div>
+                <div class="line-item indent">
+                    <span>Sueldos</span>
+                    <span class="amount" id="gastoSueldos">$0</span>
+                </div>
+                <div class="line-item indent">
+                    <span>Marketing</span>
+                    <span class="amount" id="gastoMarketing">$0</span>
+                </div>
+                <div class="line-item indent">
+                    <span>Mantenimiento</span>
+                    <span class="amount" id="gastoMantenimiento">$0</span>
+                </div>
+                <div class="line-item indent">
+                    <span>Otros gastos</span>
+                    <span class="amount" id="gastoOtros">$0</span>
+                </div>
+                <div class="line-item total">
+                    <span>TOTAL COSTOS Y GASTOS</span>
+                    <span class="amount negative" id="totalEgresos">$0</span>
+                </div>
+            </div>
+            
+            <div class="line-item grand-total">
+                <span>UTILIDAD NETA</span>
+                <span class="amount" id="utilidadNeta">$0</span>
+            </div>
+        </div>
+        
+        <!-- Ratios Financieros -->
+        <div class="statement-card">
+            <h2>RATIOS FINANCIEROS</h2>
+            
+            <div class="ratios-grid">
+                <div class="ratio-item">
+                    <div class="ratio-label">Margen Bruto</div>
+                    <div class="ratio-value" id="margenBruto">0%</div>
+                </div>
+                <div class="ratio-item">
+                    <div class="ratio-label">Margen Neto</div>
+                    <div class="ratio-value" id="margenNeto">0%</div>
+                </div>
+                <div class="ratio-item">
+                    <div class="ratio-label">ROI</div>
+                    <div class="ratio-value" id="roi">0%</div>
+                </div>
+                <div class="ratio-item">
+                    <div class="ratio-label">Liquidez</div>
+                    <div class="ratio-value" id="liquidez">0</div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 2rem;">
+                <h3>Indicadores clave</h3>
+                <div class="line-item">
+                    <span>Ticket promedio</span>
+                    <span class="amount" id="ticketPromedio">$0</span>
+                </div>
+                <div class="line-item">
+                    <span>Rotación de inventario</span>
+                    <span class="amount" id="rotacionInventario">0</span>
+                </div>
+                <div class="line-item">
+                    <span>Días de cobro</span>
+                    <span class="amount" id="diasCobro">0</span>
+                </div>
+                <div class="line-item">
+                    <span>Días de pago</span>
+                    <span class="amount" id="diasPago">0</span>
+                </div>
+            </div>
+            
+            <div style="margin-top: 2rem;">
+                <h3>Análisis comparativo</h3>
+                <div class="line-item">
+                    <span>Vs. período anterior</span>
+                    <span class="amount" id="vsAnterior">0%</span>
+                </div>
+                <div class="line-item">
+                    <span>Vs. mismo período año ant.</span>
+                    <span class="amount" id="vsAnioAnterior">0%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gráficos -->
+    <div class="charts-container">
+        <div class="chart-card">
+            <h3>📈 Evolución de Ventas</h3>
+            <div class="chart-placeholder" id="ventasChart">
+                [Aquí irá un gráfico de ventas mensuales]
+            </div>
+        </div>
+        <div class="chart-card">
+            <h3>🥧 Composición de Gastos</h3>
+            <div class="chart-placeholder" id="gastosChart">
+                [Aquí irá un gráfico circular de gastos por categoría]
+            </div>
+        </div>
+    </div>
+
+    <!-- Evolución Mensual -->
+    <div class="evolution-table">
+        <h3>📅 Evolución Mensual</h3>
+        <table id="tablaEvolucion">
+            <thead>
+                <tr>
+                    <th>Mes</th>
+                    <th>Ventas</th>
+                    <th>Compras</th>
+                    <th>Gastos</th>
+                    <th>Utilidad</th>
+                    <th>Margen</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="6" style="text-align: center;">Cargando datos...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script src="../js/supabase-config.js"></script>
+    <script>
+        // Variables globales
+        let currentPeriod = {
+            type: 'month',
+            month: new Date().getMonth() + 1,
+            year: new Date().getFullYear(),
+            startDate: null,
+            endDate: null
+        };
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', () => {
+            verificarSesion();
+            cargarEstadosFinancieros();
+        });
+
+        // Verificar sesión
+        async function verificarSesion() {
+            const tokenData = localStorage.getItem('admin_token');
+            if (!tokenData) {
+                window.location.href = 'login.html';
+                return;
+            }
+        }
+
+        // Cambiar tipo de período
+        function cambiarTipoPeriodo() {
+            const type = document.getElementById('periodType').value;
+            const monthSelector = document.getElementById('monthSelector');
+            const customRange = document.getElementById('customRange');
+            
+            if (type === 'custom') {
+                monthSelector.style.display = 'none';
+                customRange.style.display = 'flex';
+            } else {
+                monthSelector.style.display = 'flex';
+                customRange.style.display = 'none';
+            }
+        }
+
+        // Cargar estados financieros
+        async function cargarEstadosFinancieros() {
+            // Obtener fechas según período seleccionado
+            const fechas = obtenerFechasPeriodo();
+            if (!fechas) return;
+            
+            try {
+                // 1. Cargar ventas del período
+                const ventas = await cargarVentasPeriodo(fechas.inicio, fechas.fin);
+                
+                // 2. Cargar compras del período
+                const compras = await cargarComprasPeriodo(fechas.inicio, fechas.fin);
+                
+                // 3. Cargar gastos del período
+                const gastos = await cargarGastosPeriodo(fechas.inicio, fechas.fin);
+                
+                // 4. Procesar datos y actualizar UI
+                procesarEstadosFinancieros(ventas, compras, gastos);
+                
+                // 5. Cargar evolución mensual
+                cargarEvolucionMensual(fechas.year);
+                
+            } catch (error) {
+                console.error('Error cargando estados financieros:', error);
+                alert('Error al cargar los datos financieros');
+            }
+        }
+
+        // Obtener fechas del período
+        function obtenerFechasPeriodo() {
+            const type = document.getElementById('periodType').value;
+            const year = parseInt(document.getElementById('year').value);
+            
+            let inicio, fin;
+            
+            if (type === 'custom') {
+                inicio = document.getElementById('startDate').value;
+                fin = document.getElementById('endDate').value;
+                if (!inicio || !fin) {
+                    alert('Selecciona las fechas de inicio y fin');
+                    return null;
+                }
+            } else {
+                const month = parseInt(document.getElementById('month').value);
+                
+                if (type === 'month') {
+                    // Mes específico
+                    inicio = new Date(year, month - 1, 1);
+                    fin = new Date(year, month, 0); // Último día del mes
+                } else if (type === 'quarter') {
+                    // Trimestre
+                    const quarterStart = Math.floor((month - 1) / 3) * 3;
+                    inicio = new Date(year, quarterStart, 1);
+                    fin = new Date(year, quarterStart + 3, 0);
+                } else if (type === 'year') {
+                    // Año completo
+                    inicio = new Date(year, 0, 1);
+                    fin = new Date(year, 11, 31);
+                }
+            }
+            
+            document.getElementById('periodoActual').textContent = 
+                `${inicio.toLocaleDateString()} - ${fin.toLocaleDateString()}`;
+            
+            return {
+                inicio: inicio.toISOString().split('T')[0],
+                fin: fin.toISOString().split('T')[0],
+                year: year
+            };
+        }
+
+        // Cargar ventas del período
+        async function cargarVentasPeriodo(inicio, fin) {
+            const response = await fetch(
+                `${SUPABASE_URL}/rest/v1/ventas?fecha=gte.${inicio}&fecha=lte.${fin}&order=fecha`,
+                { headers: { 'apikey': SUPABASE_KEY } }
+            );
+            return await response.json();
+        }
+
+        // Cargar compras del período
+        async function cargarComprasPeriodo(inicio, fin) {
+            const response = await fetch(
+                `${SUPABASE_URL}/rest/v1/compras?fecha=gte.${inicio}&fecha=lte.${fin}`,
+                { headers: { 'apikey': SUPABASE_KEY } }
+            );
+            return await response.json();
+        }
+
+        // Cargar gastos del período
+        async function cargarGastosPeriodo(inicio, fin) {
+            const response = await fetch(
+                `${SUPABASE_URL}/rest/v1/gastos?fecha=gte.${inicio}&fecha=lte.${fin}`,
+                { headers: { 'apikey': SUPABASE_KEY } }
+            );
+            return await response.json();
+        }
+
+        // Procesar estados financieros
+        function procesarEstadosFinancieros(ventas, compras, gastos) {
+            // Totales
+            const totalVentas = ventas.reduce((sum, v) => sum + (v.total || 0), 0);
+            const totalCompras = compras.reduce((sum, c) => sum + (c.total || 0), 0);
+            const totalGastos = gastos.reduce((sum, g) => sum + (g.monto || 0), 0);
+            
+            // Ventas por método de pago
+            const ventasContado = ventas.filter(v => v.metodo_pago === 'Efectivo')
+                .reduce((sum, v) => sum + (v.total || 0), 0);
+            const ventasTarjeta = ventas.filter(v => v.metodo_pago === 'Tarjeta')
+                .reduce((sum, v) => sum + (v.total || 0), 0);
+            const ventasTransferencia = ventas.filter(v => v.metodo_pago === 'Transferencia')
+                .reduce((sum, v) => sum + (v.total || 0), 0);
+            
+            // Gastos por categoría
+            const gastosAlquiler = gastos.filter(g => g.categoria === 'Alquiler')
+                .reduce((sum, g) => sum + (g.monto || 0), 0);
+            const gastosServicios = gastos.filter(g => g.categoria === 'Servicios')
+                .reduce((sum, g) => sum + (g.monto || 0), 0);
+            const gastosSueldos = gastos.filter(g => g.categoria === 'Sueldos')
+                .reduce((sum, g) => sum + (g.monto || 0), 0);
+            const gastosMarketing = gastos.filter(g => g.categoria === 'Marketing')
+                .reduce((sum, g) => sum + (g.monto || 0), 0);
+            const gastosMantenimiento = gastos.filter(g => g.categoria === 'Mantenimiento')
+                .reduce((sum, g) => sum + (g.monto || 0), 0);
+            const gastosOtros = gastos.filter(g => !['Alquiler','Servicios','Sueldos','Marketing','Mantenimiento'].includes(g.categoria))
+                .reduce((sum, g) => sum + (g.monto || 0), 0);
+            
+            // Calcular utilidad
+            const totalEgresos = totalCompras + totalGastos;
+            const utilidad = totalVentas - totalEgresos;
+            
+            // Calcular márgenes
+            const margenBruto = totalVentas > 0 ? ((totalVentas - totalCompras) / totalVentas * 100) : 0;
+            const margenNeto = totalVentas > 0 ? (utilidad / totalVentas * 100) : 0;
+            
+            // Actualizar KPIs
+            document.getElementById('kpiIngresos').textContent = `$${totalVentas.toLocaleString()}`;
+            document.getElementById('kpiEgresos').textContent = `$${totalEgresos.toLocaleString()}`;
+            document.getElementById('kpiUtilidad').textContent = `$${utilidad.toLocaleString()}`;
+            document.getElementById('kpiMargen').textContent = `${margenNeto.toFixed(1)}%`;
+            
+            // Actualizar Estado de Resultados
+            document.getElementById('ventasTotales').textContent = `$${totalVentas.toLocaleString()}`;
+            document.getElementById('ventasContado').textContent = `$${ventasContado.toLocaleString()}`;
+            document.getElementById('ventasTarjeta').textContent = `$${ventasTarjeta.toLocaleString()}`;
+            document.getElementById('ventasTransferencia').textContent = `$${ventasTransferencia.toLocaleString()}`;
+            document.getElementById('totalIngresos').textContent = `$${totalVentas.toLocaleString()}`;
+            
+            document.getElementById('costoVentas').textContent = `$${totalCompras.toLocaleString()}`;
+            document.getElementById('gastosOperativos').textContent = `$${totalGastos.toLocaleString()}`;
+            document.getElementById('gastoAlquiler').textContent = `$${gastosAlquiler.toLocaleString()}`;
+            document.getElementById('gastoServicios').textContent = `$${gastosServicios.toLocaleString()}`;
+            document.getElementById('gastoSueldos').textContent = `$${gastosSueldos.toLocaleString()}`;
+            document.getElementById('gastoMarketing').textContent =            document.getElementById('gastoMarketing').textContent = `$${gastosMarketing.toLocaleString()}`;
+            document.getElementById('gastoMantenimiento').textContent = `$${gastosMantenimiento.toLocaleString()}`;
+            document.getElementById('gastoOtros').textContent = `$${gastosOtros.toLocaleString()}`;
+            document.getElementById('totalEgresos').textContent = `$${totalEgresos.toLocaleString()}`;
+            
+            // Utilidad neta (con color según sea positiva o negativa)
+            const utilidadElement = document.getElementById('utilidadNeta');
+            utilidadElement.textContent = `$${Math.abs(utilidad).toLocaleString()}`;
+            utilidadElement.className = `amount ${utilidad >= 0 ? 'positive' : 'negative'}`;
+            
+            // Actualizar ratios
+            document.getElementById('margenBruto').textContent = `${margenBruto.toFixed(1)}%`;
+            document.getElementById('margenNeto').textContent = `${margenNeto.toFixed(1)}%`;
+            
+            // ROI (Retorno sobre inversión)
+            const roi = totalEgresos > 0 ? (utilidad / totalEgresos * 100) : 0;
+            document.getElementById('roi').textContent = `${roi.toFixed(1)}%`;
+            
+            // Liquidez (simplificada - asumiendo que todo es efectivo)
+            const liquidez = totalEgresos > 0 ? (totalVentas / totalEgresos) : 0;
+            document.getElementById('liquidez').textContent = liquidez.toFixed(2);
+            
+            // Ticket promedio
+            const ticketPromedio = ventas.length > 0 ? totalVentas / ventas.length : 0;
+            document.getElementById('ticketPromedio').textContent = `$${ticketPromedio.toLocaleString()}`;
+            
+            // Rotación de inventario (simplificada)
+            const inventarioPromedio = 5000000; // Esto deberías calcularlo con datos reales
+            const rotacion = inventarioPromedio > 0 ? totalCompras / inventarioPromedio : 0;
+            document.getElementById('rotacionInventario').textContent = rotacion.toFixed(2);
+            
+            // Comparativas (simuladas por ahora)
+            document.getElementById('vsAnterior').textContent = '+15.3%';
+            document.getElementById('vsAnioAnterior').textContent = '+8.7%';
+        }
+
+        // Cargar evolución mensual
+        async function cargarEvolucionMensual(year) {
+            try {
+                const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+                const datosMensuales = [];
+                
+                for (let mes = 0; mes < 12; mes++) {
+                    const inicio = new Date(year, mes, 1);
+                    const fin = new Date(year, mes + 1, 0);
+                    
+                    const inicioStr = inicio.toISOString().split('T')[0];
+                    const finStr = fin.toISOString().split('T')[0];
+                    
+                    // Cargar ventas del mes
+                    const ventasRes = await fetch(
+                        `${SUPABASE_URL}/rest/v1/ventas?fecha=gte.${inicioStr}&fecha=lte.${finStr}`,
+                        { headers: { 'apikey': SUPABASE_KEY } }
+                    );
+                    const ventas = await ventasRes.json();
+                    
+                    // Cargar compras del mes
+                    const comprasRes = await fetch(
+                        `${SUPABASE_URL}/rest/v1/compras?fecha=gte.${inicioStr}&fecha=lte.${finStr}`,
+                        { headers: { 'apikey': SUPABASE_KEY } }
+                    );
+                    const compras = await comprasRes.json();
+                    
+                    // Cargar gastos del mes
+                    const gastosRes = await fetch(
+                        `${SUPABASE_URL}/rest/v1/gastos?fecha=gte.${inicioStr}&fecha=lte.${finStr}`,
+                        { headers: { 'apikey': SUPABASE_KEY } }
+                    );
+                    const gastos = await gastosRes.json();
+                    
+                    const totalVentas = ventas.reduce((sum, v) => sum + (v.total || 0), 0);
+                    const totalCompras = compras.reduce((sum, c) => sum + (c.total || 0), 0);
+                    const totalGastos = gastos.reduce((sum, g) => sum + (g.monto || 0), 0);
+                    const utilidad = totalVentas - (totalCompras + totalGastos);
+                    
+                    datosMensuales.push({
+                        mes: meses[mes],
+                        ventas: totalVentas,
+                        compras: totalCompras,
+                        gastos: totalGastos,
+                        utilidad: utilidad,
+                        margen: totalVentas > 0 ? (utilidad / totalVentas * 100) : 0
+                    });
+                }
+                
+                // Actualizar tabla
+                const tbody = document.querySelector('#tablaEvolucion tbody');
+                tbody.innerHTML = datosMensuales.map(d => `
+                    <tr>
+                        <td><strong>${d.mes}</strong></td>
+                        <td class="text-right">$${d.ventas.toLocaleString()}</td>
+                        <td class="text-right">$${d.compras.toLocaleString()}</td>
+                        <td class="text-right">$${d.gastos.toLocaleString()}</td>
+                        <td class="text-right" style="color: ${d.utilidad >= 0 ? '#27ae60' : '#e74c3c'};">
+                            $${Math.abs(d.utilidad).toLocaleString()}
+                        </td>
+                        <td class="text-right">${d.margen.toFixed(1)}%</td>
+                    </tr>
+                `).join('');
+                
+            } catch (error) {
+                console.error('Error cargando evolución mensual:', error);
+            }
+        }
+
+        // Función para exportar a Excel/PDF
+        function exportarEstadoResultados() {
+            alert('Función de exportación próximamente');
+        }
+
+        // Función para imprimir
+        function imprimirEstado() {
+            window.print();
+        }
+    </script>
+</body>
+</html>
