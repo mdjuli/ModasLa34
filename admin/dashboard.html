@@ -1250,50 +1250,52 @@
         // ============================================
         // FUNCIONES PARA PRODUCTOS
         // ============================================
-        async function cargarProductos() {
-            try {
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/productos?order=nombre`, {
-                    headers: { 'apikey': SUPABASE_KEY }
-                });
-                const productos = await response.json();
-                
-                const tbody = document.querySelector('#tabla-productos tbody');
-                
-                if (productos.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">No hay productos registrados</td></tr>';
-                    return;
-                }
-                
-                document.getElementById('stats-total-productos').textContent = productos.length;
-                
-                const stockBajo = productos.filter(p => p.stock_actual < 5).length;
-                document.getElementById('stats-stock-bajo').textContent = stockBajo;
-                
-                tbody.innerHTML = productos.map(p => `
-                    <tr ${p.stock_actual < 5 ? 'style="background: #fff3cd;"' : ''}>
-                        <td>${p.codigo || '-'}</td>
-                        <td><strong>${p.nombre}</strong></td>
-                        <td>${p.talla || '-'}</td>
-                        <td>${p.color || '-'}</td>
-                        <td>$${(p.precio_venta || 0).toLocaleString()}</td>
-                        <td>
-                            <span style="font-weight: bold; color: ${p.stock_actual < 5 ? '#e74c3c' : '#27ae60'};">
-                                ${p.stock_actual || 0}
-                            </span>
-                            ${p.stock_actual < 5 ? ' ⚠️' : ''}
-                        </td>
-                        <td>
-                            <button class="action-btn" onclick="editarProducto(${p.id})" title="Editar">✏️</button>
-                            <button class="action-btn" onclick="ajustarStock(${p.id})" title="Ajustar stock">📦</button>
-                            <button class="action-btn delete-btn" onclick="eliminarProducto(${p.id})" title="Eliminar">🗑️</button>
-                        </td>
-                    </tr>
-                `).join('');
-                
-            } catch (error) {
-                console.error('Error cargando productos:', error);
-            }
+async function cargarProductos() {
+    try {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/productos?order=nombre`, {
+            headers: { 'apikey': SUPABASE_KEY }
+        });
+        const productos = await response.json();
+        
+        // 👇 ESTA ES LA PARTE QUE TE FALTA - ACTUALIZA LA TABLA
+        const tbody = document.querySelector('#tabla-productos tbody');
+        
+        if (productos.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">No hay productos registrados</td></tr>';
+            return;
         }
+        
+        // Actualizar estadísticas
+        document.getElementById('stats-total-productos').textContent = productos.length;
+        const stockBajo = productos.filter(p => p.stock_actual < 5).length;
+        document.getElementById('stats-stock-bajo').textContent = stockBajo;
+        
+        // Generar filas de la tabla
+        tbody.innerHTML = productos.map(p => `
+            <tr ${p.stock_actual < 5 ? 'style="background: #fff3cd;"' : ''}>
+                <td>${p.codigo || '-'}</td>
+                <td><strong>${p.nombre}</strong></td>
+                <td>${p.talla || '-'}</td>
+                <td>${p.color || '-'}</td>
+                <td>$${(p.precio_venta || 0).toLocaleString()}</td>
+                <td>
+                    <span style="font-weight: bold; color: ${p.stock_actual < 5 ? '#e74c3c' : '#27ae60'};">
+                        ${p.stock_actual || 0}
+                    </span>
+                    ${p.stock_actual < 5 ? ' ⚠️' : ''}
+                </td>
+                <td>
+                    <button class="action-btn" onclick="editarProducto(${p.id})">✏️</button>
+                    <button class="action-btn" onclick="ajustarStock(${p.id})">📦</button>
+                    <button class="action-btn delete-btn" onclick="eliminarProducto(${p.id})">🗑️</button>
+                </td>
+            </tr>
+        `).join('');
+        
+    } catch (error) {
+        console.error('Error cargando productos:', error);
+    }
+}
 
         async function guardarProducto() {
             const producto = {
