@@ -1404,49 +1404,52 @@ async function cargarProductos() {
         }
 
         async function guardarProveedor() {
-            const proveedor = {
-                nombre: document.getElementById('proveedor-nombre').value,
-                contacto: document.getElementById('proveedor-contacto').value || null,
-                telefono: document.getElementById('proveedor-telefono').value || null,
-                email: document.getElementById('proveedor-email').value || null,
-                direccion: document.getElementById('proveedor-direccion').value || null
-            };
+    const proveedor = {
+        nombre: document.getElementById('proveedor-nombre').value,
+        contacto: document.getElementById('proveedor-contacto').value || null,
+        telefono: document.getElementById('proveedor-telefono').value || null,
+        email: document.getElementById('proveedor-email').value || null,
+        direccion: document.getElementById('proveedor-direccion').value || null
+    };
+    
+    if (!proveedor.nombre) {
+        mostrarAlerta('El nombre del proveedor es obligatorio', 'error');
+        return;
+    }
+    
+    try {
+        const token = JSON.parse(localStorage.getItem('admin_token'));
+        
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/proveedores`, {
+            method: 'POST',
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${token.access_token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(proveedor)
+        });
+        
+        if (response.ok) {
+            mostrarAlerta('Proveedor guardado correctamente', 'success');
+            cerrarFormulario('proveedor');
             
-            if (!proveedor.nombre) {
-                mostrarAlerta('El nombre del proveedor es obligatorio', 'error');
-                return;
-            }
+            // 👇 ESTA ES LA LÍNEA CLAVE - Recarga la lista
+            await cargarProveedores();
             
-            try {
-                const token = JSON.parse(localStorage.getItem('admin_token'));
-                
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/proveedores`, {
-                    method: 'POST',
-                    headers: {
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${token.access_token}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(proveedor)
-                });
-                
-                if (response.ok) {
-                    mostrarAlerta('Proveedor guardado correctamente', 'success');
-                    cerrarFormulario('proveedor');
-                    await cargarProveedores();
-                    // Limpiar formulario
-                    document.getElementById('proveedor-nombre').value = '';
-                    document.getElementById('proveedor-contacto').value = '';
-                    document.getElementById('proveedor-telefono').value = '';
-                    document.getElementById('proveedor-email').value = '';
-                    document.getElementById('proveedor-direccion').value = '';
-                } else {
-                    mostrarAlerta('Error al guardar el proveedor', 'error');
-                }
-            } catch (error) {
-                mostrarAlerta('Error de conexión', 'error');
-            }
+            // Limpiar formulario
+            document.getElementById('proveedor-nombre').value = '';
+            document.getElementById('proveedor-contacto').value = '';
+            document.getElementById('proveedor-telefono').value = '';
+            document.getElementById('proveedor-email').value = '';
+            document.getElementById('proveedor-direccion').value = '';
+        } else {
+            mostrarAlerta('Error al guardar el proveedor', 'error');
         }
+    } catch (error) {
+        mostrarAlerta('Error de conexión', 'error');
+    }
+}
 
         // ============================================
         // FUNCIONES PARA PERFILES (USUARIOS)
