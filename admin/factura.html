@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Factura de Venta</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .factura {
+            max-width: 80mm; /* Ancho de ticket térmico */
+            background: white;
+            padding: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            border-radius: 5px;
+        }
+
+        .header {
+            text-align: center;
+            border-bottom: 2px dashed #000;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
+
+        .header h1 {
+            font-size: 18px;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            font-size: 12px;
+            margin: 2px 0;
+        }
+
+        .info {
+            margin-bottom: 15px;
+            font-size: 12px;
+        }
+
+        .info p {
+            margin: 3px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+            margin: 10px 0;
+        }
+
+        th {
+            text-align: left;
+            border-bottom: 1px solid #000;
+            padding: 5px 0;
+        }
+
+        td {
+            padding: 3px 0;
+        }
+
+        .cantidad {
+            text-align: center;
+        }
+
+        .precio {
+            text-align: right;
+        }
+
+        .totales {
+            border-top: 1px solid #000;
+            margin-top: 10px;
+            padding-top: 10px;
+            font-size: 12px;
+        }
+
+        .total-line {
+            display: flex;
+            justify-content: space-between;
+            margin: 3px 0;
+        }
+
+        .total-final {
+            font-size: 16px;
+            font-weight: bold;
+            border-top: 1px solid #000;
+            padding-top: 5px;
+            margin-top: 5px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 10px;
+            border-top: 1px dashed #000;
+            font-size: 10px;
+        }
+
+        .actions {
+            max-width: 80mm;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .btn-print {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+
+        .btn-back {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            
+            .factura {
+                box-shadow: none;
+                padding: 0;
+            }
+            
+            .actions {
+                display: none;
+            }
+        }
+
+        .estado-pago {
+            background: #27ae60;
+            color: white;
+            padding: 5px;
+            text-align: center;
+            font-size: 12px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div style="display: flex; flex-direction: column; align-items: center;">
+        <div class="factura" id="factura">
+            <!-- Contenido generado por JavaScript -->
+        </div>
+        
+        <div class="actions">
+            <button class="btn-print" onclick="window.print()">🖨️ Imprimir factura</button>
+            <button class="btn-back" onclick="volver()">⬅️ Volver</button>
+        </div>
+    </div>
+
+    <script src="../js/supabase-config.js"></script>
+    <script>
+        // Obtener ID de la URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const ventaId = urlParams.get('id');
+
+        if (!ventaId) {
+            document.body.innerHTML = '<h1>Error: Factura no encontrada</h1>';
+        }
+
+        async function cargarFactura() {
+            try {
+                // Obtener datos de la venta
+                const ventaRes = await fetch(`${SUPABASE_URL}/rest/v1/ventas?id=eq.${ventaId}`, {
+                    headers: { 'apikey': SUPABASE_KEY }
+                });
+                const venta = await ventaRes.json();
+                
+                if (!venta || venta.length === 0) {
+                    document.getElementById('factura').innerHTML = '<h2>Factura no encontrada</h2>';
+                    return;
+                }
+                
+                const v = venta[0];
+                
+                // Obtener detalles de la venta
+                const detallesRes = await fetch(`${SUPABASE_URL}/rest/v1/detalle_ventas?venta_id=eq.${ventaId}&select=*,productos(nombre)`, {
+                    headers: { 'apikey': SUPABASE_KEY }
+                });
+                const detalles = await detallesRes.json();
+                
+                // Generar HTML de la factura
+                const fecha = new Date(v.fecha).toLocaleDateString('es-CO', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                
+                let html = `
+                    <div class="header">
+                        <h1>🏪 MI LOCAL DE ROPA</h1>
+                        <p>NIT: 123.456.789-0</p>
+                        <p>Calle 123 #45-67, Bogotá</p>
+                        <p>Tel: (601) 234 5678</p>
+                    </div>
+                    
+                    <div class="info">
+                        <p><strong>Factura No:</strong> ${String(v.id).padStart(8, '0')}</p>
+                        <p><strong>Fecha:</strong> ${fecha}</p>
+                        <p><strong>Vendedor:</strong> ${v.vendedor || 'Admin'}</p>
+                    </div>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Prod</th>
+                                <th class="cantidad">Cant</th>
+                                <th class="precio">P.Unit</th>
+                                <th class="precio">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                
+                detalles.forEach(d => {
+                    html += `
+                        <tr>
+                            <td>${d.productos?.nombre || 'Producto'}</td>
+                            <td class="cantidad">${d.cantidad}</td>
+                            <td class="precio">$${d.precio_unitario.toLocaleString()}</td>
+                            <td class="precio">$${d.subtotal.toLocaleString()}</td>
+                        </tr>
+                    `;
+                });
+                
+                html += `
+                        </tbody>
+                    </table>
+                    
+                    <div class="totales">
+                        <div class="total-line">
+                            <span>Subtotal:</span>
+                            <span>$${(v.subtotal || 0).toLocaleString()}</span>
+                        </div>
+                        <div class="total-line">
+                            <span>IVA (19%):</span>
+                            <span>$${(v.iva || 0).toLocaleString()}</span>
+                        </div>
+                        <div class="total-line total-final">
+                            <span>TOTAL:</span>
+                            <span>$${(v.total || 0).toLocaleString()}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="estado-pago">
+                        Pagado con: ${v.metodo_pago || 'Efectivo'}
+                    </div>
+                    
+                    <div class="footer">
+                        <p>¡Gracias por su compra!</p>
+                        <p>* No se aceptan devoluciones después de 30 días *</p>
+                        <p style="font-size: 8px; margin-top: 10px;">www.milocalderopa.com</p>
+                    </div>
+                `;
+                
+                document.getElementById('factura').innerHTML = html;
+                
+            } catch (error) {
+                console.error('Error cargando factura:', error);
+                document.getElementById('factura').innerHTML = '<h2>Error cargando factura</h2>';
+            }
+        }
+
+        function volver() {
+            window.close();
+            // Si no se puede cerrar, redirigir
+            setTimeout(() => {
+                window.location.href = 'venta-rapida.html';
+            }, 100);
+        }
+
+        cargarFactura();
+    </script>
+</body>
+</html>
