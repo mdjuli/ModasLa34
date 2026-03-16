@@ -1035,28 +1035,41 @@
             }
         }
 
-        // Cargar datos según el módulo
-        async function cargarDatosModulo(modulo) {
-            switch(modulo) {
-                case 'compras':
-                    await cargarCompras();
-                    await cargarProveedoresSelect('compra');
-                    break;
-                case 'gastos':
-                    await cargarGastos();
-                    break;
-                case 'productos':
-                    await cargarProductos();
-                    await cargarProveedoresSelect('producto');
-                    break;
-                case 'perfiles':
-                    await cargarPerfiles();
-                    break;
-                case 'proveedores':
-                    await cargarProveedores();
-                    break;
+// Cambiar entre módulos (VERSIÓN CORREGIDA)
+function cambiarModulo(modulo, evento) {
+    // Ocultar todos los módulos
+    document.querySelectorAll('.module-section').forEach(section => {
+        section.style.display = 'none';
+    });
+    
+    // Mostrar el módulo seleccionado
+    const moduloElement = document.getElementById(`modulo-${modulo}`);
+    if (moduloElement) {
+        moduloElement.style.display = 'block';
+    }
+    
+    // Actualizar botones activos (solo si hay evento)
+    if (evento && evento.target) {
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        evento.target.classList.add('active');
+    } else {
+        // Si no hay evento (carga inicial), activamos el botón por su texto
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.textContent.includes(modulo.toUpperCase())) {
+                btn.classList.add('active');
             }
-        }
+        });
+    }
+    
+    currentModule = modulo;
+    
+    if (modulo !== 'ventas' && modulo !== 'contabilidad') {
+        cargarDatosModulo(modulo);
+    }
+}
 
         // Cargar datos iniciales
         async function cargarDatosIniciales() {
