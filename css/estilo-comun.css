@@ -1,164 +1,135 @@
-/* Estilos generales para toda la tienda */
+/* ===== ESTILOS ROSA PARA EL CATÁLOGO PÚBLICO ===== */
 body {
-    font-family: 'Arial', sans-serif;
+    font-family: 'Segoe UI', 'Poppins', 'Arial', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f5f5f5;
-    color: #333;
+    background: #fff9fc;  /* Fondo rosa pastel sútil */
+    color: #4a4a4a;
 }
 
+/* Header con degradado rosa */
 header {
-    background-color: #a80f68;
+    background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);
     color: white;
-    padding: 1rem;
+    padding: 1.5rem;
     text-align: center;
+    box-shadow: 0 4px 15px rgba(255, 154, 158, 0.3);
 }
 
+header h1 {
+    font-size: 2.2rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    margin: 0;
+}
+
+/* Navegación */
 nav {
-    margin-top: 1rem;
+    margin-top: 1.2rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
 }
 
 nav a {
     color: white;
     text-decoration: none;
-    margin: 0 1rem;
-    padding: 0.5rem;
+    margin: 0 0.5rem;
+    padding: 0.6rem 1.2rem;
+    border-radius: 50px;  /* Botones redondos */
+    transition: all 0.3s ease;
+    font-weight: 500;
 }
 
 nav a:hover {
-    background-color: #34495e;
-    border-radius: 3px;
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
 }
 
 main {
     max-width: 1200px;
     margin: 2rem auto;
-    padding: 0 1rem;
+    padding: 0 1.5rem;
     min-height: 70vh;
 }
 
+/* Footer con degradado */
 footer {
-    background-color: #a80f68;
+    background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
     color: white;
     text-align: center;
-    padding: 1rem;
+    padding: 1.5rem;
     position: relative;
     bottom: 0;
     width: 100%;
+    box-shadow: 0 -4px 15px rgba(255, 154, 158, 0.2);
 }
 
-.grid-productos {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 1.5rem;
-    margin-top: 2rem;
-}
-
-.producto-placeholder {
-    background: white;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 1rem;
-    text-align: center;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-.login-container {
-    max-width: 400px;
-    margin: 5rem auto;
-    background: white;
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
-
-.login-container input {
-    width: 100%;
-    padding: 0.5rem;
-    margin: 0.5rem 0;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    box-sizing: border-box;
-}
-
-.login-container button {
-    width: 100%;
-    padding: 0.75rem;
-    background-color: #27ae60;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 1rem;
-}
-
-.login-container button:hover {
-    background-color: #2ecc71;
-}
-
-/* ===== ESTILOS PARA CATEGORÍAS ===== */
+/* ===== CATEGORÍAS ===== */
 .categorias {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 0.5rem;
-    margin: 1.5rem 0;
+    gap: 0.8rem;
+    margin: 2rem 0;
     padding: 0 1rem;
 }
 
 .cat-btn {
     background-color: white;
-    border: 2px solid #2c3e50;
-    color: #2c3e50;
-    padding: 0.8rem 1.5rem;
-    border-radius: 30px;  /* Botones redondos */
+    border: 2px solid #ffb6c1;  /* Rosa claro */
+    color: #ff6b6b;
+    padding: 0.8rem 1.8rem;
+    border-radius: 50px;  /* Botones redondos */
     font-size: 1rem;
     font-weight: bold;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(255, 182, 193, 0.3);
 }
 
 .cat-btn:hover {
-    background-color: #2c3e50;
+    background-color: #ffb6c1;
     color: white;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(255, 154, 158, 0.4);
 }
 
 .cat-btn.active {
-    background-color: #27ae60;
-    border-color: #27ae60;
+    background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+    border-color: #ff9a9e;
     color: white;
 }
 
-/* ===== GRID DE PRODUCTOS MEJORADO ===== */
+/* ===== GRID DE PRODUCTOS ===== */
 .grid-productos {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 2rem;
     margin-top: 2rem;
-    padding: 0 1rem;
+    padding: 0 0.5rem;
 }
 
 .producto-card {
     background: white;
-    border-radius: 10px;
+    border-radius: 20px;  /* Bordes más redondos */
     overflow: hidden;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-    transition: transform 0.3s ease;
+    box-shadow: 0 8px 20px rgba(255, 182, 193, 0.2);
+    transition: all 0.3s ease;
+    border: 1px solid #ffe4e9;
 }
 
 .producto-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+    transform: translateY(-8px);
+    box-shadow: 0 15px 30px rgba(255, 154, 158, 0.3);
+    border-color: #ffb6c1;
 }
 
 .producto-imagen {
     width: 100%;
-    height: 200px;
+    height: 220px;
     object-fit: cover;
-    background-color: #f0f0f0;
+    background: linear-gradient(135deg, #fff0f3 0%, #ffe4e9 100%);
 }
 
 .producto-info {
@@ -166,51 +137,109 @@ footer {
 }
 
 .producto-categoria {
-    color: #27ae60;
-    font-size: 0.9rem;
+    color: #ff9a9e;
+    font-size: 0.85rem;
     font-weight: bold;
     text-transform: uppercase;
+    letter-spacing: 1px;
     margin-bottom: 0.5rem;
 }
 
 .producto-nombre {
-    font-size: 1.2rem;
+    font-size: 1.3rem;
     font-weight: bold;
     margin-bottom: 0.5rem;
-    color: #2c3e50;
+    color: #ff6b6b;
 }
 
 .producto-precio {
-    font-size: 1.5rem;
-    color: #27ae60;
+    font-size: 1.8rem;
+    background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
     font-weight: bold;
     margin-bottom: 1rem;
 }
 
 .producto-stock {
-    color: #7f8c8d;
+    color: #a5a5a5;
     font-size: 0.9rem;
     margin-bottom: 1rem;
 }
 
 .btn-ver-mas {
-    background-color: #2c3e50;
+    background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
     color: white;
     border: none;
     padding: 0.8rem 1.5rem;
-    border-radius: 5px;
+    border-radius: 50px;  /* Botón redondo */
     cursor: pointer;
     width: 100%;
     font-size: 1rem;
-    transition: background-color 0.3s ease;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255,255,255,0.3);
 }
 
 .btn-ver-mas:hover {
-    background-color: #34495e;
+    transform: scale(1.02);
+    box-shadow: 0 5px 15px rgba(255, 154, 158, 0.4);
 }
 
+/* ===== LOGIN (tema rosa) ===== */
+.login-container {
+    max-width: 400px;
+    margin: 5rem auto;
+    background: white;
+    padding: 2.5rem;
+    border-radius: 25px;  /* Bordes más redondos */
+    box-shadow: 0 10px 30px rgba(255, 182, 193, 0.3);
+    border: 1px solid #ffe4e9;
+}
 
-/* ===== MENÚ DESPLEGABLE ===== */
+.login-container h2 {
+    color: #ff6b6b;
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.login-container input {
+    width: 100%;
+    padding: 0.8rem;
+    margin: 0.5rem 0;
+    border: 2px solid #ffe4e9;
+    border-radius: 50px;  /* Inputs redondos */
+    box-sizing: border-box;
+    transition: all 0.3s;
+    background: #fff9fc;
+}
+
+.login-container input:focus {
+    outline: none;
+    border-color: #ffb6c1;
+    box-shadow: 0 0 0 4px rgba(255, 182, 193, 0.2);
+}
+
+.login-container button {
+    width: 100%;
+    padding: 0.8rem;
+    background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    font-weight: 600;
+    transition: all 0.3s;
+    margin-top: 1rem;
+}
+
+.login-container button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 154, 158, 0.4);
+}
+
+/* ===== MENÚ DESPLEGABLE (tema rosa) ===== */
 .dropdown {
     position: relative;
     display: inline-block;
@@ -219,46 +248,113 @@ footer {
 .dropbtn {
     background-color: transparent;
     color: white;
-    padding: 0.5rem 1rem;
+    padding: 0.6rem 1.2rem;
     font-size: 1rem;
     border: none;
     cursor: pointer;
     text-decoration: none;
+    border-radius: 50px;
+    transition: all 0.3s;
+}
+
+.dropbtn:hover {
+    background-color: rgba(255, 255, 255, 0.2);
 }
 
 .dropdown-content {
     display: none;
     position: absolute;
     background-color: white;
-    min-width: 200px;
-    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    min-width: 220px;
+    box-shadow: 0 8px 20px rgba(255, 154, 158, 0.2);
     z-index: 1000;
-    border-radius: 5px;
+    border-radius: 15px;
     overflow: hidden;
     top: 100%;
     left: 0;
+    border: 1px solid #ffe4e9;
 }
 
 .dropdown-content a {
-    color: #2c3e50 !important;
+    color: #ff6b6b !important;
     padding: 12px 16px;
     text-decoration: none;
     display: block;
     text-align: left;
-    transition: background-color 0.3s ease;
+    transition: all 0.3s ease;
+    border-bottom: 1px solid #fff0f3;
 }
 
 .dropdown-content a:hover {
-    background-color: #f1f1f1;
-    color: #27ae60 !important;
+    background-color: #fff9fc;
+    color: #ff9a9e !important;
+    padding-left: 20px;
+}
+
+.dropdown-content a:last-child {
+    border-bottom: none;
 }
 
 .dropdown:hover .dropdown-content {
     display: block;
 }
 
-/* Flecha indicadora */
-.dropbtn::after {
-    content: '';
-    margin-left: 5px;
+/* Placeholder para productos (versión rosa) */
+.producto-placeholder {
+    background: white;
+    border: 2px solid #ffe4e9;
+    border-radius: 20px;
+    padding: 2rem 1rem;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(255, 182, 193, 0.2);
+    transition: all 0.3s;
+}
+
+.producto-placeholder:hover {
+    border-color: #ffb6c1;
+    transform: translateY(-5px);
+}
+
+.producto-placeholder h3 {
+    color: #ff6b6b;
+    margin-bottom: 0.5rem;
+}
+
+.producto-placeholder p {
+    color: #ff9a9e;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    nav {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    nav a {
+        width: 80%;
+        text-align: center;
+    }
+    
+    .categorias {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .cat-btn {
+        width: 80%;
+    }
+    
+    .dropdown {
+        width: 80%;
+    }
+    
+    .dropdown-content {
+        position: static;
+        width: 100%;
+        box-shadow: none;
+        margin-top: 0.5rem;
+    }
 }
