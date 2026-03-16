@@ -3,293 +3,285 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Gestión - Mi Tienda</title>
-    <!-- Font Awesome para iconos profesionales -->
+    <title>Sistema de Gestión - Local de Ropa</title>
+    
+    <!-- Font Awesome para íconos profesionales -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Chart.js para gráficos -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
     <style>
+        /* ===== RESET Y VARIABLES ===== */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #64748b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #94a3b8;
         }
 
         body {
-            background: #f0f2f5;
-            height: 100vh;
-            overflow: hidden;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f1f5f9;
+            color: var(--dark);
         }
 
-        /* Layout principal */
-        .app {
+        /* ===== LAYOUT PRINCIPAL ===== */
+        .app-container {
             display: flex;
-            height: 100vh;
+            min-height: 100vh;
         }
 
-        /* ===== SIDEBAR ===== */
+        /* ===== SIDEBAR PROFESIONAL ===== */
         .sidebar {
             width: 280px;
-            background: linear-gradient(180deg, #1a2634 0%, #0f1a24 100%);
+            background: linear-gradient(180deg, var(--dark) 0%, #0f172a 100%);
             color: white;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+            position: fixed;
+            height: 100vh;
             overflow-y: auto;
+            transition: all 0.3s ease;
+            box-shadow: 4px 0 10px rgba(0,0,0,0.1);
         }
 
         .sidebar-header {
-            padding: 25px 20px;
+            padding: 2rem 1.5rem;
             border-bottom: 1px solid rgba(255,255,255,0.1);
         }
 
-        .sidebar-header h2 {
+        .sidebar-header h1 {
             font-size: 1.5rem;
             font-weight: 600;
-            color: #27ae60;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .sidebar-header h1 i {
+            color: var(--success);
         }
 
         .sidebar-header p {
-            font-size: 0.9rem;
-            opacity: 0.7;
-            margin-top: 5px;
+            font-size: 0.875rem;
+            color: var(--gray);
+            margin-top: 0.5rem;
         }
 
-        .user-info {
-            padding: 20px;
-            background: rgba(0,0,0,0.2);
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+        .sidebar-nav {
+            padding: 1.5rem 0;
         }
 
-        .user-name {
-            font-weight: 600;
-            font-size: 1.1rem;
+        .nav-section {
+            margin-bottom: 1.5rem;
         }
 
-        .user-role {
-            font-size: 0.85rem;
-            opacity: 0.6;
-            margin-top: 3px;
-        }
-
-        /* Menú del sidebar */
-        .menu-section {
-            padding: 20px 0;
-            flex: 1;
-        }
-
-        .menu-category {
-            padding: 10px 20px;
+        .nav-section-title {
+            padding: 0.5rem 1.5rem;
             font-size: 0.75rem;
             text-transform: uppercase;
             letter-spacing: 1px;
-            opacity: 0.5;
+            color: var(--gray);
             font-weight: 600;
         }
 
-        .menu-item {
-            padding: 12px 20px;
+        .nav-item {
             display: flex;
             align-items: center;
-            gap: 12px;
-            cursor: pointer;
-            transition: all 0.3s;
+            padding: 0.75rem 1.5rem;
             color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            gap: 0.75rem;
+            cursor: pointer;
             border-left: 3px solid transparent;
         }
 
-        .menu-item:hover {
-            background: rgba(39, 174, 96, 0.15);
+        .nav-item:hover {
+            background: rgba(255,255,255,0.1);
             color: white;
-            border-left-color: #27ae60;
         }
 
-        .menu-item.active {
-            background: rgba(39, 174, 96, 0.2);
+        .nav-item.active {
+            background: rgba(37, 99, 235, 0.2);
+            border-left-color: var(--primary);
             color: white;
-            border-left-color: #27ae60;
         }
 
-        .menu-item i {
+        .nav-item i {
             width: 20px;
-            font-size: 1.2rem;
-            color: #27ae60;
+            font-size: 1.1rem;
         }
 
-        .menu-item span {
-            flex: 1;
-        }
-
-        .menu-item .badge {
-            background: #27ae60;
-            color: white;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 0.7rem;
-            font-weight: 600;
+        .nav-item .badge {
+            margin-left: auto;
+            background: var(--primary);
+            padding: 0.25rem 0.5rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
         }
 
         /* ===== CONTENIDO PRINCIPAL ===== */
         .main-content {
             flex: 1;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            background: #f0f2f5;
+            margin-left: 280px;
+            padding: 2rem;
         }
 
-        /* Top bar */
+        /* ===== TOP BAR ===== */
         .top-bar {
             background: white;
-            padding: 15px 25px;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            z-index: 10;
         }
 
         .page-title {
-            font-size: 1.3rem;
+            font-size: 1.5rem;
             font-weight: 600;
-            color: #1a2634;
+            color: var(--dark);
+        }
+
+        .user-menu {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 1.5rem;
         }
 
-        .page-title i {
-            color: #27ae60;
-            font-size: 1.5rem;
+        .user-info {
+            text-align: right;
         }
 
-        .btn-logout {
-            background: #e74c3c;
+        .user-name {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .user-role {
+            font-size: 0.875rem;
+            color: var(--gray);
+        }
+
+        .logout-btn {
+            background: var(--danger);
             color: white;
             border: none;
-            padding: 8px 20px;
-            border-radius: 6px;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
             cursor: pointer;
-            font-weight: 500;
             display: flex;
             align-items: center;
-            gap: 8px;
-            transition: all 0.3s;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
         }
 
-        .btn-logout:hover {
-            background: #c0392b;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);
+        .logout-btn:hover {
+            background: #dc2626;
         }
 
-        /* Área de contenido */
-        .content-area {
-            flex: 1;
-            padding: 25px;
-            overflow-y: auto;
+        /* ===== CONTENEDOR DE MÓDULOS ===== */
+        .module-container {
+            display: none;
         }
 
-        /* Cards para estadísticas */
+        .module-container.active {
+            display: block;
+        }
+
+        /* ===== TARJETAS DE ESTADÍSTICAS ===== */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
         }
 
         .stat-card {
             background: white;
+            padding: 1.5rem;
             border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             display: flex;
             align-items: center;
-            gap: 15px;
+            justify-content: space-between;
+        }
+
+        .stat-info h3 {
+            font-size: 0.875rem;
+            color: var(--gray);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-info .stat-value {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--dark);
         }
 
         .stat-icon {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, #27ae60, #2c3e50);
+            width: 48px;
+            height: 48px;
+            background: var(--primary);
+            color: white;
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
             font-size: 1.5rem;
         }
 
-        .stat-info h3 {
-            font-size: 0.9rem;
-            color: #7f8c8d;
-            font-weight: 400;
-        }
-
-        .stat-info .number {
-            font-size: 1.8rem;
-            font-weight: 600;
-            color: #1a2634;
-        }
-
-        /* Toolbar de acciones */
-        .toolbar {
-            background: white;
-            border-radius: 10px;
-            padding: 15px 20px;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-
-        .btn-primary {
-            background: #27ae60;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s;
-        }
-
-        .btn-primary:hover {
-            background: #2c3e50;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
-        }
-
-        .search-box {
-            display: flex;
-            align-items: center;
-            background: #f0f2f5;
-            border-radius: 6px;
-            padding: 0 10px;
-        }
-
-        .search-box input {
-            border: none;
-            background: transparent;
-            padding: 10px;
-            width: 250px;
-            outline: none;
-        }
-
-        .search-box i {
-            color: #95a5a6;
-        }
-
-        /* Tabla de datos */
+        /* ===== TABLAS PROFESIONALES ===== */
         .table-container {
             background: white;
             border-radius: 12px;
-            padding: 0;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            overflow: auto;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-top: 1.5rem;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .table-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
         }
 
         table {
@@ -298,63 +290,47 @@
         }
 
         th {
-            background: #f8f9fa;
-            padding: 15px;
             text-align: left;
+            padding: 1rem;
+            background: var(--light);
+            color: var(--secondary);
             font-weight: 600;
-            color: #1a2634;
-            font-size: 0.9rem;
-            border-bottom: 2px solid #e9ecef;
+            font-size: 0.875rem;
         }
 
         td {
-            padding: 12px 15px;
-            border-bottom: 1px solid #e9ecef;
-            color: #2c3e50;
+            padding: 1rem;
+            border-bottom: 1px solid #e2e8f0;
         }
 
         tr:hover {
-            background: #f8f9fa;
+            background: var(--light);
         }
 
         .action-buttons {
             display: flex;
-            gap: 8px;
+            gap: 0.5rem;
         }
 
         .btn-edit {
-            background: #3498db;
+            background: var(--warning);
             color: white;
             border: none;
-            width: 32px;
-            height: 32px;
+            padding: 0.5rem;
             border-radius: 6px;
             cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .btn-edit:hover {
-            background: #2980b9;
-            transform: translateY(-2px);
         }
 
         .btn-delete {
-            background: #e74c3c;
+            background: var(--danger);
             color: white;
             border: none;
-            width: 32px;
-            height: 32px;
+            padding: 0.5rem;
             border-radius: 6px;
             cursor: pointer;
-            transition: all 0.3s;
         }
 
-        .btn-delete:hover {
-            background: #c0392b;
-            transform: translateY(-2px);
-        }
-
-        /* Modal */
+        /* ===== FORMULARIOS ===== */
         .modal {
             display: none;
             position: fixed;
@@ -363,9 +339,9 @@
             width: 100%;
             height: 100%;
             background: rgba(0,0,0,0.5);
-            z-index: 1000;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
+            z-index: 1000;
         }
 
         .modal.active {
@@ -374,28 +350,23 @@
 
         .modal-content {
             background: white;
-            border-radius: 15px;
-            width: 500px;
-            max-width: 90%;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
             max-height: 90vh;
             overflow-y: auto;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            padding: 2rem;
         }
 
         .modal-header {
-            padding: 20px;
-            border-bottom: 1px solid #e9ecef;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-bottom: 1.5rem;
         }
 
-        .modal-header h3 {
-            font-size: 1.3rem;
-            color: #1a2634;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        .modal-header h2 {
+            font-size: 1.5rem;
         }
 
         .close-modal {
@@ -403,596 +374,1243 @@
             border: none;
             font-size: 1.5rem;
             cursor: pointer;
-            color: #7f8c8d;
-        }
-
-        .modal-body {
-            padding: 20px;
+            color: var(--gray);
         }
 
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 1rem;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 0.5rem;
             font-weight: 500;
-            color: #2c3e50;
-            font-size: 0.9rem;
+            color: var(--dark);
         }
 
         .form-group input,
         .form-group select,
         .form-group textarea {
             width: 100%;
-            padding: 10px;
-            border: 2px solid #e9ecef;
-            border-radius: 6px;
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
             font-size: 1rem;
-            transition: all 0.3s;
         }
 
         .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            border-color: #27ae60;
+        .form-group select:focus {
             outline: none;
+            border-color: var(--primary);
         }
 
-        .modal-footer {
-            padding: 20px;
-            border-top: 1px solid #e9ecef;
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
         }
 
-        .btn-cancel {
-            background: #95a5a6;
+        .btn-submit {
+            background: var(--success);
             color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
+            padding: 1rem;
+            border-radius: 8px;
+            width: 100%;
+            font-size: 1rem;
+            font-weight: 600;
             cursor: pointer;
-        }
-
-        .btn-save {
-            background: #27ae60;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: #7f8c8d;
+            margin-top: 1rem;
         }
     </style>
 </head>
 <body>
-    <div class="app">
+    <div class="app-container">
         <!-- SIDEBAR -->
-        <div class="sidebar">
+        <aside class="sidebar">
             <div class="sidebar-header">
-                <h2>🐻 MI LOCAL</h2>
-                <p>Sistema de Gestión</p>
+                <h1>
+                    <i class="fas fa-tshirt"></i>
+                    MI LOCAL
+                </h1>
+                <p>Administración completa</p>
             </div>
-            
-            <div class="user-info">
-                <div class="user-name" id="userNameDisplay">Administrador</div>
-                <div class="user-role">Rol: Administrador</div>
-            </div>
-            
-            <div class="menu-section">
-                <div class="menu-category">COMERCIAL</div>
-                
-                <div class="menu-item" onclick="cargarModulo('compras')">
-                    <i class="fas fa-shopping-cart"></i>
-                    <span>Compras</span>
-                    <span class="badge" id="badge-compras">0</span>
+
+            <nav class="sidebar-nav">
+                <!-- Dashboard -->
+                <div class="nav-section">
+                    <div class="nav-section-title">PRINCIPAL</div>
+                    <div class="nav-item active" data-module="dashboard">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </div>
                 </div>
-                
-                <div class="menu-item" onclick="cargarModulo('ventas')">
-                    <i class="fas fa-cash-register"></i>
-                    <span>Ventas</span>
-                    <span class="badge" id="badge-ventas">0</span>
+
+                <!-- Gestión Comercial -->
+                <div class="nav-section">
+                    <div class="nav-section-title">COMERCIAL</div>
+                    <div class="nav-item" data-module="compras">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>Compras</span>
+                    </div>
+                    <div class="nav-item" data-module="ventas">
+                        <i class="fas fa-cash-register"></i>
+                        <span>Ventas</span>
+                    </div>
+                    <div class="nav-item" data-module="productos">
+                        <i class="fas fa-box"></i>
+                        <span>Productos</span>
+                    </div>
+                    <div class="nav-item" data-module="proveedores">
+                        <i class="fas fa-truck"></i>
+                        <span>Proveedores</span>
+                    </div>
+                    <div class="nav-item" data-module="perfiles">
+                        <i class="fas fa-users"></i>
+                        <span>Perfiles</span>
+                    </div>
                 </div>
-                
-                <div class="menu-item active" onclick="cargarModulo('productos')">
-                    <i class="fas fa-box"></i>
-                    <span>Productos</span>
-                    <span class="badge" id="badge-productos">0</span>
+
+                <!-- Contabilidad -->
+                <div class="nav-section">
+                    <div class="nav-section-title">CONTABILIDAD</div>
+                    <div class="nav-item" data-module="gastos">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <span>Gastos</span>
+                    </div>
+                    <div class="nav-item" data-module="comprobantes">
+                        <i class="fas fa-file-invoice"></i>
+                        <span>Comprobantes</span>
+                    </div>
+                    <div class="nav-item" data-module="movimientos">
+                        <i class="fas fa-exchange-alt"></i>
+                        <span>Movimientos</span>
+                    </div>
+                    <div class="nav-item" data-module="puc">
+                        <i class="fas fa-list"></i>
+                        <span>PUC</span>
+                    </div>
                 </div>
-                
-                <div class="menu-item" onclick="cargarModulo('proveedores')">
-                    <i class="fas fa-truck"></i>
-                    <span>Proveedores</span>
-                    <span class="badge" id="badge-proveedores">0</span>
+
+                <!-- Otros -->
+                <div class="nav-section">
+                    <div class="nav-section-title">OTROS</div>
+                    <div class="nav-item" data-module="terceros">
+                        <i class="fas fa-address-book"></i>
+                        <span>Terceros</span>
+                    </div>
+                    <div class="nav-item" data-module="categorias">
+                        <i class="fas fa-tags"></i>
+                        <span>Categorías</span>
+                    </div>
                 </div>
-                
-                <div class="menu-item" onclick="cargarModulo('perfiles')">
-                    <i class="fas fa-users"></i>
-                    <span>Perfiles</span>
-                    <span class="badge" id="badge-perfiles">0</span>
-                </div>
-                
-                <div class="menu-category">CONTABILIDAD</div>
-                
-                <div class="menu-item" onclick="cargarModulo('gastos')">
-                    <i class="fas fa-money-bill-wave"></i>
-                    <span>Gastos</span>
-                    <span class="badge" id="badge-gastos">0</span>
-                </div>
-                
-                <div class="menu-item" onclick="cargarModulo('comprobantes')">
-                    <i class="fas fa-file-invoice"></i>
-                    <span>Comprobantes</span>
-                    <span class="badge" id="badge-comprobantes">0</span>
-                </div>
-                
-                <div class="menu-item" onclick="cargarModulo('movimientos')">
-                    <i class="fas fa-exchange-alt"></i>
-                    <span>Movimientos</span>
-                    <span class="badge" id="badge-movimientos">0</span>
-                </div>
-                
-                <div class="menu-item" onclick="cargarModulo('puc')">
-                    <i class="fas fa-list"></i>
-                    <span>PUC</span>
-                    <span class="badge" id="badge-puc">0</span>
-                </div>
-                
-                <div class="menu-category">TERCEROS</div>
-                
-                <div class="menu-item" onclick="cargarModulo('terceros')">
-                    <i class="fas fa-address-book"></i>
-                    <span>Terceros</span>
-                    <span class="badge" id="badge-terceros">0</span>
-                </div>
-            </div>
-        </div>
-        
+            </nav>
+        </aside>
+
         <!-- CONTENIDO PRINCIPAL -->
-        <div class="main-content">
+        <main class="main-content">
+            <!-- Top Bar -->
             <div class="top-bar">
-                <div class="page-title">
-                    <i class="fas fa-box"></i>
-                    <span id="currentModuleTitle">Productos</span>
+                <h1 class="page-title" id="pageTitle">Dashboard</h1>
+                <div class="user-menu">
+                    <div class="user-info">
+                        <div class="user-name" id="userName">Administrador</div>
+                        <div class="user-role">Local de Ropa</div>
+                    </div>
+                    <button class="logout-btn" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Salir
+                    </button>
                 </div>
-                <button class="btn-logout" onclick="logout()">
-                    <i class="fas fa-sign-out-alt"></i>
-                    Cerrar sesión
-                </button>
             </div>
-            
-            <div class="content-area" id="contentArea">
-                <!-- Dashboard de bienvenida -->
+
+            <!-- MÓDULO DASHBOARD -->
+            <div id="module-dashboard" class="module-container active">
                 <div class="stats-grid">
                     <div class="stat-card">
-                        <div class="stat-icon"><i class="fas fa-box"></i></div>
+                        <div class="stat-info">
+                            <h3>Ventas Hoy</h3>
+                            <div class="stat-value" id="ventasHoy">$0</div>
+                        </div>
+                        <div class="stat-icon" style="background: var(--success)">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                    </div>
+                    <div class="stat-card">
                         <div class="stat-info">
                             <h3>Productos</h3>
-                            <div class="number" id="stat-productos">-</div>
+                            <div class="stat-value" id="totalProductos">0</div>
+                        </div>
+                        <div class="stat-icon" style="background: var(--info)">
+                            <i class="fas fa-box"></i>
                         </div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-icon"><i class="fas fa-shopping-cart"></i></div>
                         <div class="stat-info">
-                            <h3>Compras</h3>
-                            <div class="number" id="stat-compras">-</div>
+                            <h3>Clientes</h3>
+                            <div class="stat-value" id="totalClientes">0</div>
+                        </div>
+                        <div class="stat-icon" style="background: var(--warning)">
+                            <i class="fas fa-users"></i>
                         </div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-icon"><i class="fas fa-cash-register"></i></div>
                         <div class="stat-info">
-                            <h3>Ventas</h3>
-                            <div class="number" id="stat-ventas">-</div>
+                            <h3>Stock Bajo</h3>
+                            <div class="stat-value" id="stockBajo">0</div>
                         </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon"><i class="fas fa-users"></i></div>
-                        <div class="stat-info">
-                            <h3>Proveedores</h3>
-                            <div class="number" id="stat-proveedores">-</div>
+                        <div class="stat-icon" style="background: var(--danger)">
+                            <i class="fas fa-exclamation-triangle"></i>
                         </div>
                     </div>
                 </div>
-                
-                <!-- Toolbar con acciones -->
-                <div class="toolbar">
-                    <button class="btn-primary" onclick="abrirModalNuevo()">
-                        <i class="fas fa-plus"></i>
-                        Nuevo Producto
-                    </button>
-                    <div class="search-box">
-                        <i class="fas fa-search"></i>
-                        <input type="text" placeholder="Buscar producto..." id="searchInput" onkeyup="buscarProductos()">
+
+                <!-- Gráfico de ventas -->
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3 class="table-title">Ventas Últimos 7 Días</h3>
                     </div>
+                    <canvas id="ventasChart" style="height: 300px;"></canvas>
                 </div>
-                
-                <!-- Tabla de productos -->
-                <div class="table-container" id="tableContainer">
-                    <table id="productosTable">
+
+                <!-- Últimas ventas -->
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3 class="table-title">Últimas Ventas</h3>
+                    </div>
+                    <table id="ultimasVentas">
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Producto</th>
-                                <th>Categoría</th>
-                                <th>Precio</th>
-                                <th>Talla</th>
-                                <th>Color</th>
-                                <th>Stock</th>
-                                <th>Cuenta PUC</th>
-                                <th>Acciones</th>
+                                <th>Cliente</th>
+                                <th>Fecha</th>
+                                <th>Total</th>
+                                <th>Estado</th>
                             </tr>
                         </thead>
-                        <tbody id="productosBody">
+                        <tbody>
                             <tr>
-                                <td colspan="9" class="loading">Cargando productos...</td>
+                                <td colspan="5">Cargando...</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
-        </div>
+
+            <!-- MÓDULO TERCEROS (Clientes y Proveedores) -->
+            <div id="module-terceros" class="module-container">
+                <div class="stats-grid">
+                    <div class="stat-card" onclick="cargarTerceros('cliente')">
+                        <div class="stat-info">
+                            <h3>Clientes</h3>
+                            <div class="stat-value" id="totalClientesTerceros">0</div>
+                        </div>
+                        <div class="stat-icon" style="background: var(--success)">
+                            <i class="fas fa-user-tie"></i>
+                        </div>
+                    </div>
+                    <div class="stat-card" onclick="cargarTerceros('proveedor')">
+                        <div class="stat-info">
+                            <h3>Proveedores</h3>
+                            <div class="stat-value" id="totalProveedoresTerceros">0</div>
+                        </div>
+                        <div class="stat-icon" style="background: var(--info)">
+                            <i class="fas fa-truck"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3 class="table-title" id="tercerosTitle">Todos los Terceros</h3>
+                        <button class="btn-primary" onclick="abrirModalTercero()">
+                            <i class="fas fa-plus"></i>
+                            Nuevo Tercero
+                        </button>
+                    </div>
+                    <table id="tablaTerceros">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Tipo</th>
+                                <th>Nombre/Razón Social</th>
+                                <th>NIT/CC</th>
+                                <th>Teléfono</th>
+                                <th>Email</th>
+                                <th>Dirección</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- MÓDULO PUC -->
+            <div id="module-puc" class="module-container">
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3 class="table-title">Plan Único de Cuentas</h3>
+                        <button class="btn-primary" onclick="abrirModalPUC()">
+                            <i class="fas fa-plus"></i>
+                            Nueva Cuenta
+                        </button>
+                    </div>
+                    <table id="tablaPUC">
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Nombre de la Cuenta</th>
+                                <th>Nivel</th>
+                                <th>Naturaleza</th>
+                                <th>Descripción</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- MÓDULO PRODUCTOS -->
+            <div id="module-productos" class="module-container">
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3 class="table-title">Catálogo de Productos</h3>
+                        <button class="btn-primary" onclick="abrirModalProducto()">
+                            <i class="fas fa-plus"></i>
+                            Nuevo Producto
+                        </button>
+                    </div>
+                    <table id="tablaProductos">
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Nombre</th>
+                                <th>Categoría</th>
+                                <th>Talla</th>
+                                <th>Color</th>
+                                <th>Precio Venta</th>
+                                <th>Stock</th>
+                                <th>PUC Inventario</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- MÓDULO COMPRAS -->
+            <div id="module-compras" class="module-container">
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3 class="table-title">Compras a Proveedores</h3>
+                        <button class="btn-primary" onclick="abrirModalCompra()">
+                            <i class="fas fa-plus"></i>
+                            Nueva Compra
+                        </button>
+                    </div>
+                    <table id="tablaCompras">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Fecha</th>
+                                <th>Proveedor</th>
+                                <th>Total</th>
+                                <th>Estado</th>
+                                <th>PUC</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- MÓDULO VENTAS -->
+            <div id="module-ventas" class="module-container">
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3 class="table-title">Registro de Ventas</h3>
+                        <button class="btn-primary" onclick="abrirModalVenta()">
+                            <i class="fas fa-plus"></i>
+                            Nueva Venta
+                        </button>
+                    </div>
+                    <table id="tablaVentas">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Fecha</th>
+                                <th>Cliente</th>
+                                <th>Total</th>
+                                <th>Método Pago</th>
+                                <th>PUC</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- MÓDULO PROVEEDORES -->
+            <div id="module-proveedores" class="module-container">
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3 class="table-title">Proveedores</h3>
+                        <button class="btn-primary" onclick="abrirModalProveedor()">
+                            <i class="fas fa-plus"></i>
+                            Nuevo Proveedor
+                        </button>
+                    </div>
+                    <table id="tablaProveedores">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Contacto</th>
+                                <th>Teléfono</th>
+                                <th>Email</th>
+                                <th>NIT</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- MÓDULO PERFILES -->
+            <div id="module-perfiles" class="module-container">
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3 class="table-title">Usuarios del Sistema</h3>
+                        <button class="btn-primary" onclick="abrirModalPerfil()">
+                            <i class="fas fa-plus"></i>
+                            Nuevo Usuario
+                        </button>
+                    </div>
+                    <table id="tablaPerfiles">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Email</th>
+                                <th>Rol</th>
+                                <th>Fecha Registro</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- MÓDULO GASTOS -->
+            <div id="module-gastos" class="module-container">
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3 class="table-title">Registro de Gastos</h3>
+                        <button class="btn-primary" onclick="abrirModalGasto()">
+                            <i class="fas fa-plus"></i>
+                            Nuevo Gasto
+                        </button>
+                    </div>
+                    <table id="tablaGastos">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Fecha</th>
+                                <th>Concepto</th>
+                                <th>Categoría</th>
+                                <th>Monto</th>
+                                <th>PUC</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- MÓDULO COMPROBANTES -->
+            <div id="module-comprobantes" class="module-container">
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3 class="table-title">Comprobantes Contables</h3>
+                        <button class="btn-primary" onclick="abrirModalComprobante()">
+                            <i class="fas fa-plus"></i>
+                            Nuevo Comprobante
+                        </button>
+                    </div>
+                    <table id="tablaComprobantes">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Tipo</th>
+                                <th>Número</th>
+                                <th>Fecha</th>
+                                <th>Descripción</th>
+                                <th>Total</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- MÓDULO MOVIMIENTOS CONTABLES -->
+            <div id="module-movimientos" class="module-container">
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3 class="table-title">Movimientos Contables</h3>
+                        <button class="btn-primary" onclick="abrirModalMovimiento()">
+                            <i class="fas fa-plus"></i>
+                            Nuevo Asiento
+                        </button>
+                    </div>
+                    <table id="tablaMovimientos">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Fecha</th>
+                                <th>Cuenta PUC</th>
+                                <th>Contrapartida</th>
+                                <th>Débito</th>
+                                <th>Crédito</th>
+                                <th>Descripción</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- MÓDULO CATEGORÍAS -->
+            <div id="module-categorias" class="module-container">
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3 class="table-title">Categorías de Productos</h3>
+                        <button class="btn-primary" onclick="abrirModalCategoria()">
+                            <i class="fas fa-plus"></i>
+                            Nueva Categoría
+                        </button>
+                    </div>
+                    <table id="tablaCategorias">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Descripción</th>
+                                <th>Productos</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
     </div>
-    
-    <!-- MODAL PARA PRODUCTOS -->
-    <div class="modal" id="productoModal">
+
+    <!-- MODAL PARA TERCEROS -->
+    <div id="modalTercero" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3><i class="fas fa-box"></i> <span id="modalTitle">Nuevo Producto</span></h3>
-                <button class="close-modal" onclick="cerrarModal()">&times;</button>
+                <h2>Nuevo Tercero</h2>
+                <button class="close-modal" onclick="cerrarModal('modalTercero')">&times;</button>
             </div>
-            <div class="modal-body">
-                <form id="productoForm">
-                    <input type="hidden" id="productoId">
-                    
+            <form id="formTercero">
+                <div class="form-group">
+                    <label>Tipo de Tercero</label>
+                    <select id="terceroTipo" required>
+                        <option value="cliente">Cliente</option>
+                        <option value="proveedor">Proveedor</option>
+                        <option value="empleado">Empleado</option>
+                        <option value="otro">Otro</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Tipo de Identificación</label>
+                    <select id="terceroTipoId">
+                        <option value="CC">Cédula de Ciudadanía</option>
+                        <option value="NIT">NIT</option>
+                        <option value="CE">Cédula de Extranjería</option>
+                        <option value="PAS">Pasaporte</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Número de Identificación</label>
+                    <input type="text" id="terceroNumeroId" required>
+                </div>
+                <div class="form-group">
+                    <label>Nombre o Razón Social</label>
+                    <input type="text" id="terceroNombre" required>
+                </div>
+                <div class="form-row">
                     <div class="form-group">
-                        <label>Nombre del producto *</label>
-                        <input type="text" id="productoNombre" required>
+                        <label>Teléfono</label>
+                        <input type="text" id="terceroTelefono">
                     </div>
-                    
                     <div class="form-group">
-                        <label>Categoría</label>
-                        <select id="productoCategoria">
-                            <option value="vestidos">Vestidos</option>
-                            <option value="blusas">Blusas</option>
-                            <option value="pantalones">Pantalones</option>
-                            <option value="deportivo">Deportivo</option>
-                            <option value="caballero">Caballero</option>
-                            <option value="accesorios">Accesorios</option>
-                        </select>
+                        <label>Email</label>
+                        <input type="email" id="terceroEmail">
                     </div>
-                    
-                    <div class="form-group">
-                        <label>Precio de venta *</label>
-                        <input type="number" id="productoPrecio" step="1000" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Precio de compra</label>
-                        <input type="number" id="productoPrecioCompra" step="1000">
-                    </div>
-                    
-                    <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                        <div class="form-group">
-                            <label>Talla</label>
-                            <input type="text" id="productoTalla" placeholder="Ej: M, 38, Única">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Color</label>
-                            <input type="text" id="productoColor" placeholder="Ej: Azul, Negro">
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Stock actual *</label>
-                        <input type="number" id="productoStock" value="0" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Stock mínimo (alerta)</label>
-                        <input type="number" id="productoStockMinimo" value="5">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Código PUC - Inventario</label>
-                        <select id="productoPucInventario">
-                            <option value="">Seleccionar cuenta PUC...</option>
-                        </select>
-                        <small style="color: #7f8c8d;">Cuenta contable para el inventario</small>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Código PUC - Ventas</label>
-                        <select id="productoPucVentas">
-                            <option value="">Seleccionar cuenta PUC...</option>
-                        </select>
-                        <small style="color: #7f8c8d;">Cuenta contable para ingresos por ventas</small>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Código PUC - Compras</label>
-                        <select id="productoPucCompras">
-                            <option value="">Seleccionar cuenta PUC...</option>
-                        </select>
-                        <small style="color: #7f8c8d;">Cuenta contable para compras</small>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Descripción</label>
-                        <textarea id="productoDescripcion" rows="3"></textarea>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button class="btn-cancel" onclick="cerrarModal()">Cancelar</button>
-                <button class="btn-save" onclick="guardarProducto()">Guardar producto</button>
-            </div>
+                </div>
+                <div class="form-group">
+                    <label>Dirección</label>
+                    <input type="text" id="terceroDireccion">
+                </div>
+                <div class="form-group">
+                    <label>Ciudad</label>
+                    <input type="text" id="terceroCiudad">
+                </div>
+                <button type="submit" class="btn-submit">Guardar Tercero</button>
+            </form>
         </div>
     </div>
-    
+
+    <!-- MODAL PARA PUC -->
+    <div id="modalPUC" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Nueva Cuenta PUC</h2>
+                <button class="close-modal" onclick="cerrarModal('modalPUC')">&times;</button>
+            </div>
+            <form id="formPUC">
+                <div class="form-group">
+                    <label>Código de Cuenta</label>
+                    <input type="text" id="pucCodigo" placeholder="Ej: 1105" required>
+                </div>
+                <div class="form-group">
+                    <label>Nombre de la Cuenta</label>
+                    <input type="text" id="pucNombre" placeholder="Ej: Caja General" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Nivel</label>
+                        <select id="pucNivel">
+                            <option value="1">1 - Clase</option>
+                            <option value="2">2 - Grupo</option>
+                            <option value="3">3 - Cuenta</option>
+                            <option value="4">4 - Subcuenta</option>
+                            <option value="5">5 - Auxiliar</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Naturaleza</label>
+                        <select id="pucNaturaleza">
+                            <option value="debito">Débito</option>
+                            <option value="credito">Crédito</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Cueta Padre (opcional)</label>
+                    <select id="pucPadre">
+                        <option value="">Ninguna (Raíz)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Descripción</label>
+                    <textarea id="pucDescripcion" rows="3"></textarea>
+                </div>
+                <button type="submit" class="btn-submit">Guardar Cuenta</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL PARA PRODUCTOS -->
+    <div id="    <!-- MODAL PARA PRODUCTOS (continuación) -->
+    <div id="modalProducto" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Nuevo Producto</h2>
+                <button class="close-modal" onclick="cerrarModal('modalProducto')">&times;</button>
+            </div>
+            <form id="formProducto">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Código de Barras</label>
+                        <input type="text" id="productoCodigo" placeholder="Ej: 7701234567890">
+                    </div>
+                    <div class="form-group">
+                        <label>Referencia</label>
+                        <input type="text" id="productoReferencia" placeholder="Ej: CAM-001">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Nombre del Producto</label>
+                    <input type="text" id="productoNombre" placeholder="Ej: Camisa Manga Larga" required>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Categoría</label>
+                        <select id="productoCategoria" required>
+                            <option value="">Seleccionar categoría</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Subcategoría</label>
+                        <input type="text" id="productoSubcategoria" placeholder="Ej: Formal, Casual">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Talla</label>
+                        <input type="text" id="productoTalla" placeholder="Ej: S, M, L, XL, 36, 38">
+                    </div>
+                    <div class="form-group">
+                        <label>Color</label>
+                        <input type="text" id="productoColor" placeholder="Ej: Azul, Negro">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Precio de Compra</label>
+                        <input type="number" id="productoPrecioCompra" placeholder="$ 0.00" step="100">
+                    </div>
+                    <div class="form-group">
+                        <label>Precio de Venta</label>
+                        <input type="number" id="productoPrecioVenta" placeholder="$ 0.00" step="100" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Stock Actual</label>
+                        <input type="number" id="productoStock" value="0" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label>Stock Mínimo</label>
+                        <input type="number" id="productoStockMinimo" value="5" min="0">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Ubicación en Tienda</label>
+                    <input type="text" id="productoUbicacion" placeholder="Ej: Estante 3, Sección A">
+                </div>
+                
+                <div class="form-group">
+                    <label>Descripción</label>
+                    <textarea id="productoDescripcion" rows="2" placeholder="Descripción detallada del producto"></textarea>
+                </div>
+                
+                <h3 style="margin: 1.5rem 0 1rem 0; font-size: 1.1rem;">Configuración Contable (PUC)</h3>
+                
+                <div class="form-group">
+                    <label>Cuenta de Inventario</label>
+                    <select id="productoPUCInventario" required>
+                        <option value="">Seleccionar cuenta PUC</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Cuenta de Ingresos (Ventas)</label>
+                    <select id="productoPUCVentas" required>
+                        <option value="">Seleccionar cuenta PUC</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Cuenta de Costo de Ventas</label>
+                    <select id="productoPUCCosto" required>
+                        <option value="">Seleccionar cuenta PUC</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn-submit">Guardar Producto</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL PARA COMPRAS -->
+    <div id="modalCompra" class="modal">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="modal-header">
+                <h2>Nueva Compra</h2>
+                <button class="close-modal" onclick="cerrarModal('modalCompra')">&times;</button>
+            </div>
+            <form id="formCompra">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Proveedor</label>
+                        <select id="compraProveedor" required>
+                            <option value="">Seleccionar proveedor</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Fecha de Compra</label>
+                        <input type="date" id="compraFecha" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Tipo de Comprobante</label>
+                        <select id="compraTipoComprobante">
+                            <option value="factura">Factura</option>
+                            <option value="recibo">Recibo</option>
+                            <option value="remision">Remisión</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Número de Factura</label>
+                        <input type="text" id="compraNumeroFactura">
+                    </div>
+                </div>
+                
+                <h3 style="margin: 1rem 0;">Detalle de Productos</h3>
+                
+                <div id="detalleCompra">
+                    <!-- Fila de producto dinámica -->
+                    <div class="fila-producto" style="display: grid; grid-template-columns: 3fr 1fr 1fr 1fr auto; gap: 0.5rem; margin-bottom: 0.5rem;">
+                        <select class="compraProducto" style="padding: 0.5rem;">
+                            <option value="">Seleccionar producto</option>
+                        </select>
+                        <input type="number" class="compraCantidad" placeholder="Cant" value="1" min="1" style="padding: 0.5rem;">
+                        <input type="number" class="compraPrecio" placeholder="P. Unit" step="100" style="padding: 0.5rem;">
+                        <input type="number" class="compraSubtotal" placeholder="Subtotal" readonly style="padding: 0.5rem; background: #f1f5f9;">
+                        <button type="button" onclick="eliminarFilaProducto(this)" style="background: var(--danger); color: white; border: none; width: 32px; height: 32px; border-radius: 4px; cursor: pointer;">✕</button>
+                    </div>
+                </div>
+                
+                <button type="button" onclick="agregarFilaProducto()" style="background: var(--info); color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; margin: 0.5rem 0; cursor: pointer;">
+                    <i class="fas fa-plus"></i> Agregar otro producto
+                </button>
+                
+                <div style="text-align: right; margin: 1rem 0; padding: 1rem; background: var(--light); border-radius: 8px;">
+                    <div style="display: flex; justify-content: flex-end; gap: 2rem;">
+                        <span>Subtotal:</span>
+                        <strong id="compraSubtotal">$0</strong>
+                    </div>
+                    <div style="display: flex; justify-content: flex-end; gap: 2rem;">
+                        <span>IVA (19%):</span>
+                        <strong id="compraIVA">$0</strong>
+                    </div>
+                    <div style="display: flex; justify-content: flex-end; gap: 2rem; font-size: 1.2rem; margin-top: 0.5rem;">
+                        <span>Total:</span>
+                        <strong id="compraTotal">$0</strong>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Cuenta PUC (Gasto/Inventario)</label>
+                    <select id="compraPUC" required>
+                        <option value="">Seleccionar cuenta contable</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Observaciones</label>
+                    <textarea id="compraObservaciones" rows="2"></textarea>
+                </div>
+                
+                <button type="submit" class="btn-submit">Registrar Compra</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL PARA VENTAS (POS simplificado) -->
+    <div id="modalVenta" class="modal">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="modal-header">
+                <h2>Nueva Venta</h2>
+                <button class="close-modal" onclick="cerrarModal('modalVenta')">&times;</button>
+            </div>
+            <form id="formVenta">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Cliente</label>
+                        <select id="ventaCliente">
+                            <option value="mostrador">Cliente Mostrador (General)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Fecha</label>
+                        <input type="date" id="ventaFecha" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Vendedor</label>
+                        <select id="ventaVendedor" required>
+                            <option value="">Seleccionar vendedor</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Método de Pago</label>
+                        <select id="ventaMetodoPago" required>
+                            <option value="efectivo">Efectivo</option>
+                            <option value="tarjeta_credito">Tarjeta de Crédito</option>
+                            <option value="tarjeta_debito">Tarjeta Débito</option>
+                            <option value="transferencia">Transferencia</option>
+                            <option value="otros">Otros</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <h3 style="margin: 1rem 0;">Productos</h3>
+                
+                <!-- Búsqueda rápida de productos -->
+                <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                    <input type="text" id="buscarProductoVenta" placeholder="Buscar producto por código o nombre" style="flex: 1; padding: 0.75rem; border: 1px solid #e2e8f0; border-radius: 8px;">
+                    <button type="button" onclick="buscarProductoVenta()" style="background: var(--primary); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; cursor: pointer;">Buscar</button>
+                </div>
+                
+                <div id="detalleVenta">
+                    <!-- Productos se agregarán dinámicamente -->
+                </div>
+                
+                <div style="text-align: right; margin: 1rem 0; padding: 1rem; background: var(--light); border-radius: 8px;">
+                    <div style="display: flex; justify-content: flex-end; gap: 2rem;">
+                        <span>Subtotal:</span>
+                        <strong id="ventaSubtotal">$0</strong>
+                    </div>
+                    <div style="display: flex; justify-content: flex-end; gap: 2rem;">
+                        <span>IVA (19%):</span>
+                        <strong id="ventaIVA">$0</strong>
+                    </div>
+                    <div style="display: flex; justify-content: flex-end; gap: 2rem; font-size: 1.2rem; margin-top: 0.5rem;">
+                        <span>Total:</span>
+                        <strong id="ventaTotal">$0</strong>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Cuenta PUC (Ingresos)</label>
+                    <select id="ventaPUC" required>
+                        <option value="">Seleccionar cuenta contable</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn-submit">Finalizar Venta</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL PARA GASTOS -->
+    <div id="modalGasto" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Nuevo Gasto</h2>
+                <button class="close-modal" onclick="cerrarModal('modalGasto')">&times;</button>
+            </div>
+            <form id="formGasto">
+                <div class="form-group">
+                    <label>Concepto</label>
+                    <input type="text" id="gastoConcepto" placeholder="Ej: Pago de servicios públicos" required>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Fecha</label>
+                        <input type="date" id="gastoFecha" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Monto</label>
+                        <input type="number" id="gastoMonto" placeholder="$ 0.00" step="100" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Categoría</label>
+                        <select id="gastoCategoria" required>
+                            <option value="servicios">Servicios Públicos</option>
+                            <option value="alquiler">Alquiler</option>
+                            <option value="nomina">Nómina</option>
+                            <option value="impuestos">Impuestos</option>
+                            <option value="publicidad">Publicidad</option>
+                            <option value="mantenimiento">Mantenimiento</option>
+                            <option value="otros">Otros</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Método de Pago</label>
+                        <select id="gastoMetodoPago">
+                            <option value="efectivo">Efectivo</option>
+                            <option value="banco">Banco</option>
+                            <option value="tarjeta">Tarjeta</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Cuenta PUC (Gasto)</label>
+                    <select id="gastoPUC" required>
+                        <option value="">Seleccionar cuenta contable</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Observaciones</label>
+                    <textarea id="gastoObservaciones" rows="2"></textarea>
+                </div>
+                
+                <button type="submit" class="btn-submit">Registrar Gasto</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL PARA MOVIMIENTOS CONTABLES -->
+    <div id="modalMovimiento" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Nuevo Asiento Contable</h2>
+                <button class="close-modal" onclick="cerrarModal('modalMovimiento')">&times;</button>
+            </div>
+            <form id="formMovimiento">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Fecha</label>
+                        <input type="date" id="movimientoFecha" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Tipo de Comprobante</label>
+                        <select id="movimientoTipo">
+                            <option value="ingreso">Comprobante de Ingreso</option>
+                            <option value="egreso">Comprobante de Egreso</option>
+                            <option value="diario">Comprobante Diario</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Descripción del Asiento</label>
+                    <input type="text" id="movimientoDescripcion" placeholder="Ej: Registro de venta del día" required>
+                </div>
+                
+                <div id="detalleMovimiento">
+                    <!-- Filas de partida doble -->
+                </div>
+                
+                <button type="button" onclick="agregarFilaMovimiento()" style="background: var(--info); color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; margin: 0.5rem 0; cursor: pointer;">
+                    <i class="fas fa-plus"></i> Agregar línea
+                </button>
+                
+                <div style="display: flex; justify-content: space-between; margin: 1rem 0; padding: 1rem; background: var(--light); border-radius: 8px;">
+                    <span>Total Débitos:</span>
+                    <strong id="totalDebitos">$0</strong>
+                    <span>Total Créditos:</span>
+                    <strong id="totalCreditos">$0</strong>
+                </div>
+                
+                <button type="submit" class="btn-submit">Guardar Asiento</button>
+            </form>
+        </div>
+    </div>
+
     <script src="../js/supabase-config.js"></script>
     <script>
-        // ============================================
-        // CONFIGURACIÓN Y ESTADO GLOBAL
-        // ============================================
-        let token = null;
-        let currentUser = null;
-        let pucOptions = []; // Para almacenar las cuentas PUC
-        
-        // Verificar autenticación al cargar
-        (function() {
-            const tokenData = localStorage.getItem('admin_token');
-            if (!tokenData) {
-                window.location.href = 'login.html';
-                return;
-            }
-            
-            try {
-                token = JSON.parse(tokenData);
-                currentUser = token.user;
-                document.getElementById('userNameDisplay').textContent = currentUser.email || 'Administrador';
+        // ===== CONFIGURACIÓN INICIAL =====
+        const token = localStorage.getItem('admin_token');
+        if (!token) {
+            window.location.href = 'login.html';
+        }
+
+        const tokenData = JSON.parse(token);
+        const accessToken = tokenData.access_token;
+
+        // ===== NAVEGACIÓN ENTRE MÓDULOS =====
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
                 
-                // Cargar datos iniciales
-                cargarEstadisticas();
-                cargarProductos();
-                cargarOpcionesPUC();
-            } catch (e) {
-                console.error('Error parsing token:', e);
-                logout();
-            }
-        })();
-        
-        // ============================================
-        // FUNCIONES DE AUTENTICACIÓN
-        // ============================================
+                // Remover active de todos
+                document.querySelectorAll('.nav-item').forEach(nav => {
+                    nav.classList.remove('active');
+                });
+                
+                // Agregar active al actual
+                this.classList.add('active');
+                
+                // Ocultar todos los módulos
+                document.querySelectorAll('.module-container').forEach(module => {
+                    module.classList.remove('active');
+                });
+                
+                // Mostrar el módulo seleccionado
+                const moduleId = this.getAttribute('data-module');
+                document.getElementById(`module-${moduleId}`).classList.add('active');
+                
+                // Actualizar título
+                const moduleName = this.querySelector('span').textContent;
+                document.getElementById('pageTitle').textContent = moduleName;
+                
+                // Cargar datos del módulo
+                cargarDatosModulo(moduleId);
+            });
+        });
+
+        // ===== FUNCIONES PARA CERRAR SESIÓN =====
         function logout() {
             if (confirm('¿Estás seguro de cerrar sesión?')) {
                 localStorage.removeItem('admin_token');
                 window.location.href = 'login.html';
             }
         }
-        
-        // ============================================
-        // FUNCIONES DE CARGA DE DATOS
-        // ============================================
-        async function cargarEstadisticas() {
-            try {
-                // Productos
-                const prodRes = await fetch(`${SUPABASE_URL}/rest/v1/productos?select=count`, {
-                    headers: { 
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${token.access_token}`
-                    }
-                });
-                const prodData = await prodRes.json();
-                document.getElementById('stat-productos').textContent = prodData.length || 0;
-                document.getElementById('badge-productos').textContent = prodData.length || 0;
-                
-                // Compras
-                const compRes = await fetch(`${SUPABASE_URL}/rest/v1/compras?select=count`, {
-                    headers: { 
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${token.access_token}`
-                    }
-                });
-                const compData = await compRes.json();
-                document.getElementById('stat-compras').textContent = compData.length || 0;
-                document.getElementById('badge-compras').textContent = compData.length || 0;
-                
-                // Ventas
-                const venRes = await fetch(`${SUPABASE_URL}/rest/v1/ventas?select=count`, {
-                    headers: { 
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${token.access_token}`
-                    }
-                });
-                const venData = await venRes.json();
-                document.getElementById('stat-ventas').textContent = venData.length || 0;
-                document.getElementById('badge-ventas').textContent = venData.length || 0;
-                
-                // Proveedores
-                const provRes = await fetch(`${SUPABASE_URL}/rest/v1/proveedores?select=count`, {
-                    headers: { 
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${token.access_token}`
-                    }
-                });
-                const provData = await provRes.json();
-                document.getElementById('stat-proveedores').textContent = provData.length || 0;
-                document.getElementById('badge-proveedores').textContent = provData.length || 0;
-                
-                // Perfiles
-                const perfRes = await fetch(`${SUPABASE_URL}/rest/v1/perfiles?select=count`, {
-                    headers: { 
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${token.access_token}`
-                    }
-                });
-                const perfData = await perfRes.json();
-                document.getElementById('badge-perfiles').textContent = perfData.length || 0;
-                
-                // Gastos
-                const gasRes = await fetch(`${SUPABASE_URL}/rest/v1/gastos?select=count`, {
-                    headers: { 
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${token.access_token}`
-                    }
-                });
-                const gasData = await gasRes.json();
-                document.getElementById('badge-gastos').textContent = gasData.length || 0;
-                
-                // Comprobantes
-                const comprobRes = await fetch(`${SUPABASE_URL}/rest/v1/comprobantes?select=count`, {
-                    headers: { 
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${token.access_token}`
-                    }
-                });
-                const comprobData = await comprobRes.json();
-                document.getElementById('badge-comprobantes').textContent = comprobData.length || 0;
-                
-                // Movimientos
-                const movRes = await fetch(`${SUPABASE_URL}/rest/v1/movimientos_contables?select=count`, {
-                    headers: { 
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${token.access_token}`
-                    }
-                });
-                const movData = await movRes.json();
-                document.getElementById('badge-movimientos').textContent = movData.length || 0;
-                
-                // PUC
-                const pucRes = await fetch(`${SUPABASE_URL}/rest/v1/puc?select=count`, {
-                    headers: { 
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${token.access_token}`
-                    }
-                });
-                const pucData = await pucRes.json();
-                document.getElementById('badge-puc').textContent = pucData.length || 0;
-                
-                // Terceros
-                const tercRes = await fetch(`${SUPABASE_URL}/rest/v1/terceros?select=count`, {
-                    headers: { 
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${token.access_token}`
-                    }
-                });
-                const tercData = await tercRes.json();
-                document.getElementById('badge-terceros').textContent = tercData.length || 0;
-                
-            } catch (error) {
-                console.error('Error cargando estadísticas:', error);
-            }
+
+        // ===== FUNCIONES PARA MODALES =====
+        function abrirModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
         }
-        
-        // ============================================
-        // FUNCIONES PARA PRODUCTOS (MÓDULO PRINCIPAL)
-        // ============================================
-        async function cargarProductos() {
-            try {
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/productos?select=*`, {
-                    headers: { 
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${token.access_token}`
-                    }
-                });
-                
-                if (!response.ok) throw new Error('Error al cargar productos');
-                
-                const productos = await response.json();
-                renderizarProductos(productos);
-                
-            } catch (error) {
-                console.error('Error:', error);
-                document.getElementById('productosBody').innerHTML = `
-                    <tr>
-                        <td colspan="9" style="color: #e74c3c; text-align: center; padding: 30px;">
-                            <i class="fas fa-exclamation-triangle"></i> Error al cargar productos: ${error.message}
-                        </td>
-                    </tr>
-                `;
-            }
+
+        function cerrarModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
         }
-        
-        function renderizarProductos(productos) {
-            const tbody = document.getElementById('productosBody');
-            
-            if (productos.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="9" style="text-align: center; padding: 40px; color: #7f8c8d;">
-                            <i class="fas fa-box-open" style="font-size: 3rem; margin-bottom: 10px; display: block;"></i>
-                            No hay productos registrados
-                        </td>
-                    </tr>
-                `;
-                return;
+
+        // Cerrar modal haciendo clic fuera
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.classList.remove('active');
             }
-            
-            tbody.innerHTML = productos.map(p => `
-                <tr>
-                    <td>${p.id}</td>
-                    <td><strong>${p.nombre}</strong></td>
-                    <td>${p.categoria || 'General'}</td>
-                    <td>$${Number(p.precio_venta || 0).toLocaleString()}</td>
-                    <td>${p.talla || '-'}</td>
-                    <td>${p.color || '-'}</td>
-                    <td>
-                        <span style="
-                            background: ${(p.stock_actual || 0) <= (p.stock_minimo || 5) ? '#e74c3c' : '#27ae60'};
-                            color: white;
-                            padding: 3px 10px;
-                            border-radius: 15px;
-                            font-size: 0.85rem;
-                            font-weight: 600;
-                        ">
-                            ${p.stock_actual || 0}
-                        </span>
-                    </td>
-                    <td>${p.puc_inventario ? p.puc_inventario.substring(0, 4) : '-'}</td>
-                    <td>
-                        <div class="action-buttons">
-                            <button class="btn-edit" onclick="editarProducto(${p.id})" title="Editar">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button class="btn-delete" onclick="eliminarProducto(${p.id})" title="Eliminar">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-            `).join('');
+        };
+
+        // ===== FUNCIONES PARA TERCEROS =====
+        function abrirModalTercero() {
+            cargarSelectsTercero();
+            abrirModal('modalTercero');
         }
-        
-        async function cargarOpcionesPUC() {
+
+        async function cargarTerceros(tipo = null) {
             try {
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/puc?select=codigo,nombre&order=codigo.asc`, {
-                    headers: { 
+                let url = `${SUPABASE_URL}/rest/v1/terceros?select=*`;
+                if (tipo) {
+                    url += `&tipo=eq.${tipo}`;
+                }
+                
+                const response = await fetch(url, {
+                    headers: {
                         'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${token.access_token}`
+                        'Authorization': `Bearer ${accessToken}`
                     }
                 });
                 
                 if (response.ok) {
-                    pucOptions = await response.json();
+                    const datos = await response.json();
                     
-                    // Llenar los selects del modal
-                    const selects = ['productoPucInventario', 'productoPucVentas', 'productoPucCompras'];
+                    // Actualizar contadores
+                    const clientes = datos.filter(t => t.tipo === 'cliente').length;
+                    const proveedores = datos.filter(t => t.tipo === 'proveedor').length;
                     
-                    selects.forEach(selectId => {
-                        const select = document.getElementById(selectId);
+                    document.getElementById('totalClientesTerceros').textContent = clientes;
+                    document.getElementById('totalProveedoresTerceros').textContent = proveedores;
+                    
+                    // Mostrar tabla
+                    mostrarTablaTerceros(datos);
+                }
+            } catch (error) {
+                console.error('Error cargando terceros:', error);
+            }
+        }
+
+        function mostrarTablaTerceros(datos) {
+            const tbody = document.querySelector('#tablaTerceros tbody');
+            
+            if (datos.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align: center;">No hay terceros registrados</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = datos.map(t => `
+                <tr>
+                    <td>${t.id}</td>
+                    <td><span class="badge" style="background: ${t.tipo === 'cliente' ? 'var(--success)' : t.tipo === 'proveedor' ? 'var(--info)' : 'var(--warning)'}">${t.tipo}</span></td>
+                    <td>${t.nombre || ''}</td>
+                    <td>${t.tipo_identificacion || ''} ${t.numero_identificacion || ''}</td>
+                    <td>${t.telefono || '-'}</td>
+                    <td>${t.email || '-'}</td>
+                    <td>${t.direccion || ''}</td>
+                    <td class="action-buttons">
+                        <button class="btn-edit" onclick="editarTercero(${t.id})"><i class="fas fa-edit"></i></button>
+                        <button class="btn-delete" onclick="eliminarTercero(${t.id})"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // ===== FUNCIONES PARA PUC =====
+        function abrirModalPUC() {
+            cargarPUCSelect();
+            abrirModal('modalPUC');
+        }
+
+        async function cargarPUC() {
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/puc?select=*&order=codigo.asc`, {
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${accessToken}`
+                    }
+                });
+                
+                if (response.ok) {
+                    const datos = await response.json();
+                    mostrarTablaPUC(datos);
+                }
+            } catch (error) {
+                console.error('Error cargando PUC:', error);
+            }
+        }
+
+        function mostrarTablaPUC(datos) {
+            const tbody = document.querySelector('#tablaPUC tbody');
+            
+            if (datos.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No hay cuentas PUC registradas</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = datos.map(c => `
+                <tr>
+                    <td><strong>${c.codigo}</strong></td>
+                    <td>${c.nombre}</td>
+                    <td>${c.nivel || '-'}</td>
+                    <td><span class="badge" style="background: ${c.naturaleza === 'debito' ? 'var(--info)' : 'var(--warning)'}">${c.naturaleza}</span></td>
+                    <td>${c.descripcion || '-'}</td>
+                    <td class="action-buttons">
+                        <button class="btn-edit" onclick="editarPUC(${c.id})"><i class="fas fa-edit"></i></button>
+                        <button class="btn-delete" onclick="eliminarPUC(${c.id})"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        async function cargarPUCSelect(selectId, valorSeleccionado = null) {
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/puc?select=id,codigo,nombre&order=codigo.asc`, {
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${accessToken}`
+                    }
+                });
+                
+                if (response.ok) {
+                    const datos = await response.json();
+                    
+                    // Llenar selects que necesiten PUC
+                    const selects = document.querySelectorAll(selectId || '#productoPUCInventario, #productoPUCVentas, #productoPUCCosto, #compraPUC, #ventaPUC, #gastoPUC, #pucPadre');
+                    
+                    selects.forEach(select => {
                         if (select) {
-                            select.innerHTML = '<option value="">Seleccionar cuenta PUC...</option>' + 
-                                pucOptions.map(p => `<option value="${p.codigo}">${p.codigo} - ${p.nombre}</option>`).join('');
+                            const currentValue = select.value;
+                            select.innerHTML = '<option value="">Seleccionar cuenta</option>';
+                            
+                            datos.forEach(c => {
+                                const selected = (currentValue == c.id || valorSeleccionado == c.id) ? 'selected' : '';
+                                select.innerHTML += `<option value="${c.id}" ${selected}>${c.codigo} - ${c.nombre}</option>`;
+                            });
                         }
                     });
                 }
@@ -1000,212 +1618,253 @@
                 console.error('Error cargando PUC:', error);
             }
         }
-        
-        // ============================================
-        // FUNCIONES DEL MODAL
-        // ============================================
-        function abrirModalNuevo() {
-            document.getElementById('modalTitle').textContent = 'Nuevo Producto';
-            document.getElementById('productoForm').reset();
-            document.getElementById('productoId').value = '';
-            document.getElementById('productoModal').classList.add('active');
+
+        // ===== FUNCIONES PARA PRODUCTOS =====
+        function abrirModalProducto() {
+            cargarCategoriasSelect();
+            cargarPUCSelect('#productoPUCInventario, #productoPUCVentas, #productoPUCCosto');
+            abrirModal('modalProducto');
         }
-        
-        async function editarProducto(id) {
+
+        async function cargarProductos() {
             try {
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/productos?id=eq.${id}`, {
-                    headers: { 
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${token.access_token}`
-                    }
-                });
-                
-                const productos = await response.json();
-                const p = productos[0];
-                
-                if (p) {
-                    document.getElementById('modalTitle').textContent = 'Editar Producto';
-                    document.getElementById('productoId').value = p.id;
-                    document.getElementById('productoNombre').value = p.nombre || '';
-                    document.getElementById('productoCategoria').value = p.categoria || 'vestidos';
-                    document.getElementById('productoPrecio').value = p.precio_venta || '';
-                    document.getElementById('productoPrecioCompra').value =document.getElementById('productoPrecioCompra').value = p.precio_compra || '';
-                    document.getElementById('productoTalla').value = p.talla || '';
-                    document.getElementById('productoColor').value = p.color || '';
-                    document.getElementById('productoStock').value = p.stock_actual || 0;
-                    document.getElementById('productoStockMinimo').value = p.stock_minimo || 5;
-                    document.getElementById('productoPucInventario').value = p.puc_inventario || '';
-                    document.getElementById('productoPucVentas').value = p.puc_ventas || '';
-                    document.getElementById('productoPucCompras').value = p.puc_compras || '';
-                    document.getElementById('productoDescripcion').value = p.descripcion || '';
-                    
-                    document.getElementById('productoModal').classList.add('active');
-                }
-            } catch (error) {
-                console.error('Error cargando producto:', error);
-                alert('Error al cargar los datos del producto');
-            }
-        }
-        
-        function cerrarModal() {
-            document.getElementById('productoModal').classList.remove('active');
-        }
-        
-        async function guardarProducto() {
-            // Validar campos requeridos
-            const nombre = document.getElementById('productoNombre').value;
-            const precio = document.getElementById('productoPrecio').value;
-            
-            if (!nombre || !precio) {
-                alert('Por favor completa los campos obligatorios (Nombre y Precio)');
-                return;
-            }
-            
-            // Construir objeto del producto
-            const producto = {
-                nombre: nombre,
-                categoria: document.getElementById('productoCategoria').value,
-                precio_venta: parseFloat(precio),
-                precio_compra: document.getElementById('productoPrecioCompra').value ? parseFloat(document.getElementById('productoPrecioCompra').value) : null,
-                talla: document.getElementById('productoTalla').value || null,
-                color: document.getElementById('productoColor').value || null,
-                stock_actual: parseInt(document.getElementById('productoStock').value) || 0,
-                stock_minimo: parseInt(document.getElementById('productoStockMinimo').value) || 5,
-                puc_inventario: document.getElementById('productoPucInventario').value || null,
-                puc_ventas: document.getElementById('productoPucVentas').value || null,
-                puc_compras: document.getElementById('productoPucCompras').value || null,
-                descripcion: document.getElementById('productoDescripcion').value || null
-            };
-            
-            const productoId = document.getElementById('productoId').value;
-            
-            try {
-                let response;
-                
-                if (productoId) {
-                    // ACTUALIZAR producto existente
-                    response = await fetch(`${SUPABASE_URL}/rest/v1/productos?id=eq.${productoId}`, {
-                        method: 'PATCH',
-                        headers: {
-                            'apikey': SUPABASE_KEY,
-                            'Authorization': `Bearer ${token.access_token}`,
-                            'Content-Type': 'application/json',
-                            'Prefer': 'return=minimal'
-                        },
-                        body: JSON.stringify(producto)
-                    });
-                } else {
-                    // CREAR nuevo producto
-                    response = await fetch(`${SUPABASE_URL}/rest/v1/productos`, {
-                        method: 'POST',
-                        headers: {
-                            'apikey': SUPABASE_KEY,
-                            'Authorization': `Bearer ${token.access_token}`,
-                            'Content-Type': 'application/json',
-                            'Prefer': 'return=minimal'
-                        },
-                        body: JSON.stringify(producto)
-                    });
-                }
-                
-                if (response.ok || response.status === 204) {
-                    alert(productoId ? 'Producto actualizado correctamente' : 'Producto creado correctamente');
-                    cerrarModal();
-                    cargarProductos(); // Recargar la lista
-                    cargarEstadisticas(); // Actualizar contadores
-                } else {
-                    const error = await response.text();
-                    throw new Error(error);
-                }
-            } catch (error) {
-                console.error('Error guardando producto:', error);
-                alert('Error al guardar el producto: ' + error.message);
-            }
-        }
-        
-        async function eliminarProducto(id) {
-            if (!confirm('¿Estás seguro de eliminar este producto? Esta acción no se puede deshacer.')) {
-                return;
-            }
-            
-            try {
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/productos?id=eq.${id}`, {
-                    method: 'DELETE',
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/productos?select=*,categorias(*),puc_inventario(*),puc_ventas(*),puc_costo(*)`, {
                     headers: {
                         'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${token.access_token}`
+                        'Authorization': `Bearer ${accessToken}`
                     }
                 });
                 
-                if (response.ok || response.status === 204) {
-                    alert('Producto eliminado correctamente');
-                    cargarProductos();
-                    cargarEstadisticas();
-                } else {
-                    throw new Error('Error al eliminar');
+                if (response.ok) {
+                    const datos = await response.json();
+                    mostrarTablaProductos(datos);
                 }
             } catch (error) {
-                console.error('Error eliminando producto:', error);
-                alert('Error al eliminar el producto');
+                console.error('Error cargando productos:', error);
             }
         }
-        
-        function buscarProductos() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const rows = document.querySelectorAll('#productosBody tr');
+
+        function mostrarTablaProductos(datos) {
+            const tbody = document.querySelector('#tablaProductos tbody');
             
-            rows.forEach(row => {
-                const text = row.textContent.toLowerCase();
-                row.style.display = text.includes(searchTerm) ? '' : 'none';
-            });
+            if (datos.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" style="text-align: center;">No hay productos registrados</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = datos.map(p => `
+                <tr>
+                    <td>${p.codigo || p.referencia || '-'}</td>
+                    <td>${p.nombre}</td>
+                    <td>${p.categorias?.nombre || '-'}</td>
+                    <td>${p.talla || '-'}</td>
+                    <td>${p.color || '-'}</td>
+                    <td>$${Number(p.precio_venta).toLocaleString()}</td>
+                    <td>
+                        <span style="color: ${p.stock_actual <= p.stock_minimo ? 'var(--danger)' : 'var(--success)'}; font-weight: bold;">
+                            ${p.stock_actual || 0}
+                        </span>
+                    </td>
+                    <td>${p.puc_inventario?.codigo || '-'}</td>
+                    <td class="action-buttons">
+                        <button class="btn-edit" onclick="editarProducto(${p.id})"><i class="fas fa-edit"></i></button>
+                        <button class="btn-delete" onclick="eliminarProducto(${p.id})"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
         }
-        
-        // ============================================
-        // FUNCIONES PARA CAMBIAR DE MÓDULO
-        // ============================================
-        function cargarModulo(modulo) {
-            // Actualizar clase activa en el menú
-            document.querySelectorAll('.menu-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            event.currentTarget.classList.add('active');
-            
-            // Actualizar título
-            const titulos = {
-                'compras': 'Compras',
-                'ventas': 'Ventas',
-                'productos': 'Productos',
-                'proveedores': 'Proveedores',
-                'perfiles': 'Perfiles de Usuario',
-                'gastos': 'Gastos',
-                'comprobantes': 'Comprobantes',
-                'movimientos': 'Movimientos Contables',
-                'puc': 'Plan Único de Cuentas',
-                'terceros': 'Terceros'
-            };
-            
-            document.getElementById('currentModuleTitle').textContent = titulos[modulo] || modulo;
-            
-            // Aquí cargarías el contenido específico de cada módulo
-            // Por ahora solo mostramos un mensaje
-            const contentArea = document.getElementById('contentArea');
-            
-            if (modulo === 'productos') {
-                // Recargar vista de productos
-                location.reload(); // Simplificado, en producción sería más elegante
-            } else {
-                contentArea.innerHTML = `
-                    <div style="text-align: center; padding: 50px; background: white; border-radius: 12px;">
-                        <i class="fas fa-cog" style="font-size: 4rem; color: #27ae60; margin-bottom: 20px;"></i>
-                        <h2>Módulo de ${titulos[modulo]}</h2>
-                        <p style="color: #7f8c8d; margin: 20px 0;">Este módulo está en desarrollo. Próximamente podrás gestionar ${titulos[modulo].toLowerCase()}.</p>
-                        <button class="btn-primary" onclick="location.reload()">
-                            <i class="fas fa-arrow-left"></i> Volver a Productos
-                        </button>
-                    </div>
-                `;
+
+        // ===== FUNCIONES PARA CATEGORÍAS =====
+        async function cargarCategorias() {
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/categorias?select=*`, {
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${accessToken}`
+                    }
+                });
+                
+                if (response.ok) {
+                    const datos = await response.json();
+                    mostrarTablaCategorias(datos);
+                }
+            } catch (error) {
+                console.error('Error cargando categorías:', error);
             }
         }
+
+        function mostrarTablaCategorias(datos) {
+            const tbody = document.querySelector('#tablaCategorias tbody');
+            
+            if (datos.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">No hay categorías registradas</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = datos.map(c => `
+                <tr>
+                    <td>${c.id}</td>
+                    <td>${c.nombre}</td>
+                    <td>${c.descripcion || '-'}</td>
+                    <td>${c.productos_count || 0}</td>
+                    <td class="action-buttons">
+                        <button class="btn-edit" onclick="editarCategoria(${c.id})"><i class="fas fa-edit"></i></button>
+                        <button class="btn-delete" onclick="eliminarCategoria(${c.id})"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        async function cargarCategoriasSelect() {
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/categorias?select=id,nombre`, {
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${accessToken}`
+                    }
+                });
+                
+                if (response.ok) {
+                    const datos = await response.json();
+                    const select = document.getElementById('productoCategoria');
+                    if (select) {
+                        select.innerHTML = '<option value="">Seleccionar categoría</option>';
+                        datos.forEach(c => {
+                            select.innerHTML += `<option value="${c.id}">${c.nombre}</option>`;
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error('Error cargando categorías:', error);
+            }
+        }
+
+        // ===== FUNCIONES PARA COMPRAS =====
+        function abrirModalCompra() {
+            cargarProveedoresSelect();
+            cargarProductosSelect();
+            cargarPUCSelect('#compraPUC');
+            
+            // Fecha actual por defecto
+            document.getElementById('compraFecha').value = new Date().toISOString().split('T')[0];
+            
+            abrirModal('modalCompra');
+        }
+
+        async function cargarProveedores() {
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/proveedores?select=*`, {
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${accessToken}`
+                    }
+                });
+                
+                if (response.ok) {
+                    const datos = await response.json();
+                    mostrarTablaProveedores(datos);
+                }
+            } catch (error) {
+                console.error('Error cargando proveedores:', error);
+            }
+        }
+
+        function mostrarTablaProveedores(datos) {
+            const tbody = document.querySelector('#tablaProveedores tbody');
+            
+            if (datos.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">No hay proveedores registrados</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = datos.map(p => `
+                <tr>
+                    <td>${p.id}</td>
+                    <td>${p.nombre}</td>
+                    <td>${p.contacto || '-'}</td>
+                    <td>${p.telefono || '-'}</td>
+                    <td>${p.email || '-'}</td>
+                    <td>${p.nit || '-'}</td>
+                    <td class="action-buttons">
+                        <button class="btn-edit" onclick="editarProveedor(${p.id})"><i class="fas fa-edit"></i></button>
+                        <button class="btn-delete" onclick="eliminarProveedor(${p.id})"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        async function cargarProveedoresSelect() {
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/proveedores?select=id,nombre`, {
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${accessToken}`
+                    }
+                });
+                
+                if (response.ok) {
+                    const datos = await response.json();
+                    const select = document.getElementById('compraProveedor');
+                    if (select) {
+                        select.innerHTML = '<option value="">Seleccionar proveedor</option>';
+                        datos.forEach(p => {
+                            select.innerHTML += `<option value="${p.id}">${p.nombre}</option>`;
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error('Error cargando proveedores:', error);
+            }
+        }
+
+        // ===== FUNCIÓN PRINCIPAL PARA CARGAR DATOS SEGÚN MÓDULO =====
+        function cargarDatosModulo(modulo) {
+            switch(modulo) {
+                case 'terceros':
+                    cargarTerceros();
+                    break;
+                case 'puc':
+                    cargarPUC();
+                    break;
+                case 'productos':
+                    cargarProductos();
+                    break;
+                case 'categorias':
+                    cargarCategorias();
+                    break;
+                case 'proveedores':
+                    cargarProveedores();
+                    break;
+                case 'compras':
+                    cargarCompras();
+                    break;
+                case 'ventas':
+                    cargarVentas();
+                    break;
+                case 'gastos':
+                    cargarGastos();
+                    break;
+                case 'perfiles':
+                    cargarPerfiles();
+                    break;
+                case 'comprobantes':
+                    cargarComprobantes();
+                    break;
+                case 'movimientos':
+                    cargarMovimientos();
+                    break;
+            }
+        }
+
+        // ===== INICIALIZACIÓN =====
+        document.addEventListener('DOMContentLoaded', function() {
+            // Cargar datos iniciales del dashboard
+            cargarDashboard();
+            
+            // Cargar datos del módulo activo
+            const activeModule = document.querySelector('.nav-item.active').getAttribute('data-module');
+            cargarDatosModulo(activeModule);
+        });
     </script>
 </body>
 </html>
