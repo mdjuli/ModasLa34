@@ -949,7 +949,7 @@
                 }
 
                 const user = await response.json();
-                                currentUser = user;
+                currentUser = user;
                 
                 // Obtener nombre del perfil
                 const perfilRes = await fetch(`${SUPABASE_URL}/rest/v1/perfiles?id=eq.${user.id}`, {
