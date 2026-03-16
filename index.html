@@ -55,5 +55,29 @@
     
     <script src="js/supabase-config.js"></script>
     <script src="js/catalogo.js"></script>
+
+    <script>
+    // Para móviles: cerrar menú al hacer clic fuera
+    document.addEventListener('click', function(event) {
+        const dropdown = document.querySelector('.dropdown');
+        if (!dropdown.contains(event.target)) {
+            // Si el clic es fuera del dropdown, lo ocultamos
+            const dropdownContent = document.querySelector('.dropdown-content');
+            if (dropdownContent.style.display === 'block') {
+                dropdownContent.style.display = 'none';
+            }
+        }
+    });
+    
+    // Mostrar menú al hacer clic en el botón (para móviles)
+    document.querySelector('.dropbtn').addEventListener('click', function(e) {
+        if (window.innerWidth <= 768) {
+            e.preventDefault();
+            const dropdownContent = document.querySelector('.dropdown-content');
+            dropdownContent.style.display = dropdownContent.style.display === 'block' ? 'none' : 'block';
+        }
+    });
+</script>
+    
 </body>
 </html>
