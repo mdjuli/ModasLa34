@@ -1866,5 +1866,702 @@
             cargarDatosModulo(activeModule);
         });
     </script>
+
+    // ===== FUNCIONES PARA COMPRAS =====
+async function cargarCompras() {
+    try {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/compras?select=*,proveedores(nombre),puc(codigo,nombre)&order=fecha.desc`, {
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${accessToken}`
+            }
+        });
+        
+        if (response.ok) {
+            const datos = await response.json();
+            mostrarTablaCompras(datos);
+        }
+    } catch (error) {
+        console.error('Error cargando compras:', error);
+    }
+}
+
+function mostrarTablaCompras(datos) {
+    const tbody = document.querySelector('#tablaCompras tbody');
+    
+    if (datos.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">No hay compras registradas</td></tr>';
+        return;
+    }
+    
+    tbody.innerHTML = datos.map(c => `
+        <tr>
+            <td>${c.id}</td>
+            <td>${new Date(c.fecha).toLocaleDateString()}</td>
+            <td>${c.proveedores?.nombre || 'N/A'}</td>
+            <td>$${Number(c.total).toLocaleString()}</td>
+            <td><span class="badge" style="background: ${c.estado === 'recibida' ? 'var(--success)' : 'var(--warning)'}">${c.estado || 'pendiente'}</span></td>
+            <td>${c.puc?.codigo || '-'}</td>
+            <td class="action-buttons">
+                <button class="btn-edit" onclick="editarCompra(${c.id})"><i class="fas fa-edit"></i></button>
+                <button class="btn-delete" onclick="eliminarCompra(${c.id})"><i class="fas fa-trash"></i></button>
+                <button class="btn-print" onclick="imprimirCompra(${c.id})" style="background: var(--info); color: white; border: none; padding: 0.3rem 0.6rem; border-radius: 4px;"><i class="fas fa-print"></i></button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+// ===== FUNCIONES PARA VENTAS =====
+async function cargarVentas() {
+    try {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/ventas?select=*,terceros(nombre),puc(codigo,nombre)&order=fecha.desc`, {
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${accessToken}`
+            }
+        });
+        
+        if (response.ok) {
+            const datos = await response.json();
+            mostrarTablaVentas(datos);
+        }
+    } catch (error) {
+        console.error('Error cargando ventas:', error);
+    }
+}
+
+function mostrarTablaVentas(datos) {
+    const tbody = document.querySelector('#tablaVentas tbody');
+    
+    if (datos.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">No hay ventas registradas</td></tr>';
+        return;
+    }
+    
+    tbody.innerHTML = datos.map(v => `
+        <tr>
+            <td>${v.id}</td>
+            <td>${new Date(v.fecha).toLocaleDateString()}</td>
+            <td>${v.terceros?.nombre || 'Cliente Mostrador'}</td>
+            <td>$${Number(v.total).toLocaleString()}</td>
+            <td><span class="badge" style="background: ${v.metodo_pago === 'efectivo' ? 'var(--success)' : 'var(--info)'}">${v.metodo_pago}</span></td>
+            <td>${v.puc?.codigo || '-'}</td>
+            <td class="action-buttons">
+                <button class="btn-edit" onclick="editarVenta(${v.id})"><i class="fas fa-edit"></i></button>
+                <button class="btn-delete" onclick="eliminarVenta(${v.id})"><i class="fas fa-trash"></i></button>
+                <button class="btn-print" onclick="imprimirFactura(${v.id})" style="background: var(--info); color: white; border: none; padding: 0.3rem 0.6rem; border-radius: 4px;"><i class="fas fa-file-pdf"></i></button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+// ===== FUNCIONES PARA GASTOS =====
+function abrirModalGasto() {
+    cargarPUCSelect('#gastoPUC');
+    document.getElementById('gastoFecha').value = new Date().toISOString().split('T')[0];
+    abrirModal('modalGasto');
+}
+
+async function cargarGastos() {
+    try {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/gastos?select=*,puc(codigo,nombre)&order=fecha.desc`, {
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${accessToken}`
+            }
+        });
+        
+        if (response.ok) {
+            const datos = await response.json();
+            mostrarTablaGastos(datos);
+        }
+    } catch (error) {
+        console.error('Error cargando gastos:', error);
+    }
+}
+
+function mostrarTablaGastos(datos) {
+    const tbody = document.querySelector('#tablaGastos tbody');
+    
+    if (datos.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">No hay gastos registrados</td></tr>';
+        return;
+    }
+    
+    tbody.innerHTML = datos.map(g => `
+        <tr>
+            <td>${g.id}</td>
+            <td>${new Date(g.fecha).toLocaleDateString()}</td>
+            <td>${g.concepto}</td>
+            <td>${g.categoria}</td>
+            <td>$${Number(g.monto).toLocaleString()}</td>
+            <td>${g.puc?.codigo || '-'}</td>
+            <td class="action-buttons">
+                <button class="btn-edit" onclick="editarGasto(${g.id})"><i class="fas fa-edit"></i></button>
+                <button class="btn-delete" onclick="eliminarGasto(${g.id})"><i class="fas fa-trash"></i></button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+// ===== FUNCIONES PARA PERFILES (USUARIOS) =====
+async function cargarPerfiles() {
+    try {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/perfiles?select=*`, {
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${accessToken}`
+            }
+        });
+        
+        if (response.ok) {
+            const datos = await response.json();
+            mostrarTablaPerfiles(datos);
+        }
+    } catch (error) {
+        console.error('Error cargando perfiles:', error);
+    }
+}
+
+function mostrarTablaPerfiles(datos) {
+    const tbody = document.querySelector('#tablaPerfiles tbody');
+    
+    if (datos.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No hay usuarios registrados</td></tr>';
+        return;
+    }
+    
+    tbody.innerHTML = datos.map(p => `
+        <tr>
+            <td>${p.id.substring(0,8)}...</td>
+            <td>${p.nombre || 'N/A'}</td>
+            <td>${p.email}</td>
+            <td><span class="badge" style="background: ${p.rol === 'admin' ? 'var(--danger)' : 'var(--info)'}">${p.rol || 'usuario'}</span></td>
+            <td>${new Date(p.created_at).toLocaleDateString()}</td>
+            <td class="action-buttons">
+                <button class="btn-edit" onclick="editarPerfil('${p.id}')"><i class="fas fa-edit"></i></button>
+                ${p.id !== tokenData.user.id ? `<button class="btn-delete" onclick="eliminarPerfil('${p.id}')"><i class="fas fa-trash"></i></button>` : ''}
+            </td>
+        </tr>
+    `).join('');
+}
+
+// ===== FUNCIONES PARA COMPROBANTES =====
+async function cargarComprobantes() {
+    try {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/comprobantes?select=*&order=fecha.desc`, {
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${accessToken}`
+            }
+        });
+        
+        if (response.ok) {
+            const datos = await response.json();
+            mostrarTablaComprobantes(datos);
+        }
+    } catch (error) {
+        console.error('Error cargando comprobantes:', error);
+    }
+}
+
+function mostrarTablaComprobantes(datos) {
+    const tbody = document.querySelector('#tablaComprobantes tbody');
+    
+    if (datos.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">No hay comprobantes registrados</td></tr>';
+        return;
+    }
+    
+    tbody.innerHTML = datos.map(c => `
+        <tr>
+            <td>${c.id}</td>
+            <td>${c.tipo}</td>
+            <td>${c.numero || '-'}</td>
+            <td>${new Date(c.fecha).toLocaleDateString()}</td>
+            <td>${c.descripcion || '-'}</td>
+            <td>$${Number(c.total).toLocaleString()}</td>
+            <td class="action-buttons">
+                <button class="btn-edit" onclick="editarComprobante(${c.id})"><i class="fas fa-edit"></i></button>
+                <button class="btn-delete" onclick="eliminarComprobante(${c.id})"><i class="fas fa-trash"></i></button>
+                <button class="btn-print" onclick="verComprobante(${c.id})" style="background: var(--info); color: white; border: none; padding: 0.3rem 0.6rem; border-radius: 4px;"><i class="fas fa-eye"></i></button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+// ===== FUNCIONES PARA MOVIMIENTOS CONTABLES =====
+function abrirModalMovimiento() {
+    cargarPUCSelect('#movimientoPUC');
+    document.getElementById('movimientoFecha').value = new Date().toISOString().split('T')[0];
+    agregarFilaMovimiento(); // Agregar primera fila
+    abrirModal('modalMovimiento');
+}
+
+function agregarFilaMovimiento() {
+    const container = document.getElementById('detalleMovimiento');
+    const filaId = Date.now();
+    
+    const fila = document.createElement('div');
+    fila.className = 'fila-movimiento';
+    fila.id = `fila_${filaId}`;
+    fila.style.cssText = 'display: grid; grid-template-columns: 2fr 1fr 1fr 1fr auto; gap: 0.5rem; margin-bottom: 0.5rem;';
+    
+    fila.innerHTML = `
+        <select class="movimientoPUC" style="padding: 0.5rem;" onchange="actualizarTotalesMovimiento()">
+            <option value="">Seleccionar cuenta</option>
+        </select>
+        <input type="number" class="movimientoDebito" placeholder="Débito" value="0" min="0" step="100" style="padding: 0.5rem;" onchange="actualizarTotalesMovimiento()">
+        <input type="number" class="movimientoCredito" placeholder="Crédito" value="0" min="0" step="100" style="padding: 0.5rem;" onchange="actualizarTotalesMovimiento()">
+        <input type="text" class="movimientoConcepto" placeholder="Concepto" style="padding: 0.5rem;">
+        <button type="button" onclick="eliminarFilaMovimiento(this)" style="background: var(--danger); color: white; border: none; width: 32px; height: 32px; border-radius: 4px; cursor: pointer;">✕</button>
+    `;
+    
+    container.appendChild(fila);
+    
+    // Cargar PUC en el select de esta fila
+    cargarPUCSelect(`#fila_${filaId} .movimientoPUC`);
+}
+
+function eliminarFilaMovimiento(btn) {
+    btn.parentElement.remove();
+    actualizarTotalesMovimiento();
+}
+
+function actualizarTotalesMovimiento() {
+    let totalDebitos = 0;
+    let totalCreditos = 0;
+    
+    document.querySelectorAll('.movimientoDebito').forEach(input => {
+        totalDebitos += Number(input.value) || 0;
+    });
+    
+    document.querySelectorAll('.movimientoCredito').forEach(input => {
+        totalCreditos += Number(input.value) || 0;
+    });
+    
+    document.getElementById('totalDebitos').textContent = `$${totalDebitos.toLocaleString()}`;
+    document.getElementById('totalCreditos').textContent = `$${totalCreditos.toLocaleString()}`;
+}
+
+async function cargarMovimientos() {
+    try {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/movimientos_contables?select=*,puc(codigo,nombre)&order=fecha.desc`, {
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${accessToken}`
+            }
+        });
+        
+        if (response.ok) {
+            const datos = await response.json();
+            mostrarTablaMovimientos(datos);
+        }
+    } catch (error) {
+        console.error('Error cargando movimientos:', error);
+    }
+}
+
+function mostrarTablaMovimientos(datos) {
+    const tbody = document.querySelector('#tablaMovimientos tbody');
+    
+    if (datos.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align: center;">No hay movimientos contables registrados</td></tr>';
+        return;
+    }
+    
+    tbody.innerHTML = datos.map(m => `
+        <tr>
+            <td>${m.id}</td>
+            <td>${new Date(m.fecha).toLocaleDateString()}</td>
+            <td>${m.puc?.codigo || '-'} - ${m.puc?.nombre || ''}</td>
+            <td>${m.contrapartida || '-'}</td>
+            <td>${m.debito ? '$' + Number(m.debito).toLocaleString() : '-'}</td>
+            <td>${m.credito ? '$' + Number(m.credito).toLocaleString() : '-'}</td>
+            <td>${m.descripcion || '-'}</td>
+            <td class="action-buttons">
+                <button class="btn-edit" onclick="editarMovimiento(${m.id})"><i class="fas fa-edit"></i></button>
+                <button class="btn-delete" onclick="eliminarMovimiento(${m.id})"><i class="fas fa-trash"></i></button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+// ===== FUNCIONES PARA DASHBOARD =====
+async function cargarDashboard() {
+    try {
+        // Cargar ventas hoy
+        const hoy = new Date().toISOString().split('T')[0];
+        const ventasResponse = await fetch(`${SUPABASE_URL}/rest/v1/ventas?fecha=gte.${hoy}&fecha=lt.${hoy}T23:59:59`, {
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${accessToken}`
+            }
+        });
+        
+        if (ventasResponse.ok) {
+            const ventas = await ventasResponse.json();
+            const totalVentasHoy = ventas.reduce((sum, v) => sum + (v.total || 0), 0);
+            document.getElementById('ventasHoy').textContent = `$${totalVentasHoy.toLocaleString()}`;
+        }
+        
+        // Cargar total productos
+        const productosResponse = await fetch(`${SUPABASE_URL}/rest/v1/productos?select=count`, {
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${accessToken}`
+            }
+        });
+        
+        if (productosResponse.ok) {
+            const data = await productosResponse.json();
+            document.getElementById('totalProductos').textContent = data.length || 0;
+        }
+        
+        // Cargar total clientes
+        const clientesResponse = await fetch(`${SUPABASE_URL}/rest/v1/terceros?tipo=eq.cliente&select=count`, {
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${accessToken}`
+            }
+        });
+        
+        if (clientesResponse.ok) {
+            const data = await clientesResponse.json();
+            document.getElementById('totalClientes').textContent = data.length || 0;
+        }
+        
+        // Cargar productos con stock bajo
+        const stockResponse = await fetch(`${SUPABASE_URL}/rest/v1/productos?stock_actual=lte.stock_minimo&stock_actual.gt.0`, {
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${accessToken}`
+            }
+        });
+        
+        if (stockResponse.ok) {
+            const data = await stockResponse.json();
+            document.getElementById('stockBajo').textContent = data.length || 0;
+        }
+        
+        // Cargar últimas ventas
+        const ultimasResponse = await fetch(`${SUPABASE_URL}/rest/v1/ventas?select=*,terceros(nombre)&order=fecha.desc&limit=5`, {
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${accessToken}`
+            }
+        });
+        
+        if (ultimasResponse.ok) {
+            const ventas = await ultimasResponse.json();
+            mostrarUltimasVentas(ventas);
+        }
+        
+    } catch (error) {
+        console.error('Error cargando dashboard:', error);
+    }
+}
+
+function mostrarUltimasVentas(ventas) {
+    const tbody = document.querySelector('#ultimasVentas tbody');
+    
+    if (ventas.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5">No hay ventas recientes</td></tr>';
+        return;
+    }
+    
+    tbody.innerHTML = ventas.map(v => `
+        <tr>
+            <td>${v.id}</td>
+            <td>${v.terceros?.nombre || 'Mostrador'}</td>
+            <td>${new Date(v.fecha).toLocaleString()}</td>
+            <td>$${Number(v.total).toLocaleString()}</td>
+            <td><span class="badge" style="background: var(--success)">completada</span></td>
+        </tr>
+    `).join('');
+}
+
+// ===== FUNCIONES CRUD PARA ENVIAR DATOS A SUPABASE =====
+
+// Guardar Tercero
+document.getElementById('formTercero')?.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const datos = {
+        tipo: document.getElementById('terceroTipo').value,
+        tipo_identificacion: document.getElementById('terceroTipoId').value,
+        numero_identificacion: document.getElementById('terceroNumeroId').value,
+        nombre: document.getElementById('terceroNombre').value,
+        telefono: document.getElementById('terceroTelefono').value,
+        email: document.getElementById('terceroEmail').value,
+        direccion: document.getElementById('terceroDireccion').value,
+        ciudad: document.getElementById('terceroCiudad').value
+    };
+    
+    try {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/terceros`, {
+            method: 'POST',
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${accessToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(datos)
+        });
+        
+        if (response.ok) {
+            alert('Tercero guardado correctamente');
+            cerrarModal('modalTercero');
+            cargarTerceros();
+        } else {
+            alert('Error al guardar');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error de conexión');
+    }
+});
+
+// Guardar PUC
+document.getElementById('formPUC')?.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const datos = {
+        codigo: document.getElementById('pucCodigo').value,
+        nombre: document.getElementById('pucNombre').value,
+        nivel: document.getElementById('pucNivel').value,
+        naturaleza: document.getElementById('pucNaturaleza').value,
+        padre_id: document.getElementById('pucPadre').value || null,
+        descripcion: document.getElementById('pucDescripcion').value
+    };
+    
+    try {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/puc`, {
+            method: 'POST',
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${accessToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(datos)
+        });
+        
+        if (response.ok) {
+            alert('Cuenta PUC guardada correctamente');
+            cerrarModal('modalPUC');
+            cargarPUC();
+        } else {
+            alert('Error al guardar');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error de conexión');
+    }
+});
+
+// Guardar Producto
+document.getElementById('formProducto')?.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const datos = {
+        codigo: document.getElementById('productoCodigo').value,
+        referencia: document.getElementById('productoReferencia').value,
+        nombre: document.getElementById('productoNombre').value,
+        categoria_id: document.getElementById('productoCategoria').value,
+        subcategoria: document.getElementById('productoSubcategoria').value,
+        talla: document.getElementById('productoTalla').value,
+        color: document.getElementById('productoColor').value,
+        precio_compra: document.getElementById('productoPrecioCompra').value,
+        precio_venta: document.getElementById('productoPrecioVenta').value,
+        stock_actual: document.getElementById('productoStock').value,
+        stock_minimo: document.getElementById('productoStockMinimo').value,
+        ubicacion: document.getElementById('productoUbicacion').value,
+        descripcion: document.getElementById('productoDescripcion').value,
+        puc_inventario_id: document.getElementById('productoPUCInventario').value,
+        puc_ventas_id: document.getElementById('productoPUCVentas').value,
+        puc_costo_id: document.getElementById('productoPUCCosto').value
+    };
+    
+    try {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/productos`, {
+            method: 'POST',
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${accessToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(datos)
+        });
+        
+        if (response.ok) {
+            alert('Producto guardado correctamente');
+            cerrarModal('modalProducto');
+            cargarProductos();
+        } else {
+            alert('Error al guardar');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error de conexión');
+    }
+});
+
+// Guardar Gasto
+document.getElementById('formGasto')?.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const datos = {
+        concepto: document.getElementById('gastoConcepto').value,
+        fecha: document.getElementById('gastoFecha').value,
+        monto: document.getElementById('gastoMonto').value,
+        categoria: document.getElementById('gastoCategoria').value,
+        metodo_pago: document.getElementById('gastoMetodoPago').value,
+        puc_id: document.getElementById('gastoPUC').value,
+        observaciones: document.getElementById('gastoObservaciones').value
+    };
+    
+    try {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/gastos`, {
+            method: 'POST',
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${accessToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(datos)
+        });
+        
+        if (response.ok) {
+            alert('Gasto guardado correctamente');
+            cerrarModal('modalGasto');
+            cargarGastos();
+        } else {
+            alert('Error al guardar');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error de conexión');
+    }
+});
+
+// ===== FUNCIONES PARA IMPRIMIR =====
+function imprimirCompra(id) {
+    window.open(`comprobante.html?tipo=compra&id=${id}`, '_blank');
+}
+
+function imprimirFactura(id) {
+    window.open(`factura.html?id=${id}`, '_blank');
+}
+
+function verComprobante(id) {
+    window.open(`comprobante.html?tipo=comprobante&id=${id}`, '_blank');
+}
+
+// ===== FUNCIONES ELIMINAR (con confirmación) =====
+async function eliminarTercero(id) {
+    if (confirm('¿Estás seguro de eliminar este tercero? Esta acción no se puede deshacer.')) {
+        try {
+            const response = await fetch(`${SUPABASE_URL}/rest/v1/terceros?id=eq.${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'apikey': SUPABASE_KEY,
+                    'Authorization': `Bearer ${accessToken}`
+                }
+            });
+            
+            if (response.ok) {
+                alert('Tercero eliminado');
+                cargarTerceros();
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+}
+
+async function eliminarPUC(id) {
+    if (confirm('¿Estás seguro de eliminar esta cuenta PUC?')) {
+        try {
+            const response = await fetch(`${SUPABASE_URL}/rest/v1/puc?id=eq.${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'apikey': SUPABASE_KEY,
+                    'Authorization': `Bearer ${accessToken}`
+                }
+            });
+            
+            if (response.ok) {
+                alert('Cuenta PUC eliminada');
+                cargarPUC();
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+}
+
+async function eliminarProducto(id) {
+    if (confirm('¿Estás seguro de eliminar este producto?')) {
+        try {
+            const response = await fetch(`${SUPABASE_URL}/rest/v1/productos?id=eq.${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'apikey': SUPABASE_KEY,
+                    'Authorization': `Bearer ${accessToken}`
+                }
+            });
+            
+            if (response.ok) {
+                alert('Producto eliminado');
+                cargarProductos();
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+}
+
+async function eliminarGasto(id) {
+    if (confirm('¿Estás seguro de eliminar este gasto?')) {
+        try {
+            const response = await fetch(`${SUPABASE_URL}/rest/v1/gastos?id=eq.${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'apikey': SUPABASE_KEY,
+                    'Authorization': `Bearer ${accessToken}`
+                }
+            });
+            
+            if (response.ok) {
+                alert('Gasto eliminado');
+                cargarGastos();
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+}
+
+// Funciones placeholder para editar (las completaremos después)
+function editarTercero(id) { alert('Función de edición próximamente'); }
+function editarPUC(id) { alert('Función de edición próximamente'); }
+function editarProducto(id) { alert('Función de edición próximamente'); }
+function editarProveedor(id) { alert('Función de edición próximamente'); }
+function editarCategoria(id) { alert('Función de edición próximamente'); }
+function editarCompra(id) { alert('Función de edición próximamente'); }
+function editarVenta(id) { alert('Función de edición próximamente'); }
+function editarGasto(id) { alert('Función de edición próximamente'); }
+function editarPerfil(id) { alert('Función de edición próximamente'); }
+function editarComprobante(id) { alert('Función de edición próximamente'); }
+function editarMovimiento(id) { alert('Función de edición próximamente'); }
+function eliminarProveedor(id) { if(confirm('¿Eliminar proveedor?')){} }
+function eliminarCategoria(id) { if(confirm('¿Eliminar categoría?')){} }
+function eliminarCompra(id) { if(confirm('¿Eliminar compra?')){} }
+function eliminarVenta(id) { if(confirm('¿Eliminar venta?')){} }
+function eliminarPerfil(id) { if(confirm('¿Eliminar usuario?')){} }
+function eliminarComprobante(id) { if(confirm('¿Eliminar comprobante?')){} }
+function eliminarMovimiento(id) { if(confirm('¿Eliminar movimiento?')){} }
+</script>
+    
 </body>
 </html>
