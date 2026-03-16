@@ -3,285 +3,185 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Gestión - Local de Ropa</title>
-    
-    <!-- Font Awesome para íconos profesionales -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
-    <!-- Chart.js para gráficos -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
+    <title>Panel de Administración - Mi Tienda</title>
+    <link rel="stylesheet" href="../css/estilo-comun.css">
     <style>
-        /* ===== RESET Y VARIABLES ===== */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        :root {
-            --primary: #2563eb;
-            --primary-dark: #1d4ed8;
-            --secondary: #64748b;
-            --success: #10b981;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-            --info: #3b82f6;
-            --dark: #1e293b;
-            --light: #f8fafc;
-            --gray: #94a3b8;
-        }
-
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: #f1f5f9;
-            color: var(--dark);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f2f5;
         }
 
-        /* ===== LAYOUT PRINCIPAL ===== */
-        .app-container {
+        /* Header */
+        .admin-header {
+            background: #1a2634;
+            color: white;
+            padding: 1rem 2rem;
             display: flex;
-            min-height: 100vh;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
-        /* ===== SIDEBAR PROFESIONAL ===== */
+        .admin-header h1 {
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-logout {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn-logout:hover {
+            background: #c82333;
+        }
+
+        /* Layout principal */
+        .dashboard-layout {
+            display: flex;
+            min-height: calc(100vh - 70px);
+        }
+
+        /* Sidebar */
         .sidebar {
             width: 280px;
-            background: linear-gradient(180deg, var(--dark) 0%, #0f172a 100%);
-            color: white;
-            position: fixed;
-            height: 100vh;
-            overflow-y: auto;
-            transition: all 0.3s ease;
-            box-shadow: 4px 0 10px rgba(0,0,0,0.1);
+            background: white;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+            padding: 2rem 0;
         }
 
-        .sidebar-header {
-            padding: 2rem 1.5rem;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+        .sidebar-section {
+            margin-bottom: 2rem;
         }
 
-        .sidebar-header h1 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .sidebar-header h1 i {
-            color: var(--success);
-        }
-
-        .sidebar-header p {
-            font-size: 0.875rem;
-            color: var(--gray);
-            margin-top: 0.5rem;
-        }
-
-        .sidebar-nav {
-            padding: 1.5rem 0;
-        }
-
-        .nav-section {
-            margin-bottom: 1.5rem;
-        }
-
-        .nav-section-title {
-            padding: 0.5rem 1.5rem;
-            font-size: 0.75rem;
+        .sidebar-title {
+            padding: 0 1.5rem;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
             text-transform: uppercase;
+            color: #6c757d;
             letter-spacing: 1px;
-            color: var(--gray);
-            font-weight: 600;
         }
 
-        .nav-item {
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            padding: 0.8rem 1.5rem;
+            cursor: pointer;
             display: flex;
             align-items: center;
-            padding: 0.75rem 1.5rem;
-            color: rgba(255,255,255,0.8);
-            text-decoration: none;
-            transition: all 0.3s ease;
-            gap: 0.75rem;
-            cursor: pointer;
+            gap: 12px;
+            color: #495057;
+            transition: all 0.2s;
             border-left: 3px solid transparent;
         }
 
-        .nav-item:hover {
-            background: rgba(255,255,255,0.1);
-            color: white;
+        .sidebar-menu li:hover {
+            background: #f8f9fa;
+            color: #27ae60;
         }
 
-        .nav-item.active {
-            background: rgba(37, 99, 235, 0.2);
-            border-left-color: var(--primary);
-            color: white;
+        .sidebar-menu li.active {
+            background: #e8f5e9;
+            color: #27ae60;
+            border-left-color: #27ae60;
+            font-weight: 500;
         }
 
-        .nav-item i {
-            width: 20px;
-            font-size: 1.1rem;
+        .sidebar-menu li i {
+            font-size: 1.2rem;
         }
 
-        .nav-item .badge {
-            margin-left: auto;
-            background: var(--primary);
-            padding: 0.25rem 0.5rem;
-            border-radius: 999px;
-            font-size: 0.75rem;
-        }
-
-        /* ===== CONTENIDO PRINCIPAL ===== */
+        /* Contenido principal */
         .main-content {
             flex: 1;
-            margin-left: 280px;
             padding: 2rem;
+            overflow-y: auto;
         }
 
-        /* ===== TOP BAR ===== */
-        .top-bar {
-            background: white;
-            padding: 1rem 2rem;
-            border-radius: 12px;
-            margin-bottom: 2rem;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        /* Header del módulo */
+        .module-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-        }
-
-        .page-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--dark);
-        }
-
-        .user-menu {
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-        }
-
-        .user-info {
-            text-align: right;
-        }
-
-        .user-name {
-            font-weight: 600;
-            color: var(--dark);
-        }
-
-        .user-role {
-            font-size: 0.875rem;
-            color: var(--gray);
-        }
-
-        .logout-btn {
-            background: var(--danger);
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: all 0.3s ease;
-        }
-
-        .logout-btn:hover {
-            background: #dc2626;
-        }
-
-        /* ===== CONTENEDOR DE MÓDULOS ===== */
-        .module-container {
-            display: none;
-        }
-
-        .module-container.active {
-            display: block;
-        }
-
-        /* ===== TARJETAS DE ESTADÍSTICAS ===== */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
             margin-bottom: 2rem;
-        }
-
-        .stat-card {
             background: white;
             padding: 1.5rem;
-            border-radius: 12px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
 
-        .stat-info h3 {
-            font-size: 0.875rem;
-            color: var(--gray);
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-info .stat-value {
-            font-size: 2rem;
-            font-weight: 600;
-            color: var(--dark);
-        }
-
-        .stat-icon {
-            width: 48px;
-            height: 48px;
-            background: var(--primary);
-            color: white;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-        }
-
-        /* ===== TABLAS PROFESIONALES ===== */
-        .table-container {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            margin-top: 1.5rem;
-        }
-
-        .table-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .table-title {
-            font-size: 1.25rem;
-            font-weight: 600;
+        .module-header h2 {
+            color: #1a2634;
+            font-size: 1.8rem;
         }
 
         .btn-primary {
-            background: var(--primary);
+            background: #27ae60;
             color: white;
             border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
             cursor: pointer;
-            font-weight: 500;
-            display: inline-flex;
+            font-size: 1rem;
+            display: flex;
             align-items: center;
-            gap: 0.5rem;
-            transition: all 0.3s ease;
+            gap: 8px;
         }
 
         .btn-primary:hover {
-            background: var(--primary-dark);
+            background: #219a52;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        /* Tabla */
+        .table-container {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            overflow-x: auto;
         }
 
         table {
@@ -290,47 +190,25 @@
         }
 
         th {
-            text-align: left;
+            background: #f8f9fa;
             padding: 1rem;
-            background: var(--light);
-            color: var(--secondary);
+            text-align: left;
             font-weight: 600;
-            font-size: 0.875rem;
+            color: #495057;
+            border-bottom: 2px solid #dee2e6;
         }
 
         td {
             padding: 1rem;
-            border-bottom: 1px solid #e2e8f0;
+            border-bottom: 1px solid #dee2e6;
+            color: #212529;
         }
 
         tr:hover {
-            background: var(--light);
+            background: #f8f9fa;
         }
 
-        .action-buttons {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .btn-edit {
-            background: var(--warning);
-            color: white;
-            border: none;
-            padding: 0.5rem;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-
-        .btn-delete {
-            background: var(--danger);
-            color: white;
-            border: none;
-            padding: 0.5rem;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-
-        /* ===== FORMULARIOS ===== */
+        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -339,23 +217,18 @@
             width: 100%;
             height: 100%;
             background: rgba(0,0,0,0.5);
-            align-items: center;
-            justify-content: center;
             z-index: 1000;
-        }
-
-        .modal.active {
-            display: flex;
+            overflow-y: auto;
         }
 
         .modal-content {
             background: white;
-            border-radius: 12px;
             width: 90%;
             max-width: 600px;
-            max-height: 90vh;
-            overflow-y: auto;
+            margin: 50px auto;
             padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
         }
 
         .modal-header {
@@ -365,1095 +238,747 @@
             margin-bottom: 1.5rem;
         }
 
-        .modal-header h2 {
+        .modal-header h3 {
             font-size: 1.5rem;
+            color: #1a2634;
         }
 
-        .close-modal {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
+        .close {
+            font-size: 1.8rem;
             cursor: pointer;
-            color: var(--gray);
+            color: #6c757d;
+        }
+
+        .close:hover {
+            color: #dc3545;
         }
 
         .form-group {
-            margin-bottom: 1rem;
+            margin-bottom: 1.2rem;
         }
 
         .form-group label {
             display: block;
             margin-bottom: 0.5rem;
             font-weight: 500;
-            color: var(--dark);
+            color: #495057;
         }
 
         .form-group input,
         .form-group select,
         .form-group textarea {
             width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
+            padding: 0.8rem;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
             font-size: 1rem;
         }
 
         .form-group input:focus,
-        .form-group select:focus {
+        .form-group select:focus,
+        .form-group textarea:focus {
             outline: none;
-            border-color: var(--primary);
+            border-color: #27ae60;
+            box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.1);
         }
 
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
+        .modal-footer {
+            margin-top: 2rem;
+            display: flex;
+            justify-content: flex-end;
             gap: 1rem;
         }
 
-        .btn-submit {
-            background: var(--success);
-            color: white;
-            border: none;
+        /* Mensajes */
+        .alert {
             padding: 1rem;
-            border-radius: 8px;
-            width: 100%;
-            font-size: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-danger {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        /* Badges */
+        .badge {
+            padding: 0.3rem 0.6rem;
+            border-radius: 3px;
+            font-size: 0.8rem;
             font-weight: 600;
-            cursor: pointer;
-            margin-top: 1rem;
+        }
+
+        .badge-success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-warning {
+            background: #fff3cd;
+            color: #856404;
         }
     </style>
 </head>
 <body>
-    <div class="app-container">
-        <!-- SIDEBAR -->
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <h1>
-                    <i class="fas fa-tshirt"></i>
-                    MI LOCAL
-                </h1>
-                <p>Administración completa</p>
+    <header class="admin-header">
+        <h1>
+            👑 MI LOCAL DE ROPA - PANEL ADMINISTRATIVO
+        </h1>
+        <button class="btn-logout" onclick="logout()">Cerrar sesión</button>
+    </header>
+
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <!-- Comercial -->
+            <div class="sidebar-section">
+                <div class="sidebar-title">📦 COMERCIAL</div>
+                <ul class="sidebar-menu">
+                    <li onclick="cargarModulo('compras')" id="menu-compras">
+                        <i>🛒</i> Compras
+                    </li>
+                    <li onclick="cargarModulo('ventas')" id="menu-ventas">
+                        <i>💰</i> Ventas
+                    </li>
+                    <li onclick="cargarModulo('productos')" id="menu-productos">
+                        <i>📦</i> Productos
+                    </li>
+                    <li onclick="cargarModulo('proveedores')" id="menu-proveedores">
+                        <i>🤝</i> Proveedores
+                    </li>
+                    <li onclick="cargarModulo('perfiles')" id="menu-perfiles">
+                        <i>👥</i> Perfiles
+                    </li>
+                </ul>
             </div>
 
-            <nav class="sidebar-nav">
-                <!-- Dashboard -->
-                <div class="nav-section">
-                    <div class="nav-section-title">PRINCIPAL</div>
-                    <div class="nav-item active" data-module="dashboard">
-                        <i class="fas fa-home"></i>
-                        <span>Dashboard</span>
-                    </div>
-                </div>
-
-                <!-- Gestión Comercial -->
-                <div class="nav-section">
-                    <div class="nav-section-title">COMERCIAL</div>
-                    <div class="nav-item" data-module="compras">
-                        <i class="fas fa-shopping-cart"></i>
-                        <span>Compras</span>
-                    </div>
-                    <div class="nav-item" data-module="ventas">
-                        <i class="fas fa-cash-register"></i>
-                        <span>Ventas</span>
-                    </div>
-                    <div class="nav-item" data-module="productos">
-                        <i class="fas fa-box"></i>
-                        <span>Productos</span>
-                    </div>
-                    <div class="nav-item" data-module="proveedores">
-                        <i class="fas fa-truck"></i>
-                        <span>Proveedores</span>
-                    </div>
-                    <div class="nav-item" data-module="perfiles">
-                        <i class="fas fa-users"></i>
-                        <span>Perfiles</span>
-                    </div>
-                </div>
-
-                <!-- Contabilidad -->
-                <div class="nav-section">
-                    <div class="nav-section-title">CONTABILIDAD</div>
-                    <div class="nav-item" data-module="gastos">
-                        <i class="fas fa-money-bill-wave"></i>
-                        <span>Gastos</span>
-                    </div>
-                    <div class="nav-item" data-module="comprobantes">
-                        <i class="fas fa-file-invoice"></i>
-                        <span>Comprobantes</span>
-                    </div>
-                    <div class="nav-item" data-module="movimientos">
-                        <i class="fas fa-exchange-alt"></i>
-                        <span>Movimientos</span>
-                    </div>
-                    <div class="nav-item" data-module="puc">
-                        <i class="fas fa-list"></i>
-                        <span>PUC</span>
-                    </div>
-                </div>
-
-                <!-- Otros -->
-                <div class="nav-section">
-                    <div class="nav-section-title">OTROS</div>
-                    <div class="nav-item" data-module="terceros">
-                        <i class="fas fa-address-book"></i>
-                        <span>Terceros</span>
-                    </div>
-                    <div class="nav-item" data-module="categorias">
-                        <i class="fas fa-tags"></i>
-                        <span>Categorías</span>
-                    </div>
-                </div>
-            </nav>
-        </aside>
-
-        <!-- CONTENIDO PRINCIPAL -->
-        <main class="main-content">
-            <!-- Top Bar -->
-            <div class="top-bar">
-                <h1 class="page-title" id="pageTitle">Dashboard</h1>
-                <div class="user-menu">
-                    <div class="user-info">
-                        <div class="user-name" id="userName">Administrador</div>
-                        <div class="user-role">Local de Ropa</div>
-                    </div>
-                    <button class="logout-btn" onclick="logout()">
-                        <i class="fas fa-sign-out-alt"></i>
-                        Salir
-                    </button>
-                </div>
+            <!-- Contabilidad -->
+            <div class="sidebar-section">
+                <div class="sidebar-title">💰 CONTABILIDAD</div>
+                <ul class="sidebar-menu">
+                    <li onclick="cargarModulo('gastos')" id="menu-gastos">
+                        <i>💸</i> Gastos
+                    </li>
+                    <li onclick="cargarModulo('comprobantes')" id="menu-comprobantes">
+                        <i>📊</i> Comprobantes
+                    </li>
+                    <li onclick="cargarModulo('movimientos')" id="menu-movimientos">
+                        <i>🔄</i> Movimientos
+                    </li>
+                    <li onclick="cargarModulo('puc')" id="menu-puc">
+                        <i>📋</i> PUC
+                    </li>
+                </ul>
             </div>
 
-            <!-- MÓDULO DASHBOARD -->
-            <div id="module-dashboard" class="module-container active">
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-info">
-                            <h3>Ventas Hoy</h3>
-                            <div class="stat-value" id="ventasHoy">$0</div>
-                        </div>
-                        <div class="stat-icon" style="background: var(--success)">
-                            <i class="fas fa-dollar-sign"></i>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-info">
-                            <h3>Productos</h3>
-                            <div class="stat-value" id="totalProductos">0</div>
-                        </div>
-                        <div class="stat-icon" style="background: var(--info)">
-                            <i class="fas fa-box"></i>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-info">
-                            <h3>Clientes</h3>
-                            <div class="stat-value" id="totalClientes">0</div>
-                        </div>
-                        <div class="stat-icon" style="background: var(--warning)">
-                            <i class="fas fa-users"></i>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-info">
-                            <h3>Stock Bajo</h3>
-                            <div class="stat-value" id="stockBajo">0</div>
-                        </div>
-                        <div class="stat-icon" style="background: var(--danger)">
-                            <i class="fas fa-exclamation-triangle"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Gráfico de ventas -->
-                <div class="table-container">
-                    <div class="table-header">
-                        <h3 class="table-title">Ventas Últimos 7 Días</h3>
-                    </div>
-                    <canvas id="ventasChart" style="height: 300px;"></canvas>
-                </div>
-
-                <!-- Últimas ventas -->
-                <div class="table-container">
-                    <div class="table-header">
-                        <h3 class="table-title">Últimas Ventas</h3>
-                    </div>
-                    <table id="ultimasVentas">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Cliente</th>
-                                <th>Fecha</th>
-                                <th>Total</th>
-                                <th>Estado</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td colspan="5">Cargando...</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+            <!-- Otros -->
+            <div class="sidebar-section">
+                <div class="sidebar-title">📎 OTROS</div>
+                <ul class="sidebar-menu">
+                    <li onclick="cargarModulo('terceros')" id="menu-terceros">
+                        <i>🧾</i> Terceros
+                    </li>
+                    <li onclick="cargarModulo('categorias')" id="menu-categorias">
+                        <i>🏷️</i> Categorías
+                    </li>
+                </ul>
             </div>
-
-            <!-- MÓDULO TERCEROS (Clientes y Proveedores) -->
-            <div id="module-terceros" class="module-container">
-                <div class="stats-grid">
-                    <div class="stat-card" onclick="cargarTerceros('cliente')">
-                        <div class="stat-info">
-                            <h3>Clientes</h3>
-                            <div class="stat-value" id="totalClientesTerceros">0</div>
-                        </div>
-                        <div class="stat-icon" style="background: var(--success)">
-                            <i class="fas fa-user-tie"></i>
-                        </div>
-                    </div>
-                    <div class="stat-card" onclick="cargarTerceros('proveedor')">
-                        <div class="stat-info">
-                            <h3>Proveedores</h3>
-                            <div class="stat-value" id="totalProveedoresTerceros">0</div>
-                        </div>
-                        <div class="stat-icon" style="background: var(--info)">
-                            <i class="fas fa-truck"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="table-container">
-                    <div class="table-header">
-                        <h3 class="table-title" id="tercerosTitle">Todos los Terceros</h3>
-                        <button class="btn-primary" onclick="abrirModalTercero()">
-                            <i class="fas fa-plus"></i>
-                            Nuevo Tercero
-                        </button>
-                    </div>
-                    <table id="tablaTerceros">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Tipo</th>
-                                <th>Nombre/Razón Social</th>
-                                <th>NIT/CC</th>
-                                <th>Teléfono</th>
-                                <th>Email</th>
-                                <th>Dirección</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- MÓDULO PUC -->
-            <div id="module-puc" class="module-container">
-                <div class="table-container">
-                    <div class="table-header">
-                        <h3 class="table-title">Plan Único de Cuentas</h3>
-                        <button class="btn-primary" onclick="abrirModalPUC()">
-                            <i class="fas fa-plus"></i>
-                            Nueva Cuenta
-                        </button>
-                    </div>
-                    <table id="tablaPUC">
-                        <thead>
-                            <tr>
-                                <th>Código</th>
-                                <th>Nombre de la Cuenta</th>
-                                <th>Nivel</th>
-                                <th>Naturaleza</th>
-                                <th>Descripción</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- MÓDULO PRODUCTOS -->
-            <div id="module-productos" class="module-container">
-                <div class="table-container">
-                    <div class="table-header">
-                        <h3 class="table-title">Catálogo de Productos</h3>
-                        <button class="btn-primary" onclick="abrirModalProducto()">
-                            <i class="fas fa-plus"></i>
-                            Nuevo Producto
-                        </button>
-                    </div>
-                    <table id="tablaProductos">
-                        <thead>
-                            <tr>
-                                <th>Código</th>
-                                <th>Nombre</th>
-                                <th>Categoría</th>
-                                <th>Talla</th>
-                                <th>Color</th>
-                                <th>Precio Venta</th>
-                                <th>Stock</th>
-                                <th>PUC Inventario</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- MÓDULO COMPRAS -->
-            <div id="module-compras" class="module-container">
-                <div class="table-container">
-                    <div class="table-header">
-                        <h3 class="table-title">Compras a Proveedores</h3>
-                        <button class="btn-primary" onclick="abrirModalCompra()">
-                            <i class="fas fa-plus"></i>
-                            Nueva Compra
-                        </button>
-                    </div>
-                    <table id="tablaCompras">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Fecha</th>
-                                <th>Proveedor</th>
-                                <th>Total</th>
-                                <th>Estado</th>
-                                <th>PUC</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- MÓDULO VENTAS -->
-            <div id="module-ventas" class="module-container">
-                <div class="table-container">
-                    <div class="table-header">
-                        <h3 class="table-title">Registro de Ventas</h3>
-                        <button class="btn-primary" onclick="abrirModalVenta()">
-                            <i class="fas fa-plus"></i>
-                            Nueva Venta
-                        </button>
-                    </div>
-                    <table id="tablaVentas">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Fecha</th>
-                                <th>Cliente</th>
-                                <th>Total</th>
-                                <th>Método Pago</th>
-                                <th>PUC</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- MÓDULO PROVEEDORES -->
-            <div id="module-proveedores" class="module-container">
-                <div class="table-container">
-                    <div class="table-header">
-                        <h3 class="table-title">Proveedores</h3>
-                        <button class="btn-primary" onclick="abrirModalProveedor()">
-                            <i class="fas fa-plus"></i>
-                            Nuevo Proveedor
-                        </button>
-                    </div>
-                    <table id="tablaProveedores">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Nombre</th>
-                                <th>Contacto</th>
-                                <th>Teléfono</th>
-                                <th>Email</th>
-                                <th>NIT</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- MÓDULO PERFILES -->
-            <div id="module-perfiles" class="module-container">
-                <div class="table-container">
-                    <div class="table-header">
-                        <h3 class="table-title">Usuarios del Sistema</h3>
-                        <button class="btn-primary" onclick="abrirModalPerfil()">
-                            <i class="fas fa-plus"></i>
-                            Nuevo Usuario
-                        </button>
-                    </div>
-                    <table id="tablaPerfiles">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Nombre</th>
-                                <th>Email</th>
-                                <th>Rol</th>
-                                <th>Fecha Registro</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- MÓDULO GASTOS -->
-            <div id="module-gastos" class="module-container">
-                <div class="table-container">
-                    <div class="table-header">
-                        <h3 class="table-title">Registro de Gastos</h3>
-                        <button class="btn-primary" onclick="abrirModalGasto()">
-                            <i class="fas fa-plus"></i>
-                            Nuevo Gasto
-                        </button>
-                    </div>
-                    <table id="tablaGastos">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Fecha</th>
-                                <th>Concepto</th>
-                                <th>Categoría</th>
-                                <th>Monto</th>
-                                <th>PUC</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- MÓDULO COMPROBANTES -->
-            <div id="module-comprobantes" class="module-container">
-                <div class="table-container">
-                    <div class="table-header">
-                        <h3 class="table-title">Comprobantes Contables</h3>
-                        <button class="btn-primary" onclick="abrirModalComprobante()">
-                            <i class="fas fa-plus"></i>
-                            Nuevo Comprobante
-                        </button>
-                    </div>
-                    <table id="tablaComprobantes">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Tipo</th>
-                                <th>Número</th>
-                                <th>Fecha</th>
-                                <th>Descripción</th>
-                                <th>Total</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- MÓDULO MOVIMIENTOS CONTABLES -->
-            <div id="module-movimientos" class="module-container">
-                <div class="table-container">
-                    <div class="table-header">
-                        <h3 class="table-title">Movimientos Contables</h3>
-                        <button class="btn-primary" onclick="abrirModalMovimiento()">
-                            <i class="fas fa-plus"></i>
-                            Nuevo Asiento
-                        </button>
-                    </div>
-                    <table id="tablaMovimientos">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Fecha</th>
-                                <th>Cuenta PUC</th>
-                                <th>Contrapartida</th>
-                                <th>Débito</th>
-                                <th>Crédito</th>
-                                <th>Descripción</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- MÓDULO CATEGORÍAS -->
-            <div id="module-categorias" class="module-container">
-                <div class="table-container">
-                    <div class="table-header">
-                        <h3 class="table-title">Categorías de Productos</h3>
-                        <button class="btn-primary" onclick="abrirModalCategoria()">
-                            <i class="fas fa-plus"></i>
-                            Nueva Categoría
-                        </button>
-                    </div>
-                    <table id="tablaCategorias">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Nombre</th>
-                                <th>Descripción</th>
-                                <th>Productos</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
-        </main>
-    </div>
-
-    <!-- MODAL PARA TERCEROS -->
-    <div id="modalTercero" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Nuevo Tercero</h2>
-                <button class="close-modal" onclick="cerrarModal('modalTercero')">&times;</button>
-            </div>
-            <form id="formTercero">
-                <div class="form-group">
-                    <label>Tipo de Tercero</label>
-                    <select id="terceroTipo" required>
-                        <option value="cliente">Cliente</option>
-                        <option value="proveedor">Proveedor</option>
-                        <option value="empleado">Empleado</option>
-                        <option value="otro">Otro</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Tipo de Identificación</label>
-                    <select id="terceroTipoId">
-                        <option value="CC">Cédula de Ciudadanía</option>
-                        <option value="NIT">NIT</option>
-                        <option value="CE">Cédula de Extranjería</option>
-                        <option value="PAS">Pasaporte</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Número de Identificación</label>
-                    <input type="text" id="terceroNumeroId" required>
-                </div>
-                <div class="form-group">
-                    <label>Nombre o Razón Social</label>
-                    <input type="text" id="terceroNombre" required>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Teléfono</label>
-                        <input type="text" id="terceroTelefono">
-                    </div>
-                    <div class="form-group">
-                        <label>Email</label>
-                        <input type="email" id="terceroEmail">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>Dirección</label>
-                    <input type="text" id="terceroDireccion">
-                </div>
-                <div class="form-group">
-                    <label>Ciudad</label>
-                    <input type="text" id="terceroCiudad">
-                </div>
-                <button type="submit" class="btn-submit">Guardar Tercero</button>
-            </form>
         </div>
-    </div>
 
-    <!-- MODAL PARA PUC -->
-    <div id="modalPUC" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Nueva Cuenta PUC</h2>
-                <button class="close-modal" onclick="cerrarModal('modalPUC')">&times;</button>
-            </div>
-            <form id="formPUC">
-                <div class="form-group">
-                    <label>Código de Cuenta</label>
-                    <input type="text" id="pucCodigo" placeholder="Ej: 1105" required>
-                </div>
-                <div class="form-group">
-                    <label>Nombre de la Cuenta</label>
-                    <input type="text" id="pucNombre" placeholder="Ej: Caja General" required>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Nivel</label>
-                        <select id="pucNivel">
-                            <option value="1">1 - Clase</option>
-                            <option value="2">2 - Grupo</option>
-                            <option value="3">3 - Cuenta</option>
-                            <option value="4">4 - Subcuenta</option>
-                            <option value="5">5 - Auxiliar</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Naturaleza</label>
-                        <select id="pucNaturaleza">
-                            <option value="debito">Débito</option>
-                            <option value="credito">Crédito</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>Cueta Padre (opcional)</label>
-                    <select id="pucPadre">
-                        <option value="">Ninguna (Raíz)</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Descripción</label>
-                    <textarea id="pucDescripcion" rows="3"></textarea>
-                </div>
-                <button type="submit" class="btn-submit">Guardar Cuenta</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- MODAL PARA PRODUCTOS -->
-    <div id="    <!-- MODAL PARA PRODUCTOS (continuación) -->
-    <div id="modalProducto" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Nuevo Producto</h2>
-                <button class="close-modal" onclick="cerrarModal('modalProducto')">&times;</button>
-            </div>
-            <form id="formProducto">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Código de Barras</label>
-                        <input type="text" id="productoCodigo" placeholder="Ej: 7701234567890">
-                    </div>
-                    <div class="form-group">
-                        <label>Referencia</label>
-                        <input type="text" id="productoReferencia" placeholder="Ej: CAM-001">
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label>Nombre del Producto</label>
-                    <input type="text" id="productoNombre" placeholder="Ej: Camisa Manga Larga" required>
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Categoría</label>
-                        <select id="productoCategoria" required>
-                            <option value="">Seleccionar categoría</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Subcategoría</label>
-                        <input type="text" id="productoSubcategoria" placeholder="Ej: Formal, Casual">
-                    </div>
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Talla</label>
-                        <input type="text" id="productoTalla" placeholder="Ej: S, M, L, XL, 36, 38">
-                    </div>
-                    <div class="form-group">
-                        <label>Color</label>
-                        <input type="text" id="productoColor" placeholder="Ej: Azul, Negro">
-                    </div>
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Precio de Compra</label>
-                        <input type="number" id="productoPrecioCompra" placeholder="$ 0.00" step="100">
-                    </div>
-                    <div class="form-group">
-                        <label>Precio de Venta</label>
-                        <input type="number" id="productoPrecioVenta" placeholder="$ 0.00" step="100" required>
-                    </div>
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Stock Actual</label>
-                        <input type="number" id="productoStock" value="0" min="0">
-                    </div>
-                    <div class="form-group">
-                        <label>Stock Mínimo</label>
-                        <input type="number" id="productoStockMinimo" value="5" min="0">
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label>Ubicación en Tienda</label>
-                    <input type="text" id="productoUbicacion" placeholder="Ej: Estante 3, Sección A">
-                </div>
-                
-                <div class="form-group">
-                    <label>Descripción</label>
-                    <textarea id="productoDescripcion" rows="2" placeholder="Descripción detallada del producto"></textarea>
-                </div>
-                
-                <h3 style="margin: 1.5rem 0 1rem 0; font-size: 1.1rem;">Configuración Contable (PUC)</h3>
-                
-                <div class="form-group">
-                    <label>Cuenta de Inventario</label>
-                    <select id="productoPUCInventario" required>
-                        <option value="">Seleccionar cuenta PUC</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label>Cuenta de Ingresos (Ventas)</label>
-                    <select id="productoPUCVentas" required>
-                        <option value="">Seleccionar cuenta PUC</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label>Cuenta de Costo de Ventas</label>
-                    <select id="productoPUCCosto" required>
-                        <option value="">Seleccionar cuenta PUC</option>
-                    </select>
-                </div>
-                
-                <button type="submit" class="btn-submit">Guardar Producto</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- MODAL PARA COMPRAS -->
-    <div id="modalCompra" class="modal">
-        <div class="modal-content" style="max-width: 800px;">
-            <div class="modal-header">
-                <h2>Nueva Compra</h2>
-                <button class="close-modal" onclick="cerrarModal('modalCompra')">&times;</button>
-            </div>
-            <form id="formCompra">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Proveedor</label>
-                        <select id="compraProveedor" required>
-                            <option value="">Seleccionar proveedor</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Fecha de Compra</label>
-                        <input type="date" id="compraFecha" required>
-                    </div>
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Tipo de Comprobante</label>
-                        <select id="compraTipoComprobante">
-                            <option value="factura">Factura</option>
-                            <option value="recibo">Recibo</option>
-                            <option value="remision">Remisión</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Número de Factura</label>
-                        <input type="text" id="compraNumeroFactura">
-                    </div>
-                </div>
-                
-                <h3 style="margin: 1rem 0;">Detalle de Productos</h3>
-                
-                <div id="detalleCompra">
-                    <!-- Fila de producto dinámica -->
-                    <div class="fila-producto" style="display: grid; grid-template-columns: 3fr 1fr 1fr 1fr auto; gap: 0.5rem; margin-bottom: 0.5rem;">
-                        <select class="compraProducto" style="padding: 0.5rem;">
-                            <option value="">Seleccionar producto</option>
-                        </select>
-                        <input type="number" class="compraCantidad" placeholder="Cant" value="1" min="1" style="padding: 0.5rem;">
-                        <input type="number" class="compraPrecio" placeholder="P. Unit" step="100" style="padding: 0.5rem;">
-                        <input type="number" class="compraSubtotal" placeholder="Subtotal" readonly style="padding: 0.5rem; background: #f1f5f9;">
-                        <button type="button" onclick="eliminarFilaProducto(this)" style="background: var(--danger); color: white; border: none; width: 32px; height: 32px; border-radius: 4px; cursor: pointer;">✕</button>
-                    </div>
-                </div>
-                
-                <button type="button" onclick="agregarFilaProducto()" style="background: var(--info); color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; margin: 0.5rem 0; cursor: pointer;">
-                    <i class="fas fa-plus"></i> Agregar otro producto
+        <!-- Contenido principal -->
+        <div class="main-content">
+            <div class="module-header">
+                <h2 id="module-title">Bienvenido</h2>
+                <button class="btn-primary" id="btn-nuevo" onclick="abrirModalNuevo()">
+                    ➕ Nuevo Registro
                 </button>
-                
-                <div style="text-align: right; margin: 1rem 0; padding: 1rem; background: var(--light); border-radius: 8px;">
-                    <div style="display: flex; justify-content: flex-end; gap: 2rem;">
-                        <span>Subtotal:</span>
-                        <strong id="compraSubtotal">$0</strong>
-                    </div>
-                    <div style="display: flex; justify-content: flex-end; gap: 2rem;">
-                        <span>IVA (19%):</span>
-                        <strong id="compraIVA">$0</strong>
-                    </div>
-                    <div style="display: flex; justify-content: flex-end; gap: 2rem; font-size: 1.2rem; margin-top: 0.5rem;">
-                        <span>Total:</span>
-                        <strong id="compraTotal">$0</strong>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label>Cuenta PUC (Gasto/Inventario)</label>
-                    <select id="compraPUC" required>
-                        <option value="">Seleccionar cuenta contable</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label>Observaciones</label>
-                    <textarea id="compraObservaciones" rows="2"></textarea>
-                </div>
-                
-                <button type="submit" class="btn-submit">Registrar Compra</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- MODAL PARA VENTAS (POS simplificado) -->
-    <div id="modalVenta" class="modal">
-        <div class="modal-content" style="max-width: 800px;">
-            <div class="modal-header">
-                <h2>Nueva Venta</h2>
-                <button class="close-modal" onclick="cerrarModal('modalVenta')">&times;</button>
             </div>
-            <form id="formVenta">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Cliente</label>
-                        <select id="ventaCliente">
-                            <option value="mostrador">Cliente Mostrador (General)</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Fecha</label>
-                        <input type="date" id="ventaFecha" required>
-                    </div>
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Vendedor</label>
-                        <select id="ventaVendedor" required>
-                            <option value="">Seleccionar vendedor</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Método de Pago</label>
-                        <select id="ventaMetodoPago" required>
-                            <option value="efectivo">Efectivo</option>
-                            <option value="tarjeta_credito">Tarjeta de Crédito</option>
-                            <option value="tarjeta_debito">Tarjeta Débito</option>
-                            <option value="transferencia">Transferencia</option>
-                            <option value="otros">Otros</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <h3 style="margin: 1rem 0;">Productos</h3>
-                
-                <!-- Búsqueda rápida de productos -->
-                <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
-                    <input type="text" id="buscarProductoVenta" placeholder="Buscar producto por código o nombre" style="flex: 1; padding: 0.75rem; border: 1px solid #e2e8f0; border-radius: 8px;">
-                    <button type="button" onclick="buscarProductoVenta()" style="background: var(--primary); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; cursor: pointer;">Buscar</button>
-                </div>
-                
-                <div id="detalleVenta">
-                    <!-- Productos se agregarán dinámicamente -->
-                </div>
-                
-                <div style="text-align: right; margin: 1rem 0; padding: 1rem; background: var(--light); border-radius: 8px;">
-                    <div style="display: flex; justify-content: flex-end; gap: 2rem;">
-                        <span>Subtotal:</span>
-                        <strong id="ventaSubtotal">$0</strong>
-                    </div>
-                    <div style="display: flex; justify-content: flex-end; gap: 2rem;">
-                        <span>IVA (19%):</span>
-                        <strong id="ventaIVA">$0</strong>
-                    </div>
-                    <div style="display: flex; justify-content: flex-end; gap: 2rem; font-size: 1.2rem; margin-top: 0.5rem;">
-                        <span>Total:</span>
-                        <strong id="ventaTotal">$0</strong>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label>Cuenta PUC (Ingresos)</label>
-                    <select id="ventaPUC" required>
-                        <option value="">Seleccionar cuenta contable</option>
-                    </select>
-                </div>
-                
-                <button type="submit" class="btn-submit">Finalizar Venta</button>
-            </form>
+
+            <div id="alert" class="alert"></div>
+
+            <div class="table-container" id="table-container">
+                <p style="text-align: center; padding: 2rem;">Selecciona un módulo del menú para comenzar</p>
+            </div>
         </div>
     </div>
 
-    <!-- MODAL PARA GASTOS -->
-    <div id="modalGasto" class="modal">
+    <!-- Modal para crear/editar -->
+    <div id="modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Nuevo Gasto</h2>
-                <button class="close-modal" onclick="cerrarModal('modalGasto')">&times;</button>
+                <h3 id="modal-title">Nuevo Registro</h3>
+                <span class="close" onclick="cerrarModal()">&times;</span>
             </div>
-            <form id="formGasto">
-                <div class="form-group">
-                    <label>Concepto</label>
-                    <input type="text" id="gastoConcepto" placeholder="Ej: Pago de servicios públicos" required>
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Fecha</label>
-                        <input type="date" id="gastoFecha" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Monto</label>
-                        <input type="number" id="gastoMonto" placeholder="$ 0.00" step="100" required>
-                    </div>
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Categoría</label>
-                        <select id="gastoCategoria" required>
-                            <option value="servicios">Servicios Públicos</option>
-                            <option value="alquiler">Alquiler</option>
-                            <option value="nomina">Nómina</option>
-                            <option value="impuestos">Impuestos</option>
-                            <option value="publicidad">Publicidad</option>
-                            <option value="mantenimiento">Mantenimiento</option>
-                            <option value="otros">Otros</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Método de Pago</label>
-                        <select id="gastoMetodoPago">
-                            <option value="efectivo">Efectivo</option>
-                            <option value="banco">Banco</option>
-                            <option value="tarjeta">Tarjeta</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label>Cuenta PUC (Gasto)</label>
-                    <select id="gastoPUC" required>
-                        <option value="">Seleccionar cuenta contable</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label>Observaciones</label>
-                    <textarea id="gastoObservaciones" rows="2"></textarea>
-                </div>
-                
-                <button type="submit" class="btn-submit">Registrar Gasto</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- MODAL PARA MOVIMIENTOS CONTABLES -->
-    <div id="modalMovimiento" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Nuevo Asiento Contable</h2>
-                <button class="close-modal" onclick="cerrarModal('modalMovimiento')">&times;</button>
+            
+            <div id="modal-form"></div>
+            
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="cerrarModal()">Cancelar</button>
+                <button class="btn-primary" onclick="guardarRegistro()">Guardar</button>
             </div>
-            <form id="formMovimiento">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Fecha</label>
-                        <input type="date" id="movimientoFecha" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Tipo de Comprobante</label>
-                        <select id="movimientoTipo">
-                            <option value="ingreso">Comprobante de Ingreso</option>
-                            <option value="egreso">Comprobante de Egreso</option>
-                            <option value="diario">Comprobante Diario</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label>Descripción del Asiento</label>
-                    <input type="text" id="movimientoDescripcion" placeholder="Ej: Registro de venta del día" required>
-                </div>
-                
-                <div id="detalleMovimiento">
-                    <!-- Filas de partida doble -->
-                </div>
-                
-                <button type="button" onclick="agregarFilaMovimiento()" style="background: var(--info); color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; margin: 0.5rem 0; cursor: pointer;">
-                    <i class="fas fa-plus"></i> Agregar línea
-                </button>
-                
-                <div style="display: flex; justify-content: space-between; margin: 1rem 0; padding: 1rem; background: var(--light); border-radius: 8px;">
-                    <span>Total Débitos:</span>
-                    <strong id="totalDebitos">$0</strong>
-                    <span>Total Créditos:</span>
-                    <strong id="totalCreditos">$0</strong>
-                </div>
-                
-                <button type="submit" class="btn-submit">Guardar Asiento</button>
-            </form>
         </div>
     </div>
 
     <script src="../js/supabase-config.js"></script>
     <script>
-        // ===== CONFIGURACIÓN INICIAL =====
-        const token = localStorage.getItem('admin_token');
+        // ============================================
+        // CONFIGURACIÓN Y ESTADO GLOBAL
+        // ============================================
+        const token = JSON.parse(localStorage.getItem('admin_token'));
+        let moduloActual = null;
+        let registrosActuales = [];
+        let editandoId = null;
+        let pucOptions = [];
+
+        // Verificar autenticación
         if (!token) {
             window.location.href = 'login.html';
         }
 
-        const tokenData = JSON.parse(token);
-        const accessToken = tokenData.access_token;
+        // ============================================
+        // MAPEO DE TABLAS Y CAMPOS POR MÓDULO
+        // ============================================
+        const configModulos = {
+            productos: {
+                tabla: 'productos',
+                titulo: 'Productos',
+                campos: [
+                    { nombre: 'codigo', tipo: 'text', label: 'Código', required: true },
+                    { nombre: 'nombre', tipo: 'text', label: 'Nombre', required: true },
+                    { nombre: 'descripcion', tipo: 'textarea', label: 'Descripción' },
+                    { nombre: 'categoria', tipo: 'select', label: 'Categoría', options: 'categorias' },
+                    { nombre: 'talla', tipo: 'text', label: 'Talla' },
+                    { nombre: 'color', tipo: 'text', label: 'Color' },
+                    { nombre: 'precio_compra', tipo: 'number', label: 'Precio Compra', step: '0.01' },
+                    { nombre: 'precio_venta', tipo: 'number', label: 'Precio Venta', required: true, step: '0.01' },
+                    { nombre: 'stock_actual', tipo: 'number', label: 'Stock Actual', required: true },
+                    { nombre: 'stock_minimo', tipo: 'number', label: 'Stock Mínimo', value: 5 },
+                    { nombre: 'proveedor_id', tipo: 'select', label: 'Proveedor', options: 'proveedores' }
+                ]
+            },
+            proveedores: {
+                tabla: 'proveedores',
+                titulo: 'Proveedores',
+                campos: [
+                    { nombre: 'nombre', tipo: 'text', label: 'Nombre/Razón Social', required: true },
+                    { nombre: 'contacto', tipo: 'text', label: 'Persona de Contacto' },
+                    { nombre: 'telefono', tipo: 'text', label: 'Teléfono' },
+                    { nombre: 'email', tipo: 'email', label: 'Email' },
+                    { nombre: 'direccion', tipo: 'textarea', label: 'Dirección' },
+                    { nombre: 'nit', tipo: 'text', label: 'NIT' }
+                ]
+            },
+            compras: {
+                tabla: 'compras',
+                titulo: 'Compras',
+                campos: [
+                    { nombre: 'fecha', tipo: 'date', label: 'Fecha', required: true, value: new Date().toISOString().split('T')[0] },
+                    { nombre: 'proveedor_id', tipo: 'select', label: 'Proveedor', required: true, options: 'proveedores' },
+                    { nombre: 'total', tipo: 'number', label: 'Total', required: true, step: '0.01' },
+                    { nombre: 'estado', tipo: 'select', label: 'Estado', options: [
+                        { value: 'Pendiente', label: 'Pendiente' },
+                        { value: 'Recibida', label: 'Recibida' },
+                        { value: 'Pagada', label: 'Pagada' }
+                    ]},
+                    { nombre: 'puc_codigo', tipo: 'select', label: 'Cuenta PUC', options: 'puc' }
+                ]
+            },
+            ventas: {
+                tabla: 'ventas',
+                titulo: 'Ventas',
+                campos: [
+                    { nombre: 'fecha', tipo: 'datetime-local', label: 'Fecha y Hora', required: true },
+                    { nombre: 'total', tipo: 'number', label: 'Total', required: true, step: '0.01' },
+                    { nombre: 'metodo_pago', tipo: 'select', label: 'Método de Pago', options: [
+                        { value: 'Efectivo', label: 'Efectivo' },
+                        { value: 'Tarjeta', label: 'Tarjeta' },
+                        { value: 'Transferencia', label: 'Transferencia' }
+                    ]},
+                    { nombre: 'vendedor_id', tipo: 'select', label: 'Vendedor', options: 'perfiles' },
+                    { nombre: 'cliente', tipo: 'text', label: 'Cliente (opcional)' }
+                ]
+            },
+            gastos: {
+                tabla: 'gastos',
+                titulo: 'Gastos',
+                campos: [
+                    { nombre: 'fecha', tipo: 'date', label: 'Fecha', required: true },
+                    { nombre: 'concepto', tipo: 'text', label: 'Concepto', required: true },
+                    { nombre: 'categoria', tipo: 'select', label: 'Categoría', options: [
+                        { value: 'Servicios', label: 'Servicios' },
+                        { value: 'Alquiler', label: 'Alquiler' },
+                        { value: 'Sueldos', label: 'Sueldos' },
+                        { value: 'Publicidad', label: 'Publicidad' },
+                        { value: 'Otros', label: 'Otros' }
+                    ]},
+                    { nombre: 'monto', tipo: 'number', label: 'Monto', required: true, step: '0.01' },
+                    { nombre: 'metodo_pago', tipo: 'select', label: 'Método de Pago', options: [
+                        { value: 'Efectivo', label: 'Efectivo' },
+                        { value: 'Tarjeta', label: 'Tarjeta' },
+                        { value: 'Transferencia', label: 'Transferencia' }
+                    ]},
+                    { nombre: 'puc_codigo', tipo: 'select', label: 'Cuenta PUC', options: 'puc' }
+                ]
+            },
+            perfiles: {
+                tabla: 'perfiles',
+                titulo: 'Perfiles de Usuario',
+                campos: [
+                    { nombre: 'nombre', tipo: 'text', label: 'Nombre Completo', required: true },
+                    { nombre: 'email', tipo: 'email', label: 'Email', required: true },
+                    { nombre: 'rol', tipo: 'select', label: 'Rol', options: [
+                        { value: 'admin', label: 'Administrador' },
+                        { value: 'vendedor', label: 'Vendedor' },
+                        { value: 'contador', label: 'Contador' }
+                    ]}
+                ]
+            },
+            puc: {
+                tabla: 'puc',
+                titulo: 'Plan Único de Cuentas',
+                campos: [
+                    { nombre: 'codigo', tipo: 'text', label: 'Código', required: true },
+                    { nombre: 'nombre', tipo: 'text', label: 'Nombre de la Cuenta', required: true },
+                    { nombre: 'nivel', tipo: 'number', label: 'Nivel', required: true },
+                    { nombre: 'tipo', tipo: 'select', label: 'Tipo', options: [
+                        { value: 'Activo', label: 'Activo' },
+                        { value: 'Pasivo', label: 'Pasivo' },
+                        { value: 'Patrimonio', label: 'Patrimonio' },
+                        { value: 'Ingreso', label: 'Ingreso' },
+                        { value: 'Gasto', label: 'Gasto' }
+                    ]}
+                ]
+            },
+            terceros: {
+                tabla: 'terceros',
+                titulo: 'Terceros',
+                campos: [
+                    { nombre: 'tipo', tipo: 'select', label: 'Tipo', required: true, options: [
+                        { value: 'Cliente', label: 'Cliente' },
+                        { value: 'Proveedor', label: 'Proveedor' },
+                        { value: 'Empleado', label: 'Empleado' },
+                        { value: 'Otro', label: 'Otro' }
+                    ]},
+                    { nombre: 'nombre', tipo: 'text', label: 'Nombre/Razón Social', required: true },
+                    { nombre: 'identificacion', tipo: 'text', label: 'NIT/CC' },
+                    { nombre: 'telefono', tipo: 'text', label: 'Teléfono' },
+                    { nombre: 'email', tipo: 'email', label: 'Email' },
+                    { nombre: 'direccion', tipo: 'textarea', label: 'Dirección' }
+                ]
+            },
+            categorias: {
+                tabla: 'categorias',
+                titulo: 'Categorías',
+                campos: [
+                    { nombre: 'nombre', tipo: 'text', label: 'Nombre', required: true },
+                    { nombre: 'descripcion', tipo: 'textarea', label: 'Descripción' }
+                ]
+            },
+            comprobantes: {
+                tabla: 'comprobantes',
+                titulo: 'Comprobantes',
+                campos: [
+                    { nombre: 'fecha', tipo: 'date', label: 'Fecha', required: true },
+                    { nombre: 'tipo', tipo: 'select', label: 'Tipo', options: [
+                        { value: 'Factura', label: 'Factura' },
+                        { value: 'Recibo', label: 'Recibo' },
+                        { value: 'Nota Crédito', label: 'Nota Crédito' },
+                        { value: 'Nota Débito', label: 'Nota Débito' }
+                    ]},
+                    { nombre: 'numero', tipo: 'text', label: 'Número', required: true },
+                    { nombre: 'tercero_id', tipo: 'select', label: 'Tercero', options: 'terceros' },
+                    { nombre: 'valor', tipo: 'number', label: 'Valor', required: true, step: '0.01' },
+                    { nombre: 'estado', tipo: 'select', label: 'Estado', options: [
+                        { value: 'Activo', label: 'Activo' },
+                        { value: 'Anulado', label: 'Anulado' }
+                    ]}
+                ]
+            },
+            movimientos: {
+                tabla: 'movimientos_contables',
+                titulo: 'Movimientos Contables',
+                campos: [
+                    { nombre: 'fecha', tipo: 'date', label: 'Fecha', required: true },
+                    { nombre: 'comprobante_id', tipo: 'select', label: 'Comprobante', options: 'comprobantes' },
+                    { nombre: 'puc_codigo', tipo: 'select', label: 'Cuenta PUC (Debe)', required: true, options: 'puc' },
+                    { nombre: 'puc_contrapartida', tipo: 'select', label: 'Cuenta PUC (Haber)', required: true, options: 'puc' },
+                    { nombre: 'valor', tipo: 'number', label: 'Valor', required: true, step: '0.01' },
+                    { nombre: 'descripcion', tipo: 'textarea', label: 'Descripción' }
+                ]
+            }
+        };
 
-        // ===== NAVEGACIÓN ENTRE MÓDULOS =====
-        document.querySelectorAll('.nav-item').forEach(item => {
-            item.addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                // Remover active de todos
-                document.querySelectorAll('.nav-item').forEach(nav => {
-                    nav.classList.remove('active');
+        // ============================================
+        // FUNCIONES DE UTILIDAD
+        // ============================================
+        function mostrarAlerta(mensaje, tipo = 'success') {
+            const alert = document.getElementById('alert');
+            alert.className = `alert alert-${tipo}`;
+            alert.textContent = mensaje;
+            alert.style.display = 'block';
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 3000);
+        }
+
+        function cerrarModal() {
+            document.getElementById('modal').style.display = 'none';
+            editandoId = null;
+        }
+
+        // ============================================
+        // CARGAR DATOS DE TABLAS RELACIONADAS
+        // ============================================
+        async function cargarOpcionesParaSelect(tabla) {
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/${tabla}?select=*`, {
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${token.access_token}`
+                    }
                 });
-                
-                // Agregar active al actual
-                this.classList.add('active');
-                
-                // Ocultar todos los módulos
-                document.querySelectorAll('.module-container').forEach(module => {
-                    module.classList.remove('active');
-                });
-                
-                // Mostrar el módulo seleccionado
-                const moduleId = this.getAttribute('data-module');
-                document.getElementById(`module-${moduleId}`).classList.add('active');
-                
-                // Actualizar título
-                const moduleName = this.querySelector('span').textContent;
-                document.getElementById('pageTitle').textContent = moduleName;
-                
-                // Cargar datos del módulo
-                cargarDatosModulo(moduleId);
+                if (response.ok) {
+                    return await response.json();
+                }
+                return [];
+            } catch (error) {
+                console.error(`Error cargando ${tabla}:`, error);
+                return [];
+            }
+        }
+
+        // ============================================
+        // CARGAR MÓDULO SELECCIONADO
+        // ============================================
+        async function cargarModulo(modulo) {
+            // Actualizar menú activo
+            document.querySelectorAll('.sidebar-menu li').forEach(li => {
+                li.classList.remove('active');
             });
-        });
+            document.getElementById(`menu-${modulo}`).classList.add('active');
+            
+            moduloActual = modulo;
+            const config = configModulos[modulo];
+            
+            if (!config) return;
+            
+            document.getElementById('module-title').textContent = config.titulo;
+            
+            // Cargar datos
+            await cargarRegistros();
+        }
 
-        // ===== FUNCIONES PARA CERRAR SESIÓN =====
+        // ============================================
+        // CARGAR REGISTROS DESDE SUPABASE
+        // ============================================
+        async function cargarRegistros() {
+            if (!moduloActual) return;
+            
+            const config = configModulos[moduloActual];
+            
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/${config.tabla}?select=*`, {
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${token.access_token}`
+                    }
+                });
+                
+                if (response.ok) {
+                    registrosActuales = await response.json();
+                    mostrarTabla();
+                } else {
+                    mostrarAlerta('Error al cargar los datos', 'danger');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                mostrarAlerta('Error de conexión', 'danger');
+            }
+        }
+
+        // ============================================
+        // MOSTRAR TABLA DE REGISTROS
+        // ============================================
+        function mostrarTabla() {
+            if (!moduloActual || registrosActuales.length === 0) {
+                document.getElementById('table-container').innerHTML = `
+                    <p style="text-align: center; padding: 2rem;">No hay registros. ¡Crea el primero!</p>
+                `;
+                return;
+            }
+            
+            const config = configModulos[moduloActual];
+            const columnas = Object.keys(registrosActuales[0]).filter(col => 
+                !['created_at'].includes(col)
+            );
+            
+            let html = '<table><thead><tr>';
+            
+            // Cabeceras
+            columnas.forEach(col => {
+                const campo = config.campos.find(c => c.nombre === col);
+                html += `<th>${campo ? campo.label : col}</th>`;
+            });
+            html += '<th>Acciones</th></tr></thead><tbody>';
+            
+            // Datos
+            registrosActuales.forEach(row => {
+                html += '<tr>';
+                columnas.forEach(col => {
+                    let valor = row[col];
+                    
+                    // Formatear según tipo
+                    if (col.includes('fecha') || col === 'created_at') {
+                        if (valor) valor = new Date(valor).toLocaleString();
+                    }
+                    if (col.includes('precio') || col.includes('total') || col.includes('monto') || col.includes('valor')) {
+                        if (valor) valor = `$${Number(valor).toLocaleString()}`;
+                    }
+                    
+                    html += `<td>${valor !== null && valor !== undefined ? valor : '-'}</td>`;
+                });
+                
+                html += `
+                    <td>
+                        <button class="btn-secondary" onclick="editarRegistro(${row.id})">✏️ Editar</button>
+                        <button class="btn-danger" onclick="eliminarRegistro(${row.id})">🗑️ Eliminar</button>
+                    </td>
+                `;
+                html += '</tr>';
+            });
+            
+            html += '</tbody></table>';
+            document.getElementById('table-container').innerHTML = html;
+        }
+
+        // ============================================
+        // ABRIR MODAL PARA NUEVO REGISTRO
+        // ============================================
+        async function abrirModalNuevo() {
+            if (!moduloActual) {
+                mostrarAlerta('Selecciona un módulo primero', 'warning');
+                return;
+            }
+            
+            editandoId = null;
+            document.getElementById('modal-title').textContent = `Nuevo ${configModulos[moduloActual].titulo}`;
+            
+            const config = configModulos[moduloActual];
+            let html = '';
+            
+            // Generar formulario
+            for (const campo of config.campos) {
+                html += '<div class="form-group">';
+                html += `<label>${campo.label} ${campo.required ? '*' : ''}</label>`;
+                
+                if (campo.tipo === 'select') {
+                    html += `<select id="campo-${campo.nombre}" ${campo.required ? 'required' : ''}>`;
+                    
+                    if (Array.isArray(campo.options)) {
+                        // Opciones fijas
+                        html += '<option value="">Seleccione...</option>';
+                        campo.options.forEach(opt => {
+                            html += `<option value="${opt.value}">${opt.label}</option>`;
+                        });
+                    } else if (typeof campo.options === 'string') {
+                        // Opciones de otra tabla
+                        html += '<option value="">Cargando...</option>';
+                        // Esto se llenará después
+                    }
+                    
+                    html += '</select>';
+                } else if (campo.tipo === 'textarea') {
+                    html += `<textarea id="campo-${campo.nombre}" ${campo.required ? 'required' : ''}></textarea>`;
+                } else {
+                    html += `<input type="${campo.tipo}" id="campo-${campo.nombre}" 
+                        ${campo.required ? 'required' : ''} 
+                        ${campo.step ? `step="${campo.step}"` : ''}
+                        ${campo.value ? `value="${campo.value}"` : ''}>`;
+                }
+                
+                html += '</div>';
+            }
+            
+            document.getElementById('modal-form').innerHTML = html;
+            
+            // Cargar opciones para selects
+            for (const campo of config.campos) {
+                if (campo.tipo === 'select' && typeof campo.options === 'string') {
+                    const datos = await cargarOpcionesParaSelect(campo.options);
+                    const select = document.getElementById(`campo-${campo.nombre}`);
+                    
+                    if (select) {
+                        select.innerHTML = '<option value="">Seleccione...</option>';
+                        
+                        if (campo.options === 'puc') {
+                            datos.forEach(item => {
+                                select.innerHTML += `<option value="${item.codigo}">${item.codigo} - ${item.nombre}</option>`;
+                            });
+                        } else if (campo.options === 'proveedores') {
+                            datos.forEach(item => {
+                                select.innerHTML += `<option value="${item.id}">${item.nombre}</option>`;
+                            });
+                        } else if (campo.options === 'perfiles') {
+                            datos.forEach(item => {
+                                select.innerHTML += `<option value="${item.id}">${item.nombre}</option>`;
+                            });
+                        } else {
+                            datos.forEach(item => {
+                                select.innerHTML += `<option value="${item.id}">${item.nombre || item.descripcion || item.id}</option>`;
+                            });
+                        }
+                    }
+                }
+            }
+            
+            document.getElementById('modal').style.display = 'block';
+        }
+
+        // ============================================
+        // EDITAR REGISTRO
+        // ============================================
+        async function editarRegistro(id) {
+            const registro = registrosActuales.find(r => r.id === id);
+            if (!registro) return;
+            
+            editandoId = id;
+            await abrirModalNuevo();
+            
+            // Llenar campos con datos existentes
+            const config = configModulos[moduloActual];
+            
+            // Esperar un momento para que se carguen los selects
+            setTimeout(() => {
+                for (const campo of config.campos) {
+                    const input = document.getElementById(`campo-${campo.nombre}`);
+                    if (input) {
+                        if (campo.tipo === 'date' && registro[campo.nombre]) {
+                            input.value = registro[campo.nombre].split('T')[0];
+                        } else {
+                            input.value = registro[campo.nombre] || '';
+                        }
+                    }
+                }
+            }, 500);
+        }
+
+        // ============================================
+        // GUARDAR REGISTRO (CREAR O ACTUALIZAR)
+        // ============================================
+        async function guardarRegistro() {
+            if (!moduloActual) return;
+            
+            const config = configModulos[moduloActual];
+            const datos = {};
+            
+            // Recoger datos del formulario
+            for (const campo of config.campos) {
+                const input = document.getElementById(`campo-${campo.nombre}`);
+                if (input) {
+                    let valor = input.value;
+                    
+                    if (campo.required && !valor) {
+                        mostrarAlerta(`El campo ${campo.label} es obligatorio`, 'danger');
+                        return;
+                    }
+                    
+                    if (campo.tipo === 'number' && valor) {
+                        valor = parseFloat(valor);
+                    }
+                    
+                    datos[campo.nombre] = valor || null;
+                }
+            }
+            
+            try {
+                let response;
+                
+                if (editandoId) {
+                    // Actualizar
+                    response = await fetch(`${SUPABASE_URL}/rest/v1/${config.tabla}?id=eq.${editandoId}`, {
+                        method: 'PATCH',
+                        headers: {
+                            'apikey': SUPABASE_KEY,
+                            'Authorization': `Bearer ${token.access_token}`,
+                            'Content-Type': 'application/json',
+                            'Prefer': 'return=minimal'
+                        },
+                        body: JSON.stringify(datos)
+                    });
+                } else {
+                    // Crear nuevo
+                    response = await fetch(`${SUPABASE_URL}/rest/v1/${config.tabla}`, {
+                        method: 'POST',
+                        headers: {
+                            'apikey': SUPABASE_KEY,
+                            'Authorization': `Bearer ${token.access_token}`,
+                            'Content-Type': 'application/json',
+                            'Prefer': 'return=minimal'
+                        },
+                        body: JSON.stringify(datos)
+                    });
+                }
+                
+                if (response.ok || response.status === 201) {
+                    mostrarAlerta(editandoId ? 'Registro actualizado' : 'Registro creado', 'success');
+                    cerrarModal();
+                    await cargarRegistros();
+                } else {
+                    const error = await response.text();
+                    console.error('Error:', error);
+                    mostrarAlerta('Error al guardar', 'danger');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                mostrarAlerta('Error de conexión', 'danger');
+            }
+        }
+
+                // ============================================
+        // ELIMINAR REGISTRO
+        // ============================================
+        async function eliminarRegistro(id) {
+            if (!confirm('¿Estás seguro de eliminar este registro? Esta acción no se puede deshacer.')) {
+                return;
+            }
+            
+            const config = configModulos[moduloActual];
+            
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/${config.tabla}?id=eq.${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${token.access_token}`
+                    }
+                });
+                
+                if (response.ok) {
+                    mostrarAlerta('Registro eliminado correctamente', 'success');
+                    await cargarRegistros();
+                } else {
+                    const error = await response.text();
+                    console.error('Error:', error);
+                    mostrarAlerta('Error al eliminar el registro', 'danger');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                mostrarAlerta('Error de conexión', 'danger');
+            }
+        }
+
+        // ============================================
+        // CERRAR SESIÓN
+        // ============================================
         function logout() {
             if (confirm('¿Estás seguro de cerrar sesión?')) {
                 localStorage.removeItem('admin_token');
@@ -1461,409 +986,14 @@
             }
         }
 
-        // ===== FUNCIONES PARA MODALES =====
-        function abrirModal(modalId) {
-            document.getElementById(modalId).classList.add('active');
-        }
-
-        function cerrarModal(modalId) {
-            document.getElementById(modalId).classList.remove('active');
-        }
-
-        // Cerrar modal haciendo clic fuera
-        window.onclick = function(event) {
-            if (event.target.classList.contains('modal')) {
-                event.target.classList.remove('active');
+        // ============================================
+        // INICIALIZACIÓN
+        // ============================================
+        document.addEventListener('DOMContentLoaded', () => {
+            // Verificar token nuevamente
+            if (!token) {
+                window.location.href = 'login.html';
             }
-        };
-
-        // ===== FUNCIONES PARA TERCEROS =====
-        function abrirModalTercero() {
-            cargarSelectsTercero();
-            abrirModal('modalTercero');
-        }
-
-        async function cargarTerceros(tipo = null) {
-            try {
-                let url = `${SUPABASE_URL}/rest/v1/terceros?select=*`;
-                if (tipo) {
-                    url += `&tipo=eq.${tipo}`;
-                }
-                
-                const response = await fetch(url, {
-                    headers: {
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${accessToken}`
-                    }
-                });
-                
-                if (response.ok) {
-                    const datos = await response.json();
-                    
-                    // Actualizar contadores
-                    const clientes = datos.filter(t => t.tipo === 'cliente').length;
-                    const proveedores = datos.filter(t => t.tipo === 'proveedor').length;
-                    
-                    document.getElementById('totalClientesTerceros').textContent = clientes;
-                    document.getElementById('totalProveedoresTerceros').textContent = proveedores;
-                    
-                    // Mostrar tabla
-                    mostrarTablaTerceros(datos);
-                }
-            } catch (error) {
-                console.error('Error cargando terceros:', error);
-            }
-        }
-
-        function mostrarTablaTerceros(datos) {
-            const tbody = document.querySelector('#tablaTerceros tbody');
-            
-            if (datos.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8" style="text-align: center;">No hay terceros registrados</td></tr>';
-                return;
-            }
-            
-            tbody.innerHTML = datos.map(t => `
-                <tr>
-                    <td>${t.id}</td>
-                    <td><span class="badge" style="background: ${t.tipo === 'cliente' ? 'var(--success)' : t.tipo === 'proveedor' ? 'var(--info)' : 'var(--warning)'}">${t.tipo}</span></td>
-                    <td>${t.nombre || ''}</td>
-                    <td>${t.tipo_identificacion || ''} ${t.numero_identificacion || ''}</td>
-                    <td>${t.telefono || '-'}</td>
-                    <td>${t.email || '-'}</td>
-                    <td>${t.direccion || ''}</td>
-                    <td class="action-buttons">
-                        <button class="btn-edit" onclick="editarTercero(${t.id})"><i class="fas fa-edit"></i></button>
-                        <button class="btn-delete" onclick="eliminarTercero(${t.id})"><i class="fas fa-trash"></i></button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        // ===== FUNCIONES PARA PUC =====
-        function abrirModalPUC() {
-            cargarPUCSelect();
-            abrirModal('modalPUC');
-        }
-
-        async function cargarPUC() {
-            try {
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/puc?select=*&order=codigo.asc`, {
-                    headers: {
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${accessToken}`
-                    }
-                });
-                
-                if (response.ok) {
-                    const datos = await response.json();
-                    mostrarTablaPUC(datos);
-                }
-            } catch (error) {
-                console.error('Error cargando PUC:', error);
-            }
-        }
-
-        function mostrarTablaPUC(datos) {
-            const tbody = document.querySelector('#tablaPUC tbody');
-            
-            if (datos.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No hay cuentas PUC registradas</td></tr>';
-                return;
-            }
-            
-            tbody.innerHTML = datos.map(c => `
-                <tr>
-                    <td><strong>${c.codigo}</strong></td>
-                    <td>${c.nombre}</td>
-                    <td>${c.nivel || '-'}</td>
-                    <td><span class="badge" style="background: ${c.naturaleza === 'debito' ? 'var(--info)' : 'var(--warning)'}">${c.naturaleza}</span></td>
-                    <td>${c.descripcion || '-'}</td>
-                    <td class="action-buttons">
-                        <button class="btn-edit" onclick="editarPUC(${c.id})"><i class="fas fa-edit"></i></button>
-                        <button class="btn-delete" onclick="eliminarPUC(${c.id})"><i class="fas fa-trash"></i></button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        async function cargarPUCSelect(selectId, valorSeleccionado = null) {
-            try {
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/puc?select=id,codigo,nombre&order=codigo.asc`, {
-                    headers: {
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${accessToken}`
-                    }
-                });
-                
-                if (response.ok) {
-                    const datos = await response.json();
-                    
-                    // Llenar selects que necesiten PUC
-                    const selects = document.querySelectorAll(selectId || '#productoPUCInventario, #productoPUCVentas, #productoPUCCosto, #compraPUC, #ventaPUC, #gastoPUC, #pucPadre');
-                    
-                    selects.forEach(select => {
-                        if (select) {
-                            const currentValue = select.value;
-                            select.innerHTML = '<option value="">Seleccionar cuenta</option>';
-                            
-                            datos.forEach(c => {
-                                const selected = (currentValue == c.id || valorSeleccionado == c.id) ? 'selected' : '';
-                                select.innerHTML += `<option value="${c.id}" ${selected}>${c.codigo} - ${c.nombre}</option>`;
-                            });
-                        }
-                    });
-                }
-            } catch (error) {
-                console.error('Error cargando PUC:', error);
-            }
-        }
-
-        // ===== FUNCIONES PARA PRODUCTOS =====
-        function abrirModalProducto() {
-            cargarCategoriasSelect();
-            cargarPUCSelect('#productoPUCInventario, #productoPUCVentas, #productoPUCCosto');
-            abrirModal('modalProducto');
-        }
-
-        async function cargarProductos() {
-            try {
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/productos?select=*,categorias(*),puc_inventario(*),puc_ventas(*),puc_costo(*)`, {
-                    headers: {
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${accessToken}`
-                    }
-                });
-                
-                if (response.ok) {
-                    const datos = await response.json();
-                    mostrarTablaProductos(datos);
-                }
-            } catch (error) {
-                console.error('Error cargando productos:', error);
-            }
-        }
-
-        function mostrarTablaProductos(datos) {
-            const tbody = document.querySelector('#tablaProductos tbody');
-            
-            if (datos.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="9" style="text-align: center;">No hay productos registrados</td></tr>';
-                return;
-            }
-            
-            tbody.innerHTML = datos.map(p => `
-                <tr>
-                    <td>${p.codigo || p.referencia || '-'}</td>
-                    <td>${p.nombre}</td>
-                    <td>${p.categorias?.nombre || '-'}</td>
-                    <td>${p.talla || '-'}</td>
-                    <td>${p.color || '-'}</td>
-                    <td>$${Number(p.precio_venta).toLocaleString()}</td>
-                    <td>
-                        <span style="color: ${p.stock_actual <= p.stock_minimo ? 'var(--danger)' : 'var(--success)'}; font-weight: bold;">
-                            ${p.stock_actual || 0}
-                        </span>
-                    </td>
-                    <td>${p.puc_inventario?.codigo || '-'}</td>
-                    <td class="action-buttons">
-                        <button class="btn-edit" onclick="editarProducto(${p.id})"><i class="fas fa-edit"></i></button>
-                        <button class="btn-delete" onclick="eliminarProducto(${p.id})"><i class="fas fa-trash"></i></button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        // ===== FUNCIONES PARA CATEGORÍAS =====
-        async function cargarCategorias() {
-            try {
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/categorias?select=*`, {
-                    headers: {
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${accessToken}`
-                    }
-                });
-                
-                if (response.ok) {
-                    const datos = await response.json();
-                    mostrarTablaCategorias(datos);
-                }
-            } catch (error) {
-                console.error('Error cargando categorías:', error);
-            }
-        }
-
-        function mostrarTablaCategorias(datos) {
-            const tbody = document.querySelector('#tablaCategorias tbody');
-            
-            if (datos.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">No hay categorías registradas</td></tr>';
-                return;
-            }
-            
-            tbody.innerHTML = datos.map(c => `
-                <tr>
-                    <td>${c.id}</td>
-                    <td>${c.nombre}</td>
-                    <td>${c.descripcion || '-'}</td>
-                    <td>${c.productos_count || 0}</td>
-                    <td class="action-buttons">
-                        <button class="btn-edit" onclick="editarCategoria(${c.id})"><i class="fas fa-edit"></i></button>
-                        <button class="btn-delete" onclick="eliminarCategoria(${c.id})"><i class="fas fa-trash"></i></button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        async function cargarCategoriasSelect() {
-            try {
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/categorias?select=id,nombre`, {
-                    headers: {
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${accessToken}`
-                    }
-                });
-                
-                if (response.ok) {
-                    const datos = await response.json();
-                    const select = document.getElementById('productoCategoria');
-                    if (select) {
-                        select.innerHTML = '<option value="">Seleccionar categoría</option>';
-                        datos.forEach(c => {
-                            select.innerHTML += `<option value="${c.id}">${c.nombre}</option>`;
-                        });
-                    }
-                }
-            } catch (error) {
-                console.error('Error cargando categorías:', error);
-            }
-        }
-
-        // ===== FUNCIONES PARA COMPRAS =====
-        function abrirModalCompra() {
-            cargarProveedoresSelect();
-            cargarProductosSelect();
-            cargarPUCSelect('#compraPUC');
-            
-            // Fecha actual por defecto
-            document.getElementById('compraFecha').value = new Date().toISOString().split('T')[0];
-            
-            abrirModal('modalCompra');
-        }
-
-        async function cargarProveedores() {
-            try {
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/proveedores?select=*`, {
-                    headers: {
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${accessToken}`
-                    }
-                });
-                
-                if (response.ok) {
-                    const datos = await response.json();
-                    mostrarTablaProveedores(datos);
-                }
-            } catch (error) {
-                console.error('Error cargando proveedores:', error);
-            }
-        }
-
-        function mostrarTablaProveedores(datos) {
-            const tbody = document.querySelector('#tablaProveedores tbody');
-            
-            if (datos.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">No hay proveedores registrados</td></tr>';
-                return;
-            }
-            
-            tbody.innerHTML = datos.map(p => `
-                <tr>
-                    <td>${p.id}</td>
-                    <td>${p.nombre}</td>
-                    <td>${p.contacto || '-'}</td>
-                    <td>${p.telefono || '-'}</td>
-                    <td>${p.email || '-'}</td>
-                    <td>${p.nit || '-'}</td>
-                    <td class="action-buttons">
-                        <button class="btn-edit" onclick="editarProveedor(${p.id})"><i class="fas fa-edit"></i></button>
-                        <button class="btn-delete" onclick="eliminarProveedor(${p.id})"><i class="fas fa-trash"></i></button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        async function cargarProveedoresSelect() {
-            try {
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/proveedores?select=id,nombre`, {
-                    headers: {
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${accessToken}`
-                    }
-                });
-                
-                if (response.ok) {
-                    const datos = await response.json();
-                    const select = document.getElementById('compraProveedor');
-                    if (select) {
-                        select.innerHTML = '<option value="">Seleccionar proveedor</option>';
-                        datos.forEach(p => {
-                            select.innerHTML += `<option value="${p.id}">${p.nombre}</option>`;
-                        });
-                    }
-                }
-            } catch (error) {
-                console.error('Error cargando proveedores:', error);
-            }
-        }
-
-        // ===== FUNCIÓN PRINCIPAL PARA CARGAR DATOS SEGÚN MÓDULO =====
-        function cargarDatosModulo(modulo) {
-            switch(modulo) {
-                case 'terceros':
-                    cargarTerceros();
-                    break;
-                case 'puc':
-                    cargarPUC();
-                    break;
-                case 'productos':
-                    cargarProductos();
-                    break;
-                case 'categorias':
-                    cargarCategorias();
-                    break;
-                case 'proveedores':
-                    cargarProveedores();
-                    break;
-                case 'compras':
-                    cargarCompras();
-                    break;
-                case 'ventas':
-                    cargarVentas();
-                    break;
-                case 'gastos':
-                    cargarGastos();
-                    break;
-                case 'perfiles':
-                    cargarPerfiles();
-                    break;
-                case 'comprobantes':
-                    cargarComprobantes();
-                    break;
-                case 'movimientos':
-                    cargarMovimientos();
-                    break;
-            }
-        }
-
-        // ===== INICIALIZACIÓN =====
-        document.addEventListener('DOMContentLoaded', function() {
-            // Cargar datos iniciales del dashboard
-            cargarDashboard();
-            
-            // Cargar datos del módulo activo
-            const activeModule = document.querySelector('.nav-item.active').getAttribute('data-module');
-            cargarDatosModulo(activeModule);
         });
     </script>
 </body>
