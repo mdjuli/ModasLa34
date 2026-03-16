@@ -3,81 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Administración - Mi Tienda</title>
+    <title>🌸 MI LOCAL DE ROPA - Dashboard</title>
     <link rel="stylesheet" href="../css/estilo-comun.css">
     <style>
-        /* Estilos específicos del dashboard */
+        /* ===== ESTILOS ROSA BONITOS ===== */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Segoe UI', 'Poppins', 'Arial', sans-serif;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f0f2f5;
+            background: #fff9fc;
+            color: #4a4a4a;
         }
 
-        /* Header mejorado */
+        /* Header degradado rosa */
         .admin-header {
-            background: linear-gradient(135deg, #2c3e50, #1e2a36);
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);
             color: white;
-            padding: 1rem 2rem;
+            padding: 1.5rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(255, 154, 158, 0.3);
         }
 
         .admin-header h1 {
-            font-size: 1.8rem;
+            font-size: 2rem;
             display: flex;
             align-items: center;
             gap: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
         }
 
         .admin-header h1 span {
             font-size: 1rem;
-            background: #27ae60;
+            background: #ff6b6b;
             padding: 0.3rem 0.8rem;
             border-radius: 20px;
             font-weight: normal;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
         .user-info {
             display: flex;
             align-items: center;
             gap: 20px;
+            background: rgba(255,255,255,0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
         }
 
         .user-name {
-            color: #ecf0f1;
+            color: white;
+            font-weight: 500;
         }
 
         .logout-btn {
-            background: #e74c3c;
+            background: #ff6b6b;
             color: white;
             border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 5px;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
             cursor: pointer;
             font-size: 0.9rem;
-            transition: background 0.3s;
+            transition: all 0.3s;
+            border: 1px solid rgba(255,255,255,0.3);
         }
 
         .logout-btn:hover {
-            background: #c0392b;
+            background: #ff4757;
+            transform: scale(1.05);
         }
 
-        /* Menú de navegación principal */
+        /* Menú de navegación - rosado */
         .nav-menu {
             background: white;
             padding: 1rem 2rem;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(255, 182, 193, 0.2);
             display: flex;
             flex-wrap: wrap;
             gap: 0.5rem;
-            border-bottom: 3px solid #27ae60;
+            border-bottom: 3px solid #ffb6c1;
         }
 
         .nav-btn {
@@ -86,9 +95,9 @@
             padding: 0.8rem 1.5rem;
             font-size: 1rem;
             font-weight: 600;
-            color: #2c3e50;
+            color: #ff6b6b;
             cursor: pointer;
-            border-radius: 5px;
+            border-radius: 50px;
             transition: all 0.3s;
             display: flex;
             align-items: center;
@@ -96,13 +105,14 @@
         }
 
         .nav-btn:hover {
-            background: #e8f5e9;
-            color: #27ae60;
+            background: #fff0f3;
+            color: #ff4757;
         }
 
         .nav-btn.active {
-            background: #27ae60;
+            background: #ffb6c1;
             color: white;
+            box-shadow: 0 2px 10px rgba(255, 182, 193, 0.5);
         }
 
         /* Contenido principal */
@@ -112,81 +122,89 @@
             margin: 0 auto;
         }
 
-        /* Tarjetas de resumen (para cada módulo) */
+        /* Tarjetas estilo "pastel" */
         .module-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 1.5rem;
             margin-bottom: 2rem;
         }
 
         .module-card {
             background: white;
-            border-radius: 10px;
-            padding: 1.5rem;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            transition: transform 0.3s;
+            border-radius: 20px;
+            padding: 1.8rem;
+            box-shadow: 0 10px 25px rgba(255, 182, 193, 0.2);
+            transition: all 0.3s;
             cursor: pointer;
+            border: 1px solid #ffe4e9;
         }
 
         .module-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(255, 154, 158, 0.3);
+            border-color: #ffb6c1;
         }
 
         .card-icon {
-            font-size: 2.5rem;
+            font-size: 2.8rem;
             margin-bottom: 1rem;
         }
 
         .card-title {
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             font-weight: bold;
-            color: #2c3e50;
+            color: #ff6b6b;
             margin-bottom: 0.5rem;
         }
 
         .card-description {
-            color: #7f8c8d;
-            font-size: 0.9rem;
+            color: #a5a5a5;
+            font-size: 0.95rem;
             margin-bottom: 1rem;
         }
 
         .card-stats {
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             font-weight: bold;
-            color: #27ae60;
+            color: #ff9a9e;
         }
 
-        /* Tablas de datos */
+        /* Tablas */
         .data-table {
             background: white;
-            border-radius: 10px;
-            padding: 1.5rem;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 20px;
+            padding: 1.8rem;
+            box-shadow: 0 10px 25px rgba(255, 182, 193, 0.15);
             overflow-x: auto;
+            margin-top: 1.5rem;
+            border: 1px solid #ffe4e9;
         }
 
         .data-table h2 {
-            color: #2c3e50;
-            margin-bottom: 1rem;
+            color: #ff6b6b;
+            margin-bottom: 1.5rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            font-size: 1.5rem;
         }
 
         .add-btn {
-            background: #27ae60;
+            background: #ffb6c1;
             color: white;
             border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 5px;
+            padding: 0.6rem 1.2rem;
+            border-radius: 50px;
             cursor: pointer;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+            font-weight: 600;
         }
 
         .add-btn:hover {
-            background: #2ecc71;
+            background: #ff9a9e;
+            transform: scale(1.05);
         }
 
         table {
@@ -195,52 +213,55 @@
         }
 
         th {
-            background: #f8f9fa;
-            color: #2c3e50;
+            background: #fff0f3;
+            color: #ff6b6b;
             font-weight: 600;
             padding: 1rem;
             text-align: left;
-            border-bottom: 2px solid #27ae60;
+            border-bottom: 2px solid #ffb6c1;
         }
 
         td {
             padding: 1rem;
-            border-bottom: 1px solid #ecf0f1;
+            border-bottom: 1px solid #ffe4e9;
         }
 
         tr:hover {
-            background: #f8f9fa;
+            background: #fff9fc;
         }
 
         .action-btn {
             background: none;
             border: none;
-            color: #3498db;
+            color: #ff9a9e;
             cursor: pointer;
             margin: 0 0.3rem;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
+            transition: all 0.2s;
         }
 
         .action-btn:hover {
-            color: #2980b9;
+            color: #ff6b6b;
+            transform: scale(1.1);
         }
 
         .delete-btn {
-            color: #e74c3c;
+            color: #ffb6c1;
         }
 
         .delete-btn:hover {
-            color: #c0392b;
+            color: #ff4757;
         }
 
         /* Formularios */
         .form-container {
             background: white;
-            border-radius: 10px;
-            padding: 1.5rem;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 25px;
+            padding: 2rem;
+            box-shadow: 0 15px 35px rgba(255, 154, 158, 0.2);
             margin-bottom: 2rem;
             display: none;
+            border: 2px solid #ffe4e9;
         }
 
         .form-container.active {
@@ -248,13 +269,13 @@
         }
 
         .form-group {
-            margin-bottom: 1rem;
+            margin-bottom: 1.2rem;
         }
 
         .form-group label {
             display: block;
             margin-bottom: 0.5rem;
-            color: #2c3e50;
+            color: #ff6b6b;
             font-weight: 500;
         }
 
@@ -262,87 +283,110 @@
         .form-group select,
         .form-group textarea {
             width: 100%;
-            padding: 0.8rem;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+            padding: 0.9rem;
+            border: 2px solid #ffe4e9;
+            border-radius: 15px;
             font-size: 1rem;
+            transition: all 0.3s;
+            background: #fff9fc;
         }
 
-        .form-group input:focus {
+        .form-group input:focus,
+        .form-group select:focus {
             outline: none;
-            border-color: #27ae60;
+            border-color: #ffb6c1;
+            box-shadow: 0 0 0 4px rgba(255, 182, 193, 0.2);
         }
 
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 1rem;
+            gap: 1.2rem;
         }
 
         .submit-btn {
-            background: #27ae60;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
             color: white;
             border: none;
             padding: 1rem 2rem;
-            border-radius: 5px;
+            border-radius: 50px;
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 1.1rem;
             font-weight: 600;
             width: 100%;
+            transition: all 0.3s;
+            border: 1px solid rgba(255,255,255,0.3);
         }
 
         .submit-btn:hover {
-            background: #2ecc71;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 154, 158, 0.4);
         }
 
         .cancel-btn {
-            background: #95a5a6;
-            color: white;
-            border: none;
+            background: #ffe4e9;
+            color: #ff6b6b;
+            border: 2px solid #ffb6c1;
             padding: 1rem 2rem;
-            border-radius: 5px;
+            border-radius: 50px;
             cursor: pointer;
             font-size: 1rem;
-            margin-top: 0.5rem;
+            margin-top: 0.8rem;
+            width: 100%;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .cancel-btn:hover {
+            background: #ffd9e2;
         }
 
         /* Alertas */
         .alert {
-            padding: 1rem;
-            border-radius: 5px;
-            margin-bottom: 1rem;
+            padding: 1.2rem;
+            border-radius: 50px;
+            margin-bottom: 1.5rem;
             display: none;
+            font-weight: 500;
         }
 
         .alert.success {
             background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
+            color: #27ae60;
+            border: 2px solid #a3e9b1;
         }
 
         .alert.error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
+            background: #fff0f3;
+            color: #ff4757;
+            border: 2px solid #ffb6c1;
+        }
+
+        /* Badges de estado */
+        .estado-badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .estado-pagada { background: #d4edda; color: #27ae60; }
+        .estado-pendiente { background: #fff3cd; color: #856404; }
+        .estado-recibida { background: #d1ecf1; color: #0c5460; }
+
+        /* PUC - estilo para códigos */
+        .puc-input {
+            background: #fff0f3;
+            border-left: 5px solid #ff9a9e !important;
         }
 
         /* Responsive */
         @media (max-width: 768px) {
-            .nav-menu {
-                flex-direction: column;
-            }
-            
-            .nav-btn {
-                width: 100%;
-            }
-            
-            .module-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .form-row {
-                grid-template-columns: 1fr;
-            }
+            .nav-menu { flex-direction: column; }
+            .nav-btn { width: 100%; }
+            .module-grid { grid-template-columns: 1fr; }
+            .form-row { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -350,7 +394,7 @@
     <!-- Header con información del usuario -->
     <header class="admin-header">
         <h1>
-            👑 MI LOCAL DE ROPA 
+            🌸 MI LOCAL DE ROPA 
             <span>Administración</span>
         </h1>
         <div class="user-info">
@@ -362,13 +406,13 @@
     <!-- Menú de navegación principal -->
     <nav class="nav-menu" id="mainNav">
         <button class="nav-btn active" onclick="cambiarModulo('compras')">
-            🛒 COMPRAS
+            🛍️ COMPRAS
         </button>
         <button class="nav-btn" onclick="cambiarModulo('gastos')">
             💸 GASTOS
         </button>
         <button class="nav-btn" onclick="cambiarModulo('productos')">
-            👕 PRODUCTOS
+            👗 PRODUCTOS
         </button>
         <button class="nav-btn" onclick="cambiarModulo('perfiles')">
             👥 PERFILES
@@ -379,7 +423,7 @@
         <button class="nav-btn" onclick="cambiarModulo('ventas')">
             💰 VENTAS
         </button>
-        <button class="nav-btn" onclick="window.location.href='puc.html'">
+        <button class="nav-btn" onclick="cambiarModulo('contabilidad')">
             📊 CONTABILIDAD
         </button>
     </nav>
@@ -389,11 +433,11 @@
         <!-- Mensajes de alerta -->
         <div id="alertMessage" class="alert"></div>
 
-        <!-- SECCIÓN: COMPRAS -->
+        <!-- ===== MÓDULO COMPRAS (con PUC) ===== -->
         <div id="modulo-compras" class="module-section">
             <div class="module-grid">
                 <div class="module-card" onclick="mostrarFormulario('compra')">
-                    <div class="card-icon">🛒</div>
+                    <div class="card-icon">🛍️</div>
                     <div class="card-title">Nueva Compra</div>
                     <div class="card-description">Registrar compra a proveedor</div>
                     <div class="card-stats">+ Nueva</div>
@@ -412,9 +456,9 @@
                 </div>
             </div>
 
-            <!-- Formulario de compra -->
+            <!-- Formulario de compra con PUC -->
             <div id="form-compra" class="form-container">
-                <h2>🛒 Registrar Nueva Compra</h2>
+                <h2 style="color: #ff6b6b; margin-bottom: 1.5rem;">🛍️ Registrar Nueva Compra</h2>
                 <form onsubmit="event.preventDefault(); guardarCompra()">
                     <div class="form-group">
                         <label>Proveedor:</label>
@@ -422,6 +466,14 @@
                             <option value="">Seleccionar proveedor</option>
                         </select>
                     </div>
+                    
+                    <!-- PUC - Cuenta contable -->
+                    <div class="form-group">
+                        <label>📊 Cuenta PUC (Compra de mercancías):</label>
+                        <input type="text" class="puc-input" id="compra-puc" value="620501" placeholder="Ej: 620501" required>
+                        <small style="color: #ff9a9e;">Código PUC para compra de mercancías</small>
+                    </div>
+                    
                     <div class="form-group">
                         <label>Fecha:</label>
                         <input type="date" id="compra-fecha" required>
@@ -448,7 +500,7 @@
                             <option value="Pagada">Pagada</option>
                         </select>
                     </div>
-                    <button type="submit" class="submit-btn">Guardar Compra</button>
+                    <button type="submit" class="submit-btn">🌸 Guardar Compra</button>
                     <button type="button" class="cancel-btn" onclick="cerrarFormulario('compra')">Cancelar</button>
                 </form>
             </div>
@@ -465,6 +517,7 @@
                             <th>Fecha</th>
                             <th>Proveedor</th>
                             <th>Producto</th>
+                            <th>PUC</th>
                             <th>Cantidad</th>
                             <th>Total</th>
                             <th>Estado</th>
@@ -473,14 +526,14 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td colspan="7" style="text-align: center;">Cargando compras...</td>
+                            <td colspan="8" style="text-align: center;">Cargando compras...</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         </div>
 
-        <!-- SECCIÓN: GASTOS -->
+        <!-- ===== MÓDULO GASTOS (con PUC) ===== -->
         <div id="modulo-gastos" class="module-section" style="display: none;">
             <div class="module-grid">
                 <div class="module-card" onclick="mostrarFormulario('gasto')">
@@ -503,14 +556,28 @@
                 </div>
             </div>
 
-            <!-- Formulario de gasto -->
+            <!-- Formulario de gasto con PUC -->
             <div id="form-gasto" class="form-container">
-                <h2>💸 Registrar Nuevo Gasto</h2>
+                <h2 style="color: #ff6b6b; margin-bottom: 1.5rem;">💸 Registrar Nuevo Gasto</h2>
                 <form onsubmit="event.preventDefault(); guardarGasto()">
                     <div class="form-group">
                         <label>Fecha:</label>
                         <input type="date" id="gasto-fecha" required>
                     </div>
+                    
+                    <!-- PUC para gastos -->
+                    <div class="form-group">
+                        <label>📊 Cuenta PUC:</label>
+                        <select id="gasto-puc" class="puc-input" required>
+                            <option value="">Seleccionar cuenta PUC</option>
+                            <option value="511005">Alquileres (511005)</option>
+                            <option value="511010">Servicios públicos (511010)</option>
+                            <option value="510506">Sueldos (510506)</option>
+                            <option value="513505">Publicidad (513505)</option>
+                            <option value="519595">Otros gastos (519595)</option>
+                        </select>
+                    </div>
+                    
                     <div class="form-group">
                         <label>Concepto:</label>
                         <input type="text" id="gasto-concepto" placeholder="Ej: Alquiler local" required>
@@ -538,16 +605,8 @@
                             <option value="Transferencia">Transferencia</option>
                             <option value="Tarjeta">Tarjeta</option>
                         </select>
-                        <!-- Dentro del formulario de gastos, después del select de método de pago -->
-<div class="form-group">
-    <label>Código PUC (Contabilidad):</label>
-    <select id="gasto-puc" class="puc-select" required>
-        <option value="">Seleccionar código contable</option>
-        <!-- Se llenará con JavaScript -->
-    </select>
-</div> 
                     </div>
-                    <button type="submit" class="submit-btn">Guardar Gasto</button>
+                    <button type="submit" class="submit-btn">🌸 Guardar Gasto</button>
                     <button type="button" class="cancel-btn" onclick="cerrarFormulario('gasto')">Cancelar</button>
                 </form>
             </div>
@@ -562,6 +621,7 @@
                     <thead>
                         <tr>
                             <th>Fecha</th>
+                            <th>PUC</th>
                             <th>Concepto</th>
                             <th>Categoría</th>
                             <th>Monto</th>
@@ -571,18 +631,18 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td colspan="6" style="text-align: center;">Cargando gastos...</td>
+                            <td colspan="7" style="text-align: center;">Cargando gastos...</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         </div>
 
-        <!-- SECCIÓN: PRODUCTOS -->
+        <!-- ===== MÓDULO PRODUCTOS (con PUC) ===== -->
         <div id="modulo-productos" class="module-section" style="display: none;">
             <div class="module-grid">
                 <div class="module-card" onclick="mostrarFormulario('producto')">
-                    <div class="card-icon">👕</div>
+                    <div class="card-icon">👗</div>
                     <div class="card-title">Nuevo Producto</div>
                     <div class="card-description">Agregar al inventario</div>
                     <div class="card-stats">+ Nuevo</div>
@@ -601,14 +661,22 @@
                 </div>
             </div>
 
-            <!-- Formulario de producto -->
+            <!-- Formulario de producto con PUC -->
             <div id="form-producto" class="form-container">
-                <h2>👕 Agregar Nuevo Producto</h2>
+                <h2 style="color: #ff6b6b; margin-bottom: 1.5rem;">👗 Agregar Nuevo Producto</h2>
                 <form onsubmit="event.preventDefault(); guardarProducto()">
                     <div class="form-group">
                         <label>Código/Barras:</label>
                         <input type="text" id="producto-codigo" placeholder="Ej: CAM001" required>
                     </div>
+                    
+                    <!-- PUC para inventario -->
+                    <div class="form-group">
+                        <label>📊 Cuenta PUC (Inventario):</label>
+                        <input type="text" class="puc-input" id="producto-puc" value="143501" placeholder="Ej: 143501" required>
+                        <small style="color: #ff9a9e;">Código PUC para inventario de mercancías</small>
+                    </div>
+                    
                     <div class="form-group">
                         <label>Nombre:</label>
                         <input type="text" id="producto-nombre" placeholder="Ej: Camisa básica" required>
@@ -642,16 +710,8 @@
                         <select id="producto-proveedor">
                             <option value="">Seleccionar (opcional)</option>
                         </select>
-                        <!-- Dentro del formulario de compras, después del select de proveedor -->
-<div class="form-group">
-    <label>Código PUC (Contabilidad):</label>
-    <select id="compra-puc" class="puc-select" required>
-        <option value="">Seleccionar código contable</option>
-        <!-- Se llenará con JavaScript -->
-    </select>
-</div>
                     </div>
-                    <button type="submit" class="submit-btn">Guardar Producto</button>
+                    <button type="submit" class="submit-btn">🌸 Guardar Producto</button>
                     <button type="button" class="cancel-btn" onclick="cerrarFormulario('producto')">Cancelar</button>
                 </form>
             </div>
@@ -671,19 +731,20 @@
                             <th>Color</th>
                             <th>P. Venta</th>
                             <th>Stock</th>
+                            <th>PUC</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td colspan="7" style="text-align: center;">Cargando productos...</td>
+                            <td colspan="8" style="text-align: center;">Cargando productos...</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         </div>
 
-        <!-- SECCIÓN: PERFILES (Usuarios) -->
+        <!-- ===== MÓDULO PERFILES ===== -->
         <div id="modulo-perfiles" class="module-section" style="display: none;">
             <div class="module-grid">
                 <div class="module-card" onclick="mostrarFormulario('perfil')">
@@ -702,7 +763,7 @@
 
             <!-- Formulario de perfil -->
             <div id="form-perfil" class="form-container">
-                <h2>👥 Crear Nuevo Usuario</h2>
+                <h2 style="color: #ff6b6b; margin-bottom: 1.5rem;">👥 Crear Nuevo Usuario</h2>
                 <form onsubmit="event.preventDefault(); guardarPerfil()">
                     <div class="form-group">
                         <label>Nombre completo:</label>
@@ -723,7 +784,7 @@
                             <option value="admin">Administrador</option>
                         </select>
                     </div>
-                    <button type="submit" class="submit-btn">Crear Usuario</button>
+                    <button type="submit" class="submit-btn">🌸 Crear Usuario</button>
                     <button type="button" class="cancel-btn" onclick="cerrarFormulario('perfil')">Cancelar</button>
                 </form>
             </div>
@@ -753,7 +814,7 @@
             </div>
         </div>
 
-        <!-- SECCIÓN: PROVEEDORES -->
+        <!-- ===== MÓDULO PROVEEDORES ===== -->
         <div id="modulo-proveedores" class="module-section" style="display: none;">
             <div class="module-grid">
                 <div class="module-card" onclick="mostrarFormulario('proveedor')">
@@ -772,7 +833,7 @@
 
             <!-- Formulario de proveedor -->
             <div id="form-proveedor" class="form-container">
-                <h2>📦 Registrar Nuevo Proveedor</h2>
+                <h2 style="color: #ff6b6b; margin-bottom: 1.5rem;">📦 Registrar Nuevo Proveedor</h2>
                 <form onsubmit="event.preventDefault(); guardarProveedor()">
                     <div class="form-group">
                         <label>Nombre/Empresa:</label>
@@ -796,7 +857,7 @@
                         <label>Dirección:</label>
                         <textarea id="proveedor-direccion" rows="2"></textarea>
                     </div>
-                    <button type="submit" class="submit-btn">Guardar Proveedor</button>
+                    <button type="submit" class="submit-btn">🌸 Guardar Proveedor</button>
                     <button type="button" class="cancel-btn" onclick="cerrarFormulario('proveedor')">Cancelar</button>
                 </form>
             </div>
@@ -826,105 +887,72 @@
             </div>
         </div>
 
-        <!-- SECCIÓN: VENTAS -->
+        <!-- ===== MÓDULO VENTAS (SOLO DISEÑO - SIN FUNCIONALIDAD) ===== -->
         <div id="modulo-ventas" class="module-section" style="display: none;">
             <div class="module-grid">
-                <div class="module-card" onclick="window.open('venta-rapida.html', '_blank')">
+                <div class="module-card" style="background: #ffe4e9;">
                     <div class="card-icon">💰</div>
-                    <div class="card-title">Nueva Venta</div>
-                    <div class="card-description">Registrar venta rápida</div>
-                    <div class="card-stats">+ Vender</div>
+                    <div class="card-title">Ventas - Próximamente</div>
+                    <div class="card-description">Módulo en desarrollo</div>
+                    <div class="card-stats">🌸</div>
                 </div>
-                <div class="module-card">
+                <div class="module-card" style="background: #ffe4e9;">
                     <div class="card-icon">📈</div>
                     <div class="card-title">Ventas Hoy</div>
-                    <div class="card-description">Total del día</div>
-                    <div class="card-stats" id="stats-ventas-hoy">$0</div>
+                    <div class="card-description">Placeholder</div>
+                    <div class="card-stats">
+                                            <div class="card-stats">$0</div>
                 </div>
-                <div class="module-card">
+                <div class="module-card" style="background: #ffe4e9;">
                     <div class="card-icon">📊</div>
                     <div class="card-title">Ventas Mes</div>
-                    <div class="card-description">Acumulado mensual</div>
-                    <div class="card-stats" id="stats-ventas-mes">$0</div>
+                    <div class="card-description">Placeholder</div>
+                    <div class="card-stats">$0</div>
                 </div>
             </div>
 
-            <!-- Tabla de ventas -->
-            <div class="data-table">
-                <h2>
-                    Historial de Ventas
-                    <button class="add-btn" onclick="window.open('venta-rapida.html', '_blank')">➕ Nueva Venta</button>
-                </h2>
-                <table id="tabla-ventas">
-                    <thead>
-                        <tr>
-                            <th>Fecha</th>
-                            <th>Productos</th>
-                            <th>Total</th>
-                            <th>Método</th>
-                            <th>Vendedor</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td colspan="6" style="text-align: center;">Cargando ventas...</td>
-                        </tr>
-                    </tbody>
-                </table>
+            <!-- Mensaje de módulo en desarrollo -->
+            <div class="data-table" style="text-align: center; padding: 3rem;">
+                <h2 style="color: #ff9a9e;">🛠️ Módulo de Ventas en Construcción</h2>
+                <p style="color: #a5a5a5; font-size: 1.1rem; margin: 1rem 0;">
+                    Estamos trabajando para traerte la mejor experiencia de ventas.
+                </p>
+                <div style="font-size: 3rem; margin: 1rem 0;">🌸</div>
+                <p style="color: #ff6b6b;">Próximamente: Ventas rápidas, carrito de compras y facturación.</p>
             </div>
         </div>
 
-        <!-- SECCIÓN: CONTABILIDAD -->
+        <!-- ===== MÓDULO CONTABILIDAD (SOLO DISEÑO - SIN FUNCIONALIDAD) ===== -->
         <div id="modulo-contabilidad" class="module-section" style="display: none;">
             <div class="module-grid">
-                <div class="module-card">
+                <div class="module-card" style="background: #ffe4e9;">
                     <div class="card-icon">💰</div>
                     <div class="card-title">Ingresos</div>
-                    <div class="card-description">Total ventas</div>
-                    <div class="card-stats" id="stats-ingresos">$0</div>
+                    <div class="card-description">Placeholder</div>
+                    <div class="card-stats">$0</div>
                 </div>
-                <div class="module-card">
+                <div class="module-card" style="background: #ffe4e9;">
                     <div class="card-icon">💸</div>
                     <div class="card-title">Egresos</div>
-                    <div class="card-description">Compras + Gastos</div>
-                    <div class="card-stats" id="stats-egresos">$0</div>
+                    <div class="card-description">Placeholder</div>
+                    <div class="card-stats">$0</div>
                 </div>
-                <div class="module-card">
+                <div class="module-card" style="background: #ffe4e9;">
                     <div class="card-icon">📊</div>
                     <div class="card-title">Balance</div>
-                    <div class="card-description">Ingresos - Egresos</div>
-                    <div class="card-stats" id="stats-balance">$0</div>
+                    <div class="card-description">Placeholder</div>
+                    <div class="card-stats">$0</div>
                 </div>
             </div>
 
-            <!-- Resumen contable -->
-            <div class="data-table">
-                <h2>📊 Movimientos del Mes</h2>
-                <table id="tabla-movimientos">
-                    <thead>
-                        <tr>
-                            <th>Fecha</th>
-                            <th>Tipo</th>
-                            <th>Concepto</th>
-                            <th>Ingreso</th>
-                            <th>Egreso</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td colspan="5" style="text-align: center;">Cargando movimientos...</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Gráfico simple (placeholder) -->
-            <div style="background: white; border-radius: 10px; padding: 1.5rem; margin-top: 1rem;">
-                <h3>📈 Evolución de Ventas</h3>
-                <div style="height: 200px; background: #f8f9fa; display: flex; align-items: center; justify-content: center;">
-                    [Aquí irá un gráfico de ventas]
-                </div>
+            <!-- Mensaje de módulo en desarrollo -->
+            <div class="data-table" style="text-align: center; padding: 3rem;">
+                <h2 style="color: #ff9a9e;">📊 Módulo de Contabilidad en Construcción</h2>
+                <p style="color: #a5a5a5; font-size: 1.1rem; margin: 1rem 0;">
+                    Próximamente tendrás reportes financieros completos.
+                </p>
+                <div style="font-size: 3rem; margin: 1rem 0;">📈</div>
+                <p style="color: #ff6b6b;">Incluirá: Balance general, PUC detallado, flujo de caja.</p>
             </div>
         </div>
     </main>
@@ -938,8 +966,8 @@
         // Cargar datos al iniciar
         document.addEventListener('DOMContentLoaded', async () => {
             await verificarSesion();
-            await cargarDulosIniciales();
-            cambiarModulo('compras'); // Módulo por defecto
+            await cargarDatosIniciales();
+            cambiarModulo('compras');
         });
 
         // Verificar sesión
@@ -952,7 +980,6 @@
 
             try {
                 const token = JSON.parse(tokenData);
-                // Verificar token con Supabase
                 const response = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
                     headers: {
                         'apikey': SUPABASE_KEY,
@@ -960,21 +987,18 @@
                     }
                 });
 
-                if (!response.ok) {
-                    throw new Error('Sesión inválida');
-                }
+                if (!response.ok) throw new Error('Sesión inválida');
 
                 const user = await response.json();
                 currentUser = user;
                 
-                // Obtener nombre del perfil
                 const perfilRes = await fetch(`${SUPABASE_URL}/rest/v1/perfiles?id=eq.${user.id}`, {
                     headers: { 'apikey': SUPABASE_KEY }
                 });
                 const perfil = await perfilRes.json();
                 
                 document.getElementById('userNameDisplay').textContent = 
-                    perfil[0]?.nombre || user.email || 'Administrador';
+                    perfil[0]?.nombre || user.email || 'Administradora';
                 
             } catch (error) {
                 console.error('Error de sesión:', error);
@@ -985,7 +1009,7 @@
 
         // Cerrar sesión
         function logout() {
-            if (confirm('¿Estás seguro de cerrar sesión?')) {
+            if (confirm('¿Estás segura de cerrar sesión?')) {
                 localStorage.removeItem('admin_token');
                 window.location.href = 'login.html';
             }
@@ -993,15 +1017,12 @@
 
         // Cambiar entre módulos
         function cambiarModulo(modulo) {
-            // Ocultar todos los módulos
             document.querySelectorAll('.module-section').forEach(section => {
                 section.style.display = 'none';
             });
             
-            // Mostrar el módulo seleccionado
             document.getElementById(`modulo-${modulo}`).style.display = 'block';
             
-            // Actualizar botones activos
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
@@ -1009,8 +1030,9 @@
             
             currentModule = modulo;
             
-            // Cargar datos específicos del módulo
-            cargarDatosModulo(modulo);
+            if (modulo !== 'ventas' && modulo !== 'contabilidad') {
+                cargarDatosModulo(modulo);
+            }
         }
 
         // Cargar datos según el módulo
@@ -1033,19 +1055,12 @@
                 case 'proveedores':
                     await cargarProveedores();
                     break;
-                case 'ventas':
-                    await cargarVentas();
-                    break;
-                case 'contabilidad':
-                    await cargarContabilidad();
-                    break;
             }
         }
 
-        // Cargar datos iniciales (estadísticas)
-        async function cargarDulosIniciales() {
+        // Cargar datos iniciales
+        async function cargarDatosIniciales() {
             try {
-                // Productos
                 const prodRes = await fetch(`${SUPABASE_URL}/rest/v1/productos`, {
                     headers: { 'apikey': SUPABASE_KEY }
                 });
@@ -1055,14 +1070,12 @@
                 const stockBajo = productos.filter(p => p.stock_actual < 5).length;
                 document.getElementById('stats-stock-bajo').textContent = stockBajo;
                 
-                // Proveedores
                 const provRes = await fetch(`${SUPABASE_URL}/rest/v1/proveedores`, {
                     headers: { 'apikey': SUPABASE_KEY }
                 });
                 const proveedores = await provRes.json();
                 document.getElementById('stats-proveedores').textContent = proveedores.length;
                 
-                // Perfiles (empleados)
                 const perfRes = await fetch(`${SUPABASE_URL}/rest/v1/perfiles`, {
                     headers: { 'apikey': SUPABASE_KEY }
                 });
@@ -1074,9 +1087,7 @@
             }
         }
 
-        // ============================================
-        // FUNCIONES PARA COMPRAS
-        // ============================================
+        // ===== FUNCIONES COMPRAS =====
         async function cargarCompras() {
             try {
                 const response = await fetch(`${SUPABASE_URL}/rest/v1/compras?select=*,proveedores(nombre)&order=fecha.desc`, {
@@ -1087,11 +1098,10 @@
                 const tbody = document.querySelector('#tabla-compras tbody');
                 
                 if (compras.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">No hay compras registradas</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="8" style="text-align: center;">No hay compras registradas</td></tr>';
                     return;
                 }
                 
-                // Calcular total compras mes
                 const fechaInicio = new Date();
                 fechaInicio.setDate(1);
                 fechaInicio.setHours(0,0,0,0);
@@ -1108,11 +1118,11 @@
                         <td>${new Date(compra.fecha).toLocaleDateString()}</td>
                         <td>${compra.proveedores?.nombre || 'N/A'}</td>
                         <td>${compra.producto || 'Varios'}</td>
+                        <td><span style="background: #fff0f3; padding: 0.2rem 0.5rem; border-radius: 50px;">${compra.puc || '620501'}</span></td>
                         <td>${compra.cantidad || '-'}</td>
                         <td>$${(compra.total || 0).toLocaleString()}</td>
                         <td>
-                            <span style="background: ${compra.estado === 'Pagada' ? '#27ae60' : compra.estado === 'Recibida' ? '#f39c12' : '#e74c3c'}; 
-                                         color: white; padding: 0.2rem 0.5rem; border-radius: 3px; font-size: 0.8rem;">
+                            <span class="estado-badge ${compra.estado === 'Pagada' ? 'estado-pagada' : compra.estado === 'Recibida' ? 'estado-recibida' : 'estado-pendiente'}">
                                 ${compra.estado || 'Pendiente'}
                             </span>
                         </td>
@@ -1131,6 +1141,7 @@
         async function guardarCompra() {
             const compra = {
                 proveedor_id: document.getElementById('compra-proveedor').value || null,
+                puc: document.getElementById('compra-puc').value,
                 fecha: document.getElementById('compra-fecha').value,
                 producto: document.getElementById('compra-producto').value,
                 cantidad: parseInt(document.getElementById('compra-cantidad').value),
@@ -1152,32 +1163,27 @@
                     headers: {
                         'apikey': SUPABASE_KEY,
                         'Authorization': `Bearer ${token.access_token}`,
-                        'Content-Type': 'application/json',
-                        'Prefer': 'return=representation'
+                        'Content-Type': 'application/json'
                     },
                     body: JSON.stringify(compra)
                 });
                 
                 if (response.ok) {
-                    mostrarAlerta('Compra guardada correctamente', 'success');
+                    mostrarAlerta('🌸 Compra guardada correctamente', 'success');
                     cerrarFormulario('compra');
                     await cargarCompras();
-                    // Limpiar formulario
                     document.getElementById('compra-producto').value = '';
                     document.getElementById('compra-cantidad').value = '';
                     document.getElementById('compra-precio').value = '';
                 } else {
-                    const error = await response.json();
-                    mostrarAlerta('Error al guardar: ' + (error.message || 'Desconocido'), 'error');
+                    mostrarAlerta('Error al guardar la compra', 'error');
                 }
             } catch (error) {
                 mostrarAlerta('Error de conexión', 'error');
             }
         }
 
-        // ============================================
-        // FUNCIONES PARA GASTOS
-        // ============================================
+        // ===== FUNCIONES GASTOS =====
         async function cargarGastos() {
             try {
                 const response = await fetch(`${SUPABASE_URL}/rest/v1/gastos?order=fecha.desc`, {
@@ -1188,11 +1194,10 @@
                 const tbody = document.querySelector('#tabla-gastos tbody');
                 
                 if (gastos.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No hay gastos registrados</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">No hay gastos registrados</td></tr>';
                     return;
                 }
                 
-                // Calcular gastos del mes
                 const fechaInicio = new Date();
                 fechaInicio.setDate(1);
                 fechaInicio.setHours(0,0,0,0);
@@ -1204,6 +1209,7 @@
                 tbody.innerHTML = gastos.map(gasto => `
                     <tr>
                         <td>${new Date(gasto.fecha).toLocaleDateString()}</td>
+                        <td><span style="background: #fff0f3; padding: 0.2rem 0.5rem; border-radius: 50px;">${gasto.puc || '511005'}</span></td>
                         <td>${gasto.concepto}</td>
                         <td>${gasto.categoria}</td>
                         <td>$${(gasto.monto || 0).toLocaleString()}</td>
@@ -1223,6 +1229,7 @@
         async function guardarGasto() {
             const gasto = {
                 fecha: document.getElementById('gasto-fecha').value,
+                puc: document.getElementById('gasto-puc').value,
                 concepto: document.getElementById('gasto-concepto').value,
                 categoria: document.getElementById('gasto-categoria').value,
                 monto: parseFloat(document.getElementById('gasto-monto').value),
@@ -1248,10 +1255,9 @@
                 });
                 
                 if (response.ok) {
-                    mostrarAlerta('Gasto guardado correctamente', 'success');
+                    mostrarAlerta('🌸 Gasto guardado correctamente', 'success');
                     cerrarFormulario('gasto');
                     await cargarGastos();
-                    // Limpiar formulario
                     document.getElementById('gasto-concepto').value = '';
                     document.getElementById('gasto-monto').value = '';
                 } else {
@@ -1262,9 +1268,7 @@
             }
         }
 
-        // ============================================
-        // FUNCIONES PARA PRODUCTOS
-        // ============================================
+        // ===== FUNCIONES PRODUCTOS =====
         async function cargarProductos() {
             try {
                 const response = await fetch(`${SUPABASE_URL}/rest/v1/productos?order=nombre`, {
@@ -1275,28 +1279,28 @@
                 const tbody = document.querySelector('#tabla-productos tbody');
                 
                 if (productos.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">No hay productos registrados</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="8" style="text-align: center;">No hay productos registrados</td></tr>';
                     return;
                 }
                 
                 document.getElementById('stats-total-productos').textContent = productos.length;
-                
                 const stockBajo = productos.filter(p => p.stock_actual < 5).length;
                 document.getElementById('stats-stock-bajo').textContent = stockBajo;
                 
                 tbody.innerHTML = productos.map(p => `
-                    <tr ${p.stock_actual < 5 ? 'style="background: #fff3cd;"' : ''}>
+                    <tr ${p.stock_actual < 5 ? 'style="background: #fff0f3;"' : ''}>
                         <td>${p.codigo || '-'}</td>
                         <td><strong>${p.nombre}</strong></td>
                         <td>${p.talla || '-'}</td>
                         <td>${p.color || '-'}</td>
                         <td>$${(p.precio_venta || 0).toLocaleString()}</td>
                         <td>
-                            <span style="font-weight: bold; color: ${p.stock_actual < 5 ? '#e74c3c' : '#27ae60'};">
+                            <span style="font-weight: bold; color: ${p.stock_actual < 5 ? '#ff4757' : '#27ae60'};">
                                 ${p.stock_actual || 0}
                             </span>
                             ${p.stock_actual < 5 ? ' ⚠️' : ''}
                         </td>
+                        <td><span style="background: #fff0f3; padding: 0.2rem 0.5rem; border-radius: 50px;">${p.puc || '143501'}</span></td>
                         <td>
                             <button class="action-btn" onclick="editarProducto(${p.id})" title="Editar">✏️</button>
                             <button class="action-btn" onclick="ajustarStock(${p.id})" title="Ajustar stock">📦</button>
@@ -1313,6 +1317,7 @@
         async function guardarProducto() {
             const producto = {
                 codigo: document.getElementById('producto-codigo').value,
+                puc: document.getElementById('producto-puc').value,
                 nombre: document.getElementById('producto-nombre').value,
                 talla: document.getElementById('producto-talla').value || null,
                 color: document.getElementById('producto-color').value || null,
@@ -1341,10 +1346,9 @@
                 });
                 
                 if (response.ok) {
-                    mostrarAlerta('Producto guardado correctamente', 'success');
+                    mostrarAlerta('🌸 Producto guardado correctamente', 'success');
                     cerrarFormulario('producto');
                     await cargarProductos();
-                    // Limpiar formulario
                     document.getElementById('producto-codigo').value = '';
                     document.getElementById('producto-nombre').value = '';
                     document.getElementById('producto-talla').value = '';
@@ -1353,17 +1357,14 @@
                     document.getElementById('producto-precio-venta').value = '';
                     document.getElementById('producto-stock').value = '';
                 } else {
-                    const error = await response.json();
-                    mostrarAlerta('Error: ' + (error.message || 'No se pudo guardar'), 'error');
+                    mostrarAlerta('Error al guardar el producto', 'error');
                 }
             } catch (error) {
                 mostrarAlerta('Error de conexión', 'error');
             }
         }
 
-        // ============================================
-        // FUNCIONES PARA PROVEEDORES
-        // ============================================
+        // ===== FUNCIONES PROVEEDORES =====
         async function cargarProveedores() {
             try {
                 const response = await fetch(`${SUPABASE_URL}/rest/v1/proveedores?order=nombre`, {
@@ -1412,793 +1413,10 @@
                     proveedores.map(p => `<option value="${p.id}">${p.nombre}</option>`).join('');
                     
             } catch (error) {
-                console.error('Error cargando proveedores para select:', error);
-            }
-        }
-
-        async function guardarProveedor() {
-            const proveedor = {
-                nombre: document.getElementById('proveedor-nombre').value,
-                contacto: document.getElementById('proveedor-contacto').value || null,
-                telefono: document.getElementById('proveedor-telefono').value || null,
-                email: document.getElementById('proveedor-email').value || null,
-                direccion: document.getElementById('proveedor-direccion').value || null
-            };
-            
-            if (!proveedor.nombre) {
-                mostrarAlerta('El nombre del proveedor es obligatorio', 'error');
-                return;
-            }
-            
-            try {
-                const token = JSON.parse(localStorage.getItem('admin_token'));
-                
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/proveedores`, {
-                    method: 'POST',
-                    headers: {
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${token.access_token}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(proveedor)
-                });
-                
-                if (response.ok) {
-                    mostrarAlerta('Proveedor guardado correctamente', 'success');
-                    cerrarFormulario('proveedor');
-                    await cargarProveedores();
-                    // Limpiar formulario
-                    document.getElementById('proveedor-nombre').value = '';
-                    document.getElementById('proveedor-contacto').value = '';
-                    document.getElementById('proveedor-telefono').value = '';
-                    document.getElementById('proveedor-email').value = '';
-                    document.getElementById('proveedor-direccion').value = '';
-                } else {
-                    mostrarAlerta('Error al guardar el proveedor', 'error');
-                }
-            } catch (error) {
-                mostrarAlerta('Error de conexión', 'error');
-            }
-        }
-
-        // ============================================
-        // FUNCIONES PARA PERFILES (USUARIOS)
-        // ============================================
-        async function cargarPerfiles() {
-            try {
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/perfiles?order=created_at.desc`, {
-                    headers: { 'apikey': SUPABASE_KEY }
-                });
-                const perfiles = await response.json();
-                
-                const tbody = document.querySelector('#tabla-perfiles tbody');
-                
-                if (perfiles.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">No hay usuarios registrados</td></tr>';
-                    return;
-                }
-                
-                document.getElementById('stats-empleados').textContent = perfiles.length;
-                
-                tbody.innerHTML = perfiles.map(p => `
-                    <tr>
-                        <td><strong>${p.nombre || 'Sin nombre'}</strong></td>
-                        <td>${p.email}</td>
-                        <td>
-                            <span style="background: ${p.rol === 'admin' ? '#e74c3c' : '#3498db'}; 
-                                         color: white; padding: 0.2rem 0.5rem; border-radius: 3px;">
-                                ${p.rol || 'empleado'}
-                            </span>
-                        </td>
-                        <td>${new Date(p.created_at).toLocaleDateString()}</td>
-                        <td>
-                            <button class="action-btn" onclick="editarPerfil('${p.id}')" title="Editar">✏️</button>
-                            ${p.id !== currentUser?.id ? 
-                                `<button class="action-btn delete-btn" onclick="eliminarPerfil('${p.id}')" title="Eliminar">🗑️</button>` 
-                                : ''}
-                        </td>
-                    </tr>
-                `).join('');
-                
-            } catch (error) {
-                console.error('Error cargando perfiles:', error);
-            }
-        }
-
-        async function guardarPerfil() {
-            const nombre = document.getElementById('perfil-nombre').value;
-            const email = document.getElementById('perfil-email').value;
-            const password = document.getElementById('perfil-password').value;
-            const rol = document.getElementById('perfil-rol').value;
-            
-            if (!nombre || !email || !password) {
-                mostrarAlerta('Todos los campos son obligatorios', 'error');
-                return;
-            }
-            
-            try {
-                // 1. Crear usuario en Auth
-                const authResponse = await fetch(`${SUPABASE_URL}/auth/v1/signup`, {
-                    method: 'POST',
-                    headers: {
-                        'apikey': SUPABASE_KEY,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ email, password })
-                });
-                
-                const authData = await authResponse.json();
-                
-                if (!authResponse.ok) {
-                    throw new Error(authData.msg || 'Error al crear usuario');
-                }
-                
-                // 2. Crear perfil
-                const token = JSON.parse(localStorage.getItem('admin_token'));
-                
-                const perfilResponse = await fetch(`${SUPABASE_URL}/rest/v1/perfiles`, {
-                    method: 'POST',
-                    headers: {
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${token.access_token}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        id: authData.user.id,
-                        nombre: nombre,
-                        email: email,
-                        rol: rol
-                    })
-                });
-                
-                if (perfilResponse.ok) {
-                    mostrarAlerta('Usuario creado correctamente', 'success');
-                    cerrarFormulario('perfil');
-                    await cargarPerfiles();
-                    // Limpiar formulario
-                    document.getElementById('perfil-nombre').value = '';
-                    document.getElementById('perfil-email').value = '';
-                    document.getElementById('perfil-password').value = '';
-                } else {
-                    throw new Error('Error al crear perfil');
-                }
-                
-            } catch (error) {
-                mostrarAlerta('Error: ' + error.message, 'error');
-            }
-        }
-
-        // ============================================
-        // FUNCIONES PARA VENTAS
-        // ============================================
-        async function cargarVentas() {
-            try {
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/ventas?order=fecha.desc`, {
-                    headers: { 'apikey': SUPABASE_KEY }
-                });
-                const ventas = await response.json();
-                
-                const tbody = document.querySelector('#tabla-ventas tbody');
-                
-                if (ventas.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No hay ventas registradas</td></tr>';
-                    return;
-                }
-                
-                // Ventas de hoy
-                const hoy = new Date();
-                hoy.setHours(0,0,0,0);
-                
-                const ventasHoy = ventas.filter(v => new Date(v.fecha) >= hoy);
-                const totalHoy = ventasHoy.reduce((sum, v) => sum + (v.total || 0), 0);
-                document.getElementById('stats-ventas-hoy').textContent = `$${totalHoy.toLocaleString()}`;
-                
-                // Ventas del mes
-                const fechaInicio = new Date();
-                fechaInicio.setDate(1);
-                fechaInicio.setHours(0,0,0,0);
-                
-                const ventasMes = ventas.filter(v => new Date(v.fecha) >= fechaInicio);
-                const totalMes = ventasMes.reduce((sum, v) => sum + (v.total || 0), 0);
-                document.getElementById('stats-ventas-mes').textContent = `$${totalMes.toLocaleString()}`;
-                
-                tbody.innerHTML = ventas.map(venta => `
-                    <tr>
-                        <td>${new Date(venta.fecha).toLocaleString()}</td>
-                        <td>${venta.productos || 'Venta'}</td>
-                        <td>$${(venta.total || 0).toLocaleString()}</td>
-                        <td>${venta.metodo_pago || 'Efectivo'}</td>
-                        <td>${venta.vendedor || '-'}</td>
-                        <td>
-                            <button class="action-btn" onclick="verFactura(${venta.id})" title="Ver factura">🧾</button>
-                            <button class="action-btn delete-btn" onclick="anularVenta(${venta.id})" title="Anular">❌</button>
-                        </td>
-                    </tr>
-                `).join('');
-                
-            } catch (error) {
-                console.error('Error cargando ventas:', error);
-            }
-        }
-
-        // ============================================
-        // FUNCIONES PARA CONTABILIDAD
-        // ============================================
-        async function cargarContabilidad() {
-            try {
-                // Obtener ventas del mes
-                const fechaInicio = new Date();
-                fechaInicio.setDate(1);
-                fechaInicio.setHours(0,0,0,0);
-                const fechaFin = new Date();
-                
-                const ventasRes = await fetch(`${SUPABASE_URL}/rest/v1/ventas?fecha=gte.${fechaInicio.toISOString()}&fecha=lte.${fechaFin.toISOString()}`, {
-                    headers: { 'apikey': SUPABASE_KEY }
-                });
-                const ventas = await ventasRes.json();
-                
-                // Obtener compras del mes
-                const comprasRes = await fetch(`${SUPABASE_URL}/rest/v1/compras?fecha=gte.${fechaInicio.toISOString()}&fecha=lte.${fechaFin.toISOString()}`, {
-                    headers: { 'apikey': SUPABASE_KEY }
-                });
-                const compras = await comprasRes.json();
-                
-                // Obtener gastos del mes
-                const gastosRes = await fetch(`${SUPABASE_URL}/rest/v1/gastos?fecha=gte.${fechaInicio.toISOString()}&fecha=lte.${fechaFin.toISOString()}`, {
-                    headers: { 'apikey': SUPABASE_KEY }
-                });
-                const gastos = await gastosRes.json();
-                
-                const totalVentas = ventas.reduce((sum, v) => sum + (v.total || 0), 0);
-                const totalCompras = compras.reduce((sum, c) => sum + (c.total || 0), 0);
-                const totalGastos = gastos.reduce((sum, g) => sum + (g.monto || 0), 0);
-                const totalEgresos = totalCompras + totalGastos;
-                const balance = totalVentas - totalEgresos;
-                
-                document.getElementById('stats-ingresos').textContent = `$${totalVentas.toLocaleString()}`;
-                document.getElementById('stats-egresos').textContent = `$${totalEgresos.toLocaleString()}`;
-                document.getElementById('stats-balance').textContent = `$${balance.toLocaleString()}`;
-                
-                // Combinar movimientos para la tabla
-                const movimientos = [
-                    ...ventas.map(v => ({
-                        fecha: v.fecha,
-                        tipo: 'Venta',
-                        concepto: 'Venta de productos',
-                        ingreso: v.total || 0,
-                        egreso: 0
-                    })),
-                    ...compras.map(c => ({
-                        fecha: c.fecha,
-                        tipo: 'Compra',
-                        concepto: c.producto || 'Compra a proveedor',
-                        ingreso: 0,
-                        egreso: c.total || 0
-                    })),
-                    ...gastos.map(g => ({
-                        fecha: g.fecha,
-                        tipo: 'Gasto',
-                        concepto: g.concepto,
-                        ingreso: 0,
-                        egreso: g.monto || 0
-                    }))
-                ].sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
-                
-                const tbody = document.querySelector('#tabla-movimientos tbody');
-                
-                if (movimientos.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">No hay movimientos en el mes</td></tr>';
-                } else {
-                    tbody.innerHTML = movimientos.map(m => `
-                        <tr>
-                            <td>${new Date(m.fecha).toLocaleDateString()}</td>
-                            <td>
-                                <span style="background: ${m.tipo === 'Venta' ? '#27ae60' : m.tipo === 'Compra' ? '#f39c12' : '#e74c3c'}; 
-                                             color: white; padding: 0.2rem 0.5rem; border-radius: 3px;">
-                                    ${m.tipo}
-                                </span>
-                            </td>
-                            <td>${m.concepto}</td>
-                            <td>${m.ingreso ? `$${m.ingreso.toLocaleString()}` : '-'}</td>
-                            <td>${m.egreso ? `$${m.egreso.toLocaleString()}` : '-'}</td>
-                        </tr>
-                    `).join('');
-                }
-                
-            } catch (error) {
-                console.error('Error cargando contabilidad:', error);
-            }
-        }
-
-        // ============================================
-        // FUNCIONES UTILITARIAS
-        // ============================================
-        function mostrarFormulario(tipo) {
-            document.getElementById(`form-${tipo}`).classList.add('active');
-        }
-
-        function cerrarFormulario(tipo) {
-            document.getElementById(`form-${tipo}`).classList.remove('active');
-        }
-
-        function mostrarAlerta(mensaje, tipo) {
-            const alerta = document.getElementById('alertMessage');
-            alerta.textContent = mensaje;
-            alerta.className = `alert ${tipo}`;
-            alerta.style.display = 'block';
-            
-            setTimeout(() => {
-                alerta.style.display = 'none';
-            }, 3000);
-        }
-
-        // Funciones placeholder para acciones (las implementaremos después)
-        function editarCompra(id) { alert('Editar compra ' + id); }
-        function eliminarCompra(id) { if(confirm('¿Eliminar esta compra?')) alert('Eliminar ' + id); }
-        function editarGasto(id) { alert('Editar gasto ' + id); }
-        function eliminarGasto(id) { if(confirm('¿Eliminar este gasto?')) alert('Eliminar ' + id); }
-        function editarProducto(id) { alert('Editar producto ' + id); }
-        function ajustarStock(id) { alert('Ajustar stock ' + id); }
-        function eliminarProducto(id) { if(confirm('¿Eliminar este producto?')) alert('Eliminar ' + id); }
-        function editarProveedor(id) { alert('Editar proveedor ' + id); }
-        function eliminarProveedor(id) { if(confirm('¿Eliminar este proveedor?')) alert('Eliminar ' + id); }
-        function editarPerfil(id) { alert('Editar perfil ' + id); }
-        function eliminarPerfil(id) { if(confirm('¿Eliminar este usuario?')) alert('Eliminar ' + id); }
-        function verFactura(id) { window.open(`factura.html?id=${id}`, '_blank'); }
-        function anularVenta(id) { if(confirm('¿Anular esta venta?')) alert('Anular ' + id); }
-    </script>
-</body>
-</html>                currentUser = user;
-                
-                // Obtener nombre del perfil
-                const perfilRes = await fetch(`${SUPABASE_URL}/rest/v1/perfiles?id=eq.${user.id}`, {
-                    headers: { 'apikey': SUPABASE_KEY }
-                });
-                const perfil = await perfilRes.json();
-                
-                document.getElementById('userNameDisplay').textContent = 
-                    perfil[0]?.nombre || user.email || 'Administrador';
-                
-            } catch (error) {
-                console.error('Error de sesión:', error);
-                localStorage.removeItem('admin_token');
-                window.location.href = 'login.html';
-            }
-        }
-
-        // Cerrar sesión
-        function logout() {
-            if (confirm('¿Estás seguro de cerrar sesión?')) {
-                localStorage.removeItem('admin_token');
-                window.location.href = 'login.html';
-            }
-        }
-
-        // Cambiar entre módulos
-        function cambiarModulo(modulo) {
-            // Ocultar todos los módulos
-            document.querySelectorAll('.module-section').forEach(section => {
-                section.style.display = 'none';
-            });
-            
-            // Mostrar el módulo seleccionado
-            document.getElementById(`modulo-${modulo}`).style.display = 'block';
-            
-            // Actualizar botones activos
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
-            
-            currentModule = modulo;
-            
-            // Cargar datos específicos del módulo
-            cargarDatosModulo(modulo);
-        }
-
-        // Cargar datos según el módulo
-        async function cargarDatosModulo(modulo) {
-            switch(modulo) {
-                case 'compras':
-                    await cargarCompras();
-                    await cargarProveedoresSelect('compra');
-                    break;
-                case 'gastos':
-                    await cargarGastos();
-                    break;
-                case 'productos':
-                    await cargarProductos();
-                    await cargarProveedoresSelect('producto');
-                    break;
-                case 'perfiles':
-                    await cargarPerfiles();
-                    break;
-                case 'proveedores':
-                    await cargarProveedores();
-                    break;
-                case 'ventas':
-                    await cargarVentas();
-                    break;
-                case 'contabilidad':
-                    await cargarContabilidad();
-                    break;
-            }
-        }
-
-        // Cargar datos iniciales (estadísticas)
-        async function cargarDulosIniciales() {
-            try {
-                // Productos
-                const prodRes = await fetch(`${SUPABASE_URL}/rest/v1/productos`, {
-                    headers: { 'apikey': SUPABASE_KEY }
-                });
-                const productos = await prodRes.json();
-                document.getElementById('stats-total-productos').textContent = productos.length;
-                
-                const stockBajo = productos.filter(p => p.stock_actual < 5).length;
-                document.getElementById('stats-stock-bajo').textContent = stockBajo;
-                
-                // Proveedores
-                const provRes = await fetch(`${SUPABASE_URL}/rest/v1/proveedores`, {
-                    headers: { 'apikey': SUPABASE_KEY }
-                });
-                const proveedores = await provRes.json();
-                document.getElementById('stats-proveedores').textContent = proveedores.length;
-                
-                // Perfiles (empleados)
-                const perfRes = await fetch(`${SUPABASE_URL}/rest/v1/perfiles`, {
-                    headers: { 'apikey': SUPABASE_KEY }
-                });
-                const perfiles = await perfRes.json();
-                document.getElementById('stats-empleados').textContent = perfiles.length;
-                
-            } catch (error) {
-                console.error('Error cargando datos iniciales:', error);
-            }
-        }
-
-        // ============================================
-        // FUNCIONES PARA COMPRAS
-        // ============================================
-        async function cargarCompras() {
-            try {
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/compras?select=*,proveedores(nombre)&order=fecha.desc`, {
-                    headers: { 'apikey': SUPABASE_KEY }
-                });
-                const compras = await response.json();
-                
-                const tbody = document.querySelector('#tabla-compras tbody');
-                
-                if (compras.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">No hay compras registradas</td></tr>';
-                    return;
-                }
-                
-                // Calcular total compras mes
-                const fechaInicio = new Date();
-                fechaInicio.setDate(1);
-                fechaInicio.setHours(0,0,0,0);
-                
-                const comprasMes = compras.filter(c => new Date(c.fecha) >= fechaInicio);
-                const totalMes = comprasMes.reduce((sum, c) => sum + (c.total || 0), 0);
-                document.getElementById('stats-compras-mes').textContent = `$${totalMes.toLocaleString()}`;
-                
-                const pendientes = compras.filter(c => c.estado === 'Pendiente').length;
-                document.getElementById('stats-compras-pendientes').textContent = pendientes;
-                
-                tbody.innerHTML = compras.map(compra => `
-                    <tr>
-                        <td>${new Date(compra.fecha).toLocaleDateString()}</td>
-                        <td>${compra.proveedores?.nombre || 'N/A'}</td>
-                        <td>${compra.producto || 'Varios'}</td>
-                        <td>${compra.cantidad || '-'}</td>
-                        <td>$${(compra.total || 0).toLocaleString()}</td>
-                        <td>
-                            <span style="background: ${compra.estado === 'Pagada' ? '#27ae60' : compra.estado === 'Recibida' ? '#f39c12' : '#e74c3c'}; 
-                                         color: white; padding: 0.2rem 0.5rem; border-radius: 3px; font-size: 0.8rem;">
-                                ${compra.estado || 'Pendiente'}
-                            </span>
-                        </td>
-                        <td>
-                            <button class="action-btn" onclick="editarCompra(${compra.id})" title="Editar">✏️</button>
-                            <button class="action-btn delete-btn" onclick="eliminarCompra(${compra.id})" title="Eliminar">🗑️</button>
-                        </td>
-                    </tr>
-                `).join('');
-                
-            } catch (error) {
-                console.error('Error cargando compras:', error);
-            }
-        }
-
-        async function guardarCompra() {
-            const compra = {
-                proveedor_id: document.getElementById('compra-proveedor').value || null,
-                fecha: document.getElementById('compra-fecha').value,
-                producto: document.getElementById('compra-producto').value,
-                cantidad: parseInt(document.getElementById('compra-cantidad').value),
-                precio_unitario: parseFloat(document.getElementById('compra-precio').value),
-                total: parseInt(document.getElementById('compra-cantidad').value) * parseFloat(document.getElementById('compra-precio').value),
-                estado: document.getElementById('compra-estado').value
-            };
-            
-            if (!compra.proveedor_id || !compra.fecha || !compra.producto) {
-                mostrarAlerta('Por favor completa todos los campos obligatorios', 'error');
-                return;
-            }
-            
-            try {
-                const token = JSON.parse(localStorage.getItem('admin_token'));
-                
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/compras`, {
-                    method: 'POST',
-                    headers: {
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${token.access_token}`,
-                        'Content-Type': 'application/json',
-                        'Prefer': 'return=representation'
-                    },
-                    body: JSON.stringify(compra)
-                });
-                
-                if (response.ok) {
-                    mostrarAlerta('Compra guardada correctamente', 'success');
-                    cerrarFormulario('compra');
-                    await cargarCompras();
-                    // Limpiar formulario
-                    document.getElementById('compra-producto').value = '';
-                    document.getElementById('compra-cantidad').value = '';
-                    document.getElementById('compra-precio').value = '';
-                } else {
-                    const error = await response.json();
-                    mostrarAlerta('Error al guardar: ' + (error.message || 'Desconocido'), 'error');
-                }
-            } catch (error) {
-                mostrarAlerta('Error de conexión', 'error');
-            }
-        }
-
-        // ============================================
-        // FUNCIONES PARA GASTOS
-        // ============================================
-        async function cargarGastos() {
-            try {
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/gastos?order=fecha.desc`, {
-                    headers: { 'apikey': SUPABASE_KEY }
-                });
-                const gastos = await response.json();
-                
-                const tbody = document.querySelector('#tabla-gastos tbody');
-                
-                if (gastos.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No hay gastos registrados</td></tr>';
-                    return;
-                }
-                
-                // Calcular gastos del mes
-                const fechaInicio = new Date();
-                fechaInicio.setDate(1);
-                fechaInicio.setHours(0,0,0,0);
-                
-                const gastosMes = gastos.filter(g => new Date(g.fecha) >= fechaInicio);
-                const totalMes = gastosMes.reduce((sum, g) => sum + (g.monto || 0), 0);
-                document.getElementById('stats-gastos-mes').textContent = `$${totalMes.toLocaleString()}`;
-                
-                tbody.innerHTML = gastos.map(gasto => `
-                    <tr>
-                        <td>${new Date(gasto.fecha).toLocaleDateString()}</td>
-                        <td>${gasto.concepto}</td>
-                        <td>${gasto.categoria}</td>
-                        <td>$${(gasto.monto || 0).toLocaleString()}</td>
-                        <td>${gasto.metodo_pago || 'Efectivo'}</td>
-                        <td>
-                            <button class="action-btn" onclick="editarGasto(${gasto.id})" title="Editar">✏️</button>
-                            <button class="action-btn delete-btn" onclick="eliminarGasto(${gasto.id})" title="Eliminar">🗑️</button>
-                        </td>
-                    </tr>
-                `).join('');
-                
-            } catch (error) {
-                console.error('Error cargando gastos:', error);
-            }
-        }
-
-        async function guardarGasto() {
-            const gasto = {
-                fecha: document.getElementById('gasto-fecha').value,
-                concepto: document.getElementById('gasto-concepto').value,
-                categoria: document.getElementById('gasto-categoria').value,
-                monto: parseFloat(document.getElementById('gasto-monto').value),
-                metodo_pago: document.getElementById('gasto-metodo').value
-            };
-            
-            if (!gasto.fecha || !gasto.concepto || !gasto.categoria || !gasto.monto) {
-                mostrarAlerta('Por favor completa todos los campos', 'error');
-                return;
-            }
-            
-            try {
-                const token = JSON.parse(localStorage.getItem('admin_token'));
-                
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/gastos`, {
-                    method: 'POST',
-                    headers: {
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${token.access_token}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(gasto)
-                });
-                
-                if (response.ok) {
-                    mostrarAlerta('Gasto guardado correctamente', 'success');
-                    cerrarFormulario('gasto');
-                    await cargarGastos();
-                    // Limpiar formulario
-                    document.getElementById('gasto-concepto').value = '';
-                    document.getElementById('gasto-monto').value = '';
-                } else {
-                    mostrarAlerta('Error al guardar el gasto', 'error');
-                }
-            } catch (error) {
-                mostrarAlerta('Error de conexión', 'error');
-            }
-        }
-
-        // ============================================
-        // FUNCIONES PARA PRODUCTOS
-        // ============================================
-        async function cargarProductos() {
-            try {
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/productos?order=nombre`, {
-                    headers: { 'apikey': SUPABASE_KEY }
-                });
-                const productos = await response.json();
-                
-                const tbody = document.querySelector('#tabla-productos tbody');
-                
-                if (productos.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">No hay productos registrados</td></tr>';
-                    return;
-                }
-                
-                document.getElementById('stats-total-productos').textContent = productos.length;
-                
-                const stockBajo = productos.filter(p => p.stock_actual < 5).length;
-                document.getElementById('stats-stock-bajo').textContent = stockBajo;
-                
-                tbody.innerHTML = productos.map(p => `
-                    <tr ${p.stock_actual < 5 ? 'style="background: #fff3cd;"' : ''}>
-                        <td>${p.codigo || '-'}</td>
-                        <td><strong>${p.nombre}</strong></td>
-                        <td>${p.talla || '-'}</td>
-                        <td>${p.color || '-'}</td>
-                        <td>$${(p.precio_venta || 0).toLocaleString()}</td>
-                        <td>
-                            <span style="font-weight: bold; color: ${p.stock_actual < 5 ? '#e74c3c' : '#27ae60'};">
-                                ${p.stock_actual || 0}
-                            </span>
-                            ${p.stock_actual < 5 ? ' ⚠️' : ''}
-                        </td>
-                        <td>
-                            <button class="action-btn" onclick="editarProducto(${p.id})" title="Editar">✏️</button>
-                            <button class="action-btn" onclick="ajustarStock(${p.id})" title="Ajustar stock">📦</button>
-                            <button class="action-btn delete-btn" onclick="eliminarProducto(${p.id})" title="Eliminar">🗑️</button>
-                        </td>
-                    </tr>
-                `).join('');
-                
-            } catch (error) {
-                console.error('Error cargando productos:', error);
-            }
-        }
-
-        async function guardarProducto() {
-            const producto = {
-                codigo: document.getElementById('producto-codigo').value,
-                nombre: document.getElementById('producto-nombre').value,
-                talla: document.getElementById('producto-talla').value || null,
-                color: document.getElementById('producto-color').value || null,
-                precio_compra: parseFloat(document.getElementById('producto-precio-compra').value),
-                precio_venta: parseFloat(document.getElementById('producto-precio-venta').value),
-                stock_actual: parseInt(document.getElementById('producto-stock').value),
-                proveedor_id: document.getElementById('producto-proveedor').value || null
-            };
-            
-            if (!producto.codigo || !producto.nombre || !producto.precio_venta) {
-                mostrarAlerta('Código, nombre y precio de venta son obligatorios', 'error');
-                return;
-            }
-            
-            try {
-                const token = JSON.parse(localStorage.getItem('admin_token'));
-                
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/productos`, {
-                    method: 'POST',
-                    headers: {
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${token.access_token}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(producto)
-                });
-                
-                if (response.ok) {
-                    mostrarAlerta('Producto guardado correctamente', 'success');
-                    cerrarFormulario('producto');
-                    await cargarProductos();
-                    // Limpiar formulario
-                    document.getElementById('producto-codigo').value = '';
-                    document.getElementById('producto-nombre').value = '';
-                    document.getElementById('producto-talla').value = '';
-                    document.getElementById('producto-color').value = '';
-                    document.getElementById('producto-precio-compra').value = '';
-                    document.getElementById('producto-precio-venta').value = '';
-                    document.getElementById('producto-stock').value = '';
-                } else {
-                    const error = await response.json();
-                    mostrarAlerta('Error: ' + (error.message || 'No se pudo guardar'), 'error');
-                }
-            } catch (error) {
-                mostrarAlerta('Error de conexión', 'error');
-            }
-        }
-
-        // ============================================
-        // FUNCIONES PARA PROVEEDORES
-        // ============================================
-        async function cargarProveedores() {
-            try {
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/proveedores?order=nombre`, {
-                    headers: { 'apikey': SUPABASE_KEY }
-                });
-                const proveedores = await response.json();
-                
-                const tbody = document.querySelector('#tabla-proveedores tbody');
-                
-                if (proveedores.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">No hay proveedores registrados</td></tr>';
-                    return;
-                }
-                
-                document.getElementById('stats-proveedores').textContent = proveedores.length;
-                
-                tbody.innerHTML = proveedores.map(p => `
-                    <tr>
-                        <td><strong>${p.nombre}</strong></td>
-                        <td>${p.contacto || '-'}</td>
-                        <td>${p.telefono || '-'}</td>
-                        <td>${p.email || '-'}</td>
-                        <td>
-                            <button class="action-btn" onclick="editarProveedor(${p.id})" title="Editar">✏️</button>
-                            <button class="action-btn delete-btn" onclick="eliminarProveedor(${p.id})" title="Eliminar">🗑️</button>
-                        </td>
-                    </tr>
-                `).join('');
-                
-            } catch (error) {
                 console.error('Error cargando proveedores:', error);
             }
         }
 
-        async function cargarProveedoresSelect(origen) {
-            try {
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/proveedores?select=id,nombre&order=nombre`, {
-                    headers: { 'apikey': SUPABASE_KEY }
-                });
-                const proveedores = await response.json();
-                
-                const select = document.getElementById(`${origen}-proveedor`);
-                if (!select) return;
-                
-                select.innerHTML = '<option value="">Seleccionar proveedor</option>' +
-                    proveedores.map(p => `<option value="${p.id}">${p.nombre}</option>`).join('');
-                    
-            } catch (error) {
-                console.error('Error cargando proveedores para select:', error);
-            }
-        }
-
         async function guardarProveedor() {
             const proveedor = {
                 nombre: document.getElementById('proveedor-nombre').value,
@@ -2227,10 +1445,9 @@
                 });
                 
                 if (response.ok) {
-                    mostrarAlerta('Proveedor guardado correctamente', 'success');
+                    mostrarAlerta('🌸 Proveedor guardado correctamente', 'success');
                     cerrarFormulario('proveedor');
                     await cargarProveedores();
-                    // Limpiar formulario
                     document.getElementById('proveedor-nombre').value = '';
                     document.getElementById('proveedor-contacto').value = '';
                     document.getElementById('proveedor-telefono').value = '';
@@ -2244,9 +1461,7 @@
             }
         }
 
-        // ============================================
-        // FUNCIONES PARA PERFILES (USUARIOS)
-        // ============================================
+        // ===== FUNCIONES PERFILES =====
         async function cargarPerfiles() {
             try {
                 const response = await fetch(`${SUPABASE_URL}/rest/v1/perfiles?order=created_at.desc`, {
@@ -2268,8 +1483,8 @@
                         <td><strong>${p.nombre || 'Sin nombre'}</strong></td>
                         <td>${p.email}</td>
                         <td>
-                            <span style="background: ${p.rol === 'admin' ? '#e74c3c' : '#3498db'}; 
-                                         color: white; padding: 0.2rem 0.5rem; border-radius: 3px;">
+                            <span style="background: ${p.rol === 'admin' ? '#ff9a9e' : '#ffb6c1'}; 
+                                         color: white; padding: 0.2rem 0.8rem; border-radius: 50px;">
                                 ${p.rol || 'empleado'}
                             </span>
                         </td>
@@ -2300,7 +1515,6 @@
             }
             
             try {
-                // 1. Crear usuario en Auth
                 const authResponse = await fetch(`${SUPABASE_URL}/auth/v1/signup`, {
                     method: 'POST',
                     headers: {
@@ -2316,7 +1530,6 @@
                     throw new Error(authData.msg || 'Error al crear usuario');
                 }
                 
-                // 2. Crear perfil
                 const token = JSON.parse(localStorage.getItem('admin_token'));
                 
                 const perfilResponse = await fetch(`${SUPABASE_URL}/rest/v1/perfiles`, {
@@ -2335,10 +1548,9 @@
                 });
                 
                 if (perfilResponse.ok) {
-                    mostrarAlerta('Usuario creado correctamente', 'success');
+                    mostrarAlerta('🌸 Usuario creado correctamente', 'success');
                     cerrarFormulario('perfil');
                     await cargarPerfiles();
-                    // Limpiar formulario
                     document.getElementById('perfil-nombre').value = '';
                     document.getElementById('perfil-email').value = '';
                     document.getElementById('perfil-password').value = '';
@@ -2351,151 +1563,7 @@
             }
         }
 
-        // ============================================
-        // FUNCIONES PARA VENTAS
-        // ============================================
-        async function cargarVentas() {
-            try {
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/ventas?order=fecha.desc`, {
-                    headers: { 'apikey': SUPABASE_KEY }
-                });
-                const ventas = await response.json();
-                
-                const tbody = document.querySelector('#tabla-ventas tbody');
-                
-                if (ventas.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No hay ventas registradas</td></tr>';
-                    return;
-                }
-                
-                // Ventas de hoy
-                const hoy = new Date();
-                hoy.setHours(0,0,0,0);
-                
-                const ventasHoy = ventas.filter(v => new Date(v.fecha) >= hoy);
-                const totalHoy = ventasHoy.reduce((sum, v) => sum + (v.total || 0), 0);
-                document.getElementById('stats-ventas-hoy').textContent = `$${totalHoy.toLocaleString()}`;
-                
-                // Ventas del mes
-                const fechaInicio = new Date();
-                fechaInicio.setDate(1);
-                fechaInicio.setHours(0,0,0,0);
-                
-                const ventasMes = ventas.filter(v => new Date(v.fecha) >= fechaInicio);
-                const totalMes = ventasMes.reduce((sum, v) => sum + (v.total || 0), 0);
-                document.getElementById('stats-ventas-mes').textContent = `$${totalMes.toLocaleString()}`;
-                
-                tbody.innerHTML = ventas.map(venta => `
-                    <tr>
-                        <td>${new Date(venta.fecha).toLocaleString()}</td>
-                        <td>${venta.productos || 'Venta'}</td>
-                        <td>$${(venta.total || 0).toLocaleString()}</td>
-                        <td>${venta.metodo_pago || 'Efectivo'}</td>
-                        <td>${venta.vendedor || '-'}</td>
-                        <td>
-                            <button class="action-btn" onclick="verFactura(${venta.id})" title="Ver factura">🧾</button>
-                            <button class="action-btn delete-btn" onclick="anularVenta(${venta.id})" title="Anular">❌</button>
-                        </td>
-                    </tr>
-                `).join('');
-                
-            } catch (error) {
-                console.error('Error cargando ventas:', error);
-            }
-        }
-
-        // ============================================
-        // FUNCIONES PARA CONTABILIDAD
-        // ============================================
-        async function cargarContabilidad() {
-            try {
-                // Obtener ventas del mes
-                const fechaInicio = new Date();
-                fechaInicio.setDate(1);
-                fechaInicio.setHours(0,0,0,0);
-                const fechaFin = new Date();
-                
-                const ventasRes = await fetch(`${SUPABASE_URL}/rest/v1/ventas?fecha=gte.${fechaInicio.toISOString()}&fecha=lte.${fechaFin.toISOString()}`, {
-                    headers: { 'apikey': SUPABASE_KEY }
-                });
-                const ventas = await ventasRes.json();
-                
-                // Obtener compras del mes
-                const comprasRes = await fetch(`${SUPABASE_URL}/rest/v1/compras?fecha=gte.${fechaInicio.toISOString()}&fecha=lte.${fechaFin.toISOString()}`, {
-                    headers: { 'apikey': SUPABASE_KEY }
-                });
-                const compras = await comprasRes.json();
-                
-                // Obtener gastos del mes
-                const gastosRes = await fetch(`${SUPABASE_URL}/rest/v1/gastos?fecha=gte.${fechaInicio.toISOString()}&fecha=lte.${fechaFin.toISOString()}`, {
-                    headers: { 'apikey': SUPABASE_KEY }
-                });
-                const gastos = await gastosRes.json();
-                
-                const totalVentas = ventas.reduce((sum, v) => sum + (v.total || 0), 0);
-                const totalCompras = compras.reduce((sum, c) => sum + (c.total || 0), 0);
-                const totalGastos = gastos.reduce((sum, g) => sum + (g.monto || 0), 0);
-                const totalEgresos = totalCompras + totalGastos;
-                const balance = totalVentas - totalEgresos;
-                
-                document.getElementById('stats-ingresos').textContent = `$${totalVentas.toLocaleString()}`;
-                document.getElementById('stats-egresos').textContent = `$${totalEgresos.toLocaleString()}`;
-                document.getElementById('stats-balance').textContent = `$${balance.toLocaleString()}`;
-                
-                // Combinar movimientos para la tabla
-                const movimientos = [
-                    ...ventas.map(v => ({
-                        fecha: v.fecha,
-                        tipo: 'Venta',
-                        concepto: 'Venta de productos',
-                        ingreso: v.total || 0,
-                        egreso: 0
-                    })),
-                    ...compras.map(c => ({
-                        fecha: c.fecha,
-                        tipo: 'Compra',
-                        concepto: c.producto || 'Compra a proveedor',
-                        ingreso: 0,
-                        egreso: c.total || 0
-                    })),
-                    ...gastos.map(g => ({
-                        fecha: g.fecha,
-                        tipo: 'Gasto',
-                        concepto: g.concepto,
-                        ingreso: 0,
-                        egreso: g.monto || 0
-                    }))
-                ].sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
-                
-                const tbody = document.querySelector('#tabla-movimientos tbody');
-                
-                if (movimientos.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">No hay movimientos en el mes</td></tr>';
-                } else {
-                    tbody.innerHTML = movimientos.map(m => `
-                        <tr>
-                            <td>${new Date(m.fecha).toLocaleDateString()}</td>
-                            <td>
-                                <span style="background: ${m.tipo === 'Venta' ? '#27ae60' : m.tipo === 'Compra' ? '#f39c12' : '#e74c3c'}; 
-                                             color: white; padding: 0.2rem 0.5rem; border-radius: 3px;">
-                                    ${m.tipo}
-                                </span>
-                            </td>
-                            <td>${m.concepto}</td>
-                            <td>${m.ingreso ? `$${m.ingreso.toLocaleString()}` : '-'}</td>
-                            <td>${m.egreso ? `$${m.egreso.toLocaleString()}` : '-'}</td>
-                        </tr>
-                    `).join('');
-                }
-                
-            } catch (error) {
-                console.error('Error cargando contabilidad:', error);
-            }
-        }
-
-        // ============================================
-        // FUNCIONES UTILITARIAS
-        // ============================================
+        // ===== FUNCIONES UTILITARIAS =====
         function mostrarFormulario(tipo) {
             document.getElementById(`form-${tipo}`).classList.add('active');
         }
@@ -2515,7 +1583,7 @@
             }, 3000);
         }
 
-        // Funciones placeholder para acciones (las implementaremos después)
+        // Funciones placeholder
         function editarCompra(id) { alert('Editar compra ' + id); }
         function eliminarCompra(id) { if(confirm('¿Eliminar esta compra?')) alert('Eliminar ' + id); }
         function editarGasto(id) { alert('Editar gasto ' + id); }
@@ -2527,8 +1595,8 @@
         function eliminarProveedor(id) { if(confirm('¿Eliminar este proveedor?')) alert('Eliminar ' + id); }
         function editarPerfil(id) { alert('Editar perfil ' + id); }
         function eliminarPerfil(id) { if(confirm('¿Eliminar este usuario?')) alert('Eliminar ' + id); }
-        function verFactura(id) { window.open(`factura.html?id=${id}`, '_blank'); }
-        function anularVenta(id) { if(confirm('¿Anular esta venta?')) alert('Anular ' + id); }
     </script>
 </body>
-    </html>
+</html>
+
+                        
