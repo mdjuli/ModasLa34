@@ -967,7 +967,7 @@
         document.addEventListener('DOMContentLoaded', async () => {
             await verificarSesion();
             await cargarDatosIniciales();
-            cambiarModulo('compras');
+            cambiarModulo('compras',null);
         });
 
         // Verificar sesión
@@ -1035,42 +1035,42 @@
             }
         }
 
-// Cambiar entre módulos (VERSIÓN CORREGIDA)
-function cambiarModulo(modulo, evento) {
-    // Ocultar todos los módulos
-    document.querySelectorAll('.module-section').forEach(section => {
-        section.style.display = 'none';
-    });
-    
-    // Mostrar el módulo seleccionado
-    const moduloElement = document.getElementById(`modulo-${modulo}`);
-    if (moduloElement) {
-        moduloElement.style.display = 'block';
-    }
-    
-    // Actualizar botones activos (solo si hay evento)
-    if (evento && evento.target) {
-        document.querySelectorAll('.nav-btn').forEach(btn => {
-            btn.classList.remove('active');
-        });
-        evento.target.classList.add('active');
-    } else {
-        // Si no hay evento (carga inicial), activamos el botón por su texto
-        document.querySelectorAll('.nav-btn').forEach(btn => {
-            btn.classList.remove('active');
-            if (btn.textContent.includes(modulo.toUpperCase())) {
-                btn.classList.add('active');
+        // Cambiar entre módulos
+        function cambiarModulo(modulo, evento) {
+            // Ocultar todos los módulos
+            document.querySelectorAll('.module-section').forEach(section => {
+                section.style.display = 'none';
+            });
+            
+            // Mostrar el módulo seleccionado
+            const moduloElement = document.getElementById(`modulo-${modulo}`);
+            if (moduloElement) {
+                moduloElement.style.display = 'block';
             }
-        });
-    }
-    
-    currentModule = modulo;
-    
-    if (modulo !== 'ventas' && modulo !== 'contabilidad') {
-        cargarDatosModulo(modulo);
-    }
-}
-
+            
+            // Actualizar botones activos (solo si hay evento)
+            if (evento && evento.target) {
+                document.querySelectorAll('.nav-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                evento.target.classList.add('active');
+            } else {
+                // Si no hay evento, activar el botón por su texto o atributo
+                document.querySelectorAll('.nav-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                    if (btn.textContent.includes(modulo.toUpperCase())) {
+                        btn.classList.add('active');
+                    }
+                });
+            }
+            
+            currentModule = modulo;
+            
+            if (modulo !== 'ventas' && modulo !== 'contabilidad') {
+                cargarDatosModulo(modulo);
+            }
+        }
+        
         // Cargar datos iniciales
         async function cargarDatosIniciales() {
             try {
