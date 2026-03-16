@@ -379,7 +379,7 @@
         <button class="nav-btn" onclick="cambiarModulo('ventas')">
             💰 VENTAS
         </button>
-        <button class="nav-btn" onclick="cambiarModulo('contabilidad')">
+        <button class="nav-btn" onclick="window.location.href='puc.html'">
             📊 CONTABILIDAD
         </button>
     </nav>
@@ -538,6 +538,14 @@
                             <option value="Transferencia">Transferencia</option>
                             <option value="Tarjeta">Tarjeta</option>
                         </select>
+                        <!-- Dentro del formulario de gastos, después del select de método de pago -->
+<div class="form-group">
+    <label>Código PUC (Contabilidad):</label>
+    <select id="gasto-puc" class="puc-select" required>
+        <option value="">Seleccionar código contable</option>
+        <!-- Se llenará con JavaScript -->
+    </select>
+</div> 
                     </div>
                     <button type="submit" class="submit-btn">Guardar Gasto</button>
                     <button type="button" class="cancel-btn" onclick="cerrarFormulario('gasto')">Cancelar</button>
@@ -634,6 +642,14 @@
                         <select id="producto-proveedor">
                             <option value="">Seleccionar (opcional)</option>
                         </select>
+                        <!-- Dentro del formulario de compras, después del select de proveedor -->
+<div class="form-group">
+    <label>Código PUC (Contabilidad):</label>
+    <select id="compra-puc" class="puc-select" required>
+        <option value="">Seleccionar código contable</option>
+        <!-- Se llenará con JavaScript -->
+    </select>
+</div>
                     </div>
                     <button type="submit" class="submit-btn">Guardar Producto</button>
                     <button type="button" class="cancel-btn" onclick="cerrarFormulario('producto')">Cancelar</button>
