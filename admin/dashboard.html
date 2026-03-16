@@ -6,7 +6,7 @@
     <title>Panel de Administración - Mi Tienda</title>
     <link rel="stylesheet" href="../css/estilo-comun.css">
     <style>
-        /* Estilos específicos del dashboard */
+        /* ===== ESTILOS ESPECÍFICOS PARA EL DASHBOARD ===== */
         * {
             margin: 0;
             padding: 0;
@@ -14,237 +14,213 @@
         }
 
         body {
+            background-color: #f4f7fc;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f0f2f5;
         }
 
-        /* Header mejorado */
-        .admin-header {
-            background: linear-gradient(135deg, #2c3e50, #1e2a36);
+        /* Header del dashboard */
+        .dashboard-header {
+            background: linear-gradient(135deg, #2c3e50, #1e2b37);
             color: white;
             padding: 1rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
-        .admin-header h1 {
-            font-size: 1.8rem;
+        .logo-area h1 {
+            font-size: 1.5rem;
+            font-weight: 500;
+        }
+
+        .logo-area small {
+            font-size: 0.8rem;
+            opacity: 0.8;
+            display: block;
+        }
+
+        .user-area {
             display: flex;
             align-items: center;
-            gap: 10px;
-        }
-
-        .admin-header h1 span {
-            font-size: 1rem;
-            background: #27ae60;
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-weight: normal;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 20px;
+            gap: 1.5rem;
         }
 
         .user-name {
-            color: #ecf0f1;
+            font-weight: 500;
         }
 
-        .logout-btn {
-            background: #e74c3c;
+        .btn-logout {
+            background-color: rgba(255,255,255,0.2);
             color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 5px;
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 0.5rem 1.2rem;
+            border-radius: 50px;
             cursor: pointer;
-            font-size: 0.9rem;
-            transition: background 0.3s;
-        }
-
-        .logout-btn:hover {
-            background: #c0392b;
-        }
-
-        /* Menú de navegación principal */
-        .nav-menu {
-            background: white;
-            padding: 1rem 2rem;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            border-bottom: 3px solid #27ae60;
-        }
-
-        .nav-btn {
-            background: none;
-            border: none;
-            padding: 0.8rem 1.5rem;
-            font-size: 1rem;
-            font-weight: 600;
-            color: #2c3e50;
-            cursor: pointer;
-            border-radius: 5px;
             transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .btn-logout:hover {
+            background-color: rgba(255,255,255,0.3);
+        }
+
+        /* Layout principal */
+        .dashboard-container {
             display: flex;
-            align-items: center;
-            gap: 8px;
+            min-height: calc(100vh - 70px);
         }
 
-        .nav-btn:hover {
-            background: #e8f5e9;
-            color: #27ae60;
-        }
-
-        .nav-btn.active {
-            background: #27ae60;
-            color: white;
-        }
-
-        /* Contenido principal */
-        .content-area {
-            padding: 2rem;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        /* Tarjetas de resumen (para cada módulo) */
-        .module-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .module-card {
+        /* Barra lateral de navegación */
+        .sidebar {
+            width: 280px;
             background: white;
-            border-radius: 10px;
-            padding: 1.5rem;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            transition: transform 0.3s;
-            cursor: pointer;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+            padding: 2rem 0;
         }
 
-        .module-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        .sidebar-menu {
+            list-style: none;
         }
 
-        .card-icon {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .card-title {
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: #2c3e50;
+        .sidebar-menu li {
             margin-bottom: 0.5rem;
         }
 
-        .card-description {
-            color: #7f8c8d;
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem 2rem;
+            color: #4a5568;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            border-left: 4px solid transparent;
         }
 
-        .card-stats {
-            font-size: 1.5rem;
-            font-weight: bold;
+        .sidebar-menu a:hover {
+            background-color: #f0f4fa;
+            border-left-color: #27ae60;
             color: #27ae60;
+        }
+
+        .sidebar-menu a.active {
+            background-color: #e8f4ed;
+            border-left-color: #27ae60;
+            color: #27ae60;
+            font-weight: 600;
+        }
+
+        .menu-icon {
+            margin-right: 1rem;
+            font-size: 1.3rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        .menu-text {
+            flex: 1;
+        }
+
+        /* Sección de contenido principal */
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            background-color: #f4f7fc;
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .content-header h2 {
+            color: #2c3e50;
+            font-weight: 400;
+            border-bottom: 3px solid #27ae60;
+            padding-bottom: 0.5rem;
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            min-height: 400px;
         }
 
         /* Tablas de datos */
         .data-table {
-            background: white;
-            border-radius: 10px;
-            padding: 1.5rem;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            overflow-x: auto;
-        }
-
-        .data-table h2 {
-            color: #2c3e50;
-            margin-bottom: 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .add-btn {
-            background: #27ae60;
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.9rem;
-        }
-
-        .add-btn:hover {
-            background: #2ecc71;
-        }
-
-        table {
             width: 100%;
             border-collapse: collapse;
+            margin-top: 1rem;
         }
 
-        th {
-            background: #f8f9fa;
+        .data-table th {
+            background-color: #f8fafc;
             color: #2c3e50;
             font-weight: 600;
             padding: 1rem;
             text-align: left;
-            border-bottom: 2px solid #27ae60;
+            border-bottom: 2px solid #e2e8f0;
         }
 
-        td {
+        .data-table td {
             padding: 1rem;
-            border-bottom: 1px solid #ecf0f1;
+            border-bottom: 1px solid #e2e8f0;
         }
 
-        tr:hover {
-            background: #f8f9fa;
+        .data-table tr:hover {
+            background-color: #f8fafc;
         }
 
-        .action-btn {
-            background: none;
+        .btn-edit, .btn-delete {
+            padding: 0.4rem 1rem;
             border: none;
-            color: #3498db;
+            border-radius: 4px;
             cursor: pointer;
-            margin: 0 0.3rem;
-            font-size: 1.1rem;
+            margin: 0 0.2rem;
+            font-size: 0.85rem;
         }
 
-        .action-btn:hover {
-            color: #2980b9;
+        .btn-edit {
+            background-color: #27ae60;
+            color: white;
         }
 
-        .delete-btn {
-            color: #e74c3c;
+        .btn-delete {
+            background-color: #e74c3c;
+            color: white;
         }
 
-        .delete-btn:hover {
-            color: #c0392b;
+        .btn-add {
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-add:hover {
+            background-color: #2ecc71;
         }
 
         /* Formularios */
         .form-container {
-            background: white;
-            border-radius: 10px;
-            padding: 1.5rem;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            margin-bottom: 2rem;
-            display: none;
-        }
-
-        .form-container.active {
-            display: block;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
         }
 
         .form-group {
@@ -254,218 +230,272 @@
         .form-group label {
             display: block;
             margin-bottom: 0.5rem;
-            color: #2c3e50;
+            color: #4a5568;
             font-weight: 500;
         }
 
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
+        .form-group input, .form-group select, .form-group textarea {
             width: 100%;
             padding: 0.8rem;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
             font-size: 1rem;
+            transition: border-color 0.3s;
         }
 
-        .form-group input:focus {
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
             outline: none;
             border-color: #27ae60;
         }
 
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-        }
-
-        .submit-btn {
-            background: #27ae60;
+        .btn-submit {
+            background-color: #27ae60;
             color: white;
             border: none;
             padding: 1rem 2rem;
-            border-radius: 5px;
+            border-radius: 6px;
             cursor: pointer;
             font-size: 1rem;
             font-weight: 600;
-            width: 100%;
+            margin-top: 1rem;
         }
 
-        .submit-btn:hover {
-            background: #2ecc71;
+        .btn-submit:hover {
+            background-color: #2ecc71;
         }
 
-        .cancel-btn {
-            background: #95a5a6;
-            color: white;
-            border: none;
-            padding: 1rem 2rem;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1rem;
-            margin-top: 0.5rem;
-        }
-
-        /* Alertas */
-        .alert {
-            padding: 1rem;
-            border-radius: 5px;
-            margin-bottom: 1rem;
-            display: none;
-        }
-
-        .alert.success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        .alert.error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
+        /* Indicador de sección activa */
+        .section-indicator {
+            background-color: #e8f4ed;
+            color: #27ae60;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         /* Responsive */
         @media (max-width: 768px) {
-            .nav-menu {
+            .dashboard-container {
                 flex-direction: column;
             }
             
-            .nav-btn {
+            .sidebar {
                 width: 100%;
             }
             
-            .module-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .form-row {
-                grid-template-columns: 1fr;
+            .main-content {
+                padding: 1rem;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Header con información del usuario -->
-    <header class="admin-header">
-        <h1>
-            👑 MI LOCAL DE ROPA 
-            <span>Administración</span>
-        </h1>
-        <div class="user-info">
+    <header class="dashboard-header">
+        <div class="logo-area">
+            <h1>🐻 MI LOCAL DE ROPA</h1>
+            <small>Panel de Administración</small>
+        </div>
+        <div class="user-area">
             <span class="user-name" id="userNameDisplay">Cargando...</span>
-            <button class="logout-btn" onclick="logout()">🔒 Cerrar sesión</button>
+            <button class="btn-logout" onclick="logout()">🔒 Cerrar sesión</button>
         </div>
     </header>
 
-    <!-- Menú de navegación principal -->
-    <nav class="nav-menu" id="mainNav">
-        <button class="nav-btn active" onclick="cambiarModulo('compras')">
-            🛒 COMPRAS
-        </button>
-        <button class="nav-btn" onclick="cambiarModulo('gastos')">
-            💸 GASTOS
-        </button>
-        <button class="nav-btn" onclick="cambiarModulo('productos')">
-            👕 PRODUCTOS
-        </button>
-        <button class="nav-btn" onclick="cambiarModulo('perfiles')">
-            👥 PERFILES
-        </button>
-        <button class="nav-btn" onclick="cambiarModulo('proveedores')">
-            📦 PROVEEDORES
-        </button>
-        <button class="nav-btn" onclick="cambiarModulo('ventas')">
-            💰 VENTAS
-        </button>
-        <button class="nav-btn" onclick="window.location.href='contabilidad.html'">
-            📊 CONTABILIDAD
-        </button>
-    </nav>
+    <div class="dashboard-container">
+        <!-- Barra lateral con todas las opciones -->
+        <aside class="sidebar">
+            <ul class="sidebar-menu">
+                <li>
+                    <a href="#" onclick="cargarSeccion('dashboard')" class="active" id="menu-dashboard">
+                        <span class="menu-icon">📊</span>
+                        <span class="menu-text">Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onclick="cargarSeccion('compras')" id="menu-compras">
+                        <span class="menu-icon">📦</span>
+                        <span class="menu-text">Compras</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onclick="cargarSeccion('gastos')" id="menu-gastos">
+                        <span class="menu-icon">💸</span>
+                        <span class="menu-text">Gastos</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onclick="cargarSeccion('productos')" id="menu-productos">
+                        <span class="menu-icon">👕</span>
+                        <span class="menu-text">Productos</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onclick="cargarSeccion('perfiles')" id="menu-perfiles">
+                        <span class="menu-icon">👥</span>
+                        <span class="menu-text">Perfiles</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onclick="cargarSeccion('proveedores')" id="menu-proveedores">
+                        <span class="menu-icon">🤝</span>
+                        <span class="menu-text">Proveedores</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onclick="cargarSeccion('ventas')" id="menu-ventas">
+                        <span class="menu-icon">🛒</span>
+                        <span class="menu-text">Ventas</span>
+                    </a>
+                </li>
+                <li style="border-top: 2px solid #e2e8f0; margin-top: 1rem; padding-top: 1rem;">
+                    <a href="#" onclick="cargarSeccion('contabilidad')" id="menu-contabilidad">
+                        <span class="menu-icon">📊</span>
+                        <span class="menu-text">Contabilidad</span>
+                        <span style="background: #f39c12; color: white; padding: 0.2rem 0.5rem; border-radius: 12px; font-size: 0.7rem; margin-left: 0.5rem;">PUC</span>
+                    </a>
+                </li>
+            </ul>
+        </aside>
 
-    <!-- Área de contenido principal -->
-    <main class="content-area">
-        <!-- Mensajes de alerta -->
-        <div id="alertMessage" class="alert"></div>
-
-        <!-- SECCIÓN: COMPRAS -->
-        <div id="modulo-compras" class="module-section">
-            <div class="module-grid">
-                <div class="module-card" onclick="mostrarFormulario('compra')">
-                    <div class="card-icon">🛒</div>
-                    <div class="card-title">Nueva Compra</div>
-                    <div class="card-description">Registrar compra a proveedor</div>
-                    <div class="card-stats">+ Nueva</div>
-                </div>
-                <div class="module-card">
-                    <div class="card-icon">📋</div>
-                    <div class="card-title">Compras del Mes</div>
-                    <div class="card-description">Total en compras</div>
-                    <div class="card-stats" id="stats-compras-mes">$0</div>
-                </div>
-                <div class="module-card">
-                    <div class="card-icon">⏳</div>
-                    <div class="card-title">Pendientes</div>
-                    <div class="card-description">Compras por recibir</div>
-                    <div class="card-stats" id="stats-compras-pendientes">0</div>
+        <!-- Contenido principal que cambia dinámicamente -->
+        <main class="main-content">
+            <div class="content-header">
+                <h2 id="sectionTitle">Dashboard</h2>
+                <div class="section-indicator" id="sectionIndicator">
+                    <span>📌</span>
+                    <span id="indicatorText">Resumen general</span>
                 </div>
             </div>
-
-            <!-- Formulario de compra -->
-            <div id="form-compra" class="form-container">
-                <h2>🛒 Registrar Nueva Compra</h2>
-                <form onsubmit="event.preventDefault(); guardarCompra()">
-                    <div class="form-group">
-                        <label>Proveedor:</label>
-                        <select id="compra-proveedor" required>
-                            <option value="">Seleccionar proveedor</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Fecha:</label>
-                        <input type="date" id="compra-fecha" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Producto:</label>
-                        <input type="text" id="compra-producto" placeholder="Nombre del producto" required>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Cantidad:</label>
-                            <input type="number" id="compra-cantidad" min="1" required>
+            
+            <div class="content-card" id="contentArea">
+                <!-- Aquí se cargará el contenido de cada sección -->
+                <div style="text-align: center; padding: 4rem;">
+                    <h3>Bienvenido al panel de administración</h3>
+                    <p style="color: #7f8c8d; margin-top: 1rem;">Selecciona una opción del menú para comenzar</p>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-top: 3rem;">
+                        <div style="background: #f8fafc; padding: 2rem; border-radius: 10px;">
+                            <span style="font-size: 2rem;">📦</span>
+                            <h4>Compras</h4>
                         </div>
-                        <div class="form-group">
-                            <label>Precio unitario:</label>
-                            <input type="number" id="compra-precio" min="0" step="100" required>
+                        <div style="background: #f8fafc; padding: 2rem; border-radius: 10px;">
+                            <span style="font-size: 2rem;">👕</span>
+                            <h4>Productos</h4>
+                        </div>
+                        <div style="background: #f8fafc; padding: 2rem; border-radius: 10px;">
+                            <span style="font-size: 2rem;">🛒</span>
+                            <h4>Ventas</h4>
+                        </div>
+                        <div style="background: #f8fafc; padding: 2rem; border-radius: 10px;">
+                            <span style="font-size: 2rem;">📊</span>
+                            <h4>Contabilidad</h4>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label>Estado:</label>
-                        <select id="compra-estado">
-                            <option value="Pendiente">Pendiente</option>
-                            <option value="Recibida">Recibida</option>
-                            <option value="Pagada">Pagada</option>
-                        </select>
-                    </div>
-                    <button type="submit" class="submit-btn">Guardar Compra</button>
-                    <button type="button" class="cancel-btn" onclick="cerrarFormulario('compra')">Cancelar</button>
-                </form>
+                </div>
             </div>
+        </main>
+    </div>
 
-            <!-- Tabla de compras -->
-            <div class="data-table">
-                <h2>
-                    Historial de Compras
-                    <button class="add-btn" onclick="mostrarFormulario('compra')">➕ Nueva Compra</button>
-                </h2>
-                <table id="tabla-compras">
+    <script src="../js/supabase-config.js"></script>
+    <script>
+        // Verificar autenticación
+        const token = localStorage.getItem('admin_token');
+        if (!token) {
+            window.location.href = 'login.html';
+        }
+
+        // Mostrar nombre del usuario
+        const userData = JSON.parse(token);
+        document.getElementById('userNameDisplay').textContent = userData.user?.email || 'Administrador';
+
+        // Función para cerrar sesión
+        function logout() {
+            localStorage.removeItem('admin_token');
+            window.location.href = 'login.html';
+        }
+
+        // Función para cargar diferentes secciones
+        async function cargarSeccion(seccion) {
+            // Actualizar menú activo
+            document.querySelectorAll('.sidebar-menu a').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.getElementById(`menu-${seccion}`).classList.add('active');
+            
+            // Actualizar título e indicador
+            const titulos = {
+                'dashboard': 'Dashboard',
+                'compras': 'Gestión de Compras',
+                'gastos': 'Registro de Gastos',
+                'productos': 'Inventario de Productos',
+                'perfiles': 'Perfiles de Usuario',
+                'proveedores': 'Proveedores',
+                'ventas': 'Registro de Ventas',
+                'contabilidad': 'Módulo de Contabilidad'
+            };
+            
+            const indicadores = {
+                'dashboard': 'Resumen general',
+                'compras': '📦 Órdenes de compra',
+                'gastos': '💸 Egresos',
+                'productos': '👕 Stock y precios',
+                'perfiles': '👥 Usuarios del sistema',
+                'proveedores': '🤝 Catálogo de proveedores',
+                'ventas': '🛒 Facturación',
+                'contabilidad': '📊 PUC y movimientos'
+            };
+            
+            document.getElementById('sectionTitle').textContent = titulos[seccion] || seccion;
+            document.getElementById('indicatorText').textContent = indicadores[seccion] || '';
+            
+            // Cargar contenido según la sección
+            const contentArea = document.getElementById('contentArea');
+            
+            switch(seccion) {
+                case 'compras':
+                    contentArea.innerHTML = await cargarCompras();
+                    break;
+                case 'gastos':
+                    contentArea.innerHTML = await cargarGastos();
+                    break;
+                case 'productos':
+                    contentArea.innerHTML = await cargarProductos();
+                    break;
+                case 'perfiles':
+                    contentArea.innerHTML = await cargarPerfiles();
+                    break;
+                case 'proveedores':
+                    contentArea.innerHTML = await cargarProveedores();
+                    break;
+                case 'ventas':
+                    contentArea.innerHTML = await cargarVentas();
+                    break;
+                case 'contabilidad':
+                    contentArea.innerHTML = await cargarContabilidad();
+                    break;
+                default:
+                    contentArea.innerHTML = `<h3>Sección ${seccion} en construcción</h3>`;
+            }
+        }
+
+        // Funciones para cargar cada módulo (versión inicial con datos de ejemplo)
+        async function cargarCompras() {
+            return `
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                    <h3>Órdenes de Compra</h3>
+                    <button class="btn-add" onclick="agregarRegistro('compra')">
+                        <span>➕</span> Nueva Compra
+                    </button>
+                </div>
+                <table class="data-table">
                     <thead>
                         <tr>
-                            <th>Fecha</th>
+                            <th>ID</th>
                             <th>Proveedor</th>
-                            <th>Producto</th>
-                            <th>Cantidad</th>
+                            <th>Fecha</th>
                             <th>Total</th>
                             <th>Estado</th>
                             <th>Acciones</th>
@@ -473,84 +503,41 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td colspan="7" style="text-align: center;">Cargando compras...</td>
+                            <td>#001</td>
+                            <td>Distribuidora Textil</td>
+                            <td>15/03/2026</td>
+                            <td>$850,000</td>
+                            <td>✅ Recibida</td>
+                            <td>
+                                <button class="btn-edit">✏️</button>
+                                <button class="btn-delete">🗑️</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>#002</td>
+                            <td>Jeans & Co</td>
+                            <td>10/03/2026</td>
+                            <td>$1,200,000</td>
+                            <td>⏳ Pendiente</td>
+                            <td>
+                                <button class="btn-edit">✏️</button>
+                                <button class="btn-delete">🗑️</button>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
-            </div>
-        </div>
+            `;
+        }
 
-        <!-- SECCIÓN: GASTOS -->
-        <div id="modulo-gastos" class="module-section" style="display: none;">
-            <div class="module-grid">
-                <div class="module-card" onclick="mostrarFormulario('gasto')">
-                    <div class="card-icon">💸</div>
-                    <div class="card-title">Nuevo Gasto</div>
-                    <div class="card-description">Registrar gasto operativo</div>
-                    <div class="card-stats">+ Nuevo</div>
+        async function cargarGastos() {
+            return `
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                    <h3>Registro de Gastos</h3>
+                    <button class="btn-add" onclick="agregarRegistro('gasto')">
+                        <span>➕</span> Nuevo Gasto
+                    </button>
                 </div>
-                <div class="module-card">
-                    <div class="card-icon">📊</div>
-                    <div class="card-title">Gastos del Mes</div>
-                    <div class="card-description">Total gastos</div>
-                    <div class="card-stats" id="stats-gastos-mes">$0</div>
-                </div>
-                <div class="module-card">
-                    <div class="card-icon">🏢</div>
-                    <div class="card-title">Por Categoría</div>
-                    <div class="card-description">Alquiler, servicios, etc.</div>
-                    <div class="card-stats">Ver más</div>
-                </div>
-            </div>
-
-            <!-- Formulario de gasto -->
-            <div id="form-gasto" class="form-container">
-                <h2>💸 Registrar Nuevo Gasto</h2>
-                <form onsubmit="event.preventDefault(); guardarGasto()">
-                    <div class="form-group">
-                        <label>Fecha:</label>
-                        <input type="date" id="gasto-fecha" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Concepto:</label>
-                        <input type="text" id="gasto-concepto" placeholder="Ej: Alquiler local" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Categoría:</label>
-                        <select id="gasto-categoria" required>
-                            <option value="">Seleccionar</option>
-                            <option value="Alquiler">Alquiler</option>
-                            <option value="Servicios">Servicios (Luz, Agua)</option>
-                            <option value="Sueldos">Sueldos</option>
-                            <option value="Marketing">Marketing</option>
-                            <option value="Mantenimiento">Mantenimiento</option>
-                            <option value="Otros">Otros</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Monto:</label>
-                        <input type="number" id="gasto-monto" min="0" step="100" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Método de pago:</label>
-                        <select id="gasto-metodo">
-                            <option value="Efectivo">Efectivo</option>
-                            <option value="Transferencia">Transferencia</option>
-                            <option value="Tarjeta">Tarjeta</option>
-                        </select>
-                    </div>
-                    <button type="submit" class="submit-btn">Guardar Gasto</button>
-                    <button type="button" class="cancel-btn" onclick="cerrarFormulario('gasto')">Cancelar</button>
-                </form>
-            </div>
-
-            <!-- Tabla de gastos -->
-            <div class="data-table">
-                <h2>
-                    Historial de Gastos
-                    <button class="add-btn" onclick="mostrarFormulario('gasto')">➕ Nuevo Gasto</button>
-                </h2>
-                <table id="tabla-gastos">
+                <table class="data-table">
                     <thead>
                         <tr>
                             <th>Fecha</th>
@@ -563,238 +550,154 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td colspan="6" style="text-align: center;">Cargando gastos...</td>
+                            <td>14/03/2026</td>
+                            <td>Alquiler local</td>
+                            <td>Servicios</td>
+                            <td>$800,000</td>
+                            <td>Transferencia</td>
+                            <td>
+                                <button class="btn-edit">✏️</button>
+                                <button class="btn-delete">🗑️</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>12/03/2026</td>
+                            <td>Energía eléctrica</td>
+                            <td>Servicios</td>
+                            <td>$120,000</td>
+                            <td>Efectivo</td>
+                            <td>
+                                <button class="btn-edit">✏️</button>
+                                <button class="btn-delete">🗑️</button>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
-            </div>
-        </div>
+            `;
+        }
 
-        <!-- SECCIÓN: PRODUCTOS -->
-        <div id="modulo-productos" class="module-section" style="display: none;">
-            <div class="module-grid">
-                <div class="module-card" onclick="mostrarFormulario('producto')">
-                    <div class="card-icon">👕</div>
-                    <div class="card-title">Nuevo Producto</div>
-                    <div class="card-description">Agregar al inventario</div>
-                    <div class="card-stats">+ Nuevo</div>
+        async function cargarProductos() {
+            return `
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                    <h3>Inventario de Productos</h3>
+                    <button class="btn-add" onclick="agregarRegistro('producto')">
+                        <span>➕</span> Nuevo Producto
+                    </button>
                 </div>
-                <div class="module-card">
-                    <div class="card-icon">📦</div>
-                    <div class="card-title">Total Productos</div>
-                    <div class="card-description">En inventario</div>
-                    <div class="card-stats" id="stats-total-productos">0</div>
-                </div>
-                <div class="module-card">
-                    <div class="card-icon">⚠️</div>
-                    <div class="card-title">Stock Bajo</div>
-                    <div class="card-description">Productos por reabastecer</div>
-                    <div class="card-stats" id="stats-stock-bajo">0</div>
-                </div>
-            </div>
-
-            <!-- Formulario de producto -->
-            <div id="form-producto" class="form-container">
-                <h2>👕 Agregar Nuevo Producto</h2>
-                <form onsubmit="event.preventDefault(); guardarProducto()">
-                    <div class="form-group">
-                        <label>Código/Barras:</label>
-                        <input type="text" id="producto-codigo" placeholder="Ej: CAM001" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Nombre:</label>
-                        <input type="text" id="producto-nombre" placeholder="Ej: Camisa básica" required>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Talla:</label>
-                            <input type="text" id="producto-talla" placeholder="S, M, L, XL...">
-                        </div>
-                        <div class="form-group">
-                            <label>Color:</label>
-                            <input type="text" id="producto-color" placeholder="Ej: Azul">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Precio Compra:</label>
-                            <input type="number" id="producto-precio-compra" min="0" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Precio Venta:</label>
-                            <input type="number" id="producto-precio-venta" min="0" required>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Stock Inicial:</label>
-                        <input type="number" id="producto-stock" min="0" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Proveedor:</label>
-                        <select id="producto-proveedor">
-                            <option value="">Seleccionar (opcional)</option>
-                        </select>
-                    </div>
-                    <button type="submit" class="submit-btn">Guardar Producto</button>
-                    <button type="button" class="cancel-btn" onclick="cerrarFormulario('producto')">Cancelar</button>
-                </form>
-            </div>
-
-            <!-- Tabla de productos -->
-            <div class="data-table">
-                <h2>
-                    Inventario de Productos
-                    <button class="add-btn" onclick="mostrarFormulario('producto')">➕ Nuevo Producto</button>
-                </h2>
-                <table id="tabla-productos">
+                <table class="data-table">
                     <thead>
                         <tr>
                             <th>Código</th>
                             <th>Producto</th>
+                            <th>Categoría</th>
                             <th>Talla</th>
-                            <th>Color</th>
-                            <th>P. Venta</th>
+                            <th>Precio</th>
                             <th>Stock</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td colspan="7" style="text-align: center;">Cargando productos...</td>
+                            <td>PR001</td>
+                            <td>Vestido Floral</td>
+                            <td>Vestidos</td>
+                            <td>M</td>
+                            <td>$45,000</td>
+                            <td>12</td>
+                            <td>
+                                <button class="btn-edit">✏️</button>
+                                <button class="btn-delete">🗑️</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>PR002</td>
+                            <td>Blusa Blanca</td>
+                            <td>Blusas</td>
+                            <td>L</td>
+                            <td>$25,000</td>
+                            <td>8</td>
+                            <td>
+                                <button class="btn-edit">✏️</button>
+                                <button class="btn-delete">🗑️</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>PR003</td>
+                            <td>Pantalón Jean</td>
+                            <td>Pantalones</td>
+                            <td>38</td>
+                            <td>$65,000</td>
+                            <td>5</td>
+                            <td>
+                                <button class="btn-edit">✏️</button>
+                                <button class="btn-delete">🗑️</button>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
-            </div>
-        </div>
+            `;
+        }
 
-        <!-- SECCIÓN: PERFILES (Usuarios) -->
-        <div id="modulo-perfiles" class="module-section" style="display: none;">
-            <div class="module-grid">
-                <div class="module-card" onclick="mostrarFormulario('perfil')">
-                    <div class="card-icon">👥</div>
-                    <div class="card-title">Nuevo Usuario</div>
-                    <div class="card-description">Crear cuenta de empleado</div>
-                    <div class="card-stats">+ Nuevo</div>
+        async function cargarPerfiles() {
+            return `
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                    <h3>Perfiles de Usuario</h3>
+                    <button class="btn-add" onclick="agregarRegistro('perfil')">
+                        <span>➕</span> Nuevo Usuario
+                    </button>
                 </div>
-                <div class="module-card">
-                    <div class="card-icon">👤</div>
-                    <div class="card-title">Empleados Activos</div>
-                    <div class="card-description">Personal del local</div>
-                    <div class="card-stats" id="stats-empleados">0</div>
-                </div>
-            </div>
-
-            <!-- Formulario de perfil -->
-            <div id="form-perfil" class="form-container">
-                <h2>👥 Crear Nuevo Usuario</h2>
-                <form onsubmit="event.preventDefault(); guardarPerfil()">
-                    <div class="form-group">
-                        <label>Nombre completo:</label>
-                        <input type="text" id="perfil-nombre" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Email:</label>
-                        <input type="email" id="perfil-email" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Contraseña:</label>
-                        <input type="password" id="perfil-password" minlength="6" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Rol:</label>
-                        <select id="perfil-rol">
-                            <option value="empleado">Empleado</option>
-                            <option value="admin">Administrador</option>
-                        </select>
-                    </div>
-                    <button type="submit" class="submit-btn">Crear Usuario</button>
-                    <button type="button" class="cancel-btn" onclick="cerrarFormulario('perfil')">Cancelar</button>
-                </form>
-            </div>
-
-            <!-- Tabla de perfiles -->
-            <div class="data-table">
-                <h2>
-                    Usuarios del Sistema
-                    <button class="add-btn" onclick="mostrarFormulario('perfil')">➕ Nuevo Usuario</button>
-                </h2>
-                <table id="tabla-perfiles">
+                <table class="data-table">
                     <thead>
                         <tr>
-                            <th>Nombre</th>
+                            <th>Usuario</th>
                             <th>Email</th>
                             <th>Rol</th>
-                            <th>Fecha registro</th>
+                            <th>Último acceso</th>
+                            <th>Estado</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td colspan="5" style="text-align: center;">Cargando usuarios...</td>
+                            <td>Ana Pérez</td>
+                            <td>ana@mitienda.com</td>
+                            <td>Administrador</td>
+                            <td>15/03/2026</td>
+                            <td>🟢 Activo</td>
+                            <td>
+                                <button class="btn-edit">✏️</button>
+                                <button class="btn-delete">🗑️</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Carlos Ruiz</td>
+                            <td>carlos@mitienda.com</td>
+                            <td>Vendedor</td>
+                            <td>14/03/2026</td>
+                            <td>🟢 Activo</td>
+                            <td>
+                                <button class="btn-edit">✏️</button>
+                                <button class="btn-delete">🗑️</button>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
-            </div>
-        </div>
+            `;
+        }
 
-        <!-- SECCIÓN: PROVEEDORES -->
-        <div id="modulo-proveedores" class="module-section" style="display: none;">
-            <div class="module-grid">
-                <div class="module-card" onclick="mostrarFormulario('proveedor')">
-                    <div class="card-icon">📦</div>
-                    <div class="card-title">Nuevo Proveedor</div>
-                    <div class="card-description">Agregar proveedor</div>
-                    <div class="card-stats">+ Nuevo</div>
+        async function cargarProveedores() {
+            return `
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                    <h3>Proveedores</h3>
+                    <button class="btn-add" onclick="agregarRegistro('proveedor')">
+                        <span>➕</span> Nuevo Proveedor
+                    </button>
                 </div>
-                <div class="module-card">
-                    <div class="card-icon">🏪</div>
-                    <div class="card-title">Total Proveedores</div>
-                    <div class="card-description">Registrados</div>
-                    <div class="card-stats" id="stats-proveedores">0</div>
-                </div>
-            </div>
-
-            <!-- Formulario de proveedor -->
-            <div id="form-proveedor" class="form-container">
-                <h2>📦 Registrar Nuevo Proveedor</h2>
-                <form onsubmit="event.preventDefault(); guardarProveedor()">
-                    <div class="form-group">
-                        <label>Nombre/Empresa:</label>
-                        <input type="text" id="proveedor-nombre" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Contacto:</label>
-                        <input type="text" id="proveedor-contacto" placeholder="Nombre de la persona">
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Teléfono:</label>
-                            <input type="tel" id="proveedor-telefono">
-                        </div>
-                        <div class="form-group">
-                            <label>Email:</label>
-                            <input type="email" id="proveedor-email">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Dirección:</label>
-                        <textarea id="proveedor-direccion" rows="2"></textarea>
-                    </div>
-                    <button type="submit" class="submit-btn">Guardar Proveedor</button>
-                    <button type="button" class="cancel-btn" onclick="cerrarFormulario('proveedor')">Cancelar</button>
-                </form>
-            </div>
-
-            <!-- Tabla de proveedores -->
-            <div class="data-table">
-                <h2>
-                    Lista de Proveedores
-                    <button class="add-btn" onclick="mostrarFormulario('proveedor')">➕ Nuevo Proveedor</button>
-                </h2>
-                <table id="tabla-proveedores">
+                <table class="data-table">
                     <thead>
                         <tr>
-                            <th>Proveedor</th>
+                            <th>NIT</th>
+                            <th>Nombre</th>
                             <th>Contacto</th>
                             <th>Teléfono</th>
                             <th>Email</th>
@@ -803,939 +706,173 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td colspan="5" style="text-align: center;">Cargando proveedores...</td>
+                            <td>900.123.456-7</td>
+                            <td>Distribuidora Textil</td>
+                            <td>María Gómez</td>
+                            <td>310 123 4567</td>
+                            <td>ventas@distribuidora.com</td>
+                            <td>
+                                <button class="btn-edit">✏️</button>
+                                <button class="btn-delete">🗑️</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>800.789.123-4</td>
+                            <td>Jeans & Co</td>
+                            <td>Juan Pérez</td>
+                            <td>320 987 6543</td>
+                            <td>juan@jeansco.com</td>
+                            <td>
+                                <button class="btn-edit">✏️</button>
+                                <button class="btn-delete">🗑️</button>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
-            </div>
-        </div>
+            `;
+        }
 
-        <!-- SECCIÓN: VENTAS -->
-        <div id="modulo-ventas" class="module-section" style="display: none;">
-            <div class="module-grid">
-                <div class="module-card" onclick="window.open('venta-rapida.html', '_blank')">
-                    <div class="card-icon">💰</div>
-                    <div class="card-title">Nueva Venta</div>
-                    <div class="card-description">Registrar venta rápida</div>
-                    <div class="card-stats">+ Vender</div>
+        async function cargarVentas() {
+            return `
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                    <h3>Registro de Ventas</h3>
+                    <button class="btn-add" onclick="agregarRegistro('venta')">
+                        <span>➕</span> Nueva Venta
+                    </button>
                 </div>
-                <div class="module-card">
-                    <div class="card-icon">📈</div>
-                    <div class="card-title">Ventas Hoy</div>
-                    <div class="card-description">Total del día</div>
-                    <div class="card-stats" id="stats-ventas-hoy">$0</div>
-                </div>
-                <div class="module-card">
-                    <div class="card-icon">📊</div>
-                    <div class="card-title">Ventas Mes</div>
-                    <div class="card-description">Acumulado mensual</div>
-                    <div class="card-stats" id="stats-ventas-mes">$0</div>
-                </div>
-            </div>
-
-            <!-- Tabla de ventas -->
-            <div class="data-table">
-                <h2>
-                    Historial de Ventas
-                    <button class="add-btn" onclick="window.open('venta-rapida.html', '_blank')">➕ Nueva Venta</button>
-                </h2>
-                <table id="tabla-ventas">
+                <table class="data-table">
                     <thead>
                         <tr>
+                            <th>Factura</th>
                             <th>Fecha</th>
+                            <th>Cliente</th>
                             <th>Productos</th>
                             <th>Total</th>
                             <th>Método</th>
-                            <th>Vendedor</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td colspan="6" style="text-align: center;">Cargando ventas...</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- SECCIÓN: CONTABILIDAD -->
-        <div id="modulo-contabilidad" class="module-section" style="display: none;">
-            <div class="module-grid">
-                <div class="module-card">
-                    <div class="card-icon">💰</div>
-                    <div class="card-title">Ingresos</div>
-                    <div class="card-description">Total ventas</div>
-                    <div class="card-stats" id="stats-ingresos">$0</div>
-                </div>
-                <div class="module-card">
-                    <div class="card-icon">💸</div>
-                    <div class="card-title">Egresos</div>
-                    <div class="card-description">Compras + Gastos</div>
-                    <div class="card-stats" id="stats-egresos">$0</div>
-                </div>
-                <div class="module-card">
-                    <div class="card-icon">📊</div>
-                    <div class="card-title">Balance</div>
-                    <div class="card-description">Ingresos - Egresos</div>
-                    <div class="card-stats" id="stats-balance">$0</div>
-                </div>
-            </div>
-
-            <!-- Resumen contable -->
-            <div class="data-table">
-                <h2>📊 Movimientos del Mes</h2>
-                <table id="tabla-movimientos">
-                    <thead>
-                        <tr>
-                            <th>Fecha</th>
-                            <th>Tipo</th>
-                            <th>Concepto</th>
-                            <th>Ingreso</th>
-                            <th>Egreso</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td colspan="5" style="text-align: center;">Cargando movimientos...</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Gráfico simple (placeholder) -->
-            <div style="background: white; border-radius: 10px; padding: 1.5rem; margin-top: 1rem;">
-                <h3>📈 Evolución de Ventas</h3>
-                <div style="height: 200px; background: #f8f9fa; display: flex; align-items: center; justify-content: center;">
-                    [Aquí irá un gráfico de ventas]
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <script src="../js/supabase-config.js"></script>
-    <script>
-        // Variables globales
-        let currentUser = null;
-        let currentModule = 'compras';
-
-        // Cargar datos al iniciar
-        document.addEventListener('DOMContentLoaded', async () => {
-            await verificarSesion();
-            await cargarDulosIniciales();
-            cambiarModulo('compras'); // Módulo por defecto
-        });
-
-        // Verificar sesión
-        async function verificarSesion() {
-            const tokenData = localStorage.getItem('admin_token');
-            if (!tokenData) {
-                window.location.href = 'login.html';
-                return;
-            }
-
-            try {
-                const token = JSON.parse(tokenData);
-                // Verificar token con Supabase
-                const response = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
-                    headers: {
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${token.access_token}`
-                    }
-                });
-
-                if (!response.ok) {
-                    throw new Error('Sesión inválida');
-                }
-
-                const user = await response.json();
-                currentUser = user;
-                               currentUser = user;
-                
-                // Obtener nombre del perfil
-                const perfilRes = await fetch(`${SUPABASE_URL}/rest/v1/perfiles?id=eq.${user.id}`, {
-                    headers: { 'apikey': SUPABASE_KEY }
-                });
-                const perfil = await perfilRes.json();
-                
-                document.getElementById('userNameDisplay').textContent = 
-                    perfil[0]?.nombre || user.email || 'Administrador';
-                
-            } catch (error) {
-                console.error('Error de sesión:', error);
-                localStorage.removeItem('admin_token');
-                window.location.href = 'login.html';
-            }
-        }
-
-        // Cerrar sesión
-        function logout() {
-            if (confirm('¿Estás seguro de cerrar sesión?')) {
-                localStorage.removeItem('admin_token');
-                window.location.href = 'login.html';
-            }
-        }
-
-        // Cambiar entre módulos
-        function cambiarModulo(modulo) {
-            // Ocultar todos los módulos
-            document.querySelectorAll('.module-section').forEach(section => {
-                section.style.display = 'none';
-            });
-            
-            // Mostrar el módulo seleccionado
-            document.getElementById(`modulo-${modulo}`).style.display = 'block';
-            
-            // Actualizar botones activos
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
-            
-            currentModule = modulo;
-            
-            // Cargar datos específicos del módulo
-            cargarDatosModulo(modulo);
-        }
-
-        // Cargar datos según el módulo
-        async function cargarDatosModulo(modulo) {
-            switch(modulo) {
-                case 'compras':
-                    await cargarCompras();
-                    await cargarProveedoresSelect('compra');
-                    break;
-                case 'gastos':
-                    await cargarGastos();
-                    break;
-                case 'productos':
-                    await cargarProductos();
-                    await cargarProveedoresSelect('producto');
-                    break;
-                case 'perfiles':
-                    await cargarPerfiles();
-                    break;
-                case 'proveedores':
-                    await cargarProveedores();
-                    break;
-                case 'ventas':
-                    await cargarVentas();
-                    break;
-                case 'contabilidad':
-                    await cargarContabilidad();
-                    break;
-            }
-        }
-
-        // Cargar datos iniciales (estadísticas)
-        async function cargarDulosIniciales() {
-            try {
-                // Productos
-                const prodRes = await fetch(`${SUPABASE_URL}/rest/v1/productos`, {
-                    headers: { 'apikey': SUPABASE_KEY }
-                });
-                const productos = await prodRes.json();
-                document.getElementById('stats-total-productos').textContent = productos.length;
-                
-                const stockBajo = productos.filter(p => p.stock_actual < 5).length;
-                document.getElementById('stats-stock-bajo').textContent = stockBajo;
-                
-                // Proveedores
-                const provRes = await fetch(`${SUPABASE_URL}/rest/v1/proveedores`, {
-                    headers: { 'apikey': SUPABASE_KEY }
-                });
-                const proveedores = await provRes.json();
-                document.getElementById('stats-proveedores').textContent = proveedores.length;
-                
-                // Perfiles (empleados)
-                const perfRes = await fetch(`${SUPABASE_URL}/rest/v1/perfiles`, {
-                    headers: { 'apikey': SUPABASE_KEY }
-                });
-                const perfiles = await perfRes.json();
-                document.getElementById('stats-empleados').textContent = perfiles.length;
-                
-            } catch (error) {
-                console.error('Error cargando datos iniciales:', error);
-            }
-        }
-
-        // ============================================
-        // FUNCIONES PARA COMPRAS
-        // ============================================
-        async function cargarCompras() {
-            try {
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/compras?select=*,proveedores(nombre)&order=fecha.desc`, {
-                    headers: { 'apikey': SUPABASE_KEY }
-                });
-                const compras = await response.json();
-                
-                const tbody = document.querySelector('#tabla-compras tbody');
-                
-                if (compras.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">No hay compras registradas</td></tr>';
-                    return;
-                }
-                
-                // Calcular total compras mes
-                const fechaInicio = new Date();
-                fechaInicio.setDate(1);
-                fechaInicio.setHours(0,0,0,0);
-                
-                const comprasMes = compras.filter(c => new Date(c.fecha) >= fechaInicio);
-                const totalMes = comprasMes.reduce((sum, c) => sum + (c.total || 0), 0);
-                document.getElementById('stats-compras-mes').textContent = `$${totalMes.toLocaleString()}`;
-                
-                const pendientes = compras.filter(c => c.estado === 'Pendiente').length;
-                document.getElementById('stats-compras-pendientes').textContent = pendientes;
-                
-                tbody.innerHTML = compras.map(compra => `
-                    <tr>
-                        <td>${new Date(compra.fecha).toLocaleDateString()}</td>
-                        <td>${compra.proveedores?.nombre || 'N/A'}</td>
-                        <td>${compra.producto || 'Varios'}</td>
-                        <td>${compra.cantidad || '-'}</td>
-                        <td>$${(compra.total || 0).toLocaleString()}</td>
-                        <td>
-                            <span style="background: ${compra.estado === 'Pagada' ? '#27ae60' : compra.estado === 'Recibida' ? '#f39c12' : '#e74c3c'}; 
-                                         color: white; padding: 0.2rem 0.5rem; border-radius: 3px; font-size: 0.8rem;">
-                                ${compra.estado || 'Pendiente'}
-                            </span>
-                        </td>
-                        <td>
-                            <button class="action-btn" onclick="editarCompra(${compra.id})" title="Editar">✏️</button>
-                            <button class="action-btn delete-btn" onclick="eliminarCompra(${compra.id})" title="Eliminar">🗑️</button>
-                        </td>
-                    </tr>
-                `).join('');
-                
-            } catch (error) {
-                console.error('Error cargando compras:', error);
-            }
-        }
-
-        async function guardarCompra() {
-            const compra = {
-                proveedor_id: document.getElementById('compra-proveedor').value || null,
-                fecha: document.getElementById('compra-fecha').value,
-                producto: document.getElementById('compra-producto').value,
-                cantidad: parseInt(document.getElementById('compra-cantidad').value),
-                precio_unitario: parseFloat(document.getElementById('compra-precio').value),
-                total: parseInt(document.getElementById('compra-cantidad').value) * parseFloat(document.getElementById('compra-precio').value),
-                estado: document.getElementById('compra-estado').value
-            };
-            
-            if (!compra.proveedor_id || !compra.fecha || !compra.producto) {
-                mostrarAlerta('Por favor completa todos los campos obligatorios', 'error');
-                return;
-            }
-            
-            try {
-                const token = JSON.parse(localStorage.getItem('admin_token'));
-                
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/compras`, {
-                    method: 'POST',
-                    headers: {
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${token.access_token}`,
-                        'Content-Type': 'application/json',
-                        'Prefer': 'return=representation'
-                    },
-                    body: JSON.stringify(compra)
-                });
-                
-                if (response.ok) {
-                    mostrarAlerta('Compra guardada correctamente', 'success');
-                    cerrarFormulario('compra');
-                    await cargarCompras();
-                    // Limpiar formulario
-                    document.getElementById('compra-producto').value = '';
-                    document.getElementById('compra-cantidad').value = '';
-                    document.getElementById('compra-precio').value = '';
-                } else {
-                    const error = await response.json();
-                    mostrarAlerta('Error al guardar: ' + (error.message || 'Desconocido'), 'error');
-                }
-            } catch (error) {
-                mostrarAlerta('Error de conexión', 'error');
-            }
-        }
-
-        // ============================================
-        // FUNCIONES PARA GASTOS
-        // ============================================
-        async function cargarGastos() {
-            try {
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/gastos?order=fecha.desc`, {
-                    headers: { 'apikey': SUPABASE_KEY }
-                });
-                const gastos = await response.json();
-                
-                const tbody = document.querySelector('#tabla-gastos tbody');
-                
-                if (gastos.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No hay gastos registrados</td></tr>';
-                    return;
-                }
-                
-                // Calcular gastos del mes
-                const fechaInicio = new Date();
-                fechaInicio.setDate(1);
-                fechaInicio.setHours(0,0,0,0);
-                
-                const gastosMes = gastos.filter(g => new Date(g.fecha) >= fechaInicio);
-                const totalMes = gastosMes.reduce((sum, g) => sum + (g.monto || 0), 0);
-                document.getElementById('stats-gastos-mes').textContent = `$${totalMes.toLocaleString()}`;
-                
-                tbody.innerHTML = gastos.map(gasto => `
-                    <tr>
-                        <td>${new Date(gasto.fecha).toLocaleDateString()}</td>
-                        <td>${gasto.concepto}</td>
-                        <td>${gasto.categoria}</td>
-                        <td>$${(gasto.monto || 0).toLocaleString()}</td>
-                        <td>${gasto.metodo_pago || 'Efectivo'}</td>
-                        <td>
-                            <button class="action-btn" onclick="editarGasto(${gasto.id})" title="Editar">✏️</button>
-                            <button class="action-btn delete-btn" onclick="eliminarGasto(${gasto.id})" title="Eliminar">🗑️</button>
-                        </td>
-                    </tr>
-                `).join('');
-                
-            } catch (error) {
-                console.error('Error cargando gastos:', error);
-            }
-        }
-
-        async function guardarGasto() {
-            const gasto = {
-                fecha: document.getElementById('gasto-fecha').value,
-                concepto: document.getElementById('gasto-concepto').value,
-                categoria: document.getElementById('gasto-categoria').value,
-                monto: parseFloat(document.getElementById('gasto-monto').value),
-                metodo_pago: document.getElementById('gasto-metodo').value
-            };
-            
-            if (!gasto.fecha || !gasto.concepto || !gasto.categoria || !gasto.monto) {
-                mostrarAlerta('Por favor completa todos los campos', 'error');
-                return;
-            }
-            
-            try {
-                const token = JSON.parse(localStorage.getItem('admin_token'));
-                
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/gastos`, {
-                    method: 'POST',
-                    headers: {
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${token.access_token}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(gasto)
-                });
-                
-                if (response.ok) {
-                    mostrarAlerta('Gasto guardado correctamente', 'success');
-                    cerrarFormulario('gasto');
-                    await cargarGastos();
-                    // Limpiar formulario
-                    document.getElementById('gasto-concepto').value = '';
-                    document.getElementById('gasto-monto').value = '';
-                } else {
-                    mostrarAlerta('Error al guardar el gasto', 'error');
-                }
-            } catch (error) {
-                mostrarAlerta('Error de conexión', 'error');
-            }
-        }
-
-        // ============================================
-        // FUNCIONES PARA PRODUCTOS
-        // ============================================
-async function cargarProductos() {
-    try {
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/productos?order=nombre`, {
-            headers: { 'apikey': SUPABASE_KEY }
-        });
-        const productos = await response.json();
-        
-        // 👇 ESTA ES LA PARTE QUE TE FALTA - ACTUALIZA LA TABLA
-        const tbody = document.querySelector('#tabla-productos tbody');
-        
-        if (productos.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">No hay productos registrados</td></tr>';
-            return;
-        }
-        
-        // Actualizar estadísticas
-        document.getElementById('stats-total-productos').textContent = productos.length;
-        const stockBajo = productos.filter(p => p.stock_actual < 5).length;
-        document.getElementById('stats-stock-bajo').textContent = stockBajo;
-        
-        // Generar filas de la tabla
-        tbody.innerHTML = productos.map(p => `
-            <tr ${p.stock_actual < 5 ? 'style="background: #fff3cd;"' : ''}>
-                <td>${p.codigo || '-'}</td>
-                <td><strong>${p.nombre}</strong></td>
-                <td>${p.talla || '-'}</td>
-                <td>${p.color || '-'}</td>
-                <td>$${(p.precio_venta || 0).toLocaleString()}</td>
-                <td>
-                    <span style="font-weight: bold; color: ${p.stock_actual < 5 ? '#e74c3c' : '#27ae60'};">
-                        ${p.stock_actual || 0}
-                    </span>
-                    ${p.stock_actual < 5 ? ' ⚠️' : ''}
-                </td>
-                <td>
-                    <button class="action-btn" onclick="editarProducto(${p.id})">✏️</button>
-                    <button class="action-btn" onclick="ajustarStock(${p.id})">📦</button>
-                    <button class="action-btn delete-btn" onclick="eliminarProducto(${p.id})">🗑️</button>
-                </td>
-            </tr>
-        `).join('');
-        
-    } catch (error) {
-        console.error('Error cargando productos:', error);
-    }
-}
-
-        async function guardarProducto() {
-            const producto = {
-                codigo: document.getElementById('producto-codigo').value,
-                nombre: document.getElementById('producto-nombre').value,
-                talla: document.getElementById('producto-talla').value || null,
-                color: document.getElementById('producto-color').value || null,
-                precio_compra: parseFloat(document.getElementById('producto-precio-compra').value),
-                precio_venta: parseFloat(document.getElementById('producto-precio-venta').value),
-                stock_actual: parseInt(document.getElementById('producto-stock').value),
-                proveedor_id: document.getElementById('producto-proveedor').value || null
-            };
-            
-            if (!producto.codigo || !producto.nombre || !producto.precio_venta) {
-                mostrarAlerta('Código, nombre y precio de venta son obligatorios', 'error');
-                return;
-            }
-            
-            try {
-                const token = JSON.parse(localStorage.getItem('admin_token'));
-                
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/productos`, {
-                    method: 'POST',
-                    headers: {
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${token.access_token}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(producto)
-                });
-                
-                if (response.ok) {
-                    mostrarAlerta('Producto guardado correctamente', 'success');
-                    cerrarFormulario('producto');
-                    await cargarProductos();
-                    // Limpiar formulario
-                    document.getElementById('producto-codigo').value = '';
-                    document.getElementById('producto-nombre').value = '';
-                    document.getElementById('producto-talla').value = '';
-                    document.getElementById('producto-color').value = '';
-                    document.getElementById('producto-precio-compra').value = '';
-                    document.getElementById('producto-precio-venta').value = '';
-                    document.getElementById('producto-stock').value = '';
-                } else {
-                    const error = await response.json();
-                    mostrarAlerta('Error: ' + (error.message || 'No se pudo guardar'), 'error');
-                }
-            } catch (error) {
-                mostrarAlerta('Error de conexión', 'error');
-            }
-        }
-
-        // ============================================
-        // FUNCIONES PARA PROVEEDORES
-        // ============================================
-        async function cargarProveedores() {
-            try {
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/proveedores?order=nombre`, {
-                    headers: { 'apikey': SUPABASE_KEY }
-                });
-                const proveedores = await response.json();
-                
-                const tbody = document.querySelector('#tabla-proveedores tbody');
-                
-                if (proveedores.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">No hay proveedores registrados</td></tr>';
-                    return;
-                }
-                
-                document.getElementById('stats-proveedores').textContent = proveedores.length;
-                
-                tbody.innerHTML = proveedores.map(p => `
-                    <tr>
-                        <td><strong>${p.nombre}</strong></td>
-                        <td>${p.contacto || '-'}</td>
-                        <td>${p.telefono || '-'}</td>
-                        <td>${p.email || '-'}</td>
-                        <td>
-                            <button class="action-btn" onclick="editarProveedor(${p.id})" title="Editar">✏️</button>
-                            <button class="action-btn delete-btn" onclick="eliminarProveedor(${p.id})" title="Eliminar">🗑️</button>
-                        </td>
-                    </tr>
-                `).join('');
-                
-            } catch (error) {
-                console.error('Error cargando proveedores:', error);
-            }
-        }
-
-        async function cargarProveedoresSelect(origen) {
-            try {
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/proveedores?select=id,nombre&order=nombre`, {
-                    headers: { 'apikey': SUPABASE_KEY }
-                });
-                const proveedores = await response.json();
-                
-                const select = document.getElementById(`${origen}-proveedor`);
-                if (!select) return;
-                
-                select.innerHTML = '<option value="">Seleccionar proveedor</option>' +
-                    proveedores.map(p => `<option value="${p.id}">${p.nombre}</option>`).join('');
-                    
-            } catch (error) {
-                console.error('Error cargando proveedores para select:', error);
-            }
-        }
-
-        async function guardarProveedor() {
-    const proveedor = {
-        nombre: document.getElementById('proveedor-nombre').value,
-        contacto: document.getElementById('proveedor-contacto').value || null,
-        telefono: document.getElementById('proveedor-telefono').value || null,
-        email: document.getElementById('proveedor-email').value || null,
-        direccion: document.getElementById('proveedor-direccion').value || null
-    };
-    
-    if (!proveedor.nombre) {
-        mostrarAlerta('El nombre del proveedor es obligatorio', 'error');
-        return;
-    }
-    
-    try {
-        const token = JSON.parse(localStorage.getItem('admin_token'));
-        
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/proveedores`, {
-            method: 'POST',
-            headers: {
-                'apikey': SUPABASE_KEY,
-                'Authorization': `Bearer ${token.access_token}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(proveedor)
-        });
-        
-        if (response.ok) {
-            mostrarAlerta('Proveedor guardado correctamente', 'success');
-            cerrarFormulario('proveedor');
-            
-            // 👇 ESTA ES LA LÍNEA CLAVE - Recarga la lista
-            await cargarProveedores();
-            
-            // Limpiar formulario
-            document.getElementById('proveedor-nombre').value = '';
-            document.getElementById('proveedor-contacto').value = '';
-            document.getElementById('proveedor-telefono').value = '';
-            document.getElementById('proveedor-email').value = '';
-            document.getElementById('proveedor-direccion').value = '';
-        } else {
-            mostrarAlerta('Error al guardar el proveedor', 'error');
-        }
-    } catch (error) {
-        mostrarAlerta('Error de conexión', 'error');
-    }
-}
-
-        // ============================================
-        // FUNCIONES PARA PERFILES (USUARIOS)
-        // ============================================
-        async function cargarPerfiles() {
-            try {
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/perfiles?order=created_at.desc`, {
-                    headers: { 'apikey': SUPABASE_KEY }
-                });
-                const perfiles = await response.json();
-                
-                const tbody = document.querySelector('#tabla-perfiles tbody');
-                
-                if (perfiles.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">No hay usuarios registrados</td></tr>';
-                    return;
-                }
-                
-                document.getElementById('stats-empleados').textContent = perfiles.length;
-                
-                tbody.innerHTML = perfiles.map(p => `
-                    <tr>
-                        <td><strong>${p.nombre || 'Sin nombre'}</strong></td>
-                        <td>${p.email}</td>
-                        <td>
-                            <span style="background: ${p.rol === 'admin' ? '#e74c3c' : '#3498db'}; 
-                                         color: white; padding: 0.2rem 0.5rem; border-radius: 3px;">
-                                ${p.rol || 'empleado'}
-                            </span>
-                        </td>
-                        <td>${new Date(p.created_at).toLocaleDateString()}</td>
-                        <td>
-                            <button class="action-btn" onclick="editarPerfil('${p.id}')" title="Editar">✏️</button>
-                            ${p.id !== currentUser?.id ? 
-                                `<button class="action-btn delete-btn" onclick="eliminarPerfil('${p.id}')" title="Eliminar">🗑️</button>` 
-                                : ''}
-                        </td>
-                    </tr>
-                `).join('');
-                
-            } catch (error) {
-                console.error('Error cargando perfiles:', error);
-            }
-        }
-
-        async function guardarPerfil() {
-            const nombre = document.getElementById('perfil-nombre').value;
-            const email = document.getElementById('perfil-email').value;
-            const password = document.getElementById('perfil-password').value;
-            const rol = document.getElementById('perfil-rol').value;
-            
-            if (!nombre || !email || !password) {
-                mostrarAlerta('Todos los campos son obligatorios', 'error');
-                return;
-            }
-            
-            try {
-                // 1. Crear usuario en Auth
-                const authResponse = await fetch(`${SUPABASE_URL}/auth/v1/signup`, {
-                    method: 'POST',
-                    headers: {
-                        'apikey': SUPABASE_KEY,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ email, password })
-                });
-                
-                const authData = await authResponse.json();
-                
-                if (!authResponse.ok) {
-                    throw new Error(authData.msg || 'Error al crear usuario');
-                }
-                
-                // 2. Crear perfil
-                const token = JSON.parse(localStorage.getItem('admin_token'));
-                
-                const perfilResponse = await fetch(`${SUPABASE_URL}/rest/v1/perfiles`, {
-                    method: 'POST',
-                    headers: {
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${token.access_token}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        id: authData.user.id,
-                        nombre: nombre,
-                        email: email,
-                        rol: rol
-                    })
-                });
-                
-                if (perfilResponse.ok) {
-                    mostrarAlerta('Usuario creado correctamente', 'success');
-                    cerrarFormulario('perfil');
-                    await cargarPerfiles();
-                    // Limpiar formulario
-                    document.getElementById('perfil-nombre').value = '';
-                    document.getElementById('perfil-email').value = '';
-                    document.getElementById('perfil-password').value = '';
-                } else {
-                    throw new Error('Error al crear perfil');
-                }
-                
-            } catch (error) {
-                mostrarAlerta('Error: ' + error.message, 'error');
-            }
-        }
-
-        // ============================================
-        // FUNCIONES PARA VENTAS
-        // ============================================
-        async function cargarVentas() {
-            try {
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/ventas?order=fecha.desc`, {
-                    headers: { 'apikey': SUPABASE_KEY }
-                });
-                const ventas = await response.json();
-                
-                const tbody = document.querySelector('#tabla-ventas tbody');
-                
-                if (ventas.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No hay ventas registradas</td></tr>';
-                    return;
-                }
-                
-                // Ventas de hoy
-                const hoy = new Date();
-                hoy.setHours(0,0,0,0);
-                
-                const ventasHoy = ventas.filter(v => new Date(v.fecha) >= hoy);
-                const totalHoy = ventasHoy.reduce((sum, v) => sum + (v.total || 0), 0);
-                document.getElementById('stats-ventas-hoy').textContent = `$${totalHoy.toLocaleString()}`;
-                
-                // Ventas del mes
-                const fechaInicio = new Date();
-                fechaInicio.setDate(1);
-                fechaInicio.setHours(0,0,0,0);
-                
-                const ventasMes = ventas.filter(v => new Date(v.fecha) >= fechaInicio);
-                const totalMes = ventasMes.reduce((sum, v) => sum + (v.total || 0), 0);
-                document.getElementById('stats-ventas-mes').textContent = `$${totalMes.toLocaleString()}`;
-                
-                tbody.innerHTML = ventas.map(venta => `
-                    <tr>
-                        <td>${new Date(venta.fecha).toLocaleString()}</td>
-                        <td>${venta.productos || 'Venta'}</td>
-                        <td>$${(venta.total || 0).toLocaleString()}</td>
-                        <td>${venta.metodo_pago || 'Efectivo'}</td>
-                        <td>${venta.vendedor || '-'}</td>
-                        <td>
-                            <button class="action-btn" onclick="verFactura(${venta.id})" title="Ver factura">🧾</button>
-                            <button class="action-btn delete-btn" onclick="anularVenta(${venta.id})" title="Anular">❌</button>
-                        </td>
-                    </tr>
-                `).join('');
-                
-            } catch (error) {
-                console.error('Error cargando ventas:', error);
-            }
-        }
-
-        // ============================================
-        // FUNCIONES PARA CONTABILIDAD
-        // ============================================
-        async function cargarContabilidad() {
-            try {
-                // Obtener ventas del mes
-                const fechaInicio = new Date();
-                fechaInicio.setDate(1);
-                fechaInicio.setHours(0,0,0,0);
-                const fechaFin = new Date();
-                
-                const ventasRes = await fetch(`${SUPABASE_URL}/rest/v1/ventas?fecha=gte.${fechaInicio.toISOString()}&fecha=lte.${fechaFin.toISOString()}`, {
-                    headers: { 'apikey': SUPABASE_KEY }
-                });
-                const ventas = await ventasRes.json();
-                
-                // Obtener compras del mes
-                const comprasRes = await fetch(`${SUPABASE_URL}/rest/v1/compras?fecha=gte.${fechaInicio.toISOString()}&fecha=lte.${fechaFin.toISOString()}`, {
-                    headers: { 'apikey': SUPABASE_KEY }
-                });
-                const compras = await comprasRes.json();
-                
-                // Obtener gastos del mes
-                const gastosRes = await fetch(`${SUPABASE_URL}/rest/v1/gastos?fecha=gte.${fechaInicio.toISOString()}&fecha=lte.${fechaFin.toISOString()}`, {
-                    headers: { 'apikey': SUPABASE_KEY }
-                });
-                const gastos = await gastosRes.json();
-                
-                const totalVentas = ventas.reduce((sum, v) => sum + (v.total || 0), 0);
-                const totalCompras = compras.reduce((sum, c) => sum + (c.total || 0), 0);
-                const totalGastos = gastos.reduce((sum, g) => sum + (g.monto || 0), 0);
-                const totalEgresos = totalCompras + totalGastos;
-                const balance = totalVentas - totalEgresos;
-                
-                document.getElementById('stats-ingresos').textContent = `$${totalVentas.toLocaleString()}`;
-                document.getElementById('stats-egresos').textContent = `$${totalEgresos.toLocaleString()}`;
-                document.getElementById('stats-balance').textContent = `$${balance.toLocaleString()}`;
-                
-                // Combinar movimientos para la tabla
-                const movimientos = [
-                    ...ventas.map(v => ({
-                        fecha: v.fecha,
-                        tipo: 'Venta',
-                        concepto: 'Venta de productos',
-                        ingreso: v.total || 0,
-                        egreso: 0
-                    })),
-                    ...compras.map(c => ({
-                        fecha: c.fecha,
-                        tipo: 'Compra',
-                        concepto: c.producto || 'Compra a proveedor',
-                        ingreso: 0,
-                        egreso: c.total || 0
-                    })),
-                    ...gastos.map(g => ({
-                        fecha: g.fecha,
-                        tipo: 'Gasto',
-                        concepto: g.concepto,
-                        ingreso: 0,
-                        egreso: g.monto || 0
-                    }))
-                ].sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
-                
-                const tbody = document.querySelector('#tabla-movimientos tbody');
-                
-                if (movimientos.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">No hay movimientos en el mes</td></tr>';
-                } else {
-                    tbody.innerHTML = movimientos.map(m => `
-                        <tr>
-                            <td>${new Date(m.fecha).toLocaleDateString()}</td>
+                            <td>F001-2026</td>
+                            <td>15/03/2026</td>
+                            <td>María López</td>
+                            <td>2 productos</td>
+                            <td>$92,000</td>
+                            <td>Tarjeta</td>
                             <td>
-                                <span style="background: ${m.tipo === 'Venta' ? '#27ae60' : m.tipo === 'Compra' ? '#f39c12' : '#e74c3c'}; 
-                                             color: white; padding: 0.2rem 0.5rem; border-radius: 3px;">
-                                    ${m.tipo}
-                                </span>
+                                <button class="btn-edit">✏️</button>
+                                <button class="btn-delete">🗑️</button>
+                                <button class="btn-edit" onclick="window.open('factura.html?id=1', '_blank')">🧾</button>
                             </td>
-                            <td>${m.concepto}</td>
-                            <td>${m.ingreso ? `$${m.ingreso.toLocaleString()}` : '-'}</td>
-                            <td>${m.egreso ? `$${m.egreso.toLocaleString()}` : '-'}</td>
                         </tr>
-                    `).join('');
-                }
+                        <tr>
+                            <td>F002-2026</td>
+                            <td>14/03/2026</td>
+                            <td>Carlos Ruiz</td>
+                            <td>1 producto</td>
+                            <td>$45,000</td>
+                            <td>Efectivo</td>
+                            <td>
+                                <button class="btn-edit">✏️</button>
+                                <button class="btn-delete">🗑️</button>
+                                <button class="btn-edit">🧾</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            `;
+        }
+
+        async function cargarContabilidad() {
+            return `
+                <div style="margin-bottom: 2rem;">
+                    <h3>Módulo de Contabilidad</h3>
+                    <p style="color: #f39c12; background: #fff3e0; padding: 1rem; border-radius: 6px; margin-top: 1rem;">
+                        ⚠️ Este módulo está en desarrollo. Próximamente: Plan Único de Cuentas (PUC), 
+                        movimientos contables y enlace manual de códigos.
+                    </p>
+                </div>
                 
-            } catch (error) {
-                console.error('Error cargando contabilidad:', error);
-            }
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+                    <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px;">
+                        <h4 style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem;">
+                            <span>📋</span> Plan Único de Cuentas
+                        </h4>
+                        <p style="color: #4a5568; font-size: 0.9rem;">Configuración de cuentas contables</p>
+                        <button class="btn-add" style="margin-top: 1rem;" onclick="alert('Próximamente')">
+                            Gestionar PUC
+                        </button>
+                    </div>
+                    
+                    <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px;">
+                        <h4 style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem;">
+                            <span>🔄</span> Movimientos Contables
+                        </h4>
+                        <p style="color: #4a5568; font-size: 0.9rem;">Registro de transacciones contables</p>
+                        <button class="btn-add" style="margin-top: 1rem;" onclick="alert('Próximamente')">
+                            Ver movimientos
+                        </button>
+                    </div>
+                    
+                    <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px;">
+                        <h4 style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem;">
+                            <span>🔗</span> Enlace Manual PUC
+                        </h4>
+                        <p style="color: #4a5568; font-size: 0.9rem;">Asociar cuentas contables a transacciones</p>
+                        <button class="btn-add" style="margin-top: 1rem;" onclick="alert('Próximamente')">
+                            Configurar enlaces
+                        </button>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 2rem;">
+                    <h4>Ejemplo de estructura PUC:</h4>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Cuenta</th>
+                                <th>Tipo</th>
+                                <th>Saldo</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1105</td>
+                                <td>Caja</td>
+                                <td>Activo</td>
+                                <td>$2,500,000</td>
+                                <td><button class="btn-edit">🔗</button></td>
+                            </tr>
+                            <tr>
+                                <td>2205</td>
+                                <td>Proveedores</td>
+                                <td>Pasivo</td>
+                                <td>$850,000</td>
+                                <td><button class="btn-edit">🔗</button></td>
+                            </tr>
+                            <tr>
+                                <td>4135</td>
+                                <td>Ingresos por ventas</td>
+                                <td>Ingreso</td>
+                                <td>$4,200,000</td>
+                                <td><button class="btn-edit">🔗</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            `;
         }
 
-        // ============================================
-        // FUNCIONES UTILITARIAS
-        // ============================================
-        function mostrarFormulario(tipo) {
-            document.getElementById(`form-${tipo}`).classList.add('active');
+        // Función auxiliar para agregar registros (placeholder)
+        function agregarRegistro(tipo) {
+            alert(`Funcionalidad para agregar ${tipo} - Próximamente`);
         }
 
-        function cerrarFormulario(tipo) {
-            document.getElementById(`form-${tipo}`).classList.remove('active');
-        }
-
-        function mostrarAlerta(mensaje, tipo) {
-            const alerta = document.getElementById('alertMessage');
-            alerta.textContent = mensaje;
-            alerta.className = `alert ${tipo}`;
-            alerta.style.display = 'block';
-            
-            setTimeout(() => {
-                alerta.style.display = 'none';
-            }, 3000);
-        }
-
-        // Funciones placeholder para acciones (las implementaremos después)
-        function editarCompra(id) { alert('Editar compra ' + id); }
-        function eliminarCompra(id) { if(confirm('¿Eliminar esta compra?')) alert('Eliminar ' + id); }
-        function editarGasto(id) { alert('Editar gasto ' + id); }
-        function eliminarGasto(id) { if(confirm('¿Eliminar este gasto?')) alert('Eliminar ' + id); }
-        function editarProducto(id) { alert('Editar producto ' + id); }
-        function ajustarStock(id) { alert('Ajustar stock ' + id); }
-        function eliminarProducto(id) { if(confirm('¿Eliminar este producto?')) alert('Eliminar ' + id); }
-        function editarProveedor(id) { alert('Editar proveedor ' + id); }
-        function eliminarProveedor(id) { if(confirm('¿Eliminar este proveedor?')) alert('Eliminar ' + id); }
-        function editarPerfil(id) { alert('Editar perfil ' + id); }
-        function eliminarPerfil(id) { if(confirm('¿Eliminar este usuario?')) alert('Eliminar ' + id); }
-        function verFactura(id) { window.open(`factura.html?id=${id}`, '_blank'); }
-        function anularVenta(id) { if(confirm('¿Anular esta venta?')) alert('Anular ' + id); }
+        // Cargar dashboard por defecto
+        cargarSeccion('dashboard');
     </script>
 </body>
 </html>
