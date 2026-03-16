@@ -208,3 +208,57 @@ footer {
 .btn-ver-mas:hover {
     background-color: #34495e;
 }
+
+
+/* ===== MENÚ DESPLEGABLE ===== */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropbtn {
+    background-color: transparent;
+    color: white;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: white;
+    min-width: 200px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    z-index: 1000;
+    border-radius: 5px;
+    overflow: hidden;
+    top: 100%;
+    left: 0;
+}
+
+.dropdown-content a {
+    color: #2c3e50 !important;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+    transition: background-color 0.3s ease;
+}
+
+.dropdown-content a:hover {
+    background-color: #f1f1f1;
+    color: #27ae60 !important;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* Flecha indicadora */
+.dropbtn::after {
+    content: '';
+    margin-left: 5px;
+}
