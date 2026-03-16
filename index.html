@@ -7,25 +7,24 @@
     <link rel="stylesheet" href="css/estilo-comun.css">
 </head>
 <body>
-    <header>
-        <h1>MODAS LA 34</h1>
-        <nav>
-            <header>
+<header>
     <h1>🐻 MI LOCAL DE ROPA</h1>
     
-    <!-- BARRA DE CATEGORÍAS MEJORADA -->
-    <div class="categorias">
-        <button class="cat-btn active" onclick="filtrarPorCategoria('todos')">🔥 Todos</button>
-        <button class="cat-btn" onclick="filtrarPorCategoria('vestidos')">👗 Vestidos</button>
-        <button class="cat-btn" onclick="filtrarPorCategoria('blusas')">👚 Blusas</button>
-        <button class="cat-btn" onclick="filtrarPorCategoria('pantalones')">👖 Pantalones</button>
-        <button class="cat-btn" onclick="filtrarPorCategoria('deportivo')">⚽ Deportivo</button>
-        <button class="cat-btn" onclick="filtrarPorCategoria('caballero')">👔 Caballero</button>
-        <button class="cat-btn" onclick="filtrarPorCategoria('accesorios')">🕶️ Accesorios</button>
-    </div>
-    
     <nav>
-        <a href="index.html">Inicio</a>
+        <!-- Menú desplegable de Inicio -->
+        <div class="dropdown">
+            <a href="#" class="dropbtn">Inicio ▼</a>
+            <div class="dropdown-content">
+                <a href="#" onclick="filtrarPorCategoria('todos')">🔥 Todos los productos</a>
+                <a href="#" onclick="filtrarPorCategoria('vestidos')">👗 Vestidos</a>
+                <a href="#" onclick="filtrarPorCategoria('blusas')">👚 Blusas</a>
+                <a href="#" onclick="filtrarPorCategoria('pantalones')">👖 Pantalones</a>
+                <a href="#" onclick="filtrarPorCategoria('deportivo')">⚽ Deportivo</a>
+                <a href="#" onclick="filtrarPorCategoria('caballero')">👔 Caballero</a>
+                <a href="#" onclick="filtrarPorCategoria('accesorios')">🕶️ Accesorios</a>
+            </div>
+        </div>
+        
         <a href="#ofertas">🔥 Ofertas</a>
         <a href="admin/login.html">👑 Administrador</a>
     </nav>
