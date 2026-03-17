@@ -74,6 +74,17 @@
             dropdownContent.style.display = dropdownContent.style.display === 'block' ? 'none' : 'block';
         }
     });
+
+        <!-- MODAL DE DETALLE DEL PRODUCTO -->
+        <div id="modal-producto" class="modal" style="display: none;">
+            <div class="modal-contenido">
+                <span class="modal-cerrar" onclick="cerrarModal()">&times;</span>
+                <div id="modal-contenido-producto">
+                    <!-- El contenido se carga dinámicamente -->
+                </div>
+            </div>
+        </div>
+        
 </script>
     
 </body>
