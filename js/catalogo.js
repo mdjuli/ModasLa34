@@ -1,6 +1,6 @@
 // ============================================
 // 🌸 CATÁLOGO PÚBLICO - MODAS LA 34 (VERSIÓN DE PRUEBA)
-// ============================================
+// ===========================================
 
 let todosLosProductos = [];
 let categoriaActual = 'todos';
