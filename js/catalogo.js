@@ -186,6 +186,129 @@ function configurarBuscador() {
 
 // Función para ver detalles del producto (placeholder por ahora)
 function verProducto(id) {
-    alert('Función de detalle de producto próximamente');
-    // Aquí luego podemos abrir un modal o ir a una página de detalle
+    const producto = todosLosProductos.find(p => p.id === id);
+    
+    if (!producto) {
+        alert('Producto no encontrado');
+        return;
+    }
+    
+    function getEmojiCategoria(cat) {
+        const emojis = {
+            'vestidos': '👗',
+            'blusas': '👚',
+            'pantalones': '👖',
+            'deportivo': '⚽',
+            'caballero': '👔',
+            'accesorios': '🎀'
+        };
+        return emojis[cat] || '📦';
+    }
+    
+    const contenido = `
+        <div class="detalle-producto">
+            ${producto.imagen_url ? 
+                `<img src="${producto.imagen_url}" alt="${producto.nombre}" class="detalle-imagen">` : 
+                `<div class="detalle-sin-imagen">${getEmojiCategoria(producto.categoria)}</div>`
+            }
+            
+            <h2 class="detalle-titulo">${producto.nombre}</h2>
+            <div class="detalle-precio">$${(producto.precio_venta || 0).toLocaleString()}</div>
+            
+            <div class="detalle-info-grid">
+                ${producto.categoria ? `
+                    <div class="detalle-info-item">
+                        <div class="detalle-info-label">Categoría</div>
+                        <div class="detalle-info-valor">${getEmojiCategoria(producto.categoria)} ${producto.categoria}</div>
+                    </div>
+                ` : ''}
+                
+                ${producto.talla ? `
+                    <div class="detalle-info-item">
+                        <div class="detalle-info-label">Talla</div>
+                        <div class="detalle-info-valor">${producto.talla}</div>
+                    </div>
+                ` : ''}
+                
+                ${producto.color ? `
+                    <div class="detalle-info-item">
+                        <div class="detalle-info-label">Color</div>
+                        <div class="detalle-info-valor">${producto.color}</div>
+                    </div>
+                ` : ''}
+                
+                ${producto.codigo ? `
+                    <div class="detalle-info-item">
+                        <div class="detalle-info-label">Código</div>
+                        <div class="detalle-info-valor">${producto.codigo}</div>
+                    </div>
+                ` : ''}
+            </div>
+            
+            ${producto.descripcion ? `
+                <div class="detalle-descripcion">
+                    ${producto.descripcion}
+                </div>
+            ` : ''}
+            
+            <div class="detalle-stock">
+                ${producto.stock_actual > 0 ? 
+                    `<span class="stock-disponible">✅ Stock disponible: ${producto.stock_actual} unidades</span>` : 
+                    `<span class="stock-agotado">❌ Producto agotado</span>`
+                }
+            </div>
+            
+            <div class="detalle-acciones">
+                <button class="detalle-btn btn-comprar" onclick="comprarProducto(${producto.id})" ${producto.stock_actual <= 0 ? 'disabled style="opacity:0.5; cursor:not-allowed;"' : ''}>
+                    🛍️ Comprar
+                </button>
+                <button class="detalle-btn btn-contactar" onclick="contactarVendedor('${producto.nombre}')">
+                    💬 Contactar
+                </button>
+            </div>
+        </div>
+    `;
+    
+    document.getElementById('modal-contenido-producto').innerHTML = contenido;
+    
+    const modal = document.getElementById('modal-producto');
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+// Función para cerrar modal
+function cerrarModal() {
+    const modal = document.getElementById('modal-producto');
+    modal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+// Función para comprar
+function comprarProducto(id) {
+    const producto = todosLosProductos.find(p => p.id === id);
+    const token = localStorage.getItem('admin_token');
+    
+    if (token) {
+        window.location.href = `admin/venta-rapida.html?producto=${id}`;
+    } else {
+        alert(`Para comprar ${producto.nombre}, por favor contacta a la tienda al WhatsApp o visita el local.`);
+    }
+    
+    cerrarModal();
+}
+
+// Función para contactar vendedor
+function contactarVendedor(nombreProducto) {
+    const mensaje = encodeURIComponent(`Hola, me interesa comprar ${nombreProducto} de Modas La 34. ¿Está disponible?`);
+    window.open(`https://wa.me/573001234567?text=${mensaje}`, '_blank');
+    cerrarModal();
+}
+
+// Cerrar modal al hacer clic fuera
+window.onclick = function(event) {
+    const modal = document.getElementById('modal-producto');
+    if (event.target === modal) {
+        cerrarModal();
+    }
+}
 }
