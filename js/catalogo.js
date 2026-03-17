@@ -1,109 +1,191 @@
-// Variables globales
+// ============================================
+// 🌸 CATÁLOGO PÚBLICO - MODAS LA 34
+// ============================================
+
+// Variable global para almacenar todos los productos
 let todosLosProductos = [];
 let categoriaActual = 'todos';
 
-// PRODUCTOS DE EJEMPLO (para probar sin Supabase)
-const productosEjemplo = [
-    { id: 1, nombre: 'Vestido Floral', precio: 45000, categoria: 'vestidos', talla: 'S', color: 'Rosado', stock: 5, imagen: 'https://via.placeholder.com/300x200?text=Vestido+Floral' },
-    { id: 2, nombre: 'Vestido Negro', precio: 52000, categoria: 'vestidos', talla: 'M', color: 'Negro', stock: 3, imagen: 'https://via.placeholder.com/300x200?text=Vestido+Negro' },
-    { id: 3, nombre: 'Blusa Blanca', precio: 25000, categoria: 'blusas', talla: 'L', color: 'Blanco', stock: 8, imagen: 'https://via.placeholder.com/300x200?text=Blusa+Blanca' },
-    { id: 4, nombre: 'Blusa Estampada', precio: 32000, categoria: 'blusas', talla: 'M', color: 'Multicolor', stock: 4, imagen: 'https://via.placeholder.com/300x200?text=Blusa+Estampada' },
-    { id: 5, nombre: 'Pantalón Jean', precio: 65000, categoria: 'pantalones', talla: '38', color: 'Azul', stock: 6, imagen: 'https://via.placeholder.com/300x200?text=Pantalon+Jean' },
-    { id: 6, nombre: 'Pantalón Negro', precio: 55000, categoria: 'pantalones', talla: '40', color: 'Negro', stock: 2, imagen: 'https://via.placeholder.com/300x200?text=Pantalon+Negro' },
-    { id: 7, nombre: 'Conjunto Deportivo', precio: 75000, categoria: 'deportivo', talla: 'M', color: 'Gris', stock: 4, imagen: 'https://via.placeholder.com/300x200?text=Conjunto+Deportivo' },
-    { id: 8, nombre: 'Camiseta Deportiva', precio: 35000, categoria: 'deportivo', talla: 'L', color: 'Rojo', stock: 7, imagen: 'https://via.placeholder.com/300x200?text=Camiseta+Deportiva' },
-    { id: 9, nombre: 'Camisa Caballero', precio: 48000, categoria: 'caballero', talla: 'M', color: 'Celeste', stock: 5, imagen: 'https://via.placeholder.com/300x200?text=Camisa+Caballero' },
-    { id: 10, nombre: 'Pantalón Formal', precio: 68000, categoria: 'caballero', talla: '36', color: 'Gris', stock: 3, imagen: 'https://via.placeholder.com/300x200?text=Pantalon+Formal' },
-    { id: 11, nombre: 'Gorra', precio: 15000, categoria: 'accesorios', talla: 'Única', color: 'Negro', stock: 10, imagen: 'https://via.placeholder.com/300x200?text=Gorra' },
-    { id: 12, nombre: 'Bufanda', precio: 22000, categoria: 'accesorios', talla: 'Única', color: 'Rojo', stock: 6, imagen: 'https://via.placeholder.com/300x200?text=Bufanda' }
-];
+// Cargar productos al iniciar la página
+document.addEventListener('DOMContentLoaded', async () => {
+    await cargarProductos();
+    configurarBuscador();
+});
 
-// Función para cargar productos (desde Supabase o usando ejemplo)
+// Función para cargar productos desde Supabase
 async function cargarProductos() {
-    const contenedor = document.getElementById('catalogo-productos');
-    if (!contenedor) return;
-    
     try {
-        // INTENTAMOS con Supabase (si está configurado)
-        if (typeof SUPABASE_URL !== 'undefined' && SUPABASE_URL !== 'https://tu-proyecto.supabase.co') {
-            const response = await fetch(`${SUPABASE_URL}/rest/v1/productos?select=*&stock_actual.gt.0`, {
-                headers: { 'apikey': SUPABASE_KEY }
-            });
-            
-            if (response.ok) {
-                todosLosProductos = await response.json();
-            } else {
-                // Si falla, usamos los datos de ejemplo
-                todosLosProductos = productosEjemplo;
-            }
-        } else {
-            // Si no hay Supabase configurado, usamos ejemplo
-            todosLosProductos = productosEjemplo;
+        // Mostrar indicador de carga
+        const catalogo = document.getElementById('catalogo-productos');
+        catalogo.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 2rem;">Cargando productos...</div>';
+        
+        // Obtener productos con stock > 0
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/productos?select=*&stock_actual.gt.0&order=nombre`, {
+            headers: { 'apikey': SUPABASE_KEY }
+        });
+        
+        if (!response.ok) {
+            throw new Error('Error al cargar productos');
         }
         
-        // Mostrar los productos
-        mostrarProductos(todosLosProductos);
+        todosLosProductos = await response.json();
+        
+        // Mostrar todos los productos inicialmente
+        mostrarProductos('todos');
         
     } catch (error) {
-        console.error('Error cargando productos:', error);
-        todosLosProductos = productosEjemplo;
-        mostrarProductos(todosLosProductos);
+        console.error('Error:', error);
+        document.getElementById('catalogo-productos').innerHTML = `
+            <div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: #ff4757;">
+                ❌ Error al cargar los productos. Intenta de nuevo más tarde.
+            </div>
+        `;
     }
 }
 
-// Función para mostrar productos en HTML
-function mostrarProductos(productos) {
-    const contenedor = document.getElementById('catalogo-productos');
-    if (!contenedor) return;
+// Función para filtrar productos por categoría
+function filtrarPorCategoria(categoria) {
+    categoriaActual = categoria;
+    mostrarProductos(categoria);
     
-    if (productos.length === 0) {
-        contenedor.innerHTML = '<p style="text-align: center; grid-column: 1/-1;">No hay productos en esta categoría</p>';
+    // Actualizar el texto del menú (opcional, para feedback visual)
+    const dropbtn = document.querySelector('.dropbtn');
+    if (dropbtn) {
+        const nombresCategoria = {
+            'todos': '🔥 Todos los productos',
+            'vestidos': '👗 Vestidos',
+            'blusas': '👚 Blusas',
+            'pantalones': '👖 Pantalones',
+            'deportivo': '⚽ Deportivo',
+            'caballero': '👔 Caballero',
+            'accesorios': '🎀 Accesorios'
+        };
+        dropbtn.innerHTML = `${nombresCategoria[categoria] || 'Inicio'} ▼`;
+    }
+}
+
+// Función para mostrar productos según categoría
+function mostrarProductos(categoria) {
+    const catalogo = document.getElementById('catalogo-productos');
+    
+    // Filtrar productos
+    let productosFiltrados = todosLosProductos;
+    
+    if (categoria !== 'todos') {
+        productosFiltrados = todosLosProductos.filter(p => 
+            p.categoria && p.categoria.toLowerCase() === categoria.toLowerCase()
+        );
+    }
+    
+    // Si no hay productos en la categoría
+    if (productosFiltrados.length === 0) {
+        catalogo.innerHTML = `
+            <div style="grid-column: 1/-1; text-align: center; padding: 3rem; color: #a5a5a5;">
+                🛍️ No hay productos en esta categoría
+            </div>
+        `;
         return;
     }
     
-    contenedor.innerHTML = productos.map(p => `
+    // Función para obtener emoji según categoría
+    function getEmojiCategoria(cat) {
+        const emojis = {
+            'vestidos': '👗',
+            'blusas': '👚',
+            'pantalones': '👖',
+            'deportivo': '⚽',
+            'caballero': '👔',
+            'accesorios': '🎀'
+        };
+        return emojis[cat] || '📦';
+    }
+    
+    // Generar HTML de los productos
+    catalogo.innerHTML = productosFiltrados.map(p => `
         <div class="producto-card">
-            <img src="${p.imagen || 'https://via.placeholder.com/300x200?text=Producto'}" alt="${p.nombre}" class="producto-imagen">
+            ${p.imagen_url ? 
+                `<img src="${p.imagen_url}" alt="${p.nombre}" class="producto-imagen">` : 
+                `<div class="producto-sin-imagen">
+                    <span class="producto-emoji">${getEmojiCategoria(p.categoria)}</span>
+                </div>`
+            }
             <div class="producto-info">
-                <div class="producto-categoria">${p.categoria || 'General'}</div>
-                <div class="producto-nombre">${p.nombre}</div>
-                <div class="producto-precio">$${p.precio_venta || p.precio || 0}</div>
-                <div class="producto-stock">Stock: ${p.stock_actual || p.stock || 0} unidades</div>
-                <button class="btn-ver-mas" onclick="verProducto(${p.id})">Ver detalles</button>
+                <h3 class="producto-titulo">${p.nombre}</h3>
+                <p class="producto-detalle">
+                    ${p.talla ? `<span>Talla: ${p.talla}</span>` : ''}
+                    ${p.color ? `<span>Color: ${p.color}</span>` : ''}
+                </p>
+                <p class="producto-precio">$${(p.precio_venta || 0).toLocaleString()}</p>
+                <button class="producto-btn" onclick="verProducto(${p.id})">Ver más</button>
             </div>
         </div>
     `).join('');
 }
 
-// Función para filtrar por categoría
-function filtrarPorCategoria(categoria) {
-    categoriaActual = categoria;
+// Función para configurar el buscador en tiempo real
+function configurarBuscador() {
+    // Crear buscador si no existe
+    const main = document.querySelector('main');
+    const buscadorExistente = document.getElementById('buscador-productos');
     
-    // Actualizar botón activo
-    document.querySelectorAll('.cat-btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    event.target.classList.add('active');
+    if (!buscadorExistente) {
+        const buscadorHTML = `
+            <div class="buscador-container">
+                <input type="text" id="buscador-productos" placeholder="🔍 Buscar productos..." class="buscador-input">
+            </div>
+        `;
+        main.insertAdjacentHTML('afterbegin', buscadorHTML);
+    }
     
-    // Filtrar productos
-    if (categoria === 'todos') {
-        mostrarProductos(todosLosProductos);
-    } else {
-        const filtrados = todosLosProductos.filter(p => 
-            (p.categoria || '').toLowerCase() === categoria.toLowerCase()
-        );
-        mostrarProductos(filtrados);
+    // Agregar evento de búsqueda
+    const buscador = document.getElementById('buscador-productos');
+    if (buscador) {
+        buscador.addEventListener('input', (e) => {
+            const busqueda = e.target.value.toLowerCase().trim();
+            
+            if (busqueda === '') {
+                // Si no hay búsqueda, mostrar según categoría actual
+                mostrarProductos(categoriaActual);
+            } else {
+                // Filtrar productos por nombre o descripción
+                const productosFiltrados = todosLosProductos.filter(p => 
+                    p.nombre.toLowerCase().includes(busqueda) ||
+                    (p.categoria && p.categoria.toLowerCase().includes(busqueda)) ||
+                    (p.color && p.color.toLowerCase().includes(busqueda))
+                );
+                
+                // Mostrar resultados de búsqueda
+                const catalogo = document.getElementById('catalogo-productos');
+                
+                if (productosFiltrados.length === 0) {
+                    catalogo.innerHTML = `
+                        <div style="grid-column: 1/-1; text-align: center; padding: 3rem; color: #a5a5a5;">
+                            🔍 No se encontraron productos para "${busqueda}"
+                        </div>
+                    `;
+                } else {
+                    catalogo.innerHTML = productosFiltrados.map(p => `
+                        <div class="producto-card">
+                            ${p.imagen_url ? 
+                                `<img src="${p.imagen_url}" alt="${p.nombre}" class="producto-imagen">` : 
+                                `<div class="producto-sin-imagen">
+                                    <span class="producto-emoji">📦</span>
+                                </div>`
+                            }
+                            <div class="producto-info">
+                                <h3 class="producto-titulo">${p.nombre}</h3>
+                                <p class="producto-precio">$${(p.precio_venta || 0).toLocaleString()}</p>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            }
+        });
     }
 }
 
-// Función para ver detalle de producto
+// Función para ver detalles del producto (placeholder por ahora)
 function verProducto(id) {
-    // Por ahora solo mostramos alerta, luego podemos abrir modal o página de detalle
-    const producto = todosLosProductos.find(p => p.id == id);
-    if (producto) {
-        alert(`📦 ${producto.nombre}\n💰 $${producto.precio_venta || producto.precio}\n📏 Talla: ${producto.talla || 'Única'}\n🎨 Color: ${producto.color || 'Varios'}`);
-    }
+    alert('Función de detalle de producto próximamente');
+    // Aquí luego podemos abrir un modal o ir a una página de detalle
 }
-
-// Cargar productos cuando la página esté lista
-document.addEventListener('DOMContentLoaded', cargarProductos);
