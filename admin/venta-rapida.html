@@ -198,8 +198,58 @@
             font-size: 1.5rem;
         }
 
+        /* Selector de IVA */
+        .iva-selector {
+            background: #fff0f3;
+            border-radius: 15px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .iva-selector h3 {
+            color: #ff6b6b;
+            font-size: 1rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .iva-opciones {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .iva-opcion {
+            flex: 1;
+            text-align: center;
+        }
+
+        .iva-opcion input[type="radio"] {
+            display: none;
+        }
+
+        .iva-opcion label {
+            display: block;
+            padding: 0.5rem;
+            background: white;
+            border: 2px solid #ffe4e9;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .iva-opcion input[type="radio"]:checked + label {
+            background: #ffb6c1;
+            color: white;
+            border-color: #ff9a9e;
+        }
+
+        .iva-opcion.pequena label {
+            font-size: 0.8rem;
+        }
+
         .carrito-items {
-            max-height: 400px;
+            max-height: 350px;
             overflow-y: auto;
             margin-bottom: 1.5rem;
         }
@@ -448,6 +498,28 @@
                 <span id="carrito-cantidad" style="background: #ffb6c1; color: white; padding: 0.3rem 0.8rem; border-radius: 50px;">0</span>
             </div>
 
+            <!-- Selector de IVA -->
+            <div class="iva-selector">
+                <h3>📊 Tipo de IVA:</h3>
+                <div class="iva-opciones">
+                    <div class="iva-opcion">
+                        <input type="radio" name="tipo-iva" id="iva-exento" value="0" checked>
+                        <label for="iva-exento">Exento (0%)</label>
+                    </div>
+                    <div class="iva-opcion">
+                        <input type="radio" name="tipo-iva" id="iva-5" value="5">
+                        <label for="iva-5">5%</label>
+                    </div>
+                    <div class="iva-opcion">
+                        <input type="radio" name="tipo-iva" id="iva-19" value="19">
+                        <label for="iva-19">19%</label>
+                    </div>
+                </div>
+                <p style="font-size: 0.8rem; color: #a5a5a5; margin-top: 0.5rem;">
+                    ℹ️ El IVA se calcula sobre el precio de venta
+                </p>
+            </div>
+
             <div class="carrito-items" id="carrito-items">
                 <div style="text-align: center; color: #a5a5a5; padding: 2rem;">
                     El carrito está vacío
@@ -459,9 +531,9 @@
                     <span>Subtotal:</span>
                     <span id="subtotal">$0</span>
                 </div>
-                <div class="resumen-linea">
-                    <span>IVA (19%):</span>
-                    <span id="iva">$0</span>
+                <div class="resumen-linea" id="iva-linea" style="display: none;">
+                    <span>IVA (<span id="iva-porcentaje">0</span>%):</span>
+                    <span id="iva-valor">$0</span>
                 </div>
                 <div class="resumen-total">
                     <span>TOTAL:</span>
@@ -496,6 +568,7 @@
             <p style="margin: 1rem 0; color: #4a4a4a;">La venta se ha registrado exitosamente.</p>
             <div style="background: #fff9fc; padding: 1rem; border-radius: 15px; margin: 1rem 0;">
                 <p><strong>Total:</strong> <span id="factura-total">$0</span></p>
+                <p><strong>IVA aplicado:</strong> <span id="factura-iva">0%</span></p>
                 <p><strong>Método de pago:</strong> <span id="factura-metodo">Efectivo</span></p>
             </div>
             <div class="modal-buttons">
@@ -517,6 +590,11 @@
         document.addEventListener('DOMContentLoaded', async () => {
             await verificarSesion();
             await cargarProductos();
+            
+            // Escuchar cambios en el IVA
+            document.querySelectorAll('input[name="tipo-iva"]').forEach(radio => {
+                radio.addEventListener('change', actualizarCarrito);
+            });
         });
 
         // Verificar sesión
@@ -583,7 +661,6 @@
         function filtrarPorCategoria(categoria) {
             filtroActual = categoria;
             
-            // Actualizar botones activos
             document.querySelectorAll('.categoria-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
@@ -597,6 +674,35 @@
             busquedaActual = e.target.value;
             mostrarProductos();
         });
+
+        // Obtener porcentaje de IVA seleccionado
+        function getPorcentajeIVA() {
+            const radios = document.getElementsByName('tipo-iva');
+            for (const radio of radios) {
+                if (radio.checked) {
+                    return parseInt(radio.value);
+                }
+            }
+            return 0;
+        }
+
+        // Calcular precio con IVA incluido
+        function calcularPrecioConIVA(precioBase, porcentajeIVA) {
+            if (porcentajeIVA === 0) return precioBase;
+            // Si el IVA está incluido, el precio final ya es el precio base
+            return precioBase;
+        }
+
+        // Calcular desglose de IVA (para mostrar)
+        function calcularDesgloseIVA(subtotal, porcentajeIVA) {
+            if (porcentajeIVA === 0) {
+                return { iva: 0, total: subtotal };
+            }
+            // Si el IVA está incluido, lo extraemos del subtotal
+            const iva = Math.round(subtotal * porcentajeIVA / (100 + porcentajeIVA));
+            const base = subtotal - iva;
+            return { iva, total: subtotal, base };
+        }
 
         // Agregar al carrito
         function agregarAlCarrito(productoId) {
@@ -636,13 +742,18 @@
             const carritoDiv = document.getElementById('carrito-items');
             const cantidadSpan = document.getElementById('carrito-cantidad');
             const subtotalSpan = document.getElementById('subtotal');
-            const ivaSpan = document.getElementById('iva');
+            const ivaLinea = document.getElementById('iva-linea');
+            const ivaPorcentaje = document.getElementById('iva-porcentaje');
+            const ivaValor = document.getElementById('iva-valor');
             const totalSpan = document.getElementById('total');
             const finalizarBtn = document.getElementById('finalizar-btn');
+            
+            const porcentajeIVA = getPorcentajeIVA();
             
             if (carrito.length === 0) {
                 carritoDiv.innerHTML = '<div style="text-align: center; color: #a5a5a5; padding: 2rem;">El carrito está vacío</div>';
                 finalizarBtn.disabled = true;
+                ivaLinea.style.display = 'none';
             } else {
                 carritoDiv.innerHTML = carrito.map(item => `
                     <div class="carrito-item">
@@ -663,12 +774,19 @@
             cantidadSpan.textContent = cantidadTotal;
             
             const subtotal = carrito.reduce((sum, i) => sum + (i.precio * i.cantidad), 0);
-            const iva = subtotal * 0.19;
-            const total = subtotal + iva;
+            
+            if (porcentajeIVA > 0) {
+                const desglose = calcularDesgloseIVA(subtotal, porcentajeIVA);
+                ivaPorcentaje.textContent = porcentajeIVA;
+                ivaValor.textContent = `$${desglose.iva.toLocaleString()}`;
+                ivaLinea.style.display = 'flex';
+                totalSpan.textContent = `$${desglose.total.toLocaleString()}`;
+            } else {
+                ivaLinea.style.display = 'none';
+                totalSpan.textContent = `$${subtotal.toLocaleString()}`;
+            }
             
             subtotalSpan.textContent = `$${subtotal.toLocaleString()}`;
-            ivaSpan.textContent = `$${iva.toLocaleString()}`;
-            totalSpan.textContent = `$${total.toLocaleString()}`;
         }
 
         // Cambiar cantidad en el carrito
@@ -710,9 +828,20 @@
             }
             
             const metodoPago = document.getElementById('metodo-pago').value;
+            const porcentajeIVA = getPorcentajeIVA();
             const subtotal = carrito.reduce((sum, i) => sum + (i.precio * i.cantidad), 0);
-            const iva = subtotal * 0.19;
-            const total = subtotal + iva;
+            
+            // Calcular total según IVA
+            let total = subtotal;
+            let ivaCalculado = 0;
+            let baseGravable = subtotal;
+            
+            if (porcentajeIVA > 0) {
+                const desglose = calcularDesgloseIVA(subtotal, porcentajeIVA);
+                ivaCalculado = desglose.iva;
+                total = desglose.total;
+                baseGravable = desglose.base;
+            }
             
             if (!confirm(`¿Confirmar venta por $${total.toLocaleString()}?`)) {
                 return;
@@ -720,6 +849,15 @@
             
             try {
                 const token = JSON.parse(localStorage.getItem('admin_token'));
+                
+                // Obtener información del usuario actual
+                const userResponse = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${token.access_token}`
+                    }
+                });
+                const user = await userResponse.json();
                 
                 // 1. Crear la venta
                 const ventaResponse = await fetch(`${SUPABASE_URL}/rest/v1/ventas`, {
@@ -732,13 +870,21 @@
                     },
                     body: JSON.stringify({
                         total: total,
+                        subtotal: baseGravable,
+                        iva: ivaCalculado,
+                        iva_porcentaje: porcentajeIVA,
                         metodo_pago: metodoPago,
                         productos: carrito.map(i => `${i.cantidad}x ${i.nombre}`).join(', '),
-                        vendedor_id: currentUser?.id || null
+                        vendedor_id: user.id
                     })
                 });
                 
+                if (!ventaResponse.ok) {
+                    throw new Error('Error al crear la venta');
+                }
+                
                 const venta = await ventaResponse.json();
+                const ventaId = Array.isArray(venta) ? venta[0].id : venta.id;
                 
                 // 2. Guardar detalles y actualizar stock
                 for (const item of carrito) {
@@ -751,7 +897,7 @@
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify({
-                            venta_id: venta[0].id,
+                            venta_id: ventaId,
                             producto_id: item.id,
                             cantidad: item.cantidad,
                             precio_unitario: item.precio,
@@ -778,60 +924,111 @@
                 
                 // Mostrar modal de factura
                 document.getElementById('factura-total').textContent = `$${total.toLocaleString()}`;
+                document.getElementById('factura-iva').textContent = porcentajeIVA > 0 ? `${porcentajeIVA}%` : 'Exento';
                 document.getElementById('factura-metodo').textContent = metodoPago;
                 document.getElementById('modal-factura').classList.add('active');
+                
+                // Guardar la venta actual para imprimir
+                window.ultimaVenta = {
+                    items: [...carrito],
+                    total: total,
+                    subtotal: baseGravable,
+                    iva: ivaCalculado,
+                    porcentajeIVA: porcentajeIVA,
+                    metodo: metodoPago,
+                    fecha: new Date()
+                };
                 
                 // Recargar productos (para actualizar stock)
                 await cargarProductos();
                 
             } catch (error) {
                 console.error('Error al finalizar venta:', error);
-                alert('❌ Error al procesar la venta');
+                alert('❌ Error al procesar la venta: ' + error.message);
             }
         }
 
         // Imprimir factura
         function imprimirFactura() {
-            const total = document.getElementById('factura-total').textContent;
-            const metodo = document.getElementById('factura-metodo').textContent;
+            if (!window.ultimaVenta) return;
+            
+            const venta = window.ultimaVenta;
             
             const facturaHTML = `
                 <html>
                 <head>
                     <title>Factura de Venta</title>
                     <style>
-                        body { font-family: 'Courier New', monospace; max-width: 300px; margin: 0 auto; padding: 20px; }
-                        h2 { text-align: center; color: #ff6b6b; }
-                        table { width: 100%; border-collapse: collapse; }
-                        th, td { padding: 5px; text-align: left; }
-                        .total { font-weight: bold; border-top: 1px dashed #000; }
+                        body { 
+                            font-family: 'Courier New', monospace; 
+                            max-width: 300px; 
+                            margin: 0 auto; 
+                            padding: 20px;
+                        }
+                        h2 { 
+                            text-align: center; 
+                            color: #ff6b6b;
+                        }
+                        .header {
+                            text-align: center;
+                            margin-bottom: 20px;
+                        }
+                        table { 
+                            width: 100%; 
+                            border-collapse: collapse; 
+                        }
+                        th, td { 
+                            padding: 5px; 
+                            text-align: left; 
+                        }
+                        .total { 
+                            font-weight: bold; 
+                            border-top: 1px dashed #000;
+                            margin-top: 10px;
+                            padding-top: 10px;
+                        }
+                        .iva-info {
+                            font-size: 0.9rem;
+                            color: #666;
+                        }
+                        hr {
+                            border: none;
+                            border-top: 1px dashed #000;
+                        }
                     </style>
                 </head>
                 <body>
-                    <h2>🌸 MI LOCAL DE ROPA</h2>
-                    <p>Fecha: ${new Date().toLocaleString()}</p>
+                    <div class="header">
+                        <h2>🌸 MI LOCAL DE ROPA</h2>
+                        <p>NIT: 123.456.789-0</p>
+                        <p>${venta.fecha.toLocaleDateString()} ${venta.fecha.toLocaleTimeString()}</p>
+                    </div>
                     <hr>
                     <table>
-                        ${carrito.map(item => `
+                        ${venta.items.map(item => `
                             <tr>
                                 <td>${item.cantidad}x ${item.nombre}</td>
-                                <td>$${(item.precio * item.cantidad).toLocaleString()}</td>
+                                <td style="text-align: right;">$${(item.precio * item.cantidad).toLocaleString()}</td>
                             </tr>
                         `).join('')}
                     </table>
                     <hr>
-                    <p><strong>Subtotal:</strong> $${(carrito.reduce((sum, i) => sum + (i.precio * i.cantidad), 0)).toLocaleString()}</p>
-                    <p><strong>IVA 19%:</strong> $${(carrito.reduce((sum, i) => sum + (i.precio * i.cantidad), 0) * 0.19).toLocaleString()}</p>
-                    <p class="total"><strong>TOTAL: ${total}</strong></p>
-                    <p>Método de pago: ${metodo}</p>
+                    <p><strong>Subtotal:</strong> $${venta.subtotal.toLocaleString()}</p>
+                    ${venta.porcentajeIVA > 0 ? `
+                        <p class="iva-info">IVA ${venta.porcentajeIVA}%: $${venta.iva.toLocaleString()}</p>
+                    ` : '<p class="iva-info">IVA: Exento</p>'}
+                    <p class="total"><strong>TOTAL: $${venta.total.toLocaleString()}</strong></p>
+                    <p>Método de pago: ${venta.metodo}</p>
                     <hr>
                     <p style="text-align: center;">¡Gracias por su compra!</p>
+                    <p style="text-align: center; font-size: 0.8rem;">* Esta factura sirve como comprobante</p>
                 </body>
                 </html>
             `;
             
             const ventana = window.open('', '_blank');
             ventana.document.write(facturaHTML);
+            ventana.document.close();
             ventana.print();
         }
 
