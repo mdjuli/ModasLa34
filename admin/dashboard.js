@@ -361,3 +361,246 @@ async function cargarProveedores() { console.log('Cargar proveedores'); }
 function editarProducto(id) { alert('Editar producto ' + id); }
 function ajustarStock(id) { alert('Ajustar stock ' + id); }
 function eliminarProducto(id) { if(confirm('¿Eliminar este producto?')) alert('Eliminar ' + id); }
+
+// ===== FUNCIÓN PARA EDITAR PRODUCTO =====
+async function editarProducto(id) {
+    try {
+        // Obtener el producto de Supabase
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/productos?id=eq.${id}`, {
+            headers: { 'apikey': SUPABASE_KEY }
+        });
+        
+        if (!response.ok) throw new Error('Error al cargar producto');
+        
+        const productos = await response.json();
+        const producto = productos[0];
+        
+        if (!producto) {
+            mostrarAlerta('Producto no encontrado', 'error');
+            return;
+        }
+        
+        // Llenar el formulario con los datos del producto
+        document.getElementById('producto-codigo').value = producto.codigo || '';
+        document.getElementById('producto-categoria').value = producto.categoria || '';
+        document.getElementById('producto-puc').value = producto.puc || '143501';
+        document.getElementById('producto-nombre').value = producto.nombre || '';
+        document.getElementById('producto-imagen').value = producto.imagen_url || '';
+        document.getElementById('producto-talla').value = producto.talla || '';
+        document.getElementById('producto-precio-compra').value = producto.precio_compra || '';
+        document.getElementById('producto-precio-venta').value = producto.precio_venta || '';
+        document.getElementById('producto-stock').value = producto.stock_actual || '';
+        
+        // Llenar colores
+        const container = document.getElementById('colores-container');
+        container.innerHTML = ''; // Limpiar
+        
+        if (producto.color && producto.color.length > 0) {
+            // Si hay colores guardados, mostrarlos
+            producto.color.forEach((color, index) => {
+                const newRow = document.createElement('div');
+                newRow.className = 'color-row';
+                newRow.innerHTML = `
+                    <input type="color" id="color-input-${index}" value="${color.codigo}" class="color-picker">
+                    <input type="text" id="color-nombre-${index}" value="${color.nombre}" placeholder="Nombre del color" class="color-nombre">
+                    <button type="button" onclick="eliminarColor(this)" class="color-btn remove-color">✖️</button>
+                `;
+                container.appendChild(newRow);
+            });
+            // Agregar botón para más colores
+            const addButtonRow = document.createElement('div');
+            addButtonRow.innerHTML = `<button type="button" onclick="agregarColor()" class="color-btn add-color" style="width:100%; margin-top:0.5rem;">➕ Agregar otro color</button>`;
+            container.appendChild(addButtonRow);
+            colorCount = producto.color.length;
+        } else {
+            // Si no hay colores, mostrar un campo vacío
+            container.innerHTML = `
+                <div class="color-row">
+                    <input type="color" id="color-input-0" value="#ff0000" class="color-picker">
+                    <input type="text" id="color-nombre-0" placeholder="Nombre del color (ej: Rojo)" class="color-nombre">
+                    <button type="button" onclick="agregarColor()" class="color-btn add-color">➕</button>
+                </div>
+            `;
+            colorCount = 1;
+        }
+        
+        // Guardar el ID del producto que estamos editando
+        window.productoEditandoId = id;
+        
+        // Cambiar el botón de guardar por "Actualizar"
+        const submitBtn = document.querySelector('#form-producto .submit-btn');
+        submitBtn.textContent = '🔄 Actualizar Producto';
+        submitBtn.onclick = function(e) {
+            e.preventDefault();
+            actualizarProducto(id);
+        };
+        
+        // Mostrar el formulario
+        mostrarFormulario('producto');
+        
+    } catch (error) {
+        console.error('Error:', error);
+        mostrarAlerta('Error al cargar el producto', 'error');
+    }
+}
+
+// ===== FUNCIÓN PARA ACTUALIZAR PRODUCTO =====
+async function actualizarProducto(id) {
+    // Obtener los colores del formulario
+    const coloresArray = getColoresFromForm();
+    
+    const productoActualizado = {
+        codigo: document.getElementById('producto-codigo').value,
+        categoria: document.getElementById('producto-categoria').value,
+        puc: document.getElementById('producto-puc').value,
+        nombre: document.getElementById('producto-nombre').value,
+        imagen_url: document.getElementById('producto-imagen').value || null,
+        talla: document.getElementById('producto-talla').value || null,
+        color: coloresArray,
+        precio_compra: parseFloat(document.getElementById('producto-precio-compra').value),
+        precio_venta: parseFloat(document.getElementById('producto-precio-venta').value),
+        stock_actual: parseInt(document.getElementById('producto-stock').value)
+    };
+    
+    if (!productoActualizado.codigo || !productoActualizado.categoria || !productoActualizado.nombre || !productoActualizado.precio_venta) {
+        mostrarAlerta('Código, categoría, nombre y precio de venta son obligatorios', 'error');
+        return;
+    }
+    
+    try {
+        const token = JSON.parse(localStorage.getItem('admin_token'));
+        
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/productos?id=eq.${id}`, {
+            method: 'PATCH',
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${token.access_token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(productoActualizado)
+        });
+        
+        if (response.ok) {
+            mostrarAlerta('🌸 Producto actualizado correctamente', 'success');
+            cerrarFormulario('producto');
+            await cargarProductos();
+            
+            // Restaurar el botón de guardar
+            const submitBtn = document.querySelector('#form-producto .submit-btn');
+            submitBtn.textContent = '🌸 Guardar Producto';
+            submitBtn.onclick = function(e) {
+                e.preventDefault();
+                guardarProducto();
+            };
+            
+            // Limpiar el ID de edición
+            window.productoEditandoId = null;
+            
+            // Limpiar formulario
+            limpiarFormularioProducto();
+            
+        } else {
+            const error = await response.json();
+            mostrarAlerta('Error: ' + (error.message || 'No se pudo actualizar'), 'error');
+        }
+    } catch (error) {
+        mostrarAlerta('Error de conexión', 'error');
+    }
+}
+
+// Función para limpiar el formulario
+function limpiarFormularioProducto() {
+    document.getElementById('producto-codigo').value = '';
+    document.getElementById('producto-categoria').value = '';
+    document.getElementById('producto-nombre').value = '';
+    document.getElementById('producto-imagen').value = '';
+    document.getElementById('producto-talla').value = '';
+    document.getElementById('producto-precio-compra').value = '';
+    document.getElementById('producto-precio-venta').value = '';
+    document.getElementById('producto-stock').value = '';
+    
+    // Limpiar colores (dejar solo uno)
+    const container = document.getElementById('colores-container');
+    container.innerHTML = `
+        <div class="color-row">
+            <input type="color" id="color-input-0" value="#ff0000" class="color-picker">
+            <input type="text" id="color-nombre-0" placeholder="Nombre del color (ej: Rojo)" class="color-nombre">
+            <button type="button" onclick="agregarColor()" class="color-btn add-color">➕</button>
+        </div>
+    `;
+    colorCount = 1;
+}
+
+// ===== FUNCIÓN PARA ELIMINAR PRODUCTO =====
+async function eliminarProducto(id) {
+    if (!confirm('¿Estás segura de eliminar este producto? Esta acción no se puede deshacer.')) {
+        return;
+    }
+    
+    try {
+        const token = JSON.parse(localStorage.getItem('admin_token'));
+        
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/productos?id=eq.${id}`, {
+            method: 'DELETE',
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${token.access_token}`
+            }
+        });
+        
+        if (response.ok) {
+            mostrarAlerta('✅ Producto eliminado correctamente', 'success');
+            await cargarProductos(); // Recargar la lista
+        } else {
+            const error = await response.json();
+            mostrarAlerta('Error: ' + (error.message || 'No se pudo eliminar'), 'error');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        mostrarAlerta('Error de conexión', 'error');
+    }
+}
+
+// ===== FUNCIÓN PARA AJUSTAR STOCK =====
+async function ajustarStock(id) {
+    const nuevaCantidad = prompt('Ingrese la nueva cantidad de stock:');
+    
+    if (nuevaCantidad === null) return; // Cancelar
+    
+    const cantidad = parseInt(nuevaCantidad);
+    
+    if (isNaN(cantidad) || cantidad < 0) {
+        mostrarAlerta('Por favor ingresa un número válido', 'error');
+        return;
+    }
+    
+    try {
+        const token = JSON.parse(localStorage.getItem('admin_token'));
+        
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/productos?id=eq.${id}`, {
+            method: 'PATCH',
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${token.access_token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                stock_actual: cantidad
+            })
+        });
+        
+        if (response.ok) {
+            mostrarAlerta('📦 Stock actualizado correctamente', 'success');
+            await cargarProductos();
+        } else {
+            mostrarAlerta('Error al actualizar stock', 'error');
+        }
+    } catch (error) {
+        mostrarAlerta('Error de conexión', 'error');
+    }
+}
+
+<!-- En el formulario de productos, cambia el botón a: -->
+<button type="button" class="submit-btn" onclick="guardarProducto()">🌸 Guardar Producto</button>
+
+
