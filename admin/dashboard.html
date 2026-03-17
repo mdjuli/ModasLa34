@@ -887,41 +887,54 @@
             </div>
         </div>
 
-        <!-- ===== MÓDULO VENTAS (SOLO DISEÑO - SIN FUNCIONALIDAD) ===== -->
+        <!-- ===== MÓDULO VENTAS ===== -->
         <div id="modulo-ventas" class="module-section" style="display: none;">
-            <div class="module-grid">
-                <div class="module-card" style="background: #ffe4e9;">
+         <div class="module-grid">
+                <div class="module-card" onclick="window.open('venta-rapida.html', '_blank')">
                     <div class="card-icon">💰</div>
-                    <div class="card-title">Ventas - Próximamente</div>
-                    <div class="card-description">Módulo en desarrollo</div>
-                    <div class="card-stats">🌸</div>
+                    <div class="card-title">Nueva Venta</div>
+                    <div class="card-description">Registrar venta rápida</div>
+                    <div class="card-stats">+ Vender</div>
                 </div>
-                <div class="module-card" style="background: #ffe4e9;">
+                <div class="module-card">
                     <div class="card-icon">📈</div>
                     <div class="card-title">Ventas Hoy</div>
-                    <div class="card-description">Placeholder</div>
-                    <div class="card-stats">
-                                            <div class="card-stats">$0</div>
+                    <div class="card-description">Total del día</div>
+                    <div class="card-stats" id="stats-ventas-hoy">$0</div>
                 </div>
-                <div class="module-card" style="background: #ffe4e9;">
+                <div class="module-card">
                     <div class="card-icon">📊</div>
                     <div class="card-title">Ventas Mes</div>
-                    <div class="card-description">Placeholder</div>
-                    <div class="card-stats">$0</div>
+                    <div class="card-description">Acumulado mensual</div>
+                    <div class="card-stats" id="stats-ventas-mes">$0</div>
                 </div>
             </div>
-
-            <!-- Mensaje de módulo en desarrollo -->
-            <div class="data-table" style="text-align: center; padding: 3rem;">
-                <h2 style="color: #ff9a9e;">🛠️ Módulo de Ventas en Construcción</h2>
-                <p style="color: #a5a5a5; font-size: 1.1rem; margin: 1rem 0;">
-                    Estamos trabajando para traerte la mejor experiencia de ventas.
-                </p>
-                <div style="font-size: 3rem; margin: 1rem 0;">🌸</div>
-                <p style="color: #ff6b6b;">Próximamente: Ventas rápidas, carrito de compras y facturación.</p>
+        
+            <!-- Tabla de ventas -->
+            <div class="data-table">
+                <h2>
+                    Historial de Ventas
+                    <button class="add-btn" onclick="window.open('venta-rapida.html', '_blank')">➕ Nueva Venta</button>
+                </h2>
+                <table id="tabla-ventas">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Productos</th>
+                            <th>Total</th>
+                            <th>Método</th>
+                            <th>Vendedor</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="6" style="text-align: center;">Cargando ventas...</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
-
         <!-- ===== MÓDULO CONTABILIDAD (SOLO DISEÑO - SIN FUNCIONALIDAD) ===== -->
         <div id="modulo-contabilidad" class="module-section" style="display: none;">
             <div class="module-grid">
@@ -1574,6 +1587,59 @@
                 
             } catch (error) {
                 mostrarAlerta('Error: ' + error.message, 'error');
+            }
+        }
+        // ===== FUNCIONES PARA VENTAS =====
+        async function cargarVentas() {
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/ventas?select=*&order=fecha.desc`, {
+                    headers: { 'apikey': SUPABASE_KEY }
+                });
+                const ventas = await response.json();
+                
+                const tbody = document.querySelector('#tabla-ventas tbody');
+                
+                if (ventas.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No hay ventas registradas</td></tr>';
+                    return;
+                }
+                
+                // Ventas de hoy
+                const hoy = new Date();
+                hoy.setHours(0,0,0,0);
+                
+                const ventasHoy = ventas.filter(v => new Date(v.fecha) >= hoy);
+                const totalHoy = ventasHoy.reduce((sum, v) => sum + (v.total || 0), 0);
+                document.getElementById('stats-ventas-hoy').textContent = `$${totalHoy.toLocaleString()}`;
+                
+                // Ventas del mes
+                const fechaInicio = new Date();
+                fechaInicio.setDate(1);
+                fechaInicio.setHours(0,0,0,0);
+                
+                const ventasMes = ventas.filter(v => new Date(v.fecha) >= fechaInicio);
+                const totalMes = ventasMes.reduce((sum, v) => sum + (v.total || 0), 0);
+                document.getElementById('stats-ventas-mes').textContent = `$${totalMes.toLocaleString()}`;
+                
+                tbody.innerHTML = ventas.map(venta => `
+                    <tr>
+                        <td>${new Date(venta.fecha).toLocaleString()}</td>
+                        <td>${venta.productos || 'Venta'}</td>
+                        <td>$${(venta.total || 0).toLocaleString()}</td>
+                        <td>
+                            <span style="background: #ffe4e9; padding: 0.2rem 0.8rem; border-radius: 50px;">
+                                ${venta.metodo_pago || 'Efectivo'}
+                            </span>
+                        </td>
+                        <td>${venta.vendedor || '-'}</td>
+                        <td>
+                            <button class="action-btn" onclick="verFactura(${venta.id})" title="Ver factura">🧾</button>
+                        </td>
+                    </tr>
+                `).join('');
+                
+            } catch (error) {
+                console.error('Error cargando ventas:', error);
             }
         }
 
