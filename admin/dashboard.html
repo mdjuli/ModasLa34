@@ -703,16 +703,17 @@
             <input type="url" id="producto-imagen" placeholder="https://ejemplo.com/imagen.jpg">
             <small style="color: #ff9a9e;">Puedes subir imágenes a Imgur y pegar el enlace aquí</small>
         </div>
-        
-        <div class="form-row">
-            <div class="form-group">
-                <label>Talla:</label>
-                <input type="text" id="producto-talla" placeholder="S, M, L, XL...">
+        <!-- Campo de color (NUEVO VERSIÓN MULTICOLOR) -->
+        <div class="form-group">
+            <label>🎨 Colores disponibles:</label>
+            <div class="colores-container" id="colores-container">
+                <div class="color-row">
+                    <input type="color" id="color-input-0" value="#ff0000" class="color-picker">
+                    <input type="text" id="color-nombre-0" placeholder="Nombre del color (ej: Rojo)" class="color-nombre">
+                    <button type="button" onclick="agregarColor()" class="color-btn add-color">➕</button>
+                </div>
             </div>
-            <div class="form-group">
-                <label>Color:</label>
-                <input type="text" id="producto-color" placeholder="Ej: Azul">
-            </div>
+            <small style="color: #ff9a9e;">Puedes agregar varios colores para un mismo producto</small>
         </div>
         <div class="form-row">
             <div class="form-group">
@@ -767,6 +768,7 @@
         </tbody>
     </table>
 </div>
+            
             <!-- Formulario de perfil -->
             <div id="form-perfil" class="form-container">
                 <h2 style="color: #ff6b6b; margin-bottom: 1.5rem;">👥 Crear Nuevo Usuario</h2>
