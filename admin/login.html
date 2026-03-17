@@ -39,5 +39,44 @@
             }
         }
     </script>
+    <script>
+        // Detectar si es móvil y ajustar comportamientos
+        function isMobile() {
+            return window.innerWidth <= 768;
+        }
+    
+        // Ajustar tablas para scroll horizontal
+        function ajustarTablas() {
+            if (isMobile()) {
+                document.querySelectorAll('.data-table, .puc-section, .movimientos-section').forEach(tabla => {
+                    tabla.style.overflowX = 'auto';
+                    tabla.style.WebkitOverflowScrolling = 'touch';
+                });
+            }
+        }
+    
+        // Prevenir zoom en inputs en iOS
+        document.querySelectorAll('input, select, textarea').forEach(input => {
+            input.addEventListener('touchstart', (e) => {
+                e.target.style.fontSize = '16px';
+            });
+        });
+    
+        // Ajustar al cargar y al cambiar tamaño
+        window.addEventListener('load', ajustarTablas);
+        window.addEventListener('resize', ajustarTablas);
+    
+        // Menú hamburguesa para móvil (opcional)
+        function toggleMenu() {
+            const nav = document.querySelector('.nav-menu');
+            if (isMobile()) {
+                if (nav.style.display === 'none' || nav.style.display === '') {
+                    nav.style.display = 'grid';
+                } else {
+                    nav.style.display = 'none';
+                }
+            }
+        }
+    </script>
 </body>
 </html>
