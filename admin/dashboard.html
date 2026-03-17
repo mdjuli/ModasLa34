@@ -967,7 +967,7 @@
         document.addEventListener('DOMContentLoaded', async () => {
             await verificarSesion();
             await cargarDatosIniciales();
-            cambiarModulo('compras');
+            cambiarModulo('compras', null);
         });
 
         // Verificar sesión
@@ -1016,24 +1016,38 @@
         }
 
         // Cambiar entre módulos
-        function cambiarModulo(modulo) {
-            document.querySelectorAll('.module-section').forEach(section => {
+        function cambiarModulo(modulo, evento = null) {
+             document.querySelectorAll('.module-section').forEach(section => {
                 section.style.display = 'none';
             });
             
-            document.getElementById(`modulo-${modulo}`).style.display = 'block';
-            
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
-            
-            currentModule = modulo;
-            
-            if (modulo !== 'ventas' && modulo !== 'contabilidad') {
-                cargarDatosModulo(modulo);
+            // Mostrar el módulo seleccionado
+            const moduloElement = document.getElementById(`modulo-${modulo}`);
+            if (moduloElement) {
+                moduloElement.style.display = 'block';
             }
-        }
+            
+            // Actualizar botones activos (solo si viene de un evento de clic)
+            if (evento) {
+                document.querySelectorAll('.nav-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                evento.target.classList.add('active');
+            } else {
+                        document.querySelectorAll('.nav-btn').forEach(btn => {
+                        btn.classList.remove('active');
+                        if (btn.textContent.includes(modulo.toUpperCase()) || 
+                            btn.textContent.includes('COMPRAS') && modulo === 'compras') {
+                            btn.classList.add('active');
+                        }
+                    });
+                }
+                
+                currentModule = modulo;
+                    if (modulo !== 'ventas' && modulo !== 'contabilidad') {
+                        cargarDatosModulo(modulo);
+                    }
+                }
 
         // Cargar datos según el módulo
         async function cargarDatosModulo(modulo) {
