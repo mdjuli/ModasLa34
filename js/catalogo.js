@@ -96,6 +96,72 @@ function verProducto(id) {
         alert("Producto no encontrado");
         return;
     }
+
+    function llenarModal(producto) {
+    const contenedor = document.getElementById('modal-contenido-producto');
+    
+    // Determinar estado del stock
+    let stockClass = 'stock-agotado';
+    let stockTexto = 'Agotado';
+    
+    if (producto.stock_actual > 5) {
+        stockClass = 'stock-disponible';
+        stockTexto = 'Disponible';
+    } else if (producto.stock_actual > 0) {
+        stockClass = 'stock-bajo';
+        stockTexto = `¡Últimas ${producto.stock_actual} unidades!`;
+    }
+    
+    // Emoji según categoría
+    const emojis = {
+        'vestidos': '👗',
+        'blusas': '👚',
+        'pantalones': '👖',
+        'deportivo': '⚽',
+        'caballero': '👔',
+        'accesorios': '🎀'
+    };
+    const emoji = emojis[producto.categoria] || '📦';
+    
+    contenedor.innerHTML = `
+        <div class="modal-grid">
+            <div class="modal-imagen">
+                ${producto.imagen_url ? 
+                    `<img src="${producto.imagen_url}" alt="${producto.nombre}">` : 
+                    `<div class="modal-imagen-placeholder">
+                        <span>${emoji}</span>
+                    </div>`
+                }
+            </div>
+            <div class="modal-info">
+                <h2>${producto.nombre}</h2>
+                <span class="modal-codigo">Código: ${producto.codigo || 'N/A'}</span>
+                
+                <div class="modal-detalle">
+                    <p><strong>Categoría:</strong> ${emoji} ${producto.categoria || 'General'}</p>
+                    ${producto.talla ? `<p><strong>Talla:</strong> ${producto.talla}</p>` : ''}
+                    ${producto.color ? `<p><strong>Color:</strong> ${producto.color}</p>` : ''}
+                    <p><strong>Disponibilidad:</strong> 
+                        <span class="modal-stock ${stockClass}">${stockTexto}</span>
+                    </p>
+                </div>
+                
+                <div class="modal-precio">
+                    $${(producto.precio_venta || 0).toLocaleString()}
+                </div>
+                
+                <div class="modal-botones">
+                    <button class="modal-btn btn-consultar" onclick="consultarProducto()">
+                        📱 Consultar disponibilidad
+                    </button>
+                    <button class="modal-btn btn-cerrar" onclick="cerrarModal()">
+                        ❌ Cerrar
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+    }
     
     const contenedor = document.getElementById('modal-contenido-producto');
     contenedor.innerHTML = `
