@@ -12,3 +12,5 @@ async function supabaseFetch(endpoint, options = {}) {
     const response = await fetch(url, { ...options, headers });
     return response;
 }
+
+console.log('✅ Configuración cargada:', SUPABASE_URL ? 'OK' : 'ERROR');
