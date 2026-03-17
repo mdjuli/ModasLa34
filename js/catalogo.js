@@ -310,7 +310,7 @@ function comprarProducto(id) {
 // Función para contactar vendedor
 function contactarVendedor(nombreProducto) {
     const mensaje = encodeURIComponent(`Hola, me interesa comprar ${nombreProducto} de Modas La 34. ¿Está disponible?`);
-    window.open(`https://wa.me/573001234567?text=${mensaje}`, '_blank');
+    window.open(`https://wa.me/573308049635?text=${mensaje}`, '_blank');
     cerrarModal();
 }
 
