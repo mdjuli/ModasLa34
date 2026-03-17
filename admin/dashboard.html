@@ -662,106 +662,111 @@
                 </div>
             </div>
 
-            <!-- Formulario de producto con PUC -->
-            <div id="form-producto" class="form-container">
-                <h2 style="color: #ff6b6b; margin-bottom: 1.5rem;">👗 Agregar Nuevo Producto</h2>
-                <form onsubmit="event.preventDefault(); guardarProducto()">
-                    <div class="form-group">
-                        <label>Código/Barras:</label>
-                        <input type="text" id="producto-codigo" placeholder="Ej: CAM001" required>
-                    </div>
-                    
-                    <!-- PUC para inventario -->
-                    <div class="form-group">
-                        <label>📊 Cuenta PUC (Inventario):</label>
-                        <input type="text" class="puc-input" id="producto-puc" value="143501" placeholder="Ej: 143501" required>
-                        <small style="color: #ff9a9e;">Código PUC para inventario de mercancías</small>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Nombre:</label>
-                        <input type="text" id="producto-nombre" placeholder="Ej: Camisa básica" required>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Talla:</label>
-                            <input type="text" id="producto-talla" placeholder="S, M, L, XL...">
-                        </div>
-                        <div class="form-group">
-                            <label>Color:</label>
-                            <input type="text" id="producto-color" placeholder="Ej: Azul">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Precio Compra:</label>
-                            <input type="number" id="producto-precio-compra" min="0" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Precio Venta:</label>
-                            <input type="number" id="producto-precio-venta" min="0" required>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Stock Inicial:</label>
-                        <input type="number" id="producto-stock" min="0" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Proveedor:</label>
-                        <select id="producto-proveedor">
-                            <option value="">Seleccionar (opcional)</option>
-                        </select>
-                    </div>
-                    <button type="submit" class="submit-btn">🌸 Guardar Producto</button>
-                    <button type="button" class="cancel-btn" onclick="cerrarFormulario('producto')">Cancelar</button>
-                </form>
+            <!-- Formulario de producto -->
+<div id="form-producto" class="form-container">
+    <h2 style="color: #ff6b6b; margin-bottom: 1.5rem;">👗 Agregar Nuevo Producto</h2>
+    <form onsubmit="event.preventDefault(); guardarProducto()">
+        <div class="form-group">
+            <label>Código/Barras:</label>
+            <input type="text" id="producto-codigo" placeholder="Ej: CAM001" required>
+        </div>
+        
+        <!-- NUEVO: Categoría -->
+        <div class="form-group">
+            <label>📁 Categoría:</label>
+            <select id="producto-categoria" required>
+                <option value="">Seleccionar categoría</option>
+                <option value="vestidos">👗 Vestidos</option>
+                <option value="blusas">👚 Blusas</option>
+                <option value="pantalones">👖 Pantalones</option>
+                <option value="deportivo">⚽ Deportivo</option>
+                <option value="caballero">👔 Caballero</option>
+                <option value="accesorios">🎀 Accesorios</option>
+            </select>
+        </div>
+        
+        <!-- PUC para inventario -->
+        <div class="form-group">
+            <label>📊 Cuenta PUC (Inventario):</label>
+            <input type="text" class="puc-input" id="producto-puc" value="143501" placeholder="Ej: 143501" required>
+            <small style="color: #ff9a9e;">Código PUC para inventario de mercancías</small>
+        </div>
+        
+        <div class="form-group">
+            <label>Nombre:</label>
+            <input type="text" id="producto-nombre" placeholder="Ej: Camisa básica" required>
+        </div>
+        
+        <!-- NUEVO: URL de imagen -->
+        <div class="form-group">
+            <label>🖼️ URL de la imagen:</label>
+            <input type="url" id="producto-imagen" placeholder="https://ejemplo.com/imagen.jpg">
+            <small style="color: #ff9a9e;">Puedes subir imágenes a Imgur y pegar el enlace aquí</small>
+        </div>
+        
+        <div class="form-row">
+            <div class="form-group">
+                <label>Talla:</label>
+                <input type="text" id="producto-talla" placeholder="S, M, L, XL...">
             </div>
-
-            <!-- Tabla de productos -->
-            <div class="data-table">
-                <h2>
-                    Inventario de Productos
-                    <button class="add-btn" onclick="mostrarFormulario('producto')">➕ Nuevo Producto</button>
-                </h2>
-                <table id="tabla-productos">
-                    <thead>
-                        <tr>
-                            <th>Código</th>
-                            <th>Producto</th>
-                            <th>Talla</th>
-                            <th>Color</th>
-                            <th>P. Venta</th>
-                            <th>Stock</th>
-                            <th>PUC</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td colspan="8" style="text-align: center;">Cargando productos...</td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="form-group">
+                <label>Color:</label>
+                <input type="text" id="producto-color" placeholder="Ej: Azul">
             </div>
         </div>
-
-        <!-- ===== MÓDULO PERFILES ===== -->
-        <div id="modulo-perfiles" class="module-section" style="display: none;">
-            <div class="module-grid">
-                <div class="module-card" onclick="mostrarFormulario('perfil')">
-                    <div class="card-icon">👥</div>
-                    <div class="card-title">Nuevo Usuario</div>
-                    <div class="card-description">Crear cuenta de empleado</div>
-                    <div class="card-stats">+ Nuevo</div>
-                </div>
-                <div class="module-card">
-                    <div class="card-icon">👤</div>
-                    <div class="card-title">Empleados Activos</div>
-                    <div class="card-description">Personal del local</div>
-                    <div class="card-stats" id="stats-empleados">0</div>
-                </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Precio Compra:</label>
+                <input type="number" id="producto-precio-compra" min="0" required>
             </div>
+            <div class="form-group">
+                <label>Precio Venta:</label>
+                <input type="number" id="producto-precio-venta" min="0" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Stock Inicial:</label>
+            <input type="number" id="producto-stock" min="0" required>
+        </div>
+        <div class="form-group">
+            <label>Proveedor:</label>
+            <select id="producto-proveedor">
+                <option value="">Seleccionar (opcional)</option>
+            </select>
+        </div>
+        <button type="submit" class="submit-btn">🌸 Guardar Producto</button>
+        <button type="button" class="cancel-btn" onclick="cerrarFormulario('producto')">Cancelar</button>
+    </form>
+</div>
 
+            <!-- Tabla de productos -->
+<div class="data-table">
+    <h2>
+        Inventario de Productos
+        <button class="add-btn" onclick="mostrarFormulario('producto')">➕ Nuevo Producto</button>
+    </h2>
+    <table id="tabla-productos">
+        <thead>
+            <tr>
+                <th>Imagen</th>
+                <th>Código</th>
+                <th>Producto</th>
+                <th>Categoría</th>
+                <th>Talla</th>
+                <th>Color</th>
+                <th>P. Venta</th>
+                <th>Stock</th>
+                <th>PUC</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td colspan="10" style="text-align: center;">Cargando productos...</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
             <!-- Formulario de perfil -->
             <div id="form-perfil" class="form-container">
                 <h2 style="color: #ff6b6b; margin-bottom: 1.5rem;">👥 Crear Nuevo Usuario</h2>
@@ -1298,100 +1303,129 @@
 
         // ===== FUNCIONES PRODUCTOS =====
         async function cargarProductos() {
-            try {
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/productos?order=nombre`, {
-                    headers: { 'apikey': SUPABASE_KEY }
-                });
-                const productos = await response.json();
-                
-                const tbody = document.querySelector('#tabla-productos tbody');
-                
-                if (productos.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="8" style="text-align: center;">No hay productos registrados</td></tr>';
-                    return;
-                }
-                
-                document.getElementById('stats-total-productos').textContent = productos.length;
-                const stockBajo = productos.filter(p => p.stock_actual < 5).length;
-                document.getElementById('stats-stock-bajo').textContent = stockBajo;
-                
-                tbody.innerHTML = productos.map(p => `
-                    <tr ${p.stock_actual < 5 ? 'style="background: #fff0f3;"' : ''}>
-                        <td>${p.codigo || '-'}</td>
-                        <td><strong>${p.nombre}</strong></td>
-                        <td>${p.talla || '-'}</td>
-                        <td>${p.color || '-'}</td>
-                        <td>$${(p.precio_venta || 0).toLocaleString()}</td>
-                        <td>
-                            <span style="font-weight: bold; color: ${p.stock_actual < 5 ? '#ff4757' : '#27ae60'};">
-                                ${p.stock_actual || 0}
-                            </span>
-                            ${p.stock_actual < 5 ? ' ⚠️' : ''}
-                        </td>
-                        <td><span style="background: #fff0f3; padding: 0.2rem 0.5rem; border-radius: 50px;">${p.puc || '143501'}</span></td>
-                        <td>
-                            <button class="action-btn" onclick="editarProducto(${p.id})" title="Editar">✏️</button>
-                            <button class="action-btn" onclick="ajustarStock(${p.id})" title="Ajustar stock">📦</button>
-                            <button class="action-btn delete-btn" onclick="eliminarProducto(${p.id})" title="Eliminar">🗑️</button>
-                        </td>
-                    </tr>
-                `).join('');
-                
-            } catch (error) {
-                console.error('Error cargando productos:', error);
-            }
+    try {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/productos?order=nombre`, {
+            headers: { 'apikey': SUPABASE_KEY }
+        });
+        const productos = await response.json();
+        
+        const tbody = document.querySelector('#tabla-productos tbody');
+        
+        if (productos.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="10" style="text-align: center;">No hay productos registrados</td></tr>';
+            return;
         }
+        
+        document.getElementById('stats-total-productos').textContent = productos.length;
+        const stockBajo = productos.filter(p => p.stock_actual < 5).length;
+        document.getElementById('stats-stock-bajo').textContent = stockBajo;
+        
+        // Función para obtener emoji según categoría
+        function getEmojiCategoria(cat) {
+            const emojis = {
+                'vestidos': '👗',
+                'blusas': '👚',
+                'pantalones': '👖',
+                'deportivo': '⚽',
+                'caballero': '👔',
+                'accesorios': '🎀'
+            };
+            return emojis[cat] || '📦';
+        }
+        
+        tbody.innerHTML = productos.map(p => `
+            <tr ${p.stock_actual < 5 ? 'style="background: #fff0f3;"' : ''}>
+                <td>
+                    ${p.imagen_url ? 
+                        `<img src="${p.imagen_url}" alt="${p.nombre}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 10px;">` : 
+                        `<div style="width: 50px; height: 50px; background: #ffe4e9; border-radius: 10px; display: flex; align-items: center; justify-content: center;">${getEmojiCategoria(p.categoria)}</div>`
+                    }
+                </td>
+                <td>${p.codigo || '-'}</td>
+                <td><strong>${p.nombre}</strong></td>
+                <td>
+                    <span style="background: #ffe4e9; padding: 0.2rem 0.8rem; border-radius: 50px;">
+                        ${getEmojiCategoria(p.categoria)} ${p.categoria || 'Sin categoría'}
+                    </span>
+                </td>
+                <td>${p.talla || '-'}</td>
+                <td>${p.color || '-'}</td>
+                <td>$${(p.precio_venta || 0).toLocaleString()}</td>
+                <td>
+                    <span style="font-weight: bold; color: ${p.stock_actual < 5 ? '#ff4757' : '#27ae60'};">
+                        ${p.stock_actual || 0}
+                    </span>
+                    ${p.stock_actual < 5 ? ' ⚠️' : ''}
+                </td>
+                <td><span style="background: #fff0f3; padding: 0.2rem 0.5rem; border-radius: 50px;">${p.puc || '143501'}</span></td>
+                <td>
+                    <button class="action-btn" onclick="editarProducto(${p.id})" title="Editar">✏️</button>
+                    <button class="action-btn" onclick="ajustarStock(${p.id})" title="Ajustar stock">📦</button>
+                    <button class="action-btn delete-btn" onclick="eliminarProducto(${p.id})" title="Eliminar">🗑️</button>
+                </td>
+            </tr>
+        `).join('');
+        
+    } catch (error) {
+        console.error('Error cargando productos:', error);
+    }
+}
 
         async function guardarProducto() {
-            const producto = {
-                codigo: document.getElementById('producto-codigo').value,
-                puc: document.getElementById('producto-puc').value,
-                nombre: document.getElementById('producto-nombre').value,
-                talla: document.getElementById('producto-talla').value || null,
-                color: document.getElementById('producto-color').value || null,
-                precio_compra: parseFloat(document.getElementById('producto-precio-compra').value),
-                precio_venta: parseFloat(document.getElementById('producto-precio-venta').value),
-                stock_actual: parseInt(document.getElementById('producto-stock').value),
-                proveedor_id: document.getElementById('producto-proveedor').value || null
-            };
-            
-            if (!producto.codigo || !producto.nombre || !producto.precio_venta) {
-                mostrarAlerta('Código, nombre y precio de venta son obligatorios', 'error');
-                return;
-            }
-            
-            try {
-                const token = JSON.parse(localStorage.getItem('admin_token'));
-                
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/productos`, {
-                    method: 'POST',
-                    headers: {
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${token.access_token}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(producto)
-                });
-                
-                if (response.ok) {
-                    mostrarAlerta('🌸 Producto guardado correctamente', 'success');
-                    cerrarFormulario('producto');
-                    await cargarProductos();
-                    document.getElementById('producto-codigo').value = '';
-                    document.getElementById('producto-nombre').value = '';
-                    document.getElementById('producto-talla').value = '';
-                    document.getElementById('producto-color').value = '';
-                    document.getElementById('producto-precio-compra').value = '';
-                    document.getElementById('producto-precio-venta').value = '';
-                    document.getElementById('producto-stock').value = '';
-                } else {
-                    mostrarAlerta('Error al guardar el producto', 'error');
-                }
-            } catch (error) {
-                mostrarAlerta('Error de conexión', 'error');
-            }
+    const producto = {
+        codigo: document.getElementById('producto-codigo').value,
+        categoria: document.getElementById('producto-categoria').value,
+        puc: document.getElementById('producto-puc').value,
+        nombre: document.getElementById('producto-nombre').value,
+        imagen_url: document.getElementById('producto-imagen').value || null,
+        talla: document.getElementById('producto-talla').value || null,
+        color: document.getElementById('producto-color').value || null,
+        precio_compra: parseFloat(document.getElementById('producto-precio-compra').value),
+        precio_venta: parseFloat(document.getElementById('producto-precio-venta').value),
+        stock_actual: parseInt(document.getElementById('producto-stock').value),
+        proveedor_id: document.getElementById('producto-proveedor').value || null
+    };
+    
+    if (!producto.codigo || !producto.categoria || !producto.nombre || !producto.precio_venta) {
+        mostrarAlerta('Código, categoría, nombre y precio de venta son obligatorios', 'error');
+        return;
+    }
+    
+    try {
+        const token = JSON.parse(localStorage.getItem('admin_token'));
+        
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/productos`, {
+            method: 'POST',
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${token.access_token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(producto)
+        });
+        
+        if (response.ok) {
+            mostrarAlerta('🌸 Producto guardado correctamente', 'success');
+            cerrarFormulario('producto');
+            await cargarProductos();
+            // Limpiar formulario
+            document.getElementById('producto-codigo').value = '';
+            document.getElementById('producto-categoria').value = '';
+            document.getElementById('producto-nombre').value = '';
+            document.getElementById('producto-imagen').value = '';
+            document.getElementById('producto-talla').value = '';
+            document.getElementById('producto-color').value = '';
+            document.getElementById('producto-precio-compra').value = '';
+            document.getElementById('producto-precio-venta').value = '';
+            document.getElementById('producto-stock').value = '';
+        } else {
+            const error = await response.json();
+            mostrarAlerta('Error: ' + (error.message || 'No se pudo guardar'), 'error');
         }
-
+    } catch (error) {
+        mostrarAlerta('Error de conexión', 'error');
+    }
+}
         // ===== FUNCIONES PROVEEDORES =====
         async function cargarProveedores() {
             try {
@@ -1679,5 +1713,3 @@
     </script>
 </body>
 </html>
-
-                        
