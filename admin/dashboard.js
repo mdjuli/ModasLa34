@@ -356,63 +356,94 @@ async function editarProducto(id) {
 
 // Función para guardar o actualizar producto
 async function guardarProducto() {
-    // Obtener los colores del formulario
-    const coloresArray = getColoresFromForm();
-    
-    const producto = {
-        codigo: document.getElementById('producto-codigo').value,
-        categoria: document.getElementById('producto-categoria').value,
-        puc: document.getElementById('producto-puc').value,
-        nombre: document.getElementById('producto-nombre').value,
-        imagen_url: document.getElementById('producto-imagen').value || null,
-        talla: document.getElementById('producto-talla').value || null,
-        color: coloresArray,
-        precio_compra: parseFloat(document.getElementById('producto-precio-compra').value),
-        precio_venta: parseFloat(document.getElementById('producto-precio-venta').value),
-        stock_actual: parseInt(document.getElementById('producto-stock').value),
-        proveedor_id: document.getElementById('producto-proveedor').value || null
-    };
-    
-    if (!producto.codigo || !producto.categoria || !producto.nombre || !producto.precio_venta) {
-        mostrarAlerta('Código, categoría, nombre y precio de venta son obligatorios', 'error');
-        return;
-    }
-    
     try {
-        const token = JSON.parse(localStorage.getItem('admin_token'));
+        // Verificar token primero
+        const tokenData = localStorage.getItem('admin_token');
+        if (!tokenData) {
+            mostrarAlerta('Sesión expirada', 'error');
+            window.location.href = 'login.html';
+            return;
+        }
+        const token = JSON.parse(tokenData);
+        
+        // Obtener los colores del formulario
+        const coloresArray = getColoresFromForm();
+        
+        // Validar campos obligatorios
+        const codigo = document.getElementById('producto-codigo')?.value;
+        const categoria = document.getElementById('producto-categoria')?.value;
+        const nombre = document.getElementById('producto-nombre')?.value;
+        const precioVenta = parseFloat(document.getElementById('producto-precio-venta')?.value);
+        
+        if (!codigo || !categoria || !nombre || !precioVenta) {
+            mostrarAlerta('Código, categoría, nombre y precio de venta son obligatorios', 'error');
+            return;
+        }
+        
+        const producto = {
+            codigo: codigo,
+            categoria: categoria,
+            puc: document.getElementById('producto-puc')?.value || '143501',
+            nombre: nombre,
+            imagen_url: document.getElementById('producto-imagen')?.value || null,
+            talla: document.getElementById('producto-talla')?.value || null,
+            color: coloresArray,
+            precio_compra: parseFloat(document.getElementById('producto-precio-compra')?.value) || 0,
+            precio_venta: precioVenta,
+            stock_actual: parseInt(document.getElementById('producto-stock')?.value) || 0,
+            proveedor_id: document.getElementById('producto-proveedor')?.value || null
+        };
         
         // Verificar si estamos editando o creando
-        const editId = document.getElementById('form-producto').dataset.editId;
+        const formProducto = document.getElementById('form-producto');
+        const editId = formProducto?.dataset.editId;
+        
         let url = `${SUPABASE_URL}/rest/v1/productos`;
         let method = 'POST';
         
         if (editId) {
             url += `?id=eq.${editId}`;
             method = 'PATCH';
+            console.log('Actualizando producto ID:', editId);
         }
+        
+        console.log('Enviando producto:', producto);
+        console.log('URL:', url);
+        console.log('Método:', method);
         
         const response = await fetch(url, {
             method: method,
             headers: {
                 'apikey': SUPABASE_KEY,
                 'Authorization': `Bearer ${token.access_token}`,
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Prefer': 'return=representation'
             },
             body: JSON.stringify(producto)
         });
         
+        const responseData = await response.json();
+        console.log('Respuesta:', responseData);
+        
         if (response.ok) {
             mostrarAlerta(editId ? '🌸 Producto actualizado correctamente' : '🌸 Producto guardado correctamente', 'success');
+            
+            // IMPORTANTE: Recargar productos ANTES de cerrar el formulario
+            await cargarProductos();
+            
+            // Ahora sí, cerrar el formulario
             cerrarFormulario('producto');
             
             // Limpiar el ID de edición
-            delete document.getElementById('form-producto').dataset.editId;
+            if (formProducto) {
+                delete formProducto.dataset.editId;
+            }
             
             // Restaurar texto del botón
             const submitBtn = document.querySelector('#form-producto .submit-btn');
-            submitBtn.textContent = '🌸 Guardar Producto';
-            
-            await cargarProductos();
+            if (submitBtn) {
+                submitBtn.textContent = '🌸 Guardar Producto';
+            }
             
             // Limpiar formulario
             document.getElementById('producto-codigo').value = '';
@@ -423,25 +454,28 @@ async function guardarProducto() {
             
             // Limpiar colores (dejar solo uno)
             const container = document.getElementById('colores-container');
-            container.innerHTML = `
-                <div class="color-row">
-                    <input type="color" id="color-input-0" value="#ff0000" class="color-picker">
-                    <input type="text" id="color-nombre-0" placeholder="Nombre del color (ej: Rojo)" class="color-nombre">
-                    <button type="button" onclick="agregarColor()" class="color-btn add-color">➕</button>
-                </div>
-            `;
+            if (container) {
+                container.innerHTML = `
+                    <div class="color-row">
+                        <input type="color" id="color-input-0" value="#ff0000" class="color-picker">
+                        <input type="text" id="color-nombre-0" placeholder="Nombre del color (ej: Rojo)" class="color-nombre">
+                        <button type="button" onclick="agregarColor()" class="color-btn add-color">➕</button>
+                    </div>
+                `;
+            }
             colorCount = 1;
             
             document.getElementById('producto-precio-compra').value = '';
             document.getElementById('producto-precio-venta').value = '';
             document.getElementById('producto-stock').value = '';
+            
         } else {
-            const error = await response.json();
-            mostrarAlerta('Error: ' + (error.message || 'No se pudo guardar'), 'error');
+            console.error('Error en respuesta:', responseData);
+            mostrarAlerta('Error: ' + (responseData.message || 'No se pudo guardar'), 'error');
         }
     } catch (error) {
-        console.error('Error:', error);
-        mostrarAlerta('Error de conexión', 'error');
+        console.error('Error completo:', error);
+        mostrarAlerta('Error de conexión: ' + error.message, 'error');
     }
 }
 
