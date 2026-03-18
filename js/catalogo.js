@@ -58,42 +58,63 @@ function mostrarProductos(categoria) {
         return emojis[cat] || '📦';
     }
     
-    // Función para procesar colores
-    function procesarColores(coloresData) {
-        let colores = [];
+    // Función para procesar colores (CORREGIDA)
+    function procesarColores(colorData) {
+        if (!colorData) return [];
         
-        if (!coloresData) return [];
-        
-        // Si es string, intentar parsear
-        if (typeof coloresData === 'string') {
-            try {
-                colores = JSON.parse(coloresData);
-            } catch {
-                // Si no se puede parsear, crear un color por defecto
-                return [];
-            }
-        } else if (Array.isArray(coloresData)) {
-            colores = coloresData;
+        // Si ya es un array, usarlo directamente
+        if (Array.isArray(colorData)) {
+            return colorData;
         }
         
-        return colores;
+        // Si es un string, intentar parsearlo
+        if (typeof colorData === 'string') {
+            try {
+                const parsed = JSON.parse(colorData);
+                return Array.isArray(parsed) ? parsed : [parsed];
+            } catch {
+                // Si no se puede parsear, crear un color por defecto
+                return [{ nombre: colorData, codigo: '#cccccc' }];
+            }
+        }
+        
+        return [];
     }
     
-    // Función para mostrar círculos de colores
-    function mostrarCirculosColores(colores) {
+    // Función para generar círculos de colores
+    function generarCirculosColores(colores) {
         if (!colores || colores.length === 0) return '';
         
         return `
-            <div style="display: flex; gap: 5px; margin: 5px 0; flex-wrap: wrap;">
-                ${colores.map(c => `
-                    <span style="display: inline-block; width: 20px; height: 20px; background-color: ${c.codigo || '#cccccc'}; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.2);" title="${c.nombre || 'Color'}"></span>
-                `).join('')}
+            <div class="producto-colores" style="display: flex; gap: 5px; margin: 5px 0; flex-wrap: wrap;">
+                ${colores.map(c => {
+                    // Asegurar que el color tenga el formato correcto
+                    const codigo = c.codigo || (typeof c === 'string' ? c : '#cccccc');
+                    const nombre = c.nombre || (typeof c === 'string' ? c : 'Color');
+                    
+                    // Si el código parece un nombre de color en lugar de código hex, usar gris
+                    const colorCodigo = codigo.startsWith('#') ? codigo : '#cccccc';
+                    
+                    return `
+                        <span style="
+                            display: inline-block; 
+                            width: 25px; 
+                            height: 25px; 
+                            background-color: ${colorCodigo}; 
+                            border-radius: 50%; 
+                            border: 2px solid white; 
+                            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+                            cursor: pointer;
+                            transition: transform 0.2s;
+                        " title="${nombre}"></span>
+                    `;
+                }).join('')}
             </div>
         `;
     }
     
     catalogo.innerHTML = productosFiltrados.map(p => {
-        // Procesar colores correctamente
+        // Procesar colores
         const colores = procesarColores(p.color);
         console.log('Producto:', p.nombre, 'Colores procesados:', colores);
         
@@ -106,13 +127,13 @@ function mostrarProductos(categoria) {
                     </div>`
                 }
                 <h3 style="color:#ff6b6b; margin:0.5rem 0;">${p.nombre}</h3>
-                
-                <!-- Mostrar círculos de colores -->
-                ${colores.length > 0 ? mostrarCirculosColores(colores) : ''}
-                
-                <p style="color:#a5a5a5; font-size:0.9rem;">
+                <p style="color:#a5a5a5; font-size:0.9rem; margin:0.3rem 0;">
                     ${p.talla ? `Talla: ${p.talla}` : ''}
                 </p>
+                
+                <!-- COLORES AQUÍ - AHORA COMO CÍRCULOS -->
+                ${generarCirculosColores(colores)}
+                
                 <p style="font-size:1.5rem; font-weight:bold; color:#ff9a9e; margin:0.5rem 0;">$${(p.precio_venta || 0).toLocaleString()}</p>
                 <button onclick="verProducto(${p.id})" style="background:#ffb6c1; color:white; border:none; padding:0.8rem; border-radius:50px; cursor:pointer; width:100%; font-weight:600;">
                     🔍 Ver más
@@ -165,71 +186,88 @@ function llenarModal(producto) {
     };
     const emoji = emojis[producto.categoria] || '📦';
     
-    // Procesar colores
-    function procesarColores(coloresData) {
-        let colores = [];
-        
-        if (!coloresData) return [];
-        
-        if (typeof coloresData === 'string') {
+    // Procesar colores (igual que en mostrarProductos)
+    function procesarColores(colorData) {
+        if (!colorData) return [];
+        if (Array.isArray(colorData)) return colorData;
+        if (typeof colorData === 'string') {
             try {
-                colores = JSON.parse(coloresData);
+                const parsed = JSON.parse(colorData);
+                return Array.isArray(parsed) ? parsed : [parsed];
             } catch {
-                return [];
+                return [{ nombre: colorData, codigo: '#cccccc' }];
             }
-        } else if (Array.isArray(coloresData)) {
-            colores = coloresData;
         }
-        
-        return colores;
+        return [];
     }
     
     const colores = procesarColores(producto.color);
     
-    // HTML para mostrar colores
+    // HTML para mostrar colores en el modal
     const coloresHTML = colores.length > 0 ? `
         <div style="margin: 1rem 0;">
             <p><strong>Colores disponibles:</strong></p>
-            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-                ${colores.map(c => `
-                    <div style="display: flex; flex-direction: column; align-items: center; cursor: pointer;" onclick="seleccionarColor('${c.nombre}')">
-                        <span style="display: inline-block; width: 40px; height: 40px; background-color: ${c.codigo || '#cccccc'}; border-radius: 50%; border: 3px solid white; box-shadow: 0 3px 10px rgba(0,0,0,0.2);"></span>
-                        <span style="font-size: 0.8rem; color: #ff6b6b; margin-top: 0.3rem;">${c.nombre || ''}</span>
-                    </div>
-                `).join('')}
+            <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                ${colores.map(c => {
+                    const codigo = c.codigo || (typeof c === 'string' ? c : '#cccccc');
+                    const nombre = c.nombre || (typeof c === 'string' ? c : 'Color');
+                    const colorCodigo = codigo.startsWith('#') ? codigo : '#cccccc';
+                    
+                    return `
+                        <div style="text-align: center;">
+                            <span style="
+                                display: inline-block; 
+                                width: 40px; 
+                                height: 40px; 
+                                background-color: ${colorCodigo}; 
+                                border-radius: 50%; 
+                                border: 3px solid white; 
+                                box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+                                margin-bottom: 5px;
+                            "></span>
+                            <p style="font-size: 0.8rem; color: #ff6b6b;">${nombre}</p>
+                        </div>
+                    `;
+                }).join('')}
             </div>
         </div>
     ` : '';
     
     contenedor.innerHTML = `
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
-            <div>
+        <div class="modal-grid">
+            <div class="modal-imagen">
                 ${producto.imagen_url ? 
-                    `<img src="${producto.imagen_url}" alt="${producto.nombre}" style="width:100%; border-radius:20px;">` : 
-                    `<div style="width:100%; aspect-ratio:1; background:linear-gradient(135deg, #fff0f3, #ffe4e9); border-radius:20px; display:flex; align-items:center; justify-content:center; font-size:5rem;">
-                        ${emoji}
+                    `<img src="${producto.imagen_url}" alt="${producto.nombre}">` : 
+                    `<div class="modal-imagen-placeholder">
+                        <span>${emoji}</span>
                     </div>`
                 }
             </div>
-            <div>
-                <h2 style="color:#ff6b6b; font-size:2rem; margin-bottom:1rem;">${producto.nombre}</h2>
-                <p><strong>Código:</strong> ${producto.codigo || 'N/A'}</p>
-                <p><strong>Categoría:</strong> ${emoji} ${producto.categoria || 'General'}</p>
-                ${producto.talla ? `<p><strong>Talla:</strong> ${producto.talla}</p>` : ''}
-                ${coloresHTML}
-                <p><strong>Disponibilidad:</strong> 
-                    <span style="display:inline-block; padding:0.5rem 1.5rem; border-radius:50px; background:${stockClass === 'stock-disponible' ? '#d4edda' : stockClass === 'stock-bajo' ? '#fff3cd' : '#f8d7da'}; color:${stockClass === 'stock-disponible' ? '#27ae60' : stockClass === 'stock-bajo' ? '#856404' : '#721c24'};">
-                        ${stockTexto}
-                    </span>
-                </p>
-                <div style="font-size:2.5rem; font-weight:bold; color:#ff9a9e; margin:1.5rem 0; text-align:center; background:#fff0f3; padding:1rem; border-radius:50px;">
+            <div class="modal-info">
+                <h2>${producto.nombre}</h2>
+                <span class="modal-codigo">Código: ${producto.codigo || 'N/A'}</span>
+                
+                <div class="modal-detalle">
+                    <p><strong>Categoría:</strong> ${emoji} ${producto.categoria || 'General'}</p>
+                    ${producto.talla ? `<p><strong>Talla:</strong> ${producto.talla}</p>` : ''}
+                    
+                    <!-- COLORES EN EL MODAL -->
+                    ${coloresHTML}
+                    
+                    <p><strong>Disponibilidad:</strong> 
+                        <span class="modal-stock ${stockClass}">${stockTexto}</span>
+                    </p>
+                </div>
+                
+                <div class="modal-precio">
                     $${(producto.precio_venta || 0).toLocaleString()}
                 </div>
-                <div style="display:flex; gap:1rem; margin-top:2rem;">
-                    <button onclick="consultarProducto()" style="flex:1; background:#ffb6c1; color:white; border:none; padding:1rem; border-radius:50px; font-weight:600; cursor:pointer;">
-                        📱 Consultar
+                
+                <div class="modal-botones">
+                    <button class="modal-btn btn-consultar" onclick="consultarProducto()">
+                        📱 Consultar disponibilidad
                     </button>
-                    <button onclick="cerrarModal()" style="flex:1; background:#ffe4e9; color:#ff6b6b; border:none; padding:1rem; border-radius:50px; font-weight:600; cursor:pointer;">
+                    <button class="modal-btn btn-cerrar" onclick="cerrarModal()">
                         ❌ Cerrar
                     </button>
                 </div>
