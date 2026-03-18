@@ -233,16 +233,23 @@ async function cargarProductos() {
 // Editar producto
 async function editarProducto(id) {
     try {
+        console.log('Editando producto ID:', id);
+        
         // Primero, mostrar el formulario
         mostrarFormulario('producto');
         
         // Pequeña pausa para que el DOM se actualice
-        await new Promise(resolve => setTimeout(resolve, 100));
+        await new Promise(resolve => setTimeout(resolve, 200));
         
         // Obtener datos del producto
         const response = await fetch(`${SUPABASE_URL}/rest/v1/productos?id=eq.${id}`, {
             headers: { 'apikey': SUPABASE_KEY }
         });
+        
+        if (!response.ok) {
+            throw new Error('Error al cargar producto');
+        }
+        
         const producto = await response.json();
         const p = producto[0];
         
@@ -251,24 +258,50 @@ async function editarProducto(id) {
             return;
         }
         
-        // VERIFICAR QUE CADA CAMPO EXISTE antes de asignar
-        const campoCodigo = document.getElementById('producto-codigo');
-        const campoCategoria = document.getElementById('producto-categoria');
-        const campoPuc = document.getElementById('producto-puc');
-        const campoNombre = document.getElementById('producto-nombre');
-        const campoImagen = document.getElementById('producto-imagen');
-        const campoTalla = document.getElementById('producto-talla');
-        const campoPrecioCompra = document.getElementById('producto-precio-compra');
-        const campoPrecioVenta = document.getElementById('producto-precio-venta');
-        const campoStock = document.getElementById('producto-stock');
+        console.log('Datos del producto:', p);
         
-        // Asignar valores solo si el campo existe
-        if (campoCodigo) campoCodigo.value = p.codigo || '';
-        if (campoCategoria) campoCategoria.value = p.categoria || '';
-        if (campoPuc) campoPuc.value = p.puc || '143501';
-        if (campoNombre) campoNombre.value = p.nombre || '';
-        if (campoImagen) campoImagen.value = p.imagen_url || '';
-        if (campoTalla) campoTalla.value = p.talla || '';
+        // VERIFICAR CADA CAMPO ANTES DE ASIGNAR
+        const campoCodigo = document.getElementById('producto-codigo');
+        if (campoCodigo) {
+            campoCodigo.value = p.codigo || '';
+        } else {
+            console.error('Campo producto-codigo no encontrado');
+        }
+        
+        const campoCategoria = document.getElementById('producto-categoria');
+        if (campoCategoria) {
+            campoCategoria.value = p.categoria || '';
+        } else {
+            console.error('Campo producto-categoria no encontrado');
+        }
+        
+        const campoPuc = document.getElementById('producto-puc');
+        if (campoPuc) {
+            campoPuc.value = p.puc || '143501';
+        } else {
+            console.error('Campo producto-puc no encontrado');
+        }
+        
+        const campoNombre = document.getElementById('producto-nombre');
+        if (campoNombre) {
+            campoNombre.value = p.nombre || '';
+        } else {
+            console.error('Campo producto-nombre no encontrado');
+        }
+        
+        const campoImagen = document.getElementById('producto-imagen');
+        if (campoImagen) {
+            campoImagen.value = p.imagen_url || '';
+        } else {
+            console.error('Campo producto-imagen no encontrado');
+        }
+        
+        const campoTalla = document.getElementById('producto-talla');
+        if (campoTalla) {
+            campoTalla.value = p.talla || '';
+        } else {
+            console.error('Campo producto-talla no encontrado');
+        }
         
         // Limpiar colores existentes
         const container = document.getElementById('colores-container');
@@ -290,9 +323,8 @@ async function editarProducto(id) {
                 }
             }
             
-            // Si hay colores, mostrarlos
             if (colores.length > 0) {
-                colores.forEach((color, index) => {
+                colores.forEach((color) => {
                     const newRow = document.createElement('div');
                     newRow.className = 'color-row';
                     newRow.innerHTML = `
@@ -303,14 +335,6 @@ async function editarProducto(id) {
                     container.appendChild(newRow);
                     colorCount++;
                 });
-                
-                // Agregar botón para más colores
-                const addBtnRow = document.createElement('div');
-                addBtnRow.className = 'color-row';
-                addBtnRow.innerHTML = `
-                    <button type="button" onclick="agregarColor()" class="color-btn add-color" style="width:100%;">➕ Agregar otro color</button>
-                `;
-                container.appendChild(addBtnRow);
             } else {
                 // Si no hay colores, mostrar un campo vacío
                 const newRow = document.createElement('div');
@@ -323,11 +347,30 @@ async function editarProducto(id) {
                 container.appendChild(newRow);
                 colorCount++;
             }
+        } else {
+            console.error('Campo colores-container no encontrado');
         }
         
-        if (campoPrecioCompra) campoPrecioCompra.value = p.precio_compra || '';
-        if (campoPrecioVenta) campoPrecioVenta.value = p.precio_venta || '';
-        if (campoStock) campoStock.value = p.stock_actual || '';
+        const campoPrecioCompra = document.getElementById('producto-precio-compra');
+        if (campoPrecioCompra) {
+            campoPrecioCompra.value = p.precio_compra || '';
+        } else {
+            console.error('Campo producto-precio-compra no encontrado');
+        }
+        
+        const campoPrecioVenta = document.getElementById('producto-precio-venta');
+        if (campoPrecioVenta) {
+            campoPrecioVenta.value = p.precio_venta || '';
+        } else {
+            console.error('Campo producto-precio-venta no encontrado');
+        }
+        
+        const campoStock = document.getElementById('producto-stock');
+        if (campoStock) {
+            campoStock.value = p.stock_actual || '';
+        } else {
+            console.error('Campo producto-stock no encontrado');
+        }
         
         // Cargar proveedores y seleccionar el actual
         await cargarProveedoresSelect('producto');
@@ -340,17 +383,23 @@ async function editarProducto(id) {
         const formProducto = document.getElementById('form-producto');
         if (formProducto) {
             formProducto.dataset.editId = id;
+        } else {
+            console.error('Campo form-producto no encontrado');
         }
         
         // Cambiar el texto del botón
         const submitBtn = document.querySelector('#form-producto .submit-btn');
         if (submitBtn) {
             submitBtn.textContent = '🌸 Actualizar Producto';
+        } else {
+            console.error('Botón submit no encontrado');
         }
+        
+        console.log('Producto cargado para edición exitosamente');
         
     } catch (error) {
         console.error('Error al cargar producto para editar:', error);
-        mostrarAlerta('Error al cargar el producto', 'error');
+        mostrarAlerta('Error al cargar el producto: ' + error.message, 'error');
     }
 }
 
