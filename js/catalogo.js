@@ -97,7 +97,7 @@ function verProducto(id) {
         return;
     }
 
-    function llenarModal(producto) {
+function llenarModal(producto) {
     const contenedor = document.getElementById('modal-contenido-producto');
     
     // Determinar estado del stock
@@ -161,7 +161,7 @@ function verProducto(id) {
             </div>
         </div>
     `;
-    }
+}
     
     const contenedor = document.getElementById('modal-contenido-producto');
     contenedor.innerHTML = `
