@@ -675,9 +675,9 @@ footer {
     }
 }
 
-/* Estilos para selector de colores múltiples */
+/* Estilos para selector de colores */
 .colores-container {
-    margin-bottom: 1rem;
+    width: 100%;
 }
 
 .color-row {
@@ -685,14 +685,16 @@ footer {
     gap: 0.5rem;
     margin-bottom: 0.5rem;
     align-items: center;
+    width: 100%;
 }
 
 .color-picker {
-    width: 60px;
+    width: 50px;
     height: 40px;
     border: 2px solid #ffe4e9;
     border-radius: 10px;
     cursor: pointer;
+    flex-shrink: 0;
 }
 
 .color-nombre {
@@ -700,6 +702,7 @@ footer {
     padding: 0.5rem;
     border: 2px solid #ffe4e9;
     border-radius: 10px;
+    min-width: 100px;
 }
 
 .color-btn {
@@ -710,6 +713,7 @@ footer {
     cursor: pointer;
     font-size: 1.2rem;
     transition: all 0.3s;
+    flex-shrink: 0;
 }
 
 .add-color {
@@ -728,4 +732,17 @@ footer {
 
 .remove-color:hover {
     background: #ffd9e2;
+}
+
+/* Ajuste para el form-row */
+.form-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.form-row .form-group {
+    flex: 1;
+    min-width: 200px;
 }
