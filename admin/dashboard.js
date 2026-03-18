@@ -2,18 +2,17 @@
 // 🌸 DASHBOARD ADMIN - MODAS LA 34
 // ============================================
 
-// ===== VARIABLES GLOBALES =====
+// Variables globales
 let currentUser = null;
 let currentModule = 'compras';
 let colorCount = 1;
-let productoEnEdicion = null; // Para editar productos
 
-// ===== INICIALIZACIÓN =====
+// ===== FUNCIONES DE INICIALIZACIÓN =====
 document.addEventListener('DOMContentLoaded', async () => {
-    console.log('🌸 Dashboard iniciado');
+    console.log('Dashboard iniciado');
     await verificarSesion();
     await cargarDatosIniciales();
-    cambiarModulo('productos'); // Empezamos por productos para probar
+    cambiarModulo('compras');
 });
 
 // ===== FUNCIONES DE AUTENTICACIÓN =====
@@ -60,7 +59,7 @@ function logout() {
     }
 }
 
-// ===== NAVEGACIÓN ENTRE MÓDULOS =====
+// ===== FUNCIONES DE NAVEGACIÓN =====
 function cambiarModulo(modulo) {
     document.querySelectorAll('.module-section').forEach(section => {
         section.style.display = 'none';
@@ -102,7 +101,7 @@ async function cargarDatosModulo(modulo) {
     }
 }
 
-// ===== DATOS INICIALES =====
+// ===== FUNCIONES DE DATOS INICIALES =====
 async function cargarDatosIniciales() {
     try {
         const prodRes = await fetch(`${SUPABASE_URL}/rest/v1/productos`, {
@@ -132,7 +131,7 @@ async function cargarDatosIniciales() {
 }
 
 // ============================================
-// 🎯 PRODUCTOS - FUNCIONES COMPLETAS
+// FUNCIONES DE PRODUCTOS (COMPLETAS)
 // ============================================
 
 // Cargar productos
@@ -228,121 +227,116 @@ async function cargarProductos() {
     }
 }
 
-// ELIMINAR PRODUCTO (FUNCIONAL)
-async function eliminarProducto(id) {
-    if (!confirm('¿Estás SEGURA de eliminar este producto? Esta acción no se puede deshacer.')) {
-        return;
-    }
-    
-    try {
-        const token = JSON.parse(localStorage.getItem('admin_token'));
-        
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/productos?id=eq.${id}`, {
-            method: 'DELETE',
-            headers: {
-                'apikey': SUPABASE_KEY,
-                'Authorization': `Bearer ${token.access_token}`
-            }
-        });
-        
-        if (response.ok) {
-            mostrarAlerta('✅ Producto eliminado correctamente', 'success');
-            await cargarProductos(); // Recargar la tabla
-        } else {
-            const error = await response.json();
-            mostrarAlerta('❌ Error: ' + (error.message || 'No se pudo eliminar'), 'error');
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        mostrarAlerta('❌ Error de conexión', 'error');
-    }
-}
-
-// EDITAR PRODUCTO (FUNCIONAL)
+// Editar producto
 async function editarProducto(id) {
     try {
         // Obtener datos del producto
         const response = await fetch(`${SUPABASE_URL}/rest/v1/productos?id=eq.${id}`, {
             headers: { 'apikey': SUPABASE_KEY }
         });
-        const productos = await response.json();
-        const producto = productos[0];
+        const producto = await response.json();
+        const p = producto[0];
         
-        if (!producto) {
-            mostrarAlerta('❌ Producto no encontrado', 'error');
+        if (!p) {
+            mostrarAlerta('Producto no encontrado', 'error');
             return;
         }
         
-        productoEnEdicion = producto;
-        
         // Llenar el formulario con los datos del producto
-        document.getElementById('producto-codigo').value = producto.codigo || '';
-        document.getElementById('producto-categoria').value = producto.categoria || '';
-        document.getElementById('producto-puc').value = producto.puc || '143501';
-        document.getElementById('producto-nombre').value = producto.nombre || '';
-        document.getElementById('producto-imagen').value = producto.imagen_url || '';
-        document.getElementById('producto-talla').value = producto.talla || '';
+        document.getElementById('producto-codigo').value = p.codigo || '';
+        document.getElementById('producto-categoria').value = p.categoria || '';
+        document.getElementById('producto-puc').value = p.puc || '143501';
+        document.getElementById('producto-nombre').value = p.nombre || '';
+        document.getElementById('producto-imagen').value = p.imagen_url || '';
+        document.getElementById('producto-talla').value = p.talla || '';
         
-        // Limpiar colores actuales
+        // Limpiar colores existentes
         const container = document.getElementById('colores-container');
         container.innerHTML = '';
         colorCount = 0;
         
-        // Cargar colores del producto
-        if (producto.color && producto.color.length > 0) {
-            producto.color.forEach((color, index) => {
+        // Procesar colores
+        let colores = [];
+        if (p.color) {
+            if (typeof p.color === 'string') {
+                try {
+                    colores = JSON.parse(p.color);
+                } catch {
+                    colores = [{ nombre: p.color, codigo: '#cccccc' }];
+                }
+            } else if (Array.isArray(p.color)) {
+                colores = p.color;
+            }
+        }
+        
+        // Si hay colores, mostrarlos
+        if (colores.length > 0) {
+            colores.forEach((color, index) => {
                 const newRow = document.createElement('div');
                 newRow.className = 'color-row';
                 newRow.innerHTML = `
-                    <input type="color" id="color-input-${index}" value="${color.codigo || '#ff0000'}" class="color-picker">
-                    <input type="text" id="color-nombre-${index}" value="${color.nombre || ''}" placeholder="Nombre del color" class="color-nombre">
+                    <input type="color" id="color-input-${colorCount}" value="${color.codigo || '#ff0000'}" class="color-picker">
+                    <input type="text" id="color-nombre-${colorCount}" value="${color.nombre || ''}" placeholder="Nombre del color" class="color-nombre">
                     <button type="button" onclick="eliminarColor(this)" class="color-btn remove-color">✖️</button>
                 `;
                 container.appendChild(newRow);
-                colorCount = index + 1;
+                colorCount++;
             });
         } else {
-            // Si no tiene colores, agregar uno vacío
+            // Si no hay colores, mostrar un campo vacío
             const newRow = document.createElement('div');
             newRow.className = 'color-row';
             newRow.innerHTML = `
-                <input type="color" id="color-input-0" value="#ff0000" class="color-picker">
-                <input type="text" id="color-nombre-0" placeholder="Nombre del color" class="color-nombre">
+                <input type="color" id="color-input-${colorCount}" value="#ff0000" class="color-picker">
+                <input type="text" id="color-nombre-${colorCount}" placeholder="Nombre del color" class="color-nombre">
                 <button type="button" onclick="agregarColor()" class="color-btn add-color">➕</button>
             `;
             container.appendChild(newRow);
-            colorCount = 1;
+            colorCount++;
         }
         
-        document.getElementById('producto-precio-compra').value = producto.precio_compra || '';
-        document.getElementById('producto-precio-venta').value = producto.precio_venta || '';
-        document.getElementById('producto-stock').value = producto.stock_actual || '';
+        // Agregar botón para más colores si no hay
+        if (colores.length <= 1) {
+            // Ya tiene el botón en la primera fila
+        } else {
+            // Agregar botón de agregar al final
+            const addRow = document.createElement('div');
+            addRow.className = 'color-row';
+            addRow.innerHTML = `
+                <button type="button" onclick="agregarColor()" class="color-btn add-color" style="width:100%;">➕ Agregar otro color</button>
+            `;
+            container.appendChild(addRow);
+        }
+        
+        document.getElementById('producto-precio-compra').value = p.precio_compra || '';
+        document.getElementById('producto-precio-venta').value = p.precio_venta || '';
+        document.getElementById('producto-stock').value = p.stock_actual || '';
         
         // Cargar proveedores y seleccionar el actual
         await cargarProveedoresSelect('producto');
-        if (producto.proveedor_id) {
-            document.getElementById('producto-proveedor').value = producto.proveedor_id;
+        if (p.proveedor_id) {
+            document.getElementById('producto-proveedor').value = p.proveedor_id;
         }
         
-        // Cambiar el botón de guardar para que sea "Actualizar"
+        // Guardar el ID del producto que estamos editando
+        document.getElementById('form-producto').dataset.editId = id;
+        
+        // Cambiar el texto del botón
         const submitBtn = document.querySelector('#form-producto .submit-btn');
         submitBtn.textContent = '🌸 Actualizar Producto';
-        submitBtn.onclick = function(e) {
-            e.preventDefault();
-            actualizarProducto(id);
-        };
         
         // Mostrar el formulario
         mostrarFormulario('producto');
         
     } catch (error) {
-        console.error('Error:', error);
-        mostrarAlerta('❌ Error al cargar el producto', 'error');
+        console.error('Error al cargar producto para editar:', error);
+        mostrarAlerta('Error al cargar el producto', 'error');
     }
 }
 
-// ACTUALIZAR PRODUCTO
-async function actualizarProducto(id) {
+// Función para guardar o actualizar producto
+async function guardarProducto() {
+    // Obtener los colores del formulario
     const coloresArray = getColoresFromForm();
     
     const producto = {
@@ -367,8 +361,18 @@ async function actualizarProducto(id) {
     try {
         const token = JSON.parse(localStorage.getItem('admin_token'));
         
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/productos?id=eq.${id}`, {
-            method: 'PATCH',
+        // Verificar si estamos editando o creando
+        const editId = document.getElementById('form-producto').dataset.editId;
+        let url = `${SUPABASE_URL}/rest/v1/productos`;
+        let method = 'POST';
+        
+        if (editId) {
+            url += `?id=eq.${editId}`;
+            method = 'PATCH';
+        }
+        
+        const response = await fetch(url, {
+            method: method,
             headers: {
                 'apikey': SUPABASE_KEY,
                 'Authorization': `Bearer ${token.access_token}`,
@@ -378,28 +382,86 @@ async function actualizarProducto(id) {
         });
         
         if (response.ok) {
-            mostrarAlerta('🌸 Producto actualizado correctamente', 'success');
+            mostrarAlerta(editId ? '🌸 Producto actualizado correctamente' : '🌸 Producto guardado correctamente', 'success');
             cerrarFormulario('producto');
+            
+            // Limpiar el ID de edición
+            delete document.getElementById('form-producto').dataset.editId;
+            
+            // Restaurar texto del botón
+            const submitBtn = document.querySelector('#form-producto .submit-btn');
+            submitBtn.textContent = '🌸 Guardar Producto';
+            
             await cargarProductos();
-            resetFormularioProducto();
-            productoEnEdicion = null;
+            
+            // Limpiar formulario
+            document.getElementById('producto-codigo').value = '';
+            document.getElementById('producto-categoria').value = '';
+            document.getElementById('producto-nombre').value = '';
+            document.getElementById('producto-imagen').value = '';
+            document.getElementById('producto-talla').value = '';
+            
+            // Limpiar colores (dejar solo uno)
+            const container = document.getElementById('colores-container');
+            container.innerHTML = `
+                <div class="color-row">
+                    <input type="color" id="color-input-0" value="#ff0000" class="color-picker">
+                    <input type="text" id="color-nombre-0" placeholder="Nombre del color (ej: Rojo)" class="color-nombre">
+                    <button type="button" onclick="agregarColor()" class="color-btn add-color">➕</button>
+                </div>
+            `;
+            colorCount = 1;
+            
+            document.getElementById('producto-precio-compra').value = '';
+            document.getElementById('producto-precio-venta').value = '';
+            document.getElementById('producto-stock').value = '';
         } else {
             const error = await response.json();
-            mostrarAlerta('Error: ' + (error.message || 'No se pudo actualizar'), 'error');
+            mostrarAlerta('Error: ' + (error.message || 'No se pudo guardar'), 'error');
         }
     } catch (error) {
+        console.error('Error:', error);
         mostrarAlerta('Error de conexión', 'error');
     }
 }
 
-// AJUSTAR STOCK
+// Eliminar producto
+async function eliminarProducto(id) {
+    if (!confirm('¿Estás segura de eliminar este producto? Esta acción no se puede deshacer.')) {
+        return;
+    }
+    
+    try {
+        const token = JSON.parse(localStorage.getItem('admin_token'));
+        
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/productos?id=eq.${id}`, {
+            method: 'DELETE',
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${token.access_token}`
+            }
+        });
+        
+        if (response.ok) {
+            mostrarAlerta('✅ Producto eliminado correctamente', 'success');
+            await cargarProductos();
+        } else {
+            mostrarAlerta('Error al eliminar el producto', 'error');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        mostrarAlerta('Error de conexión', 'error');
+    }
+}
+
+// Ajustar stock
 async function ajustarStock(id) {
-    const nuevaCantidad = prompt('Ingrese la nueva cantidad de stock:', '0');
+    const nuevaCantidad = prompt('Ingrese la nueva cantidad de stock:');
     if (nuevaCantidad === null) return;
     
-    const cantidad = parseInt(nuevaCantidad);
-    if (isNaN(cantidad) || cantidad < 0) {
-        alert('Por favor ingrese un número válido');
+    const stock = parseInt(nuevaCantidad);
+    if (isNaN(stock) || stock < 0) {
+        mostrarAlerta('Por favor ingrese un número válido', 'error');
         return;
     }
     
@@ -413,18 +475,18 @@ async function ajustarStock(id) {
                 'Authorization': `Bearer ${token.access_token}`,
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ stock_actual: cantidad })
+            body: JSON.stringify({ stock_actual: stock })
         });
         
         if (response.ok) {
             mostrarAlerta('📦 Stock actualizado correctamente', 'success');
             await cargarProductos();
         } else {
-            mostrarAlerta('❌ Error al actualizar stock', 'error');
+            mostrarAlerta('Error al actualizar stock', 'error');
         }
     } catch (error) {
         console.error('Error:', error);
-        mostrarAlerta('❌ Error de conexión', 'error');
+        mostrarAlerta('Error de conexión', 'error');
     }
 }
 
@@ -437,7 +499,6 @@ function agregarColor() {
         <input type="color" id="color-input-${colorCount}" value="#ff0000" class="color-picker">
         <input type="text" id="color-nombre-${colorCount}" placeholder="Nombre del color" class="color-nombre">
         <button type="button" onclick="eliminarColor(this)" class="color-btn remove-color">✖️</button>
-        <button type="button" onclick="agregarColor()" class="color-btn add-color">➕</button>
     `;
     container.appendChild(newRow);
     colorCount++;
@@ -447,7 +508,7 @@ function eliminarColor(boton) {
     if (document.querySelectorAll('.color-row').length > 1) {
         boton.parentElement.remove();
     } else {
-        alert('Debe haber al menos un color');
+        mostrarAlerta('Debe haber al menos un color', 'error');
     }
 }
 
@@ -470,106 +531,42 @@ function getColoresFromForm() {
     return colores;
 }
 
-// ===== GUARDAR PRODUCTO (NUEVO) =====
-async function guardarProducto() {
-    const coloresArray = getColoresFromForm();
-    
-    const producto = {
-        codigo: document.getElementById('producto-codigo').value,
-        categoria: document.getElementById('producto-categoria').value,
-        puc: document.getElementById('producto-puc').value,
-        nombre: document.getElementById('producto-nombre').value,
-        imagen_url: document.getElementById('producto-imagen').value || null,
-        talla: document.getElementById('producto-talla').value || null,
-        color: coloresArray,
-        precio_compra: parseFloat(document.getElementById('producto-precio-compra').value),
-        precio_venta: parseFloat(document.getElementById('producto-precio-venta').value),
-        stock_actual: parseInt(document.getElementById('producto-stock').value),
-        proveedor_id: document.getElementById('producto-proveedor').value || null
-    };
-    
-    if (!producto.codigo || !producto.categoria || !producto.nombre || !producto.precio_venta) {
-        mostrarAlerta('Código, categoría, nombre y precio de venta son obligatorios', 'error');
-        return;
-    }
-    
-    try {
-        const token = JSON.parse(localStorage.getItem('admin_token'));
-        
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/productos`, {
-            method: 'POST',
-            headers: {
-                'apikey': SUPABASE_KEY,
-                'Authorization': `Bearer ${token.access_token}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(producto)
-        });
-        
-        if (response.ok) {
-            mostrarAlerta('🌸 Producto guardado correctamente', 'success');
-            cerrarFormulario('producto');
-            await cargarProductos();
-            resetFormularioProducto();
-        } else {
-            const error = await response.json();
-            mostrarAlerta('Error: ' + (error.message || 'No se pudo guardar'), 'error');
-        }
-    } catch (error) {
-        mostrarAlerta('Error de conexión', 'error');
-    }
-}
-
-// Resetear formulario de producto
-function resetFormularioProducto() {
-    document.getElementById('producto-codigo').value = '';
-    document.getElementById('producto-categoria').value = '';
-    document.getElementById('producto-nombre').value = '';
-    document.getElementById('producto-imagen').value = '';
-    document.getElementById('producto-talla').value = '';
-    document.getElementById('producto-precio-compra').value = '';
-    document.getElementById('producto-precio-venta').value = '';
-    document.getElementById('producto-stock').value = '';
-    
-    // Resetear colores
-    const container = document.getElementById('colores-container');
-    container.innerHTML = `
-        <div class="color-row">
-            <input type="color" id="color-input-0" value="#ff0000" class="color-picker">
-            <input type="text" id="color-nombre-0" placeholder="Nombre del color (ej: Rojo)" class="color-nombre">
-            <button type="button" onclick="agregarColor()" class="color-btn add-color">➕</button>
-        </div>
-    `;
-    colorCount = 1;
-    
-    // Restaurar botón de guardar
-    const submitBtn = document.querySelector('#form-producto .submit-btn');
-    submitBtn.textContent = '🌸 Guardar Producto';
-    submitBtn.onclick = function(e) {
-        e.preventDefault();
-        guardarProducto();
-    };
-}
-
-// ===== FUNCIONES DE COMPRAS (pendientes) =====
-async function cargarCompras() { 
-    const tbody = document.querySelector('#tabla-compras tbody');
-    tbody.innerHTML = '<tr><td colspan="8" style="text-align: center;">Módulo de compras en desarrollo</td></tr>';
-}
-
-async function cargarGastos() {
-    const tbody = document.querySelector('#tabla-gastos tbody');
-    tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">Módulo de gastos en desarrollo</td></tr>';
-}
-
-async function cargarPerfiles() {
-    const tbody = document.querySelector('#tabla-perfiles tbody');
-    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Módulo de perfiles en desarrollo</td></tr>';
-}
+// ============================================
+// FUNCIONES DE PROVEEDORES (COMPLETAS)
+// ============================================
 
 async function cargarProveedores() {
-    const tbody = document.querySelector('#tabla-proveedores tbody');
-    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Módulo de proveedores en desarrollo</td></tr>';
+    try {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/proveedores?order=nombre`, {
+            headers: { 'apikey': SUPABASE_KEY }
+        });
+        const proveedores = await response.json();
+        
+        const tbody = document.querySelector('#tabla-proveedores tbody');
+        
+        if (proveedores.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">No hay proveedores registrados</td></tr>';
+            return;
+        }
+        
+        document.getElementById('stats-proveedores').textContent = proveedores.length;
+        
+        tbody.innerHTML = proveedores.map(p => `
+            <tr>
+                <td><strong>${p.nombre}</strong></td>
+                <td>${p.contacto || '-'}</td>
+                <td>${p.telefono || '-'}</td>
+                <td>${p.email || '-'}</td>
+                <td>
+                    <button class="action-btn" onclick="editarProveedor(${p.id})" title="Editar">✏️</button>
+                    <button class="action-btn delete-btn" onclick="eliminarProveedor(${p.id})" title="Eliminar">🗑️</button>
+                </td>
+            </tr>
+        `).join('');
+        
+    } catch (error) {
+        console.error('Error cargando proveedores:', error);
+    }
 }
 
 async function cargarProveedoresSelect(origen) {
@@ -590,16 +587,181 @@ async function cargarProveedoresSelect(origen) {
     }
 }
 
-// ===== FUNCIONES UTILITARIAS =====
+async function guardarProveedor() {
+    const proveedor = {
+        nombre: document.getElementById('proveedor-nombre').value,
+        contacto: document.getElementById('proveedor-contacto').value || null,
+        telefono: document.getElementById('proveedor-telefono').value || null,
+        email: document.getElementById('proveedor-email').value || null,
+        direccion: document.getElementById('proveedor-direccion').value || null
+    };
+    
+    if (!proveedor.nombre) {
+        mostrarAlerta('El nombre del proveedor es obligatorio', 'error');
+        return;
+    }
+    
+    try {
+        const token = JSON.parse(localStorage.getItem('admin_token'));
+        
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/proveedores`, {
+            method: 'POST',
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${token.access_token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(proveedor)
+        });
+        
+        if (response.ok) {
+            mostrarAlerta('🌸 Proveedor guardado correctamente', 'success');
+            cerrarFormulario('proveedor');
+            await cargarProveedores();
+            document.getElementById('proveedor-nombre').value = '';
+            document.getElementById('proveedor-contacto').value = '';
+            document.getElementById('proveedor-telefono').value = '';
+            document.getElementById('proveedor-email').value = '';
+            document.getElementById('proveedor-direccion').value = '';
+        } else {
+            mostrarAlerta('Error al guardar el proveedor', 'error');
+        }
+    } catch (error) {
+        mostrarAlerta('Error de conexión', 'error');
+    }
+}
+
+function editarProveedor(id) {
+    alert('Función de editar proveedor en desarrollo');
+}
+
+async function eliminarProveedor(id) {
+    if (!confirm('¿Estás segura de eliminar este proveedor?')) return;
+    
+    try {
+        const token = JSON.parse(localStorage.getItem('admin_token'));
+        
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/proveedores?id=eq.${id}`, {
+            method: 'DELETE',
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${token.access_token}`
+            }
+        });
+        
+        if (response.ok) {
+            mostrarAlerta('✅ Proveedor eliminado', 'success');
+            await cargarProveedores();
+        } else {
+            mostrarAlerta('Error al eliminar', 'error');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        mostrarAlerta('Error de conexión', 'error');
+    }
+}
+
+// ============================================
+// FUNCIONES DE COMPRAS (BÁSICAS)
+// ============================================
+
+async function cargarCompras() {
+    const tbody = document.querySelector('#tabla-compras tbody');
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align: center;">Módulo en desarrollo</td></tr>';
+}
+
+async function guardarCompra() {
+    mostrarAlerta('Función de guardar compra en desarrollo', 'error');
+}
+
+// ============================================
+// FUNCIONES DE GASTOS (BÁSICAS)
+// ============================================
+
+async function cargarGastos() {
+    const tbody = document.querySelector('#tabla-gastos tbody');
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">Módulo en desarrollo</td></tr>';
+}
+
+async function guardarGasto() {
+    mostrarAlerta('Función de guardar gasto en desarrollo', 'error');
+}
+
+// ============================================
+// FUNCIONES DE PERFILES (BÁSICAS)
+// ============================================
+
+async function cargarPerfiles() {
+    try {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/perfiles?order=created_at.desc`, {
+            headers: { 'apikey': SUPABASE_KEY }
+        });
+        const perfiles = await response.json();
+        
+        const tbody = document.querySelector('#tabla-perfiles tbody');
+        
+        if (perfiles.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">No hay usuarios registrados</td></tr>';
+            return;
+        }
+        
+        document.getElementById('stats-empleados').textContent = perfiles.length;
+        
+        tbody.innerHTML = perfiles.map(p => `
+            <tr>
+                <td><strong>${p.nombre || 'Sin nombre'}</strong></td>
+                <td>${p.email}</td>
+                <td>
+                    <span style="background: ${p.rol === 'admin' ? '#ff9a9e' : '#ffb6c1'}; 
+                                 color: white; padding: 0.2rem 0.8rem; border-radius: 50px;">
+                        ${p.rol || 'empleado'}
+                    </span>
+                </td>
+                <td>${new Date(p.created_at).toLocaleDateString()}</td>
+                <td>
+                    <button class="action-btn" onclick="editarPerfil('${p.id}')" title="Editar">✏️</button>
+                    ${p.id !== currentUser?.id ? 
+                        `<button class="action-btn delete-btn" onclick="eliminarPerfil('${p.id}')" title="Eliminar">🗑️</button>` 
+                        : ''}
+                </td>
+            </tr>
+        `).join('');
+        
+    } catch (error) {
+        console.error('Error cargando perfiles:', error);
+    }
+}
+
+async function guardarPerfil() {
+    mostrarAlerta('Función de guardar perfil en desarrollo', 'error');
+}
+
+function editarPerfil(id) {
+    alert('Función de editar perfil en desarrollo');
+}
+
+function eliminarPerfil(id) {
+    if (confirm('¿Eliminar este usuario?')) {
+        mostrarAlerta('Función de eliminar en desarrollo', 'error');
+    }
+}
+
+// ============================================
+// FUNCIONES UTILITARIAS
+// ============================================
+
 function mostrarFormulario(tipo) {
     document.getElementById(`form-${tipo}`).classList.add('active');
 }
 
 function cerrarFormulario(tipo) {
     document.getElementById(`form-${tipo}`).classList.remove('active');
+    
+    // Si es el formulario de productos, limpiar el ID de edición
     if (tipo === 'producto') {
-        resetFormularioProducto();
-        productoEnEdicion = null;
+        delete document.getElementById('form-producto').dataset.editId;
+        const submitBtn = document.querySelector('#form-producto .submit-btn');
+        if (submitBtn) submitBtn.textContent = '🌸 Guardar Producto';
     }
 }
 
@@ -613,13 +775,3 @@ function mostrarAlerta(mensaje, tipo) {
         alerta.style.display = 'none';
     }, 3000);
 }
-
-// Funciones placeholder para otros módulos
-function editarCompra(id) { alert('Editar compra ' + id); }
-function eliminarCompra(id) { if(confirm('¿Eliminar esta compra?')) alert('Eliminar ' + id); }
-function editarGasto(id) { alert('Editar gasto ' + id); }
-function eliminarGasto(id) { if(confirm('¿Eliminar este gasto?')) alert('Eliminar ' + id); }
-function editarProveedor(id) { alert('Editar proveedor ' + id); }
-function eliminarProveedor(id) { if(confirm('¿Eliminar este proveedor?')) alert('Eliminar ' + id); }
-function editarPerfil(id) { alert('Editar perfil ' + id); }
-function eliminarPerfil(id) { if(confirm('¿Eliminar este usuario?')) alert('Eliminar ' + id); }
