@@ -663,27 +663,88 @@
             </div>
 
             <!-- Formulario de producto -->
-<div id="form-producto" class="form-container">
-    <h2 style="color: #ff6b6b; margin-bottom: 1.5rem;">👗 Agregar Nuevo Producto</h2>
-    <form onsubmit="event.preventDefault(); guardarProducto()">
-        <div class="form-group">
-            <label>Código/Barras:</label>
-            <input type="text" id="producto-codigo" placeholder="Ej: CAM001" required>
-        </div>
-        
-        <!-- NUEVO: Categoría -->
-        <div class="form-group">
-            <label>📁 Categoría:</label>
-            <select id="producto-categoria" required>
-                <option value="">Seleccionar categoría</option>
-                <option value="vestidos">👗 Vestidos</option>
-                <option value="blusas">👚 Blusas</option>
-                <option value="pantalones">👖 Pantalones</option>
-                <option value="deportivo">⚽ Deportivo</option>
-                <option value="caballero">👔 Caballero</option>
-                <option value="accesorios">🎀 Accesorios</option>
-            </select>
-        </div>
+            <div id="form-producto" class="form-container">
+                <h2 style="color: #ff6b6b; margin-bottom: 1.5rem;">👗 Agregar Nuevo Producto</h2>
+                <form onsubmit="event.preventDefault(); guardarProducto()">
+                    <div class="form-group">
+                        <label>Código/Barras:</label>
+                        <input type="text" id="producto-codigo" placeholder="Ej: CAM001" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>📁 Categoría:</label>
+                        <select id="producto-categoria" required>
+                            <option value="">Seleccionar categoría</option>
+                            <option value="vestidos">👗 Vestidos</option>
+                            <option value="blusas">👚 Blusas</option>
+                            <option value="pantalones">👖 Pantalones</option>
+                            <option value="deportivo">⚽ Deportivo</option>
+                            <option value="caballero">👔 Caballero</option>
+                            <option value="accesorios">🎀 Accesorios</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>📊 Cuenta PUC (Inventario):</label>
+                        <input type="text" class="puc-input" id="producto-puc" value="143501" placeholder="Ej: 143501" required>
+                        <small style="color: #ff9a9e;">Código PUC para inventario de mercancías</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Nombre:</label>
+                        <input type="text" id="producto-nombre" placeholder="Ej: Camisa básica" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>🖼️ URL de la imagen:</label>
+                        <input type="url" id="producto-imagen" placeholder="https://ejemplo.com/imagen.jpg">
+                        <small style="color: #ff9a9e;">Puedes subir imágenes a Imgur y pegar el enlace aquí</small>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Talla:</label>
+                            <input type="text" id="producto-talla" placeholder="S, M, L, XL...">
+                        </div>
+                        <div class="form-group">
+                            <label>🎨 Colores disponibles:</label>
+                            <div class="colores-container" id="colores-container">
+                                <div class="color-row">
+                                    <input type="color" id="color-input-0" value="#ff0000" class="color-picker">
+                                    <input type="text" id="color-nombre-0" placeholder="Nombre del color (ej: Rojo)" class="color-nombre">
+                                    <button type="button" onclick="agregarColor()" class="color-btn add-color">➕</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Precio Compra:</label>
+                            <input type="number" id="producto-precio-compra" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Precio Venta:</label>
+                            <input type="number" id="producto-precio-venta" min="0" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Stock Inicial:</label>
+                        <input type="number" id="producto-stock" min="0" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Proveedor:</label>
+                        <select id="producto-proveedor">
+                            <option value="">Seleccionar (opcional)</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="submit-btn">🌸 Guardar Producto</button>
+                    <button type="button" class="cancel-btn" onclick="cerrarFormulario('producto')">Cancelar</button>
+                </form>
+            </div>
         
         <!-- PUC para inventario -->
         <div class="form-group">
