@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modas La 34 - Dashboard</title>
+    <title>🌸 Dashboard - Modas La 34</title>
     <link rel="stylesheet" href="../css/estilo-comun.css">
     <style>
-        /* ===== ESTILOS ROSA BONITOS ===== */
+        /* ===== ESTILOS DEL DASHBOARD ===== */
         * {
             margin: 0;
             padding: 0;
@@ -18,11 +17,12 @@
         body {
             background: #fff9fc;
             color: #4a4a4a;
+            min-height: 100vh;
         }
 
-        /* Header degradado rosa */
+        /* Header */
         .admin-header {
-            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
             color: white;
             padding: 1.5rem 2rem;
             display: flex;
@@ -36,7 +36,6 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
         }
 
         .admin-header h1 span {
@@ -45,7 +44,6 @@
             padding: 0.3rem 0.8rem;
             border-radius: 20px;
             font-weight: normal;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
         .user-info {
@@ -71,7 +69,6 @@
             cursor: pointer;
             font-size: 0.9rem;
             transition: all 0.3s;
-            border: 1px solid rgba(255,255,255,0.3);
         }
 
         .logout-btn:hover {
@@ -79,7 +76,7 @@
             transform: scale(1.05);
         }
 
-        /* Menú de navegación - rosado */
+        /* Menú de navegación */
         .nav-menu {
             background: white;
             padding: 1rem 2rem;
@@ -123,7 +120,7 @@
             margin: 0 auto;
         }
 
-        /* Tarjetas estilo "pastel" */
+        /* Tarjetas */
         .module-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -300,9 +297,15 @@
         }
 
         .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.2rem;
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+            min-width: 200px;
         }
 
         .submit-btn {
@@ -316,7 +319,6 @@
             font-weight: 600;
             width: 100%;
             transition: all 0.3s;
-            border: 1px solid rgba(255,255,255,0.3);
         }
 
         .submit-btn:hover {
@@ -342,6 +344,65 @@
             background: #ffd9e2;
         }
 
+        /* Estilos para selector de colores */
+        .colores-container {
+            width: 100%;
+        }
+
+        .color-row {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            align-items: center;
+            width: 100%;
+        }
+
+        .color-picker {
+            width: 50px;
+            height: 40px;
+            border: 2px solid #ffe4e9;
+            border-radius: 10px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .color-nombre {
+            flex: 1;
+            padding: 0.5rem;
+            border: 2px solid #ffe4e9;
+            border-radius: 10px;
+            min-width: 100px;
+        }
+
+        .color-btn {
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+            flex-shrink: 0;
+        }
+
+        .add-color {
+            background: #ffb6c1;
+            color: white;
+        }
+
+        .add-color:hover {
+            background: #ff9a9e;
+        }
+
+        .remove-color {
+            background: #ffe4e9;
+            color: #ff6b6b;
+        }
+
+        .remove-color:hover {
+            background: #ffd9e2;
+        }
+
         /* Alertas */
         .alert {
             padding: 1.2rem;
@@ -363,7 +424,7 @@
             border: 2px solid #ffb6c1;
         }
 
-        /* Badges de estado */
+        /* Badges */
         .estado-badge {
             padding: 0.3rem 0.8rem;
             border-radius: 50px;
@@ -376,18 +437,13 @@
         .estado-pendiente { background: #fff3cd; color: #856404; }
         .estado-recibida { background: #d1ecf1; color: #0c5460; }
 
-        /* PUC - estilo para códigos */
-        .puc-input {
-            background: #fff0f3;
-            border-left: 5px solid #ff9a9e !important;
-        }
-
         /* Responsive */
         @media (max-width: 768px) {
             .nav-menu { flex-direction: column; }
             .nav-btn { width: 100%; }
             .module-grid { grid-template-columns: 1fr; }
-            .form-row { grid-template-columns: 1fr; }
+            .form-row { flex-direction: column; }
+            .form-row .form-group { min-width: 100%; }
         }
     </style>
 </head>
@@ -395,7 +451,7 @@
     <!-- Header con información del usuario -->
     <header class="admin-header">
         <h1>
-            MODAS LA 34 
+            🌸 MODAS LA 34
             <span>Administración</span>
         </h1>
         <div class="user-info">
@@ -406,27 +462,13 @@
 
     <!-- Menú de navegación principal -->
     <nav class="nav-menu" id="mainNav">
-        <button class="nav-btn active" onclick="cambiarModulo('compras')">
-            🛍️ COMPRAS
-        </button>
-        <button class="nav-btn" onclick="cambiarModulo('gastos')">
-            💸 GASTOS
-        </button>
-        <button class="nav-btn" onclick="cambiarModulo('productos')">
-            👗 PRODUCTOS
-        </button>
-        <button class="nav-btn" onclick="cambiarModulo('perfiles')">
-            👥 PERFILES
-        </button>
-        <button class="nav-btn" onclick="cambiarModulo('proveedores')">
-            📦 PROVEEDORES
-        </button>
-        <button class="nav-btn" onclick="cambiarModulo('ventas')">
-            💰 VENTAS
-        </button>
-        <button class="nav-btn" onclick="cambiarModulo('contabilidad')">
-            📊 CONTABILIDAD
-        </button>
+        <button class="nav-btn active" onclick="cambiarModulo('compras', event)">🛍️ COMPRAS</button>
+        <button class="nav-btn" onclick="cambiarModulo('gastos', event)">💸 GASTOS</button>
+        <button class="nav-btn" onclick="cambiarModulo('productos', event)">👗 PRODUCTOS</button>
+        <button class="nav-btn" onclick="cambiarModulo('perfiles', event)">👥 PERFILES</button>
+        <button class="nav-btn" onclick="cambiarModulo('proveedores', event)">📦 PROVEEDORES</button>
+        <button class="nav-btn" onclick="cambiarModulo('ventas', event)">💰 VENTAS</button>
+        <button class="nav-btn" onclick="cambiarModulo('contabilidad', event)">📊 CONTABILIDAD</button>
     </nav>
 
     <!-- Área de contenido principal -->
@@ -434,7 +476,7 @@
         <!-- Mensajes de alerta -->
         <div id="alertMessage" class="alert"></div>
 
-        <!-- ===== MÓDULO COMPRAS (con PUC) ===== -->
+        <!-- ===== MÓDULO COMPRAS ===== -->
         <div id="modulo-compras" class="module-section">
             <div class="module-grid">
                 <div class="module-card" onclick="mostrarFormulario('compra')">
@@ -457,7 +499,7 @@
                 </div>
             </div>
 
-            <!-- Formulario de compra con PUC -->
+            <!-- Formulario de compra -->
             <div id="form-compra" class="form-container">
                 <h2 style="color: #ff6b6b; margin-bottom: 1.5rem;">🛍️ Registrar Nueva Compra</h2>
                 <form onsubmit="event.preventDefault(); guardarCompra()">
@@ -468,21 +510,16 @@
                         </select>
                     </div>
                     
-                    <!-- PUC - Cuenta contable -->
-                    <div class="form-group">
-                        <label>📊 Cuenta PUC (Compra de mercancías):</label>
-                        <input type="text" class="puc-input" id="compra-puc" value="413501" placeholder="Ej: 413501" required>
-                        <small style="color: #ff9a9e;">Código PUC para compra de mercancías</small>
-                    </div>
-                    
                     <div class="form-group">
                         <label>Fecha:</label>
                         <input type="date" id="compra-fecha" required>
                     </div>
+                    
                     <div class="form-group">
                         <label>Producto:</label>
                         <input type="text" id="compra-producto" placeholder="Nombre del producto" required>
                     </div>
+                    
                     <div class="form-row">
                         <div class="form-group">
                             <label>Cantidad:</label>
@@ -493,6 +530,7 @@
                             <input type="number" id="compra-precio" min="0" step="100" required>
                         </div>
                     </div>
+                    
                     <div class="form-group">
                         <label>Estado:</label>
                         <select id="compra-estado">
@@ -501,6 +539,7 @@
                             <option value="Pagada">Pagada</option>
                         </select>
                     </div>
+                    
                     <button type="submit" class="submit-btn">🌸 Guardar Compra</button>
                     <button type="button" class="cancel-btn" onclick="cerrarFormulario('compra')">Cancelar</button>
                 </form>
@@ -518,7 +557,6 @@
                             <th>Fecha</th>
                             <th>Proveedor</th>
                             <th>Producto</th>
-                            <th>PUC</th>
                             <th>Cantidad</th>
                             <th>Total</th>
                             <th>Estado</th>
@@ -527,14 +565,14 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td colspan="8" style="text-align: center;">Cargando compras...</td>
+                            <td colspan="7" style="text-align: center;">Cargando compras...</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         </div>
 
-        <!-- ===== MÓDULO GASTOS (con PUC) ===== -->
+        <!-- ===== MÓDULO GASTOS ===== -->
         <div id="modulo-gastos" class="module-section" style="display: none;">
             <div class="module-grid">
                 <div class="module-card" onclick="mostrarFormulario('gasto')">
@@ -557,7 +595,7 @@
                 </div>
             </div>
 
-            <!-- Formulario de gasto con PUC -->
+            <!-- Formulario de gasto -->
             <div id="form-gasto" class="form-container">
                 <h2 style="color: #ff6b6b; margin-bottom: 1.5rem;">💸 Registrar Nuevo Gasto</h2>
                 <form onsubmit="event.preventDefault(); guardarGasto()">
@@ -566,23 +604,11 @@
                         <input type="date" id="gasto-fecha" required>
                     </div>
                     
-                    <!-- PUC para gastos -->
-                    <div class="form-group">
-                        <label>📊 Cuenta PUC:</label>
-                        <select id="gasto-puc" class="puc-input" required>
-                            <option value="">Seleccionar cuenta PUC</option>
-                            <option value="511005">Alquileres (511005)</option>
-                            <option value="511010">Servicios públicos (511010)</option>
-                            <option value="510506">Sueldos (510506)</option>
-                            <option value="513505">Publicidad (513505)</option>
-                            <option value="519595">Otros gastos (519595)</option>
-                        </select>
-                    </div>
-                    
                     <div class="form-group">
                         <label>Concepto:</label>
                         <input type="text" id="gasto-concepto" placeholder="Ej: Alquiler local" required>
                     </div>
+                    
                     <div class="form-group">
                         <label>Categoría:</label>
                         <select id="gasto-categoria" required>
@@ -595,10 +621,12 @@
                             <option value="Otros">Otros</option>
                         </select>
                     </div>
+                    
                     <div class="form-group">
                         <label>Monto:</label>
                         <input type="number" id="gasto-monto" min="0" step="100" required>
                     </div>
+                    
                     <div class="form-group">
                         <label>Método de pago:</label>
                         <select id="gasto-metodo">
@@ -607,6 +635,7 @@
                             <option value="Tarjeta">Tarjeta</option>
                         </select>
                     </div>
+                    
                     <button type="submit" class="submit-btn">🌸 Guardar Gasto</button>
                     <button type="button" class="cancel-btn" onclick="cerrarFormulario('gasto')">Cancelar</button>
                 </form>
@@ -622,7 +651,6 @@
                     <thead>
                         <tr>
                             <th>Fecha</th>
-                            <th>PUC</th>
                             <th>Concepto</th>
                             <th>Categoría</th>
                             <th>Monto</th>
@@ -632,14 +660,14 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td colspan="7" style="text-align: center;">Cargando gastos...</td>
+                            <td colspan="6" style="text-align: center;">Cargando gastos...</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         </div>
 
-        <!-- ===== MÓDULO PRODUCTOS (con PUC) ===== -->
+        <!-- ===== MÓDULO PRODUCTOS (COMPLETO Y CORREGIDO) ===== -->
         <div id="modulo-productos" class="module-section" style="display: none;">
             <div class="module-grid">
                 <div class="module-card" onclick="mostrarFormulario('producto')">
@@ -662,114 +690,136 @@
                 </div>
             </div>
 
-            <!-- Formulario de producto -->
-<div id="form-producto" class="form-container">
-    <h2 style="color: #ff6b6b; margin-bottom: 1.5rem;">👗 Agregar Nuevo Producto</h2>
-    <form onsubmit="event.preventDefault(); guardarProducto()">
-        <div class="form-group">
-            <label>Código/Barras:</label>
-            <input type="text" id="producto-codigo" placeholder="Ej: CAM001" required>
-        </div>
-        
-        <!-- NUEVO: Categoría -->
-        <div class="form-group">
-            <label>📁 Categoría:</label>
-            <select id="producto-categoria" required>
-                <option value="">Seleccionar categoría</option>
-                <option value="vestidos">👗 Vestidos</option>
-                <option value="blusas">👚 Blusas</option>
-                <option value="pantalones">👖 Pantalones</option>
-                <option value="deportivo">⚽ Deportivo</option>
-                <option value="caballero">👔 Caballero</option>
-                <option value="accesorios">🎀 Accesorios</option>
-            </select>
-        </div>
-        
-        <!-- PUC para inventario -->
-        <div class="form-group">
-            <label>📊 Cuenta PUC (Inventario):</label>
-            <input type="text" class="puc-input" id="producto-puc" value="143501" placeholder="Ej: 143501" required>
-            <small style="color: #ff9a9e;">Código PUC para inventario de mercancías</small>
-        </div>
-        
-        <div class="form-group">
-            <label>Nombre:</label>
-            <input type="text" id="producto-nombre" placeholder="Ej: Camisa básica" required>
-        </div>
-        
-        <!-- NUEVO: URL de imagen -->
-        <div class="form-group">
-            <label>🖼️ URL de la imagen:</label>
-            <input type="url" id="producto-imagen" placeholder="https://ejemplo.com/imagen.jpg">
-            <small style="color: #ff9a9e;">Puedes subir imágenes a Imgur y pegar el enlace aquí</small>
-        </div>
-        <!-- Campo de color (NUEVO - con hexadecimal) -->
-        <div class="form-group">
-            <label>🎨 Colores disponibles (hexadecimal):</label>
-            <div id="colores-container">
-                <!-- Fila de color por defecto -->
-                <div class="color-row" id="color-row-0">
-                    <input type="color" id="color-hex-0" value="#FF0000" class="color-picker">
-                    <input type="text" id="color-nombre-0" placeholder="Ej: Rojo" class="color-nombre" value="Rojo">
-                    <button type="button" onclick="agregarColor()" class="color-btn add-color">➕</button>
-                </div>
+            <!-- FORMULARIO DE PRODUCTO - VERSIÓN ÚNICA Y CORRECTA -->
+            <div id="form-producto" class="form-container">
+                <h2 style="color: #ff6b6b; margin-bottom: 1.5rem;">👗 Agregar Nuevo Producto</h2>
+                <form onsubmit="event.preventDefault(); guardarProducto()">
+                    <div class="form-group">
+                        <label>Código/Barras:</label>
+                        <input type="text" id="producto-codigo" placeholder="Ej: CAM001" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>📁 Categoría:</label>
+                        <select id="producto-categoria" required>
+                            <option value="">Seleccionar categoría</option>
+                            <option value="vestidos">👗 Vestidos</option>
+                            <option value="blusas">👚 Blusas</option>
+                            <option value="pantalones">👖 Pantalones</option>
+                            <option value="deportivo">⚽ Deportivo</option>
+                            <option value="caballero">👔 Caballero</option>
+                            <option value="accesorios">🎀 Accesorios</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>📊 Cuenta PUC (Inventario):</label>
+                        <input type="text" class="puc-input" id="producto-puc" value="143501" placeholder="Ej: 143501" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Nombre:</label>
+                        <input type="text" id="producto-nombre" placeholder="Ej: Camisa básica" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>🖼️ URL de la imagen:</label>
+                        <input type="url" id="producto-imagen" placeholder="https://ejemplo.com/imagen.jpg">
+                    </div>
+                    
+                    <!-- Talla y Colores en el mismo form-row -->
+                    <div class="form-row">
+                        <div class="form-group" style="flex: 1;">
+                            <label>Talla:</label>
+                            <input type="text" id="producto-talla" placeholder="S, M, L, XL...">
+                        </div>
+                        <div class="form-group" style="flex: 2;">
+                            <label>🎨 Colores:</label>
+                            <div class="colores-container" id="colores-container">
+                                <div class="color-row">
+                                    <input type="color" id="color-input-0" value="#ff0000" class="color-picker">
+                                    <input type="text" id="color-nombre-0" placeholder="Nombre del color" class="color-nombre">
+                                    <button type="button" onclick="agregarColor()" class="color-btn add-color">➕</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Precio Compra:</label>
+                            <input type="number" id="producto-precio-compra" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Precio Venta:</label>
+                            <input type="number" id="producto-precio-venta" min="0" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Stock Inicial:</label>
+                        <input type="number" id="producto-stock" min="0" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Proveedor:</label>
+                        <select id="producto-proveedor">
+                            <option value="">Seleccionar (opcional)</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="submit-btn">🌸 Guardar Producto</button>
+                    <button type="button" class="cancel-btn" onclick="cerrarFormulario('producto')">Cancelar</button>
+                </form>
             </div>
-            <small style="color: #ff9a9e;">Selecciona el color y escribe su nombre</small>
-        </div>
-        <div class="form-row">
-            <div class="form-group">
-                <label>Precio Compra:</label>
-                <input type="number" id="producto-precio-compra" min="0" required>
-            </div>
-            <div class="form-group">
-                <label>Precio Venta:</label>
-                <input type="number" id="producto-precio-venta" min="0" required>
-            </div>
-        </div>
-        <div class="form-group">
-            <label>Stock Inicial:</label>
-            <input type="number" id="producto-stock" min="0" required>
-        </div>
-        <div class="form-group">
-            <label>Proveedor:</label>
-            <select id="producto-proveedor">
-                <option value="">Seleccionar (opcional)</option>
-            </select>
-        </div>
-        <button type="submit" class="submit-btn">🌸 Guardar Producto</button>
-        <button type="button" class="cancel-btn" onclick="cerrarFormulario('producto')">Cancelar</button>
-    </form>
-</div>
 
             <!-- Tabla de productos -->
-<div class="data-table">
-    <h2>
-        Inventario de Productos
-        <button class="add-btn" onclick="mostrarFormulario('producto')">➕ Nuevo Producto</button>
-    </h2>
-    <table id="tabla-productos">
-        <thead>
-            <tr>
-                <th>Imagen</th>
-                <th>Código</th>
-                <th>Producto</th>
-                <th>Categoría</th>
-                <th>Talla</th>
-                <th>Color</th>
-                <th>P. Venta</th>
-                <th>Stock</th>
-                <th>PUC</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td colspan="10" style="text-align: center;">Cargando productos...</td>
-            </tr>
-        </tbody>
-    </table>
-</div>
-            
+            <div class="data-table">
+                <h2>
+                    Inventario de Productos
+                    <button class="add-btn" onclick="mostrarFormulario('producto')">➕ Nuevo Producto</button>
+                </h2>
+                <table id="tabla-productos">
+                    <thead>
+                        <tr>
+                            <th>Imagen</th>
+                            <th>Código</th>
+                            <th>Producto</th>
+                            <th>Categoría</th>
+                            <th>Talla</th>
+                            <th>Colores</th>
+                            <th>P. Venta</th>
+                            <th>Stock</th>
+                            <th>PUC</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="10" style="text-align: center;">Cargando productos...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ===== MÓDULO PERFILES ===== -->
+        <div id="modulo-perfiles" class="module-section" style="display: none;">
+            <div class="module-grid">
+                <div class="module-card" onclick="mostrarFormulario('perfil')">
+                    <div class="card-icon">👥</div>
+                    <div class="card-title">Nuevo Usuario</div>
+                    <div class="card-description">Crear cuenta de empleado</div>
+                    <div class="card-stats">+ Nuevo</div>
+                </div>
+                <div class="module-card">
+                    <div class="card-icon">👤</div>
+                    <div class="card-title">Empleados Activos</div>
+                    <div class="card-description">Personal del local</div>
+                    <div class="card-stats" id="stats-empleados">0</div>
+                </div>
+            </div>
+
             <!-- Formulario de perfil -->
             <div id="form-perfil" class="form-container">
                 <h2 style="color: #ff6b6b; margin-bottom: 1.5rem;">👥 Crear Nuevo Usuario</h2>
@@ -896,9 +946,9 @@
             </div>
         </div>
 
-        <!-- ===== MÓDULO VENTAS ===== -->
+                <!-- ===== MÓDULO VENTAS ===== -->
         <div id="modulo-ventas" class="module-section" style="display: none;">
-         <div class="module-grid">
+            <div class="module-grid">
                 <div class="module-card" onclick="window.open('venta-rapida.html', '_blank')">
                     <div class="card-icon">💰</div>
                     <div class="card-title">Nueva Venta</div>
@@ -918,7 +968,7 @@
                     <div class="card-stats" id="stats-ventas-mes">$0</div>
                 </div>
             </div>
-        
+
             <!-- Tabla de ventas -->
             <div class="data-table">
                 <h2>
@@ -944,41 +994,33 @@
                 </table>
             </div>
         </div>
-        <!-- ===== MÓDULO CONTABILIDAD (SOLO DISEÑO - SIN FUNCIONALIDAD) ===== -->
+
+        <!-- ===== MÓDULO CONTABILIDAD ===== -->
         <div id="modulo-contabilidad" class="module-section" style="display: none;">
             <div class="module-grid">
-                <div class="module-card" style="background: #ffe4e9;">
+                <div class="module-card" onclick="window.open('contabilidad.html', '_blank')">
+                    <div class="card-icon">📊</div>
+                    <div class="card-title">Ver Contabilidad</div>
+                    <div class="card-description">Reportes financieros</div>
+                    <div class="card-stats">+ Abrir</div>
+                </div>
+                <div class="module-card">
                     <div class="card-icon">💰</div>
                     <div class="card-title">Ingresos</div>
-                    <div class="card-description">Placeholder</div>
-                    <div class="card-stats">$0</div>
+                    <div class="card-description">Total del mes</div>
+                    <div class="card-stats" id="stats-ingresos">$0</div>
                 </div>
-                <div class="module-card" style="background: #ffe4e9;">
+                <div class="module-card">
                     <div class="card-icon">💸</div>
                     <div class="card-title">Egresos</div>
-                    <div class="card-description">Placeholder</div>
-                    <div class="card-stats">$0</div>
+                    <div class="card-description">Total del mes</div>
+                    <div class="card-stats" id="stats-egresos">$0</div>
                 </div>
-                <div class="module-card" style="background: #ffe4e9;">
-                    <div class="card-icon">📊</div>
-                    <div class="card-title">Balance</div>
-                    <div class="card-description">Placeholder</div>
-                    <div class="card-stats">$0</div>
-                </div>
-            </div>
-
-            <!-- Mensaje de módulo en desarrollo -->
-            <div class="data-table" style="text-align: center; padding: 3rem;">
-                <h2 style="color: #ff9a9e;">📊 Módulo de Contabilidad en Construcción</h2>
-                <p style="color: #a5a5a5; font-size: 1.1rem; margin: 1rem 0;">
-                    Próximamente tendrás reportes financieros completos.
-                </p>
-                <div style="font-size: 3rem; margin: 1rem 0;">📈</div>
-                <p style="color: #ff6b6b;">Incluirá: Balance general, PUC detallado, flujo de caja.</p>
             </div>
         </div>
     </main>
 
+    <!-- Scripts -->
     <script src="../js/supabase-config.js"></script>
     <script src="dashboard.js"></script>
 </body>
