@@ -836,7 +836,7 @@ async function eliminarProveedor(id) {
 }
 
 // ============================================
-// FUNCIONES DE COMPRAS (BÁSICAS)
+// FUNCIONES DE COMPRAS (COMPLETAS)
 // ============================================
 
 async function cargarCompras() {
@@ -903,11 +903,156 @@ async function cargarCompras() {
 }
 
 async function guardarCompra() {
-    mostrarAlerta('Función de guardar compra en desarrollo', 'error');
+    try {
+        const token = JSON.parse(localStorage.getItem('admin_token'));
+        
+        const proveedorId = document.getElementById('compra-proveedor').value;
+        if (!proveedorId) {
+            mostrarAlerta('Debe seleccionar un proveedor', 'error');
+            return;
+        }
+        
+        const cantidad = parseInt(document.getElementById('compra-cantidad').value);
+        const precio = parseFloat(document.getElementById('compra-precio').value);
+        
+        const compra = {
+            proveedor_id: proveedorId,
+            fecha: document.getElementById('compra-fecha').value,
+            producto: document.getElementById('compra-producto').value,
+            cantidad: cantidad,
+            precio_unitario: precio,
+            total: cantidad * precio,
+            estado: document.getElementById('compra-estado').value,
+            puc: '620501' // PUC para compras
+        };
+        
+        if (!compra.fecha || !compra.producto) {
+            mostrarAlerta('Fecha y producto son obligatorios', 'error');
+            return;
+        }
+        
+        // Verificar si estamos editando o creando
+        const editId = document.getElementById('form-compra').dataset.editId;
+        let url = `${SUPABASE_URL}/rest/v1/compras`;
+        let method = 'POST';
+        
+        if (editId) {
+            url += `?id=eq.${editId}`;
+            method = 'PATCH';
+        }
+        
+        const response = await fetch(url, {
+            method: method,
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${token.access_token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(compra)
+        });
+        
+        if (response.ok) {
+            mostrarAlerta(editId ? '🌸 Compra actualizada correctamente' : '🌸 Compra guardada correctamente', 'success');
+            cerrarFormulario('compra');
+            await cargarCompras();
+            
+            // Limpiar formulario
+            document.getElementById('compra-fecha').value = '';
+            document.getElementById('compra-producto').value = '';
+            document.getElementById('compra-cantidad').value = '';
+            document.getElementById('compra-precio').value = '';
+            
+            // Limpiar ID de edición
+            delete document.getElementById('form-compra').dataset.editId;
+            
+            // Restaurar texto del botón
+            const submitBtn = document.querySelector('#form-compra .submit-btn');
+            if (submitBtn) {
+                submitBtn.textContent = '🌸 Guardar Compra';
+            }
+        } else {
+            const error = await response.json();
+            mostrarAlerta('Error: ' + (error.message || 'No se pudo guardar'), 'error');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        mostrarAlerta('Error de conexión', 'error');
+    }
+}
+
+async function editarCompra(id) {
+    try {
+        console.log('Editando compra:', id);
+        
+        // Cargar datos de la compra
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/compras?id=eq.${id}`, {
+            headers: { 'apikey': SUPABASE_KEY }
+        });
+        
+        if (!response.ok) throw new Error('Error al cargar compra');
+        
+        const compras = await response.json();
+        if (compras.length === 0) throw new Error('Compra no encontrada');
+        
+        const compra = compras[0];
+        
+        // Mostrar formulario
+        mostrarFormulario('compra');
+        
+        // Cargar proveedores y seleccionar el actual
+        await cargarProveedoresSelect('compra');
+        
+        // Llenar campos
+        document.getElementById('compra-proveedor').value = compra.proveedor_id || '';
+        document.getElementById('compra-fecha').value = compra.fecha.split('T')[0];
+        document.getElementById('compra-producto').value = compra.producto || '';
+        document.getElementById('compra-cantidad').value = compra.cantidad || '';
+        document.getElementById('compra-precio').value = compra.precio_unitario || '';
+        document.getElementById('compra-estado').value = compra.estado || 'Pendiente';
+        
+        // Guardar ID para actualizar
+        document.getElementById('form-compra').dataset.editId = id;
+        
+        // Cambiar texto del botón
+        const submitBtn = document.querySelector('#form-compra .submit-btn');
+        if (submitBtn) {
+            submitBtn.textContent = '🌸 Actualizar Compra';
+        }
+        
+    } catch (error) {
+        console.error('Error:', error);
+        mostrarAlerta('Error al cargar la compra', 'error');
+    }
+}
+
+async function eliminarCompra(id) {
+    if (!confirm('¿Estás segura de eliminar esta compra?')) return;
+    
+    try {
+        const token = JSON.parse(localStorage.getItem('admin_token'));
+        
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/compras?id=eq.${id}`, {
+            method: 'DELETE',
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${token.access_token}`
+            }
+        });
+        
+        if (response.ok) {
+            mostrarAlerta('✅ Compra eliminada correctamente', 'success');
+            await cargarCompras();
+        } else {
+            mostrarAlerta('Error al eliminar la compra', 'error');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        mostrarAlerta('Error de conexión', 'error');
+    }
 }
 
 // ============================================
-// FUNCIONES DE GASTOS (BÁSICAS)
+// FUNCIONES DE GASTOS (COMPLETAS)
 // ============================================
 
 async function cargarGastos() {
@@ -966,7 +1111,151 @@ async function cargarGastos() {
 }
 
 async function guardarGasto() {
-    mostrarAlerta('Función de guardar gasto en desarrollo', 'error');
+    try {
+        const token = JSON.parse(localStorage.getItem('admin_token'));
+        
+        const gasto = {
+            fecha: document.getElementById('gasto-fecha').value,
+            concepto: document.getElementById('gasto-concepto').value,
+            categoria: document.getElementById('gasto-categoria').value,
+            monto: parseFloat(document.getElementById('gasto-monto').value),
+            metodo_pago: document.getElementById('gasto-metodo').value,
+            puc: obtenerPUCGasto(document.getElementById('gasto-categoria').value)
+        };
+        
+        if (!gasto.fecha || !gasto.concepto || !gasto.categoria || !gasto.monto) {
+            mostrarAlerta('Por favor completa todos los campos', 'error');
+            return;
+        }
+        
+        // Verificar si estamos editando o creando
+        const editId = document.getElementById('form-gasto').dataset.editId;
+        let url = `${SUPABASE_URL}/rest/v1/gastos`;
+        let method = 'POST';
+        
+        if (editId) {
+            url += `?id=eq.${editId}`;
+            method = 'PATCH';
+        }
+        
+        const response = await fetch(url, {
+            method: method,
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${token.access_token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(gasto)
+        });
+        
+        if (response.ok) {
+            mostrarAlerta(editId ? '🌸 Gasto actualizado correctamente' : '🌸 Gasto guardado correctamente', 'success');
+            cerrarFormulario('gasto');
+            await cargarGastos();
+            
+            // Limpiar formulario
+            document.getElementById('gasto-fecha').value = '';
+            document.getElementById('gasto-concepto').value = '';
+            document.getElementById('gasto-categoria').value = '';
+            document.getElementById('gasto-monto').value = '';
+            
+            // Limpiar ID de edición
+            delete document.getElementById('form-gasto').dataset.editId;
+            
+            // Restaurar texto del botón
+            const submitBtn = document.querySelector('#form-gasto .submit-btn');
+            if (submitBtn) {
+                submitBtn.textContent = '🌸 Guardar Gasto';
+            }
+        } else {
+            const error = await response.json();
+            mostrarAlerta('Error: ' + (error.message || 'No se pudo guardar'), 'error');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        mostrarAlerta('Error de conexión', 'error');
+    }
+}
+
+function obtenerPUCGasto(categoria) {
+    const pucMap = {
+        'Alquiler': '511005',
+        'Servicios': '511010',
+        'Sueldos': '510506',
+        'Marketing': '513505',
+        'Mantenimiento': '513505',
+        'Otros': '519595'
+    };
+    return pucMap[categoria] || '519595';
+}
+
+async function editarGasto(id) {
+    try {
+        console.log('Editando gasto:', id);
+        
+        // Cargar datos del gasto
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/gastos?id=eq.${id}`, {
+            headers: { 'apikey': SUPABASE_KEY }
+        });
+        
+        if (!response.ok) throw new Error('Error al cargar gasto');
+        
+        const gastos = await response.json();
+        if (gastos.length === 0) throw new Error('Gasto no encontrado');
+        
+        const gasto = gastos[0];
+        
+        // Mostrar formulario
+        mostrarFormulario('gasto');
+        
+        // Llenar campos
+        document.getElementById('gasto-fecha').value = gasto.fecha.split('T')[0];
+        document.getElementById('gasto-concepto').value = gasto.concepto || '';
+        document.getElementById('gasto-categoria').value = gasto.categoria || '';
+        document.getElementById('gasto-monto').value = gasto.monto || '';
+        if (gasto.metodo_pago) {
+            document.getElementById('gasto-metodo').value = gasto.metodo_pago;
+        }
+        
+        // Guardar ID para actualizar
+        document.getElementById('form-gasto').dataset.editId = id;
+        
+        // Cambiar texto del botón
+        const submitBtn = document.querySelector('#form-gasto .submit-btn');
+        if (submitBtn) {
+            submitBtn.textContent = '🌸 Actualizar Gasto';
+        }
+        
+    } catch (error) {
+        console.error('Error:', error);
+        mostrarAlerta('Error al cargar el gasto', 'error');
+    }
+}
+
+async function eliminarGasto(id) {
+    if (!confirm('¿Estás segura de eliminar este gasto?')) return;
+    
+    try {
+        const token = JSON.parse(localStorage.getItem('admin_token'));
+        
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/gastos?id=eq.${id}`, {
+            method: 'DELETE',
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${token.access_token}`
+            }
+        });
+        
+        if (response.ok) {
+            mostrarAlerta('✅ Gasto eliminado correctamente', 'success');
+            await cargarGastos();
+        } else {
+            mostrarAlerta('Error al eliminar el gasto', 'error');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        mostrarAlerta('Error de conexión', 'error');
+    }
 }
 
 // ============================================
