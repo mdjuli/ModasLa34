@@ -344,63 +344,51 @@
             background: #ffd9e2;
         }
 
-        /* Estilos para selector de colores */
-        .colores-container {
-            width: 100%;
+        /* Estilos para variantes */
+        .variante-card {
+            background: #fff9fc;
+            border: 2px solid #ffe4e9;
+            border-radius: 15px;
+            padding: 1rem;
+            margin-bottom: 1rem;
         }
 
-        .color-row {
+        .variante-header {
             display: flex;
-            gap: 0.5rem;
-            margin-bottom: 0.5rem;
+            justify-content: space-between;
             align-items: center;
-            width: 100%;
+            margin-bottom: 1rem;
         }
 
-        .color-picker {
-            width: 50px;
-            height: 40px;
-            border: 2px solid #ffe4e9;
-            border-radius: 10px;
-            cursor: pointer;
-            flex-shrink: 0;
+        .variante-header h4 {
+            color: #ff6b6b;
+            margin: 0;
         }
 
-        .color-nombre {
-            flex: 1;
-            padding: 0.5rem;
-            border: 2px solid #ffe4e9;
-            border-radius: 10px;
-            min-width: 100px;
-        }
-
-        .color-btn {
-            width: 40px;
-            height: 40px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 1.2rem;
-            transition: all 0.3s;
-            flex-shrink: 0;
-        }
-
-        .add-color {
-            background: #ffb6c1;
-            color: white;
-        }
-
-        .add-color:hover {
-            background: #ff9a9e;
-        }
-
-        .remove-color {
+        .remove-variante {
             background: #ffe4e9;
             color: #ff6b6b;
+            border: none;
+            padding: 0.3rem 1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
         }
 
-        .remove-color:hover {
+        .remove-variante:hover {
             background: #ffd9e2;
+        }
+
+        .color-muestra {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            vertical-align: middle;
+            margin-left: 5px;
         }
 
         /* Alertas */
@@ -667,13 +655,13 @@
             </div>
         </div>
 
-        <!-- ===== MÓDULO PRODUCTOS (COMPLETO Y CORREGIDO) ===== -->
+        <!-- ===== MÓDULO PRODUCTOS CON VARIANTES ===== -->
         <div id="modulo-productos" class="module-section" style="display: none;">
             <div class="module-grid">
                 <div class="module-card" onclick="mostrarFormulario('producto')">
                     <div class="card-icon">👗</div>
                     <div class="card-title">Nuevo Producto</div>
-                    <div class="card-description">Agregar al inventario</div>
+                    <div class="card-description">Agregar producto con tallas y colores</div>
                     <div class="card-stats">+ Nuevo</div>
                 </div>
                 <div class="module-card">
@@ -690,13 +678,15 @@
                 </div>
             </div>
 
-            <!-- FORMULARIO DE PRODUCTO - VERSIÓN ÚNICA Y CORRECTA -->
+            <!-- FORMULARIO DE PRODUCTO CON VARIANTES -->
             <div id="form-producto" class="form-container">
-                <h2 style="color: #ff6b6b; margin-bottom: 1.5rem;">👗 Agregar Nuevo Producto</h2>
-                <form onsubmit="event.preventDefault(); guardarProducto()">
+                <h2 style="color: #ff6b6b; margin-bottom: 1.5rem;">👗 Producto con Variantes</h2>
+                <form onsubmit="event.preventDefault(); guardarProductoBase()">
+                    <!-- Información general del producto -->
                     <div class="form-group">
-                        <label>Código/Barras:</label>
-                        <input type="text" id="producto-codigo" placeholder="Ej: CAM001" required>
+                        <label>Código base:</label>
+                        <input type="text" id="producto-codigo" placeholder="Ej: PANT001" required>
+                        <small style="color: #ff9a9e;">Este código será la base para todas las variantes</small>
                     </div>
                     
                     <div class="form-group">
@@ -713,67 +703,32 @@
                     </div>
                     
                     <div class="form-group">
-                        <label>📊 Cuenta PUC (Inventario):</label>
-                        <input type="text" class="puc-input" id="producto-puc" value="143501" placeholder="Ej: 143501" required>
+                        <label>Nombre del producto:</label>
+                        <input type="text" id="producto-nombre" placeholder="Ej: Pantalón Jean" required>
                     </div>
                     
                     <div class="form-group">
-                        <label>Nombre:</label>
-                        <input type="text" id="producto-nombre" placeholder="Ej: Camisa básica" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>🖼️ URL de la imagen:</label>
+                        <label>🖼️ URL de la imagen principal:</label>
                         <input type="url" id="producto-imagen" placeholder="https://ejemplo.com/imagen.jpg">
                     </div>
                     
-                    <!-- Talla y Colores en el mismo form-row -->
-                    <div class="form-row">
-                        <div class="form-group" style="flex: 1;">
-                            <label>Talla:</label>
-                            <input type="text" id="producto-talla" placeholder="S, M, L, XL...">
-                        </div>
-                        <div class="form-group" style="flex: 2;">
-                            <label>🎨 Colores:</label>
-                            <div class="colores-container" id="colores-container">
-                                <div class="color-row">
-                                    <input type="color" id="color-input-0" value="#ff0000" class="color-picker">
-                                    <input type="text" id="color-nombre-0" placeholder="Nombre del color" class="color-nombre">
-                                    <button type="button" onclick="agregarColor()" class="color-btn add-color">➕</button>
-                                </div>
-                            </div>
-                        </div>
+                    <!-- SECCIÓN DE VARIANTES -->
+                    <h3 style="color: #ff6b6b; margin: 1.5rem 0 1rem 0;">📦 Variantes (Tallas y Colores)</h3>
+                    
+                    <div id="variantes-container">
+                        <!-- Las variantes se agregarán aquí dinámicamente -->
                     </div>
                     
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Precio Compra:</label>
-                            <input type="number" id="producto-precio-compra" min="0" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Precio Venta:</label>
-                            <input type="number" id="producto-precio-venta" min="0" required>
-                        </div>
-                    </div>
+                    <button type="button" onclick="agregarVariante()" class="add-btn" style="margin-bottom: 1.5rem;">
+                        ➕ Agregar otra variante
+                    </button>
                     
-                    <div class="form-group">
-                        <label>Stock Inicial:</label>
-                        <input type="number" id="producto-stock" min="0" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Proveedor:</label>
-                        <select id="producto-proveedor">
-                            <option value="">Seleccionar (opcional)</option>
-                        </select>
-                    </div>
-                    
-                    <button type="submit" class="submit-btn">🌸 Guardar Producto</button>
+                    <button type="submit" class="submit-btn">🌸 Guardar Producto con Variantes</button>
                     <button type="button" class="cancel-btn" onclick="cerrarFormulario('producto')">Cancelar</button>
                 </form>
             </div>
 
-            <!-- Tabla de productos -->
+            <!-- Tabla de productos (vista resumida) -->
             <div class="data-table">
                 <h2>
                     Inventario de Productos
@@ -786,17 +741,15 @@
                             <th>Código</th>
                             <th>Producto</th>
                             <th>Categoría</th>
-                            <th>Talla</th>
-                            <th>Colores</th>
-                            <th>P. Venta</th>
-                            <th>Stock</th>
-                            <th>PUC</th>
+                            <th>Variantes</th>
+                            <th>Stock Total</th>
+                            <th>Precio</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td colspan="10" style="text-align: center;">Cargando productos...</td>
+                            <td colspan="8" style="text-align: center;">Cargando productos...</td>
                         </tr>
                     </tbody>
                 </table>
@@ -946,7 +899,7 @@
             </div>
         </div>
 
-                <!-- ===== MÓDULO VENTAS ===== -->
+        <!-- ===== MÓDULO VENTAS ===== -->
         <div id="modulo-ventas" class="module-section" style="display: none;">
             <div class="module-grid">
                 <div class="module-card" onclick="window.open('venta-rapida.html', '_blank')">
@@ -976,7 +929,7 @@
                     <button class="add-btn" onclick="window.open('venta-rapida.html', '_blank')">➕ Nueva Venta</button>
                 </h2>
                 <table id="tabla-ventas">
-                    <thead>
+                                       <thead>
                         <tr>
                             <th>Fecha</th>
                             <th>Productos</th>
@@ -1023,5 +976,21 @@
     <!-- Scripts -->
     <script src="../js/supabase-config.js"></script>
     <script src="dashboard.js"></script>
+    <script>
+        // Inicializar variantes cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar que las funciones existen antes de llamarlas
+            if (typeof agregarVariante === 'function') {
+                // Limpiar container por si acaso
+                const container = document.getElementById('variantes-container');
+                if (container) {
+                    container.innerHTML = '';
+                    setTimeout(() => {
+                        agregarVariante();
+                    }, 500);
+                }
+            }
+        });
+    </script>
 </body>
 </html>
