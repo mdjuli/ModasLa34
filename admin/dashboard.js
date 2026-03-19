@@ -229,20 +229,26 @@ function getVariantesFromForm() {
     const variantes = [];
     
     for (let i = 0; i < varianteCount; i++) {
-        const element = document.getElementById(`variante-${i}-talla`);
-        if (element && element.value.trim() !== '') {
-            let hexValue = document.getElementById(`variante-${i}-color-hex`)?.value || '#cccccc';
+        const tallaInput = document.getElementById(`variante-${i}-talla`);
+        if (tallaInput && tallaInput.value.trim() !== '') {
+            const hexInput = document.getElementById(`variante-${i}-color-hex`);
+            const nombreInput = document.getElementById(`variante-${i}-color-nombre`);
+            const stockInput = document.getElementById(`variante-${i}-stock`);
+            const precioInput = document.getElementById(`variante-${i}-precio`);
+            const precioCompraInput = document.getElementById(`variante-${i}-precio-compra`);
+            
+            let hexValue = hexInput?.value || '#cccccc';
             if (!hexValue.startsWith('#')) {
                 hexValue = '#' + hexValue;
             }
             
             variantes.push({
-                talla: element.value.trim(),
-                color_nombre: document.getElementById(`variante-${i}-color-nombre`)?.value || null,
+                talla: tallaInput.value.trim(),
+                color_nombre: nombreInput?.value?.trim() || null,
                 color_codigo: hexValue,
-                stock: parseInt(document.getElementById(`variante-${i}-stock`)?.value) || 0,
-                precio_venta: parseFloat(document.getElementById(`variante-${i}-precio`)?.value) || 0,
-                precio_compra: parseFloat(document.getElementById(`variante-${i}-precio-compra`)?.value) || 0
+                stock: parseInt(stockInput?.value) || 0,
+                precio_venta: parseFloat(precioInput?.value) || 0,
+                precio_compra: parseFloat(precioCompraInput?.value) || 0
             });
         }
     }
@@ -273,62 +279,131 @@ async function guardarProductoBase() {
         
         console.log('Guardando producto:', { codigo, nombre, categoria, variantes });
         
-        // 3. Guardar producto base
-        const productoBase = {
-            codigo: codigo,
-            nombre: nombre,
-            categoria: categoria,
-            imagen_url: document.getElementById('producto-imagen')?.value || null
-        };
+        // 3. Verificar si estamos editando o creando
+        const formProducto = document.getElementById('form-producto');
+        const editId = formProducto?.dataset.editId;
         
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/productos_base`, {
-            method: 'POST',
-            headers: {
-                'apikey': SUPABASE_KEY,
-                'Authorization': `Bearer ${token.access_token}`,
-                'Content-Type': 'application/json',
-                'Prefer': 'return=representation'
-            },
-            body: JSON.stringify(productoBase)
-        });
+        let productoId;
         
-        if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.message || 'Error al guardar producto base');
-        }
-        
-        const productoGuardado = await response.json();
-        const productoId = productoGuardado[0].id;
-        
-        // 4. Guardar variantes
-        for (const variante of variantes) {
-            const varianteData = {
-                producto_id: productoId,
-                talla: variante.talla,
-                color_nombre: variante.color_nombre,
-                color_codigo: variante.color_codigo,
-                stock: variante.stock,
-                precio_venta: variante.precio_venta,
-                precio_compra: variante.precio_compra,
-                sku: `${codigo}-${variante.talla}-${variante.color_nombre || 'GENERAL'}`
+        if (editId) {
+            // ACTUALIZAR producto existente
+            productoId = parseInt(editId);
+            
+            const productoBase = {
+                codigo: codigo,
+                nombre: nombre,
+                categoria: categoria,
+                imagen_url: document.getElementById('producto-imagen')?.value || null
             };
             
-            const varResponse = await fetch(`${SUPABASE_URL}/rest/v1/variantes_producto`, {
-                method: 'POST',
+            const updateResponse = await fetch(`${SUPABASE_URL}/rest/v1/productos_base?id=eq.${productoId}`, {
+                method: 'PATCH',
                 headers: {
                     'apikey': SUPABASE_KEY,
                     'Authorization': `Bearer ${token.access_token}`,
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(varianteData)
+                body: JSON.stringify(productoBase)
             });
             
-            if (!varResponse.ok) {
-                console.error('Error guardando variante:', await varResponse.json());
+            if (!updateResponse.ok) {
+                throw new Error('Error al actualizar producto base');
+            }
+            
+            // Eliminar variantes antiguas
+            await fetch(`${SUPABASE_URL}/rest/v1/variantes_producto?producto_id=eq.${productoId}`, {
+                method: 'DELETE',
+                headers: {
+                    'apikey': SUPABASE_KEY,
+                    'Authorization': `Bearer ${token.access_token}`
+                }
+            });
+            
+        } else {
+            // CREAR nuevo producto
+            const productoBase = {
+                codigo: codigo,
+                nombre: nombre,
+                categoria: categoria,
+                imagen_url: document.getElementById('producto-imagen')?.value || null
+            };
+            
+            const response = await fetch(`${SUPABASE_URL}/rest/v1/productos_base`, {
+                method: 'POST',
+                headers: {
+                    'apikey': SUPABASE_KEY,
+                    'Authorization': `Bearer ${token.access_token}`,
+                    'Content-Type': 'application/json',
+                    'Prefer': 'return=representation'
+                },
+                body: JSON.stringify(productoBase)
+            });
+            
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.message || 'Error al guardar producto base');
+            }
+            
+            const productoGuardado = await response.json();
+            productoId = productoGuardado[0].id;
+        }
+        
+        // 4. Guardar variantes una por una con manejo de errores
+        let variantesGuardadas = 0;
+        let variantesConError = 0;
+        
+        for (const variante of variantes) {
+            try {
+                // Generar SKU único
+                const timestamp = Date.now();
+                const random = Math.floor(Math.random() * 1000);
+                const skuBase = `${codigo}-${variante.talla}-${variante.color_nombre || 'COLOR'}`.replace(/[^a-zA-Z0-9-]/g, '');
+                
+                const varianteData = {
+                    producto_id: productoId,
+                    talla: variante.talla,
+                    color_nombre: variante.color_nombre || null,
+                    color_codigo: variante.color_codigo || '#cccccc',
+                    stock: variante.stock || 0,
+                    precio_venta: variante.precio_venta || 0,
+                    precio_compra: variante.precio_compra || 0,
+                    sku: `${skuBase}-${timestamp}-${random}`
+                };
+                
+                const varResponse = await fetch(`${SUPABASE_URL}/rest/v1/variantes_producto`, {
+                    method: 'POST',
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${token.access_token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(varianteData)
+                });
+                
+                if (varResponse.ok) {
+                    variantesGuardadas++;
+                } else {
+                    variantesConError++;
+                    const errorText = await varResponse.text();
+                    console.error('Error guardando variante:', variante, errorText);
+                }
+                
+                // Pequeña pausa para no saturar la API
+                await new Promise(resolve => setTimeout(resolve, 100));
+                
+            } catch (varError) {
+                variantesConError++;
+                console.error('Excepción guardando variante:', varError);
             }
         }
         
-        mostrarAlerta('🌸 Producto guardado correctamente', 'success');
+        // 5. Mostrar mensaje final
+        if (variantesConError === 0) {
+            mostrarAlerta(`🌸 Producto guardado con ${variantesGuardadas} variantes`, 'success');
+        } else {
+            mostrarAlerta(`⚠️ Producto guardado con ${variantesGuardadas} variantes (${variantesConError} errores)`, 'error');
+        }
+        
         cerrarFormulario('producto');
         await cargarProductos();
         
@@ -345,8 +420,17 @@ async function guardarProductoBase() {
         varianteCount = 0;
         agregarVariante();
         
+        // Limpiar ID de edición
+        if (formProducto) {
+            delete formProducto.dataset.editId;
+            const submitBtn = document.querySelector('#form-producto .submit-btn');
+            if (submitBtn) {
+                submitBtn.textContent = '🌸 Guardar Producto con Variantes';
+            }
+        }
+        
     } catch (error) {
-        console.error('Error:', error);
+        console.error('Error general:', error);
         mostrarAlerta('Error: ' + error.message, 'error');
     }
 }
