@@ -1408,11 +1408,30 @@ function cerrarFormulario(tipo) {
     if (form) {
         form.classList.remove('active');
         
+        // Limpiar ID de edición según el tipo
         if (tipo === 'producto') {
             delete form.dataset.editId;
             const submitBtn = document.querySelector('#form-producto .submit-btn');
             if (submitBtn) {
                 submitBtn.textContent = '🌸 Guardar Producto con Variantes';
+            }
+        } else if (tipo === 'compra') {
+            delete form.dataset.editId;
+            const submitBtn = document.querySelector('#form-compra .submit-btn');
+            if (submitBtn) {
+                submitBtn.textContent = '🌸 Guardar Compra';
+            }
+        } else if (tipo === 'gasto') {
+            delete form.dataset.editId;
+            const submitBtn = document.querySelector('#form-gasto .submit-btn');
+            if (submitBtn) {
+                submitBtn.textContent = '🌸 Guardar Gasto';
+            }
+        } else if (tipo === 'proveedor') {
+            delete form.dataset.editId;
+            const submitBtn = document.querySelector('#form-proveedor .submit-btn');
+            if (submitBtn) {
+                submitBtn.textContent = '🌸 Guardar Proveedor';
             }
         }
     }
