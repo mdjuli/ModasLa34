@@ -474,17 +474,203 @@ footer {
     margin: 2rem 0;
 }
 
-/* Responsive */
+/* ============================================
+   📱 VERSIÓN MÓVIL - CATÁLOGO
+   ============================================ */
+
 @media (max-width: 768px) {
+    /* Header y navegación */
+    header {
+        padding: 1rem;
+    }
+
+    header h1 {
+        font-size: 1.5rem;
+        text-align: center;
+    }
+
+    nav {
+        flex-direction: column;
+        gap: 0.5rem;
+        width: 100%;
+    }
+
+    nav a, .dropbtn {
+        width: 100%;
+        text-align: center;
+        padding: 0.8rem;
+        font-size: 1rem;
+    }
+
+    /* Menú desplegable en móvil */
+    .dropdown {
+        width: 100%;
+    }
+
+    .dropdown-content {
+        position: static;
+        width: 100%;
+        margin-top: 0.5rem;
+        box-shadow: none;
+        border: 2px solid #ffe4e9;
+    }
+
+    .dropdown-content a {
+        padding: 1rem;
+        text-align: center;
+        border-bottom: 1px solid #ffe4e9;
+    }
+
+    .dropdown-content a:last-child {
+        border-bottom: none;
+    }
+
+    /* Títulos */
+    main h2 {
+        font-size: 1.3rem;
+        text-align: center;
+    }
+
+    /* Buscador */
+    .buscador-container {
+        margin: 1rem 0;
+    }
+
+    .buscador-input {
+        padding: 0.8rem 1rem;
+        font-size: 16px; /* Evita zoom en iOS */
+    }
+
+    /* Grid de productos */
     .grid-productos {
-        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 1rem;
+        margin: 1rem 0;
+    }
+
+    /* Tarjetas de producto */
+    .producto-card {
+        margin: 0;
+    }
+
+    .producto-imagen, .producto-sin-imagen {
+        height: 150px;
+    }
+
+    .producto-emoji {
+        font-size: 3rem;
+    }
+
+    .producto-info {
+        padding: 0.8rem;
+    }
+
+    .producto-titulo {
+        font-size: 1rem;
+        margin-bottom: 0.3rem;
+        /* Para títulos largos */
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        height: 2.4rem;
+    }
+
+    .producto-detalle {
+        font-size: 0.8rem;
+    }
+
+    .producto-precio {
+        font-size: 1.2rem;
+        margin: 0.3rem 0;
+    }
+
+    .producto-btn {
+        padding: 0.6rem;
+        font-size: 0.9rem;
+    }
+
+    /* Colores en móvil */
+    .producto-colores {
+        gap: 3px;
+    }
+
+    .producto-colores span {
+        width: 20px;
+        height: 20px;
+    }
+
+    /* Modal en móvil */
+    .modal-contenido {
+        width: 95%;
+        margin: 2% auto;
+        padding: 1rem;
+    }
+
+    .modal-grid {
+        grid-template-columns: 1fr;
         gap: 1rem;
     }
-    
+
+    .modal-info h2 {
+        font-size: 1.3rem;
+    }
+
+    .modal-precio {
+        font-size: 1.8rem;
+        padding: 0.8rem;
+    }
+
+    .modal-botones {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .modal-btn {
+        padding: 0.8rem;
+    }
+
+    /* Footer */
+    footer {
+        padding: 1rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* Para teléfonos muy pequeños */
+@media (max-width: 380px) {
+    .grid-productos {
+        grid-template-columns: 1fr; /* Una sola columna */
+    }
+
     .producto-imagen, .producto-sin-imagen {
         height: 180px;
     }
+
+    .producto-titulo {
+        font-size: 1.1rem;
+        height: auto;
+        -webkit-line-clamp: 3;
+    }
 }
+
+/* Ajustes para pantallas táctiles */
+@media (hover: none) and (pointer: coarse) {
+    /* Aumentar área táctil de botones */
+    .producto-btn, .nav-btn, .categoria-btn {
+        min-height: 44px; /* Mínimo recomendado para touch */
+    }
+
+    /* Eliminar efectos hover en móvil */
+    .producto-card:hover {
+        transform: none;
+    }
+
+    .nav-btn:hover {
+        background: none;
+        color: #ff6b6b;
+    }
+            }
 
 /* ===== MODAL DE PRODUCTO ===== */
 .modal {
