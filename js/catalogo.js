@@ -384,7 +384,7 @@ function consultarProducto() {
     if (!productoActual) return;
     
     // Mostrar información de contacto
-    alert(`📱 Para consultar sobre "${productoActual.nombre}", contáctanos:\n\nWhatsApp: 300 123 4567\nEmail: ventas@modasla34.com`);
+    alert(`📱 Para consultar sobre "${productoActual.nombre}", contáctanos:\n\nWhatsApp: 320 804 9635\nIg: Proximo`);
 }
 
 // ===== FUNCIONES DEL BUSCADOR =====
