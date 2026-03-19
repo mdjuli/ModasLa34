@@ -390,13 +390,13 @@ async function cargarProductos() {
         tbody.innerHTML = productos.map(p => {
             const variantes = p.variantes || [];
             const totalStock = variantes.reduce((sum, v) => sum + (v.stock || 0), 0);
-            const precioMin = Math.min(...variantes.map(v => v.precio_venta || 0));
-            const precioMax = Math.max(...variantes.map(v => v.precio_venta || 0));
+            const precios = variantes.map(v => v.precio_venta || 0);
+            const precioMin = precios.length ? Math.min(...precios) : 0;
+            const precioMax = precios.length ? Math.max(...precios) : 0;
             const precioTexto = precioMin === precioMax ? 
                 `$${precioMin}` : 
                 `$${precioMin} - $${precioMax}`;
             
-            // Contar variantes con stock bajo
             const stockBajo = variantes.filter(v => v.stock < 5).length;
             
             return `
@@ -573,6 +573,41 @@ async function eliminarProducto(id) {
         console.error('Error:', error);
         mostrarAlerta('Error de conexión', 'error');
     }
+}
+
+function verVariantes(id) {
+    // Buscar el producto
+    fetch(`${SUPABASE_URL}/rest/v1/vista_productos_completa?id=eq.${id}`, {
+        headers: { 'apikey': SUPABASE_KEY }
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.length === 0) return;
+        
+        const producto = data[0];
+        const variantes = producto.variantes || [];
+        
+        let mensaje = `📋 VARIANTES DE ${producto.nombre}\n`;
+        mensaje += `Código: ${producto.codigo}\n`;
+        mensaje += `Categoría: ${producto.categoria}\n`;
+        mensaje += `Stock total: ${producto.stock_total}\n`;
+        mensaje += `Precio: $${producto.precio_min} - $${producto.precio_max}\n`;
+        mensaje += `\n📦 DETALLE POR VARIANTE:\n`;
+        
+        variantes.forEach((v, i) => {
+            mensaje += `\n${i+1}. Talla: ${v.talla}\n`;
+            mensaje += `   Color: ${v.color_nombre || 'No especificado'} (${v.color_codigo || 'N/A'})\n`;
+            mensaje += `   Stock: ${v.stock}\n`;
+            mensaje += `   Precio: $${v.precio_venta}\n`;
+            mensaje += `   SKU: ${v.sku}\n`;
+        });
+        
+        alert(mensaje);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        mostrarAlerta('Error al cargar variantes', 'error');
+    });
 }
 
 function verVariantes(id) {
