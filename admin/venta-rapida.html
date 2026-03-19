@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🌸 Venta Rápida - Mi Local de Ropa</title>
+    <title>🌸 Venta Rápida - Modas La 34</title>
     <link rel="stylesheet" href="../css/estilo-comun.css">
     <style>
         * {
@@ -57,7 +57,7 @@
         /* Contenedor principal */
         .venta-container {
             display: grid;
-            grid-template-columns: 1fr 400px;
+            grid-template-columns: 1fr 450px;
             gap: 2rem;
             padding: 2rem;
             max-width: 1400px;
@@ -126,7 +126,7 @@
 
         .grid-productos-venta {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
             gap: 1rem;
             max-height: 600px;
             overflow-y: auto;
@@ -198,29 +198,26 @@
             font-size: 1.5rem;
         }
 
-        /* Selector de IVA */
-        .iva-selector {
+        .selector-iva {
             background: #fff0f3;
             border-radius: 15px;
             padding: 1rem;
             margin-bottom: 1.5rem;
         }
 
-        .iva-selector h3 {
+        .selector-iva h3 {
             color: #ff6b6b;
-            font-size: 1rem;
+            font-size: 0.9rem;
             margin-bottom: 0.8rem;
         }
 
         .iva-opciones {
             display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
+            gap: 0.5rem;
         }
 
         .iva-opcion {
             flex: 1;
-            text-align: center;
         }
 
         .iva-opcion input[type="radio"] {
@@ -229,12 +226,13 @@
 
         .iva-opcion label {
             display: block;
+            text-align: center;
             padding: 0.5rem;
             background: white;
             border: 2px solid #ffe4e9;
             border-radius: 10px;
             cursor: pointer;
-            font-weight: 500;
+            font-size: 0.9rem;
             transition: all 0.3s;
         }
 
@@ -244,26 +242,47 @@
             border-color: #ff9a9e;
         }
 
-        .iva-opcion.pequena label {
-            font-size: 0.8rem;
-        }
-
         .carrito-items {
-            max-height: 350px;
+            max-height: 400px;
             overflow-y: auto;
             margin-bottom: 1.5rem;
         }
 
         .carrito-item {
             display: grid;
-            grid-template-columns: auto 1fr auto auto;
+            grid-template-columns: auto 1fr auto;
             gap: 0.8rem;
             align-items: center;
-            padding: 0.8rem;
+            padding: 1rem;
             background: #fff9fc;
             border-radius: 15px;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.8rem;
             border: 1px solid #ffe4e9;
+        }
+
+        .item-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .item-nombre {
+            font-weight: 600;
+            color: #ff6b6b;
+        }
+
+        .item-detalle {
+            font-size: 0.8rem;
+            color: #a5a5a5;
+        }
+
+        .item-precio-input {
+            width: 100px;
+            padding: 0.3rem;
+            border: 2px solid #ffe4e9;
+            border-radius: 8px;
+            text-align: right;
+            font-size: 0.9rem;
         }
 
         .item-cantidad {
@@ -288,16 +307,6 @@
             text-align: center;
         }
 
-        .item-nombre {
-            font-weight: 600;
-            color: #4a4a4a;
-        }
-
-        .item-precio {
-            color: #ff9a9e;
-            font-weight: 600;
-        }
-
         .item-eliminar {
             background: none;
             border: none;
@@ -320,6 +329,7 @@
             justify-content: space-between;
             margin-bottom: 0.8rem;
             color: #4a4a4a;
+            font-size: 0.95rem;
         }
 
         .resumen-total {
@@ -329,6 +339,9 @@
             font-weight: bold;
             color: #ff6b6b;
             margin: 1rem 0;
+            padding: 1rem 0;
+            border-top: 2px solid #ffe4e9;
+            border-bottom: 2px solid #ffe4e9;
         }
 
         .metodo-pago {
@@ -356,7 +369,6 @@
             cursor: pointer;
             width: 100%;
             transition: all 0.3s;
-            border: 1px solid rgba(255,255,255,0.3);
         }
 
         .finalizar-btn:hover:not(:disabled) {
@@ -404,16 +416,10 @@
             background: white;
             border-radius: 25px;
             padding: 2rem;
-            max-width: 400px;
+            max-width: 500px;
             width: 90%;
             text-align: center;
             box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-        }
-
-        .modal-content h3 {
-            color: #ff6b6b;
-            font-size: 1.8rem;
-            margin-bottom: 1rem;
         }
 
         .modal-icon {
@@ -462,7 +468,7 @@
     <header class="venta-header">
         <h1>
             🛍️ VENTA RÁPIDA
-            <span>🌸 Mi Local de Ropa</span>
+            <span>🌸 Modas La 34</span>
         </h1>
         <a href="dashboard.html" class="volver-btn">← Volver al Dashboard</a>
     </header>
@@ -478,10 +484,12 @@
 
             <div class="categorias" id="categorias">
                 <button class="categoria-btn active" onclick="filtrarPorCategoria('todos')">Todos</button>
-                <button class="categoria-btn" onclick="filtrarPorCategoria('Camisa')">Camisas</button>
-                <button class="categoria-btn" onclick="filtrarPorCategoria('Pantalón')">Pantalones</button>
-                <button class="categoria-btn" onclick="filtrarPorCategoria('Vestido')">Vestidos</button>
-                <button class="categoria-btn" onclick="filtrarPorCategoria('Accesorio')">Accesorios</button>
+                <button class="categoria-btn" onclick="filtrarPorCategoria('vestidos')">👗 Vestidos</button>
+                <button class="categoria-btn" onclick="filtrarPorCategoria('blusas')">👚 Blusas</button>
+                <button class="categoria-btn" onclick="filtrarPorCategoria('pantalones')">👖 Pantalones</button>
+                <button class="categoria-btn" onclick="filtrarPorCategoria('deportivo')">⚽ Deportivo</button>
+                <button class="categoria-btn" onclick="filtrarPorCategoria('caballero')">👔 Caballero</button>
+                <button class="categoria-btn" onclick="filtrarPorCategoria('accesorios')">🎀 Accesorios</button>
             </div>
 
             <div class="grid-productos-venta" id="grid-productos">
@@ -494,17 +502,17 @@
         <!-- Panel derecho: Carrito -->
         <div class="carrito-panel">
             <div class="carrito-header">
-                <h2>🛒 Carrito</h2>
+                <h2>🛒 Carrito de Venta</h2>
                 <span id="carrito-cantidad" style="background: #ffb6c1; color: white; padding: 0.3rem 0.8rem; border-radius: 50px;">0</span>
             </div>
 
             <!-- Selector de IVA -->
-            <div class="iva-selector">
-                <h3>📊 Tipo de IVA:</h3>
+            <div class="selector-iva">
+                <h3>📊 IVA incluido en los precios:</h3>
                 <div class="iva-opciones">
                     <div class="iva-opcion">
-                        <input type="radio" name="tipo-iva" id="iva-exento" value="0" checked>
-                        <label for="iva-exento">Exento (0%)</label>
+                        <input type="radio" name="tipo-iva" id="iva-0" value="0" checked>
+                        <label for="iva-0">Exento (0%)</label>
                     </div>
                     <div class="iva-opcion">
                         <input type="radio" name="tipo-iva" id="iva-5" value="5">
@@ -515,8 +523,8 @@
                         <label for="iva-19">19%</label>
                     </div>
                 </div>
-                <p style="font-size: 0.8rem; color: #a5a5a5; margin-top: 0.5rem;">
-                    ℹ️ El IVA se calcula sobre el precio de venta
+                <p style="font-size: 0.7rem; color: #a5a5a5; margin-top: 0.5rem;">
+                    ℹ️ El IVA se extrae del precio de venta
                 </p>
             </div>
 
@@ -528,15 +536,15 @@
 
             <div class="carrito-resumen">
                 <div class="resumen-linea">
-                    <span>Subtotal:</span>
+                    <span>Subtotal (Base gravable):</span>
                     <span id="subtotal">$0</span>
                 </div>
                 <div class="resumen-linea" id="iva-linea" style="display: none;">
-                    <span>IVA (<span id="iva-porcentaje">0</span>%):</span>
+                    <span>IVA <span id="iva-porcentaje">0</span>%:</span>
                     <span id="iva-valor">$0</span>
                 </div>
                 <div class="resumen-total">
-                    <span>TOTAL:</span>
+                    <span>TOTAL A PAGAR:</span>
                     <span id="total">$0</span>
                 </div>
 
@@ -547,6 +555,7 @@
                         <option value="Tarjeta Crédito">💳 Tarjeta Crédito</option>
                         <option value="Transferencia">📱 Transferencia</option>
                         <option value="Nequi">📱 Nequi</option>
+                        <option value="DaviPlata">📱 DaviPlata</option>
                     </select>
                 </div>
 
@@ -581,10 +590,11 @@
     <script src="../js/supabase-config.js"></script>
     <script>
         // Variables globales
-        let productos = [];
+        let todosLosProductos = [];
         let carrito = [];
         let filtroActual = 'todos';
         let busquedaActual = '';
+        let variantesCache = new Map();
 
         // Cargar productos al iniciar
         document.addEventListener('DOMContentLoaded', async () => {
@@ -606,13 +616,17 @@
             }
         }
 
-        // Cargar productos desde Supabase
+        // Cargar productos desde Supabase (usando la vista completa)
         async function cargarProductos() {
             try {
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/productos?select=*&stock_actual.gt.0&order=nombre`, {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/vista_productos_completa?order=nombre`, {
                     headers: { 'apikey': SUPABASE_KEY }
                 });
-                productos = await response.json();
+                
+                if (!response.ok) throw new Error('Error al cargar productos');
+                
+                todosLosProductos = await response.json();
+                console.log('Productos cargados:', todosLosProductos);
                 mostrarProductos();
             } catch (error) {
                 console.error('Error cargando productos:', error);
@@ -623,12 +637,12 @@
         function mostrarProductos() {
             const grid = document.getElementById('grid-productos');
             
-            let productosFiltrados = productos;
+            let productosFiltrados = todosLosProductos;
             
             // Filtrar por categoría
             if (filtroActual !== 'todos') {
                 productosFiltrados = productosFiltrados.filter(p => 
-                    p.nombre.includes(filtroActual) || p.categoria?.includes(filtroActual)
+                    p.categoria && p.categoria.toLowerCase() === filtroActual.toLowerCase()
                 );
             }
             
@@ -645,16 +659,32 @@
                 return;
             }
 
-            grid.innerHTML = productosFiltrados.map(p => `
-                <div class="producto-card-venta" onclick="agregarAlCarrito(${p.id})">
-                    <div style="font-size: 2rem;">👕</div>
-                    <h4>${p.nombre}</h4>
-                    <div class="producto-precio">$${(p.precio_venta || 0).toLocaleString()}</div>
-                    <div class="producto-stock ${p.stock_actual < 5 ? 'bajo' : ''}">
-                        Stock: ${p.stock_actual}
+            function getEmojiCategoria(cat) {
+                const emojis = {
+                    'vestidos': '👗',
+                    'blusas': '👚',
+                    'pantalones': '👖',
+                    'deportivo': '⚽',
+                    'caballero': '👔',
+                    'accesorios': '🎀'
+                };
+                return emojis[cat] || '📦';
+            }
+
+            grid.innerHTML = productosFiltrados.map(p => {
+                const stockTotal = p.stock_total || 0;
+                return `
+                    <div class="producto-card-venta" onclick="seleccionarProducto(${p.id})">
+                        <div style="font-size: 2rem;">${getEmojiCategoria(p.categoria)}</div>
+                        <h4>${p.nombre}</h4>
+                        <div class="producto-precio">$${(p.precio_min || 0).toLocaleString()}</div>
+                        <div class="producto-stock ${stockTotal < 5 ? 'bajo' : ''}">
+                            Stock: ${stockTotal}
+                        </div>
+                        <small>${p.codigo}</small>
                     </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
         // Filtrar por categoría
@@ -675,50 +705,65 @@
             mostrarProductos();
         });
 
-        // Obtener porcentaje de IVA seleccionado
-        function getPorcentajeIVA() {
-            const radios = document.getElementsByName('tipo-iva');
-            for (const radio of radios) {
-                if (radio.checked) {
-                    return parseInt(radio.value);
-                }
-            }
-            return 0;
-        }
-
-        // Calcular precio con IVA incluido
-        function calcularPrecioConIVA(precioBase, porcentajeIVA) {
-            if (porcentajeIVA === 0) return precioBase;
-            // Si el IVA está incluido, el precio final ya es el precio base
-            return precioBase;
-        }
-
-        // Calcular desglose de IVA (para mostrar)
-        function calcularDesgloseIVA(subtotal, porcentajeIVA) {
-            if (porcentajeIVA === 0) {
-                return { iva: 0, total: subtotal };
-            }
-            // Si el IVA está incluido, lo extraemos del subtotal
-            const iva = Math.round(subtotal * porcentajeIVA / (100 + porcentajeIVA));
-            const base = subtotal - iva;
-            return { iva, total: subtotal, base };
-        }
-
-        // Agregar al carrito
-        function agregarAlCarrito(productoId) {
-            const producto = productos.find(p => p.id === productoId);
-            
+        // Seleccionar producto y mostrar variantes
+        async function seleccionarProducto(productoId) {
+            const producto = todosLosProductos.find(p => p.id === productoId);
             if (!producto) return;
             
-            if (producto.stock_actual <= 0) {
-                alert('❌ Producto sin stock');
+            // Crear selector de variantes
+            const variantes = producto.variantes || [];
+            if (variantes.length === 0) {
+                alert('Este producto no tiene variantes disponibles');
                 return;
             }
             
-            const itemExistente = carrito.find(i => i.id === productoId);
+            // Crear modal de selección de variante
+            let varianteHTML = `
+                <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 10000;">
+                    <div style="background: white; border-radius: 25px; padding: 2rem; max-width: 500px; width: 90%;">
+                        <h3 style="color: #ff6b6b; margin-bottom: 1rem;">Seleccionar variante: ${producto.nombre}</h3>
+            `;
+            
+            variantes.forEach(v => {
+                if (v.stock > 0) {
+                    varianteHTML += `
+                        <div onclick="agregarAlCarrito(${producto.id}, '${v.id}', '${v.talla}', '${v.color_nombre || 'Color'}', '${v.color_codigo || '#cccccc'}', ${v.precio_venta}, ${v.stock})" 
+                             style="border: 2px solid #ffe4e9; border-radius: 15px; padding: 1rem; margin-bottom: 1rem; cursor: pointer; display: flex; align-items: center; gap: 1rem;">
+                            <div style="width: 40px; height: 40px; background: ${v.color_codigo || '#cccccc'}; border-radius: 50%; border: 3px solid white; box-shadow: 0 3px 10px rgba(0,0,0,0.2);"></div>
+                            <div style="flex:1;">
+                                <p><strong>Talla:</strong> ${v.talla}</p>
+                                <p><strong>Color:</strong> ${v.color_nombre || 'No especificado'}</p>
+                            </div>
+                            <div>
+                                <p><strong>$${v.precio_venta.toLocaleString()}</strong></p>
+                                <p><small>Stock: ${v.stock}</small></p>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+            
+            varianteHTML += `
+                        <button onclick="this.parentElement.parentElement.remove()" 
+                                style="background: #ffe4e9; color: #ff6b6b; border: none; padding: 0.8rem; border-radius: 50px; width: 100%; margin-top: 1rem; cursor: pointer;">
+                            Cancelar
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', varianteHTML);
+        }
+
+        // Agregar al carrito
+        function agregarAlCarrito(productoId, varianteId, talla, colorNombre, colorCodigo, precioBase, stockMaximo) {
+            // Cerrar el modal de selección
+            document.body.lastElementChild.remove();
+            
+            const itemExistente = carrito.find(i => i.varianteId === varianteId);
             
             if (itemExistente) {
-                if (itemExistente.cantidad < producto.stock_actual) {
+                if (itemExistente.cantidad < stockMaximo) {
                     itemExistente.cantidad++;
                 } else {
                     alert('❌ Stock insuficiente');
@@ -726,11 +771,16 @@
                 }
             } else {
                 carrito.push({
-                    id: producto.id,
-                    nombre: producto.nombre,
-                    precio: producto.precio_venta,
+                    productoId: productoId,
+                    varianteId: varianteId,
+                    nombre: document.querySelector(`[onclick*="${productoId}"] h4`).textContent,
+                    talla: talla,
+                    colorNombre: colorNombre,
+                    colorCodigo: colorCodigo,
+                    precioBase: precioBase,
+                    precioVenta: precioBase, // Precio editable
                     cantidad: 1,
-                    stock: producto.stock_actual
+                    stockMaximo: stockMaximo
                 });
             }
             
@@ -748,57 +798,79 @@
             const totalSpan = document.getElementById('total');
             const finalizarBtn = document.getElementById('finalizar-btn');
             
-            const porcentajeIVA = getPorcentajeIVA();
+            const porcentajeIVA = parseInt(document.querySelector('input[name="tipo-iva"]:checked').value);
             
             if (carrito.length === 0) {
                 carritoDiv.innerHTML = '<div style="text-align: center; color: #a5a5a5; padding: 2rem;">El carrito está vacío</div>';
                 finalizarBtn.disabled = true;
                 ivaLinea.style.display = 'none';
             } else {
-                carritoDiv.innerHTML = carrito.map(item => `
-                    <div class="carrito-item">
-                        <div class="item-cantidad">
-                            <button onclick="cambiarCantidad(${item.id}, -1)">-</button>
-                            <span>${item.cantidad}</span>
-                            <button onclick="cambiarCantidad(${item.id}, 1)">+</button>
+                carritoDiv.innerHTML = carrito.map((item, index) => {
+                    const itemSubtotal = item.precioVenta * item.cantidad;
+                    
+                    return `
+                        <div class="carrito-item">
+                            <div class="item-cantidad">
+                                <button onclick="cambiarCantidad(${index}, -1)">-</button>
+                                <span>${item.cantidad}</span>
+                                <button onclick="cambiarCantidad(${index}, 1)">+</button>
+                            </div>
+                            <div class="item-info">
+                                <span class="item-nombre">${item.nombre}</span>
+                                <span class="item-detalle">
+                                    Talla: ${item.talla} | Color: 
+                                    <span style="display: inline-block; width: 15px; height: 15px; background: ${item.colorCodigo}; border-radius: 50%;"></span>
+                                </span>
+                                <input type="number" class="item-precio-input" value="${item.precioVenta}" 
+                                       onchange="cambiarPrecio(${index}, this.value)" min="0" step="100">
+                            </div>
+                            <button class="item-eliminar" onclick="eliminarDelCarrito(${index})">🗑️</button>
                         </div>
-                        <span class="item-nombre">${item.nombre}</span>
-                        <span class="item-precio">$${(item.precio * item.cantidad).toLocaleString()}</span>
-                        <button class="item-eliminar" onclick="eliminarDelCarrito(${item.id})">🗑️</button>
-                    </div>
-                `).join('');
+                    `;
+                }).join('');
                 finalizarBtn.disabled = false;
             }
             
             const cantidadTotal = carrito.reduce((sum, i) => sum + i.cantidad, 0);
             cantidadSpan.textContent = cantidadTotal;
             
-            const subtotal = carrito.reduce((sum, i) => sum + (i.precio * i.cantidad), 0);
+            // Calcular subtotal (base gravable)
+            const subtotal = carrito.reduce((sum, i) => sum + (i.precioVenta * i.cantidad), 0);
             
             if (porcentajeIVA > 0) {
-                const desglose = calcularDesgloseIVA(subtotal, porcentajeIVA);
+                // Calcular base y IVA (precio YA incluye IVA)
+                const base = subtotal / (1 + (porcentajeIVA / 100));
+                const iva = subtotal - base;
+                
                 ivaPorcentaje.textContent = porcentajeIVA;
-                ivaValor.textContent = `$${desglose.iva.toLocaleString()}`;
+                ivaValor.textContent = `$${iva.toLocaleString()}`;
                 ivaLinea.style.display = 'flex';
-                totalSpan.textContent = `$${desglose.total.toLocaleString()}`;
+                subtotalSpan.textContent = `$${base.toLocaleString()}`;
+                totalSpan.textContent = `$${subtotal.toLocaleString()}`;
             } else {
                 ivaLinea.style.display = 'none';
+                subtotalSpan.textContent = `$${subtotal.toLocaleString()}`;
                 totalSpan.textContent = `$${subtotal.toLocaleString()}`;
             }
-            
-            subtotalSpan.textContent = `$${subtotal.toLocaleString()}`;
         }
 
-        // Cambiar cantidad en el carrito
-        function cambiarCantidad(productoId, delta) {
-            const item = carrito.find(i => i.id === productoId);
-            if (!item) return;
-            
+        // Cambiar precio del producto
+        function cambiarPrecio(index, nuevoPrecio) {
+            const precio = parseFloat(nuevoPrecio);
+            if (!isNaN(precio) && precio >= 0) {
+                carrito[index].precioVenta = precio;
+                actualizarCarrito();
+            }
+        }
+
+        // Cambiar cantidad
+        function cambiarCantidad(index, delta) {
+            const item = carrito[index];
             const nuevaCantidad = item.cantidad + delta;
             
             if (nuevaCantidad <= 0) {
-                eliminarDelCarrito(productoId);
-            } else if (nuevaCantidad <= item.stock) {
+                eliminarDelCarrito(index);
+            } else if (nuevaCantidad <= item.stockMaximo) {
                 item.cantidad = nuevaCantidad;
                 actualizarCarrito();
             } else {
@@ -807,8 +879,8 @@
         }
 
         // Eliminar del carrito
-        function eliminarDelCarrito(productoId) {
-            carrito = carrito.filter(i => i.id !== productoId);
+        function eliminarDelCarrito(index) {
+            carrito.splice(index, 1);
             actualizarCarrito();
         }
 
@@ -828,29 +900,27 @@
             }
             
             const metodoPago = document.getElementById('metodo-pago').value;
-            const porcentajeIVA = getPorcentajeIVA();
-            const subtotal = carrito.reduce((sum, i) => sum + (i.precio * i.cantidad), 0);
+            const porcentajeIVA = parseInt(document.querySelector('input[name="tipo-iva"]:checked').value);
             
-            // Calcular total según IVA
-            let total = subtotal;
-            let ivaCalculado = 0;
-            let baseGravable = subtotal;
+            // Calcular totales
+            const subtotal = carrito.reduce((sum, i) => sum + (i.precioVenta * i.cantidad), 0);
+            
+            let base = subtotal;
+            let iva = 0;
             
             if (porcentajeIVA > 0) {
-                const desglose = calcularDesgloseIVA(subtotal, porcentajeIVA);
-                ivaCalculado = desglose.iva;
-                total = desglose.total;
-                baseGravable = desglose.base;
+                base = subtotal / (1 + (porcentajeIVA / 100));
+                iva = subtotal - base;
             }
             
-            if (!confirm(`¿Confirmar venta por $${total.toLocaleString()}?`)) {
+            if (!confirm(`¿Confirmar venta por $${subtotal.toLocaleString()}?`)) {
                 return;
             }
             
             try {
                 const token = JSON.parse(localStorage.getItem('admin_token'));
                 
-                // Obtener información del usuario actual
+                // Obtener información del usuario
                 const userResponse = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
                     headers: {
                         'apikey': SUPABASE_KEY,
@@ -860,6 +930,16 @@
                 const user = await userResponse.json();
                 
                 // 1. Crear la venta
+                const ventaData = {
+                    total: subtotal,
+                    subtotal: base,
+                    iva: iva,
+                    iva_porcentaje: porcentajeIVA,
+                    metodo_pago: metodoPago,
+                    productos: carrito.map(i => `${i.cantidad}x ${i.nombre} (Talla: ${i.talla})`).join(', '),
+                    vendedor_id: user.id
+                };
+                
                 const ventaResponse = await fetch(`${SUPABASE_URL}/rest/v1/ventas`, {
                     method: 'POST',
                     headers: {
@@ -868,15 +948,7 @@
                         'Content-Type': 'application/json',
                         'Prefer': 'return=representation'
                     },
-                    body: JSON.stringify({
-                        total: total,
-                        subtotal: baseGravable,
-                        iva: ivaCalculado,
-                        iva_porcentaje: porcentajeIVA,
-                        metodo_pago: metodoPago,
-                        productos: carrito.map(i => `${i.cantidad}x ${i.nombre}`).join(', '),
-                        vendedor_id: user.id
-                    })
+                    body: JSON.stringify(ventaData)
                 });
                 
                 if (!ventaResponse.ok) {
@@ -898,32 +970,40 @@
                         },
                         body: JSON.stringify({
                             venta_id: ventaId,
-                            producto_id: item.id,
+                            producto_id: item.productoId,
+                            variante_id: item.varianteId,
                             cantidad: item.cantidad,
-                            precio_unitario: item.precio,
-                            subtotal: item.precio * item.cantidad
+                            precio_unitario: item.precioVenta,
+                            subtotal: item.precioVenta * item.cantidad
                         })
                     });
                     
-                    // Actualizar stock
-                    const producto = productos.find(p => p.id === item.id);
-                    const nuevoStock = producto.stock_actual - item.cantidad;
-                    
-                    await fetch(`${SUPABASE_URL}/rest/v1/productos?id=eq.${item.id}`, {
-                        method: 'PATCH',
-                        headers: {
-                            'apikey': SUPABASE_KEY,
-                            'Authorization': `Bearer ${token.access_token}`,
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            stock_actual: nuevoStock
-                        })
+                    // Actualizar stock de la variante
+                    const varianteRes = await fetch(`${SUPABASE_URL}/rest/v1/variantes_producto?id=eq.${item.varianteId}`, {
+                        headers: { 'apikey': SUPABASE_KEY }
                     });
+                    const varianteData = await varianteRes.json();
+                    const variante = varianteData[0];
+                    
+                    if (variante) {
+                        const nuevoStock = variante.stock - item.cantidad;
+                        
+                        await fetch(`${SUPABASE_URL}/rest/v1/variantes_producto?id=eq.${item.varianteId}`, {
+                            method: 'PATCH',
+                            headers: {
+                                'apikey': SUPABASE_KEY,
+                                'Authorization': `Bearer ${token.access_token}`,
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                stock: nuevoStock
+                            })
+                        });
+                    }
                 }
                 
                 // Mostrar modal de factura
-                document.getElementById('factura-total').textContent = `$${total.toLocaleString()}`;
+                document.getElementById('factura-total').textContent = `$${subtotal.toLocaleString()}`;
                 document.getElementById('factura-iva').textContent = porcentajeIVA > 0 ? `${porcentajeIVA}%` : 'Exento';
                 document.getElementById('factura-metodo').textContent = metodoPago;
                 document.getElementById('modal-factura').classList.add('active');
@@ -931,13 +1011,17 @@
                 // Guardar la venta actual para imprimir
                 window.ultimaVenta = {
                     items: [...carrito],
-                    total: total,
-                    subtotal: baseGravable,
-                    iva: ivaCalculado,
+                    total: subtotal,
+                    base: base,
+                    iva: iva,
                     porcentajeIVA: porcentajeIVA,
                     metodo: metodoPago,
                     fecha: new Date()
                 };
+                
+                // Limpiar carrito
+                carrito = [];
+                actualizarCarrito();
                 
                 // Recargar productos (para actualizar stock)
                 await cargarProductos();
@@ -957,29 +1041,41 @@
             const facturaHTML = `
                 <html>
                 <head>
-                    <title>Factura de Venta</title>
+                    <title>Factura de Venta - Modas La 34</title>
                     <style>
                         body { 
                             font-family: 'Courier New', monospace; 
-                            max-width: 300px; 
+                            max-width: 80mm; 
                             margin: 0 auto; 
-                            padding: 20px;
+                            padding: 10px;
+                            font-size: 12px;
                         }
-                        h2 { 
+                        h2, h3 { 
                             text-align: center; 
-                            color: #ff6b6b;
+                            margin: 5px 0;
                         }
                         .header {
                             text-align: center;
-                            margin-bottom: 20px;
+                            margin-bottom: 15px;
+                            border-bottom: 1px dashed #000;
+                            padding-bottom: 10px;
+                        }
+                        .empresa {
+                            font-size: 18px;
+                            font-weight: bold;
+                            color: #ff6b6b;
                         }
                         table { 
                             width: 100%; 
                             border-collapse: collapse; 
+                            margin: 10px 0;
                         }
-                        th, td { 
-                            padding: 5px; 
+                        th { 
                             text-align: left; 
+                            border-bottom: 1px solid #000;
+                        }
+                        td { 
+                            padding: 3px 0; 
                         }
                         .total { 
                             font-weight: bold; 
@@ -987,41 +1083,61 @@
                             margin-top: 10px;
                             padding-top: 10px;
                         }
-                        .iva-info {
-                            font-size: 0.9rem;
-                            color: #666;
-                        }
-                        hr {
-                            border: none;
+                        .footer {
+                            text-align: center;
+                            margin-top: 20px;
                             border-top: 1px dashed #000;
+                            padding-top: 10px;
+                            font-size: 10px;
+                        }
+                        .puc-info {
+                            font-size: 9px;
+                            color: #666;
                         }
                     </style>
                 </head>
                 <body>
                     <div class="header">
-                        <h2>🌸 MI LOCAL DE ROPA</h2>
-                        <p>NIT: 123.456.789-0</p>
-                        <p>${venta.fecha.toLocaleDateString()} ${venta.fecha.toLocaleTimeString()}</p>
+                        <div class="empresa">🌸 MODAS LA 34</div>
+                        <div>NIT: 123.456.789-0</div>
+                        <div>${venta.fecha.toLocaleDateString()} ${venta.fecha.toLocaleTimeString()}</div>
                     </div>
-                    <hr>
+                    
                     <table>
-                        ${venta.items.map(item => `
+                        <thead>
                             <tr>
-                                <td>${item.cantidad}x ${item.nombre}</td>
-                                <td style="text-align: right;">$${(item.precio * item.cantidad).toLocaleString()}</td>
+                                <th>Cant</th>
+                                <th>Producto</th>
+                                <th>Talla</th>
+                                <th>Precio</th>
                             </tr>
-                        `).join('')}
+                        </thead>
+                        <tbody>
+                            ${venta.items.map(item => `
+                                <tr>
+                                    <td>${item.cantidad}</td>
+                                    <td>${item.nombre}</td>
+                                    <td>${item.talla}</td>
+                                    <td>$${item.precioVenta.toLocaleString()}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
                     </table>
-                    <hr>
-                    <p><strong>Subtotal:</strong> $${venta.subtotal.toLocaleString()}</p>
-                    ${venta.porcentajeIVA > 0 ? `
-                        <p class="iva-info">IVA ${venta.porcentajeIVA}%: $${venta.iva.toLocaleString()}</p>
-                    ` : '<p class="iva-info">IVA: Exento</p>'}
-                    <p class="total"><strong>TOTAL: $${venta.total.toLocaleString()}</strong></p>
-                    <p>Método de pago: ${venta.metodo}</p>
-                    <hr>
-                    <p style="text-align: center;">¡Gracias por su compra!</p>
-                    <p style="text-align: center; font-size: 0.8rem;">* Esta factura sirve como comprobante</p>
+                    
+                    <div class="total">
+                        <p><strong>SUBTOTAL (Base):</strong> $${venta.base.toLocaleString()}</p>
+                        ${venta.porcentajeIVA > 0 ? `
+                            <p><strong>IVA ${venta.porcentajeIVA}%:</strong> $${venta.iva.toLocaleString()}</p>
+                        ` : ''}
+                        <p><strong>TOTAL:</strong> $${venta.total.toLocaleString()}</p>
+                    </div>
+                    
+                    <p><strong>Método de pago:</strong> ${venta.metodo}</p>
+                    
+                    <div class="footer">
+                        <p>¡Gracias por su compra!</p>
+                        <p>www.modasla34.com</p>
+                    </div>
                 </body>
                 </html>
             `;
@@ -1035,8 +1151,15 @@
         // Nueva venta
         function nuevaVenta() {
             document.getElementById('modal-factura').classList.remove('active');
-            carrito = [];
-            actualizarCarrito();
+            window.ultimaVenta = null;
+        }
+
+        // Cerrar modal si se hace clic fuera
+        window.onclick = function(event) {
+            const modal = document.getElementById('modal-factura');
+            if (event.target === modal) {
+                nuevaVenta();
+            }
         }
     </script>
 </body>
