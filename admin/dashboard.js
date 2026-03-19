@@ -107,6 +107,12 @@ async function cargarDatosModulo(modulo) {
         case 'proveedores':
             await cargarProveedores();
             break;
+        case 'ventas':  // <-- AGREGAR ESTE CASO
+            await cargarVentas();
+            break;
+        case 'contabilidad':
+            // No cargar nada por ahora
+            break;
     }
 }
 
@@ -834,8 +840,66 @@ async function eliminarProveedor(id) {
 // ============================================
 
 async function cargarCompras() {
-    const tbody = document.querySelector('#tabla-compras tbody');
-    tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">Módulo en desarrollo</td></tr>';
+    try {
+        console.log('Cargando compras...');
+        
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/compras?select=*,proveedores(nombre)&order=fecha.desc`, {
+            headers: { 'apikey': SUPABASE_KEY }
+        });
+        
+        if (!response.ok) {
+            throw new Error('Error al cargar compras');
+        }
+        
+        const compras = await response.json();
+        console.log('Compras cargadas:', compras);
+        
+        const tbody = document.querySelector('#tabla-compras tbody');
+        if (!tbody) return;
+        
+        if (compras.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">No hay compras registradas</td></tr>';
+            return;
+        }
+        
+        // Calcular total compras mes
+        const fechaInicio = new Date();
+        fechaInicio.setDate(1);
+        fechaInicio.setHours(0, 0, 0, 0);
+        
+        const comprasMes = compras.filter(c => new Date(c.fecha) >= fechaInicio);
+        const totalMes = comprasMes.reduce((sum, c) => sum + (c.total || 0), 0);
+        document.getElementById('stats-compras-mes').textContent = `$${totalMes.toLocaleString()}`;
+        
+        const pendientes = compras.filter(c => c.estado === 'Pendiente').length;
+        document.getElementById('stats-compras-pendientes').textContent = pendientes;
+        
+        tbody.innerHTML = compras.map(compra => `
+            <tr>
+                <td>${new Date(compra.fecha).toLocaleDateString()}</td>
+                <td>${compra.proveedores?.nombre || 'N/A'}</td>
+                <td>${compra.producto || 'Varios'}</td>
+                <td>${compra.cantidad || '-'}</td>
+                <td>$${(compra.total || 0).toLocaleString()}</td>
+                <td>
+                    <span class="estado-badge ${compra.estado === 'Pagada' ? 'estado-pagada' : compra.estado === 'Recibida' ? 'estado-recibida' : 'estado-pendiente'}">
+                        ${compra.estado || 'Pendiente'}
+                    </span>
+                </td>
+                <td>
+                    <button class="action-btn" onclick="editarCompra(${compra.id})" title="Editar">✏️</button>
+                    <button class="action-btn delete-btn" onclick="eliminarCompra(${compra.id})" title="Eliminar">🗑️</button>
+                </td>
+            </tr>
+        `).join('');
+        
+    } catch (error) {
+        console.error('Error cargando compras:', error);
+        const tbody = document.querySelector('#tabla-compras tbody');
+        if (tbody) {
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #ff4757;">Error al cargar compras</td></tr>';
+        }
+    }
 }
 
 async function guardarCompra() {
@@ -847,8 +911,58 @@ async function guardarCompra() {
 // ============================================
 
 async function cargarGastos() {
-    const tbody = document.querySelector('#tabla-gastos tbody');
-    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Módulo en desarrollo</td></tr>';
+    try {
+        console.log('Cargando gastos...');
+        
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/gastos?order=fecha.desc`, {
+            headers: { 'apikey': SUPABASE_KEY }
+        });
+        
+        if (!response.ok) {
+            throw new Error('Error al cargar gastos');
+        }
+        
+        const gastos = await response.json();
+        console.log('Gastos cargados:', gastos);
+        
+        const tbody = document.querySelector('#tabla-gastos tbody');
+        if (!tbody) return;
+        
+        if (gastos.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No hay gastos registrados</td></tr>';
+            return;
+        }
+        
+        // Calcular gastos del mes
+        const fechaInicio = new Date();
+        fechaInicio.setDate(1);
+        fechaInicio.setHours(0, 0, 0, 0);
+        
+        const gastosMes = gastos.filter(g => new Date(g.fecha) >= fechaInicio);
+        const totalMes = gastosMes.reduce((sum, g) => sum + (g.monto || 0), 0);
+        document.getElementById('stats-gastos-mes').textContent = `$${totalMes.toLocaleString()}`;
+        
+        tbody.innerHTML = gastos.map(gasto => `
+            <tr>
+                <td>${new Date(gasto.fecha).toLocaleDateString()}</td>
+                <td>${gasto.concepto}</td>
+                <td>${gasto.categoria}</td>
+                <td>$${(gasto.monto || 0).toLocaleString()}</td>
+                <td>${gasto.metodo_pago || 'Efectivo'}</td>
+                <td>
+                    <button class="action-btn" onclick="editarGasto(${gasto.id})" title="Editar">✏️</button>
+                    <button class="action-btn delete-btn" onclick="eliminarGasto(${gasto.id})" title="Eliminar">🗑️</button>
+                </td>
+            </tr>
+        `).join('');
+        
+    } catch (error) {
+        console.error('Error cargando gastos:', error);
+        const tbody = document.querySelector('#tabla-gastos tbody');
+        if (tbody) {
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #ff4757;">Error al cargar gastos</td></tr>';
+        }
+    }
 }
 
 async function guardarGasto() {
@@ -912,6 +1026,81 @@ function eliminarPerfil(id) {
     if (confirm('¿Eliminar este usuario?')) {
         mostrarAlerta('Función de eliminar en desarrollo', 'error');
     }
+}
+
+// ============================================
+// FUNCIONES DE VENTAS
+// ============================================
+
+async function cargarVentas() {
+    try {
+        console.log('Cargando ventas...');
+        
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/ventas?select=*&order=fecha.desc`, {
+            headers: { 'apikey': SUPABASE_KEY }
+        });
+        
+        if (!response.ok) {
+            throw new Error('Error al cargar ventas');
+        }
+        
+        const ventas = await response.json();
+        console.log('Ventas cargadas:', ventas);
+        
+        const tbody = document.querySelector('#tabla-ventas tbody');
+        if (!tbody) return;
+        
+        if (ventas.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No hay ventas registradas</td></tr>';
+            return;
+        }
+        
+        // Ventas de hoy
+        const hoy = new Date();
+        hoy.setHours(0, 0, 0, 0);
+        
+        const ventasHoy = ventas.filter(v => new Date(v.fecha) >= hoy);
+        const totalHoy = ventasHoy.reduce((sum, v) => sum + (v.total || 0), 0);
+        document.getElementById('stats-ventas-hoy').textContent = `$${totalHoy.toLocaleString()}`;
+        
+        // Ventas del mes
+        const fechaInicio = new Date();
+        fechaInicio.setDate(1);
+        fechaInicio.setHours(0, 0, 0, 0);
+        
+        const ventasMes = ventas.filter(v => new Date(v.fecha) >= fechaInicio);
+        const totalMes = ventasMes.reduce((sum, v) => sum + (v.total || 0), 0);
+        document.getElementById('stats-ventas-mes').textContent = `$${totalMes.toLocaleString()}`;
+        
+        tbody.innerHTML = ventas.map(venta => `
+            <tr>
+                <td>${new Date(venta.fecha).toLocaleString()}</td>
+                <td>${venta.productos || 'Venta'}</td>
+                <td>$${(venta.total || 0).toLocaleString()}</td>
+                <td>
+                    <span style="background: #ffe4e9; padding: 0.2rem 0.8rem; border-radius: 50px;">
+                        ${venta.metodo_pago || 'Efectivo'}
+                    </span>
+                </td>
+                <td>${venta.vendedor || '-'}</td>
+                <td>
+                    <button class="action-btn" onclick="verFactura(${venta.id})" title="Ver factura">🧾</button>
+                </td>
+            </tr>
+        `).join('');
+        
+    } catch (error) {
+        console.error('Error cargando ventas:', error);
+        const tbody = document.querySelector('#tabla-ventas tbody');
+        if (tbody) {
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #ff4757;">Error al cargar ventas</td></tr>';
+        }
+    }
+}
+
+// Función para ver factura
+function verFactura(id) {
+    window.open(`factura.html?id=${id}`, '_blank');
 }
 
 // ============================================
