@@ -383,8 +383,34 @@ function cerrarModal() {
 function consultarProducto() {
     if (!productoActual) return;
     
-    // Mostrar información de contacto
-    alert(`📱 Para consultar sobre "${productoActual.nombre}", contáctanos:\n\nWhatsApp: 320 804 9635\nIg: Proximo`);
+    // Crear un modal de contacto
+    const contactModal = `
+        <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 10000;">
+            <div style="background: white; border-radius: 25px; padding: 2rem; max-width: 400px; width: 90%;">
+                <h3 style="color: #ff6b6b; margin-bottom: 1rem;">📱 Contactar por: ${productoActual.nombre}</h3>
+                
+                <div style="margin: 1.5rem 0;">
+                    <a href="https://wa.me/573208049635?text=${encodeURIComponent('Hola, me interesa ' + productoActual.nombre)}" 
+                       target="_blank"
+                       style="display: block; background: #25D366; color: white; text-decoration: none; padding: 1rem; border-radius: 50px; margin-bottom: 1rem; text-align: center;">
+                        💬 WhatsApp
+                    </a>
+                    
+                    <a href="tel:+573208049635" 
+                       style="display: block; background: #ff9a9e; color: white; text-decoration: none; padding: 1rem; border-radius: 50px; margin-bottom: 1rem; text-align: center;">
+                        📞 Llamar ahora
+                    </a>
+                </div>
+                
+                <button onclick="this.parentElement.parentElement.remove()" 
+                        style="background: #ffe4e9; color: #ff6b6b; border: none; padding: 0.8rem; border-radius: 50px; width: 100%; cursor: pointer;">
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', contactModal);
 }
 
 // ===== FUNCIONES DEL BUSCADOR =====
