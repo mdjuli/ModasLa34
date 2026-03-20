@@ -858,7 +858,7 @@ async function cargarCompras() {
         if (!tbody) return;
         
         if (compras.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">No hay compras registradas</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="8" style="text-align: center;">No hay compras registradas</td></tr>';
             return;
         }
         
@@ -867,16 +867,30 @@ async function cargarCompras() {
         fechaInicio.setDate(1);
         fechaInicio.setHours(0, 0, 0, 0);
         
-        const comprasMes = compras.filter(c => new Date(c.fecha) >= fechaInicio);
+        const comprasMes = compras.filter(c => {
+            // CORRECCIÓN: Ajustar la fecha para evitar el desplazamiento
+            const fechaCompra = new Date(c.fecha + 'T12:00:00'); // Agregamos hora del mediodía para evitar problemas de zona
+            return fechaCompra >= fechaInicio;
+        });
+        
         const totalMes = comprasMes.reduce((sum, c) => sum + (c.total || 0), 0);
         document.getElementById('stats-compras-mes').textContent = `$${totalMes.toLocaleString()}`;
         
         const pendientes = compras.filter(c => c.estado === 'Pendiente').length;
         document.getElementById('stats-compras-pendientes').textContent = pendientes;
         
-        tbody.innerHTML = compras.map(compra => `
+        tbody.innerHTML = compras.map(compra => {
+            // CORRECCIÓN: Formatear fecha correctamente
+            const fechaCompra = new Date(compra.fecha + 'T12:00:00');
+            const fechaFormateada = fechaCompra.toLocaleDateString('es-CO', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            });
+            
+            return `
             <tr>
-                <td>${new Date(compra.fecha).toLocaleDateString()}</td>
+                <td>${fechaFormateada}</td>
                 <td>${compra.proveedores?.nombre || 'N/A'}</td>
                 <td>${compra.producto || 'Varios'}</td>
                 <td>${compra.cantidad || '-'}</td>
@@ -886,18 +900,19 @@ async function cargarCompras() {
                         ${compra.estado || 'Pendiente'}
                     </span>
                 </td>
+                <td>${compra.puc || '620501'}</td>
                 <td>
                     <button class="action-btn" onclick="editarCompra(${compra.id})" title="Editar">✏️</button>
                     <button class="action-btn delete-btn" onclick="eliminarCompra(${compra.id})" title="Eliminar">🗑️</button>
                 </td>
             </tr>
-        `).join('');
+        `}).join('');
         
     } catch (error) {
         console.error('Error cargando compras:', error);
         const tbody = document.querySelector('#tabla-compras tbody');
         if (tbody) {
-            tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #ff4757;">Error al cargar compras</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: #ff4757;">Error al cargar compras</td></tr>';
         }
     }
 }
@@ -915,15 +930,18 @@ async function guardarCompra() {
         const cantidad = parseInt(document.getElementById('compra-cantidad').value);
         const precio = parseFloat(document.getElementById('compra-precio').value);
         
+        // CORRECCIÓN: Obtener la fecha en formato YYYY-MM-DD sin conversión de zona
+        const fechaInput = document.getElementById('compra-fecha').value;
+        
         const compra = {
             proveedor_id: proveedorId,
-            fecha: document.getElementById('compra-fecha').value,
+            fecha: fechaInput, // Guardar exactamente como YYYY-MM-DD
             producto: document.getElementById('compra-producto').value,
             cantidad: cantidad,
             precio_unitario: precio,
             total: cantidad * precio,
             estado: document.getElementById('compra-estado').value,
-            puc: '620501' // PUC para compras
+            puc: '620501'
         };
         
         if (!compra.fecha || !compra.producto) {
