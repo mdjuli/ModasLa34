@@ -1017,16 +1017,34 @@ async function editarCompra(id) {
         // Mostrar formulario
         mostrarFormulario('compra');
         
-        // Cargar proveedores y seleccionar el actual
+        // Cargar proveedores y productos
         await cargarProveedoresSelect('compra');
+        await cargarProductosSelect();
         
-        // Llenar campos
+        // Llenar campos básicos
         document.getElementById('compra-proveedor').value = compra.proveedor_id || '';
         document.getElementById('compra-fecha').value = compra.fecha.split('T')[0];
-        document.getElementById('compra-producto').value = compra.producto || '';
         document.getElementById('compra-cantidad').value = compra.cantidad || '';
         document.getElementById('compra-precio').value = compra.precio_unitario || '';
         document.getElementById('compra-estado').value = compra.estado || 'Pendiente';
+        
+        // Si tiene producto asociado
+        if (compra.producto_id) {
+            document.getElementById('compra-producto-select').value = compra.producto_id;
+            await cargarVariantesProducto();
+            
+            // Esperar un momento para que carguen las variantes
+            setTimeout(() => {
+                if (compra.variante_id) {
+                    document.getElementById('compra-variante-select').value = compra.variante_id;
+                }
+            }, 500);
+        } else {
+            // Producto manual
+            document.getElementById('compra-producto-manual').value = compra.producto || '';
+            document.getElementById('compra-talla').value = compra.talla || '';
+            document.getElementById('compra-color').value = compra.color_nombre || '';
+        }
         
         // Guardar ID para actualizar
         document.getElementById('form-compra').dataset.editId = id;
@@ -1066,6 +1084,217 @@ async function eliminarCompra(id) {
     } catch (error) {
         console.error('Error:', error);
         mostrarAlerta('Error de conexión', 'error');
+    }
+}
+
+// ===== NUEVAS FUNCIONES PARA COMPRAS CON PRODUCTOS =====
+
+// Cargar productos en el select
+async function cargarProductosSelect() {
+    try {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/productos_base?select=id,codigo,nombre&order=nombre`, {
+            headers: { 'apikey': SUPABASE_KEY }
+        });
+        
+        const productos = await response.json();
+        const select = document.getElementById('compra-producto-select');
+        
+        if (!select) return;
+        
+        select.innerHTML = '<option value="">Seleccionar producto existente (opcional)</option>' +
+            productos.map(p => `<option value="${p.id}">${p.codigo} - ${p.nombre}</option>`).join('');
+            
+    } catch (error) {
+        console.error('Error cargando productos:', error);
+    }
+}
+
+// Cargar variantes del producto seleccionado
+async function cargarVariantesProducto() {
+    const productoId = document.getElementById('compra-producto-select').value;
+    const varianteContainer = document.getElementById('compra-variante-container');
+    const varianteSelect = document.getElementById('compra-variante-select');
+    const manualContainer = document.getElementById('compra-manual-container');
+    
+    if (!productoId) {
+        varianteContainer.style.display = 'none';
+        manualContainer.style.display = 'block';
+        return;
+    }
+    
+    try {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/variantes_producto?producto_id=eq.${productoId}`, {
+            headers: { 'apikey': SUPABASE_KEY }
+        });
+        
+        const variantes = await response.json();
+        
+        if (variantes.length > 0) {
+            varianteSelect.innerHTML = '<option value="">Seleccionar variante</option>' +
+                variantes.map(v => {
+                    const colorMuestra = v.color_codigo ? 
+                        `<span style="display:inline-block; width:12px; height:12px; background:${v.color_codigo}; border-radius:50%;"></span>` : '';
+                    return `<option value="${v.id}" data-talla="${v.talla}" data-color-nombre="${v.color_nombre || ''}" data-color-codigo="${v.color_codigo || ''}">
+                        Talla: ${v.talla} | Color: ${v.color_nombre || 'N/A'} ${colorMuestra}
+                    </option>`;
+                }).join('');
+            
+            varianteContainer.style.display = 'block';
+            manualContainer.style.display = 'none';
+        } else {
+            varianteContainer.style.display = 'none';
+            manualContainer.style.display = 'block';
+        }
+        
+    } catch (error) {
+        console.error('Error cargando variantes:', error);
+    }
+}
+
+// Actualizar la función guardarCompra
+async function guardarCompra() {
+    try {
+        const token = JSON.parse(localStorage.getItem('admin_token'));
+        
+        const proveedorId = document.getElementById('compra-proveedor').value;
+        if (!proveedorId) {
+            mostrarAlerta('Debe seleccionar un proveedor', 'error');
+            return;
+        }
+        
+        const cantidad = parseInt(document.getElementById('compra-cantidad').value);
+        const precio = parseFloat(document.getElementById('compra-precio').value);
+        
+        // Datos básicos de la compra
+        const compra = {
+            proveedor_id: proveedorId,
+            fecha: document.getElementById('compra-fecha').value,
+            cantidad: cantidad,
+            precio_unitario: precio,
+            total: cantidad * precio,
+            estado: document.getElementById('compra-estado').value,
+            puc: '620501'
+        };
+        
+        // Verificar si se seleccionó un producto existente
+        const productoId = document.getElementById('compra-producto-select').value;
+        const varianteSelect = document.getElementById('compra-variante-select');
+        
+        if (productoId && varianteSelect.value) {
+            // Se seleccionó producto y variante
+            const varianteOption = varianteSelect.options[varianteSelect.selectedIndex];
+            
+            compra.producto_id = productoId;
+            compra.variante_id = varianteSelect.value;
+            compra.producto = varianteOption.text.split('|')[0].replace('Talla:', '').trim();
+            compra.talla = varianteOption.dataset.talla;
+            compra.color_nombre = varianteOption.dataset.colorNombre;
+            compra.color_codigo = varianteOption.dataset.colorCodigo;
+            
+        } else {
+            // Producto manual
+            compra.producto = document.getElementById('compra-producto-manual').value;
+            compra.talla = document.getElementById('compra-talla').value || null;
+            compra.color_nombre = document.getElementById('compra-color').value || null;
+        }
+        
+        if (!compra.producto) {
+            mostrarAlerta('Debe especificar el producto', 'error');
+            return;
+        }
+        
+        // Verificar si estamos editando o creando
+        const editId = document.getElementById('form-compra').dataset.editId;
+        let url = `${SUPABASE_URL}/rest/v1/compras`;
+        let method = 'POST';
+        
+        if (editId) {
+            url += `?id=eq.${editId}`;
+            method = 'PATCH';
+        }
+        
+        const response = await fetch(url, {
+            method: method,
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${token.access_token}`,
+                'Content-Type': 'application/json',
+                'Prefer': 'return=representation'
+            },
+            body: JSON.stringify(compra)
+        });
+        
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.message || 'Error al guardar');
+        }
+        
+        // Si la compra está "Recibida" y tiene variante, actualizar stock
+        if (compra.estado === 'Recibida' && compra.variante_id) {
+            await actualizarStockPorCompra(compra.variante_id, cantidad);
+        }
+        
+        mostrarAlerta(editId ? '🌸 Compra actualizada correctamente' : '🌸 Compra guardada correctamente', 'success');
+        cerrarFormulario('compra');
+        await cargarCompras();
+        
+        // Limpiar formulario
+        document.getElementById('compra-fecha').value = '';
+        document.getElementById('compra-producto-select').value = '';
+        document.getElementById('compra-producto-manual').value = '';
+        document.getElementById('compra-talla').value = '';
+        document.getElementById('compra-color').value = '';
+        document.getElementById('compra-cantidad').value = '';
+        document.getElementById('compra-precio').value = '';
+        document.getElementById('compra-variante-container').style.display = 'none';
+        document.getElementById('compra-manual-container').style.display = 'block';
+        
+        // Limpiar ID de edición
+        delete document.getElementById('form-compra').dataset.editId;
+        
+        // Restaurar texto del botón
+        const submitBtn = document.querySelector('#form-compra .submit-btn');
+        if (submitBtn) {
+            submitBtn.textContent = '🌸 Guardar Compra';
+        }
+        
+    } catch (error) {
+        console.error('Error:', error);
+        mostrarAlerta('Error: ' + error.message, 'error');
+    }
+}
+
+// Función para actualizar stock cuando llega una compra
+async function actualizarStockPorCompra(varianteId, cantidad) {
+    try {
+        const token = JSON.parse(localStorage.getItem('admin_token'));
+        
+        // Obtener stock actual
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/variantes_producto?id=eq.${varianteId}`, {
+            headers: { 'apikey': SUPABASE_KEY }
+        });
+        
+        const variantes = await response.json();
+        if (variantes.length === 0) return;
+        
+        const stockActual = variantes[0].stock || 0;
+        const nuevoStock = stockActual + cantidad;
+        
+        // Actualizar stock
+        await fetch(`${SUPABASE_URL}/rest/v1/variantes_producto?id=eq.${varianteId}`, {
+            method: 'PATCH',
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${token.access_token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ stock: nuevoStock })
+        });
+        
+        console.log(`Stock actualizado: ${stockActual} → ${nuevoStock}`);
+        
+    } catch (error) {
+        console.error('Error actualizando stock:', error);
     }
 }
 
