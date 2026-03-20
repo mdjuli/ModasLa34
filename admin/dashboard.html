@@ -835,15 +835,14 @@
                 </div>
             </div>
 
-            <!-- FORMULARIO DE PRODUCTO CON VARIANTES -->
+            <!-- ===== NUEVO FORMULARIO DE PRODUCTOS (TALLAS → COLORES) ===== -->
             <div id="form-producto" class="form-container">
-                <h2 style="color: #ff6b6b; margin-bottom: 1.5rem;">👗 Producto con Variantes</h2>
+                <h2 style="color: #ff6b6b; margin-bottom: 1.5rem;">👗 Producto con Tallas y Colores</h2>
                 <form onsubmit="event.preventDefault(); guardarProductoBase()">
                     <!-- Información general del producto -->
                     <div class="form-group">
                         <label>Código base:</label>
                         <input type="text" id="producto-codigo" placeholder="Ej: PANT001" required>
-                        <small style="color: #ff9a9e;">Este código será la base para todas las variantes</small>
                     </div>
                     
                     <div class="form-group">
@@ -869,18 +868,18 @@
                         <input type="url" id="producto-imagen" placeholder="https://ejemplo.com/imagen.jpg">
                     </div>
                     
-                    <!-- SECCIÓN DE VARIANTES -->
-                    <h3 style="color: #ff6b6b; margin: 1.5rem 0 1rem 0;">📦 Variantes (Tallas y Colores)</h3>
+                    <!-- SECCIÓN DE TALLAS Y COLORES -->
+                    <h3 style="color: #ff6b6b; margin: 1.5rem 0 1rem 0;">📏 Tallas y Colores</h3>
                     
-                    <div id="variantes-container">
-                        <!-- Las variantes se agregarán aquí dinámicamente -->
+                    <div id="tallas-container">
+                        <!-- Las tallas se agregarán aquí dinámicamente -->
                     </div>
                     
-                    <button type="button" onclick="agregarVariante()" class="add-btn" style="margin-bottom: 1.5rem;">
-                        ➕ Agregar otra variante
+                    <button type="button" onclick="agregarTalla()" class="add-btn" style="margin-bottom: 1.5rem;">
+                        ➕ Agregar otra talla
                     </button>
                     
-                    <button type="submit" class="submit-btn">🌸 Guardar Producto con Variantes</button>
+                    <button type="submit" class="submit-btn">🌸 Guardar Producto</button>
                     <button type="button" class="cancel-btn" onclick="cerrarFormulario('producto')">Cancelar</button>
                 </form>
             </div>
