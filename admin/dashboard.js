@@ -493,9 +493,15 @@ async function guardarProductoBase() {
 // Función cargar productos (actualizada)
 async function cargarProductos() {
     try {
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/vista_productos_completa?order=nombre`, {
+        console.log('Cargando productos...');
+        
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/vista_productos_completa`, {
             headers: { 'apikey': SUPABASE_KEY }
         });
+        
+        if (!response.ok) {
+            throw new Error('Error al cargar productos');
+        }
         
         const productos = await response.json();
         console.log('Productos cargados:', productos);
@@ -524,7 +530,7 @@ async function cargarProductos() {
         
         tbody.innerHTML = productos.map(p => {
             const tallas = p.tallas || [];
-            const numTallas = tallas.length;
+            const totalTallas = tallas.length;
             const totalColores = tallas.reduce((sum, t) => sum + (t.colores?.length || 0), 0);
             
             // Verificar stock bajo
@@ -551,16 +557,16 @@ async function cargarProductos() {
                         </span>
                     </td>
                     <td>
-                        <span title="${numTallas} tallas, ${totalColores} colores">
-                            ${numTallas} tallas
+                        <span title="${totalTallas} tallas, ${totalColores} colores">
+                            ${totalTallas} tallas / ${totalColores} colores
                             ${stockBajo > 0 ? `<span style="color: #ff4757; margin-left: 5px;">⚠️${stockBajo}</span>` : ''}
                         </span>
                     </td>
                     <td>${p.stock_total || 0}</td>
-                    <td>$${(p.precio_min || 0).toLocaleString()} - $${(p.precio_max || 0).toLocaleString()}</td>
+                    <td>$${p.precio_min || 0} - $${p.precio_max || 0}</td>
                     <td>
                         <button class="action-btn" onclick="editarProducto(${p.id})" title="Editar">✏️</button>
-                        <button class="action-btn" onclick="verVariantes(${p.id})" title="Ver tallas y colores">📋</button>
+                        <button class="action-btn" onclick="verVariantes(${p.id})" title="Ver detalles">📋</button>
                         <button class="action-btn delete-btn" onclick="eliminarProducto(${p.id})" title="Eliminar">🗑️</button>
                     </td>
                 </tr>
@@ -569,6 +575,10 @@ async function cargarProductos() {
         
     } catch (error) {
         console.error('Error cargando productos:', error);
+        const tbody = document.querySelector('#tabla-productos tbody');
+        if (tbody) {
+            tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: #ff4757;">Error al cargar productos</td></tr>';
+        }
     }
 }
 
