@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>📊 Contabilidad - Modas La 34</title>
+    <title>📊 Contabilidad PUC - Modas La 34</title>
     <link rel="stylesheet" href="../css/estilo-comun.css">
     <style>
         * {
@@ -36,6 +36,14 @@
             gap: 10px;
         }
 
+        .contabilidad-header h1 span {
+            font-size: 1rem;
+            background: #ff6b6b;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-weight: normal;
+        }
+
         .volver-btn {
             background: rgba(255,255,255,0.2);
             color: white;
@@ -48,6 +56,7 @@
 
         .volver-btn:hover {
             background: rgba(255,255,255,0.3);
+            transform: scale(1.05);
         }
 
         /* Contenedor principal */
@@ -61,13 +70,19 @@
         .periodo-selector {
             background: white;
             border-radius: 20px;
-            padding: 1rem 1.5rem;
+            padding: 1.5rem;
             margin-bottom: 2rem;
             display: flex;
-            gap: 1rem;
             flex-wrap: wrap;
+            gap: 1rem;
             align-items: center;
-            border: 1px solid #ffe4e9;
+            border: 2px solid #ffe4e9;
+        }
+
+        .periodo-label {
+            color: #ff6b6b;
+            font-weight: 600;
+            margin-right: 1rem;
         }
 
         .periodo-btn {
@@ -78,33 +93,19 @@
             cursor: pointer;
             font-weight: 500;
             color: #ff6b6b;
+            transition: all 0.3s;
+        }
+
+        .periodo-btn:hover {
+            background: #ffb6c1;
+            color: white;
+            border-color: #ff9a9e;
         }
 
         .periodo-btn.active {
             background: #ffb6c1;
             color: white;
             border-color: #ff9a9e;
-        }
-
-        .periodo-personalizado {
-            display: flex;
-            gap: 0.5rem;
-            margin-left: auto;
-        }
-
-        .periodo-personalizado input {
-            padding: 0.4rem;
-            border: 2px solid #ffe4e9;
-            border-radius: 10px;
-        }
-
-        .aplicar-btn {
-            background: #ff9a9e;
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 50px;
-            cursor: pointer;
         }
 
         /* Tarjetas de resumen */
@@ -123,76 +124,66 @@
             border: 1px solid #ffe4e9;
         }
 
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        .card-header h3 {
+        .resumen-card h3 {
             color: #ff6b6b;
-        }
-
-        .card-valor {
-            font-size: 2rem;
-            font-weight: bold;
+            font-size: 1rem;
             margin-bottom: 0.5rem;
         }
 
-        .card-valor.positivo { color: #27ae60; }
-        .card-valor.negativo { color: #ff4757; }
+        .resumen-valor {
+            font-size: 2rem;
+            font-weight: bold;
+        }
 
-        /* PUC - Plan Único de Cuentas */
-        .puc-section {
+        .resumen-valor.positivo {
+            color: #27ae60;
+        }
+
+        .resumen-valor.negativo {
+            color: #ff4757;
+        }
+
+        /* Tabs */
+        .tabs-container {
             background: white;
             border-radius: 20px;
-            padding: 1.5rem;
-            box-shadow: 0 10px 25px rgba(255, 182, 193, 0.2);
-            border: 1px solid #ffe4e9;
+            padding: 1rem;
             margin-bottom: 2rem;
-        }
-
-        .puc-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .puc-header h2 {
-            color: #ff6b6b;
-        }
-
-        .puc-buscar {
-            padding: 0.5rem 1rem;
-            border: 2px solid #ffe4e9;
-            border-radius: 50px;
-            width: 250px;
-        }
-
-        .puc-tabs {
             display: flex;
             gap: 0.5rem;
             flex-wrap: wrap;
-            margin-bottom: 1rem;
+            border: 2px solid #ffe4e9;
         }
 
-        .puc-tab {
+        .tab-btn {
             background: #fff0f3;
             border: 2px solid #ffe4e9;
-            padding: 0.5rem 1.2rem;
+            padding: 0.8rem 1.5rem;
             border-radius: 50px;
             cursor: pointer;
+            font-weight: 600;
             color: #ff6b6b;
+            transition: all 0.3s;
         }
 
-        .puc-tab.active {
+        .tab-btn:hover {
+            background: #ffb6c1;
+            color: white;
+        }
+
+        .tab-btn.active {
             background: #ffb6c1;
             color: white;
             border-color: #ff9a9e;
+        }
+
+        /* Tabla PUC */
+        .puc-table-container {
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem;
+            border: 2px solid #ffe4e9;
+            overflow-x: auto;
         }
 
         .puc-table {
@@ -205,6 +196,7 @@
             color: #ff6b6b;
             padding: 1rem;
             text-align: left;
+            border-bottom: 2px solid #ffb6c1;
         }
 
         .puc-table td {
@@ -225,24 +217,70 @@
         .puc-debito {
             color: #27ae60;
             font-weight: 600;
+            text-align: right;
         }
 
         .puc-credito {
             color: #ff4757;
             font-weight: 600;
+            text-align: right;
         }
 
-        .btn-ver-detalle {
+        .puc-saldo {
+            font-weight: bold;
+            text-align: right;
+        }
+
+        .puc-clase {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .clase-activo {
+            background: #d4edda;
+            color: #27ae60;
+        }
+
+        .clase-pasivo {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .clase-patrimonio {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .clase-ingreso {
+            background: #d4edda;
+            color: #27ae60;
+        }
+
+        .clase-gasto {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        /* Botón de ver cuenta */
+        .ver-cuenta-btn {
             background: #ffb6c1;
             color: white;
             border: none;
             padding: 0.3rem 1rem;
             border-radius: 50px;
             cursor: pointer;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
+            transition: all 0.3s;
         }
 
-        /* Modal de detalle de cuenta */
+        .ver-cuenta-btn:hover {
+            background: #ff9a9e;
+        }
+
+        /* Modal de cuenta */
         .modal {
             display: none;
             position: fixed;
@@ -251,23 +289,25 @@
             width: 100%;
             height: 100%;
             background: rgba(0,0,0,0.5);
+            z-index: 1000;
             justify-content: center;
             align-items: center;
-            z-index: 1000;
         }
 
         .modal.active {
             display: flex;
         }
 
-        .modal-contenido {
+        .modal-content {
             background: white;
             border-radius: 25px;
             padding: 2rem;
-            max-width: 600px;
+            max-width: 900px;
             width: 90%;
             max-height: 80vh;
             overflow-y: auto;
+            border: 3px solid #ffe4e9;
+            box-shadow: 0 20px 40px rgba(255,154,158,0.3);
         }
 
         .modal-header {
@@ -277,11 +317,11 @@
             margin-bottom: 1.5rem;
         }
 
-        .modal-header h3 {
+        .modal-header h2 {
             color: #ff6b6b;
         }
 
-        .modal-cerrar {
+        .modal-close {
             background: #ffe4e9;
             border: none;
             width: 40px;
@@ -290,56 +330,88 @@
             font-size: 1.5rem;
             cursor: pointer;
             color: #ff6b6b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .movimientos-cuenta {
-            max-height: 300px;
-            overflow-y: auto;
-        }
-
-        .movimiento-item {
+        .cuenta-info {
             background: #fff9fc;
-            border: 1px solid #ffe4e9;
-            border-radius: 10px;
+            padding: 1rem;
+            border-radius: 15px;
+            margin-bottom: 1.5rem;
+        }
+
+        .movimientos-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .movimientos-table th {
+            background: #fff0f3;
+            color: #ff6b6b;
             padding: 0.8rem;
-            margin-bottom: 0.5rem;
+            text-align: left;
         }
 
-        .campo-editable {
-            background: white;
-            border: 2px solid #ffe4e9;
-            border-radius: 8px;
-            padding: 0.5rem;
-            width: 120px;
+        .movimientos-table td {
+            padding: 0.8rem;
+            border-bottom: 1px solid #ffe4e9;
         }
 
-        .btn-guardar {
+        .corregir-btn {
             background: #ff9a9e;
             color: white;
             border: none;
             padding: 0.5rem 1rem;
             border-radius: 50px;
             cursor: pointer;
+            margin-top: 1rem;
         }
 
-        .alert {
-            padding: 1rem;
-            border-radius: 10px;
+        /* Balance */
+        .balance-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .balance-card {
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem;
+            border: 2px solid #ffe4e9;
+        }
+
+        .balance-card h3 {
+            color: #ff6b6b;
             margin-bottom: 1rem;
-            display: none;
         }
 
-        .alert.success {
-            background: #d4edda;
-            color: #27ae60;
+        .balance-line {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #ffe4e9;
+        }
+
+        .balance-total {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 2px solid #ffb6c1;
+            font-weight: bold;
+            color: #ff6b6b;
         }
     </style>
 </head>
 <body>
     <header class="contabilidad-header">
         <h1>
-            📊 CONTABILIDAD
-            <span>🌸 Modas La 34</span>
+            📊 CONTABILIDAD PUC
+            <span>Empresa Comercial</span>
         </h1>
         <a href="dashboard.html" class="volver-btn">← Volver al Dashboard</a>
     </header>
@@ -347,102 +419,194 @@
     <div class="contabilidad-container">
         <!-- Selector de período -->
         <div class="periodo-selector">
+            <span class="periodo-label">Período:</span>
             <button class="periodo-btn active" onclick="cambiarPeriodo('mes')">Este Mes</button>
             <button class="periodo-btn" onclick="cambiarPeriodo('trimestre')">Último Trimestre</button>
-            <button class="periodo-btn" onclick="cambiarPeriodo('año')">Este Año</button>
+            <button class="periodo-btn" onclick="cambiarPeriodo('anio')">Este Año</button>
+            <button class="periodo-btn" onclick="cambiarPeriodo('todo')">Todo</button>
             
-            <div class="periodo-personalizado">
-                <input type="date" id="fecha-inicio">
-                <input type="date" id="fecha-fin">
-                <button class="aplicar-btn" onclick="cambiarPeriodoPersonalizado()">Aplicar</button>
+            <div style="margin-left: auto; display: flex; gap: 0.5rem;">
+                <input type="date" id="fecha-inicio" style="padding:0.5rem; border:2px solid #ffe4e9; border-radius:10px;">
+                <span style="color:#ff6b6b;">a</span>
+                <input type="date" id="fecha-fin" style="padding:0.5rem; border:2px solid #ffe4e9; border-radius:10px;">
+                <button class="periodo-btn" onclick="cambiarPeriodoPersonalizado()">Aplicar</button>
             </div>
         </div>
 
-        <!-- Tarjetas de resumen -->
+        <!-- Resumen -->
         <div class="resumen-grid">
             <div class="resumen-card">
-                <div class="card-header">
-                    <h3>💰 Total Activos</h3>
-                    <span>🏦</span>
-                </div>
-                <div class="card-valor positivo" id="total-activos">$0</div>
-                <small>Efectivo + Bancos + Inventario</small>
+                <h3>Total Activos</h3>
+                <div class="resumen-valor positivo" id="total-activos">$0</div>
             </div>
-
             <div class="resumen-card">
-                <div class="card-header">
-                    <h3>📦 Total Pasivos</h3>
-                    <span>📋</span>
-                </div>
-                <div class="card-valor negativo" id="total-pasivos">$0</div>
-                <small>Proveedores + IVA por pagar</small>
+                <h3>Total Pasivos</h3>
+                <div class="resumen-valor negativo" id="total-pasivos">$0</div>
             </div>
-
             <div class="resumen-card">
-                <div class="card-header">
-                    <h3>⚖️ Patrimonio</h3>
-                    <span>📊</span>
-                </div>
-                <div class="card-valor" id="total-patrimonio">$0</div>
-                <small>Activos - Pasivos</small>
+                <h3>Patrimonio</h3>
+                <div class="resumen-valor positivo" id="total-patrimonio">$0</div>
             </div>
-
             <div class="resumen-card">
-                <div class="card-header">
-                    <h3>📈 Utilidad del Período</h3>
-                    <span>💹</span>
-                </div>
-                <div class="card-valor positivo" id="utilidad-periodo">$0</div>
-                <small>Ingresos - Gastos</small>
+                <h3>Utilidad del Período</h3>
+                <div class="resumen-valor" id="utilidad">$0</div>
             </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs-container">
+            <button class="tab-btn active" onclick="cambiarTab('puc')">📋 Plan Único de Cuentas</button>
+            <button class="tab-btn" onclick="cambiarTab('balance')">⚖️ Balance General</button>
+            <button class="tab-btn" onclick="cambiarTab('pyg')">📈 PyG</button>
+            <button class="tab-btn" onclick="cambiarTab('asientos')">📝 Asientos</button>
         </div>
 
         <!-- PUC - Plan Único de Cuentas -->
-        <div class="puc-section">
-            <div class="puc-header">
-                <h2>📋 Plan Único de Cuentas (PUC)</h2>
-                <input type="text" class="puc-buscar" placeholder="🔍 Buscar cuenta..." id="buscar-puc">
+        <div id="tab-puc" class="puc-table-container">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h2 style="color: #ff6b6b;">📋 Plan Único de Cuentas</h2>
+                <input type="text" id="buscar-puc" placeholder="🔍 Buscar cuenta..." style="padding:0.5rem 1rem; border:2px solid #ffe4e9; border-radius:50px;">
             </div>
-
-            <div class="puc-tabs">
-                <button class="puc-tab active" onclick="filtrarPUC('todos')">Todos</button>
-                <button class="puc-tab" onclick="filtrarPUC('activos')">Activos (1)</button>
-                <button class="puc-tab" onclick="filtrarPUC('pasivos')">Pasivos (2)</button>
-                <button class="puc-tab" onclick="filtrarPUC('patrimonio')">Patrimonio (3)</button>
-                <button class="puc-tab" onclick="filtrarPUC('ingresos')">Ingresos (4)</button>
-                <button class="puc-tab" onclick="filtrarPUC('gastos')">Gastos (5)</button>
-            </div>
-
+            
             <table class="puc-table" id="tabla-puc">
                 <thead>
                     <tr>
                         <th>Código</th>
                         <th>Cuenta</th>
-                        <th>Naturaleza</th>
-                        <th>Saldo Débito</th>
-                        <th>Saldo Crédito</th>
+                        <th>Clase</th>
+                        <th>Débitos</th>
+                        <th>Créditos</th>
+                        <th>Saldo</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody id="puc-body">
                     <tr>
-                        <td colspan="6" style="text-align: center;">Cargando cuentas...</td>
+                        <td colspan="7" style="text-align: center;">Cargando PUC...</td>
                     </tr>
                 </tbody>
             </table>
+        </div>
+
+        <!-- Balance General -->
+        <div id="tab-balance" style="display: none;">
+            <div class="balance-grid">
+                <div class="balance-card">
+                    <h3>ACTIVOS</h3>
+                    <div id="activos-lista"></div>
+                    <div class="balance-total">
+                        <span>TOTAL ACTIVOS</span>
+                        <span id="total-activos-detalle">$0</span>
+                    </div>
+                </div>
+                <div>
+                    <div class="balance-card" style="margin-bottom: 2rem;">
+                        <h3>PASIVOS</h3>
+                        <div id="pasivos-lista"></div>
+                        <div class="balance-total">
+                            <span>TOTAL PASIVOS</span>
+                            <span id="total-pasivos-detalle">$0</span>
+                        </div>
+                    </div>
+                    <div class="balance-card">
+                        <h3>PATRIMONIO</h3>
+                        <div id="patrimonio-lista"></div>
+                        <div class="balance-total">
+                            <span>TOTAL PATRIMONIO</span>
+                            <span id="total-patrimonio-detalle">$0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PyG -->
+        <div id="tab-pyg" style="display: none;">
+            <div class="balance-grid">
+                <div class="balance-card">
+                    <h3>INGRESOS</h3>
+                    <div id="ingresos-lista"></div>
+                    <div class="balance-total">
+                        <span>TOTAL INGRESOS</span>
+                        <span id="total-ingresos">$0</span>
+                    </div>
+                </div>
+                <div class="balance-card">
+                    <h3>GASTOS</h3>
+                    <div id="gastos-lista"></div>
+                    <div class="balance-total">
+                        <span>TOTAL GASTOS</span>
+                        <span id="total-gastos">$0</span>
+                    </div>
+                </div>
+            </div>
+            <div class="balance-card" style="margin-top: 2rem;">
+                <h3>RESULTADO</h3>
+                <div class="balance-total">
+                    <span>UTILIDAD NETA</span>
+                    <span id="utilidad-neta">$0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Asientos -->
+        <div id="tab-asientos" style="display: none;">
+            <div class="puc-table-container">
+                <h2 style="color: #ff6b6b; margin-bottom: 1rem;">📝 Asientos Contables</h2>
+                <table class="puc-table">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Comprobante</th>
+                            <th>Cuenta</th>
+                            <th>Detalle</th>
+                            <th>Débito</th>
+                            <th>Crédito</th>
+                        </tr>
+                    </thead>
+                    <tbody id="asientos-body">
+                        <tr>
+                            <td colspan="6" style="text-align: center;">Cargando asientos...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
     <!-- Modal de detalle de cuenta -->
     <div class="modal" id="modal-cuenta">
-        <div class="modal-contenido">
+        <div class="modal-content">
             <div class="modal-header">
-                <h3 id="modal-titulo-cuenta">Detalle de Cuenta</h3>
-                <button class="modal-cerrar" onclick="cerrarModalCuenta()">×</button>
+                <h2 id="modal-cuenta-titulo">Cuenta Contable</h2>
+                <button class="modal-close" onclick="cerrarModalCuenta()">×</button>
             </div>
             
-            <div id="modal-contenido-cuenta">
-                <!-- Se llena con JavaScript -->
+            <div class="cuenta-info" id="modal-cuenta-info">
+                <!-- Se llena con JS -->
+            </div>
+
+            <h3 style="color: #ff6b6b; margin-bottom: 1rem;">Movimientos</h3>
+            <table class="movimientos-table" id="modal-movimientos">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Comprobante</th>
+                        <th>Detalle</th>
+                        <th>Débito</th>
+                        <th>Crédito</th>
+                    </tr>
+                </thead>
+                <tbody id="modal-movimientos-body">
+                    <tr>
+                        <td colspan="5" style="text-align: center;">No hay movimientos</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                <button class="corregir-btn" onclick="corregirCuenta()">✏️ Corregir cuenta</button>
+                <button class="corregir-btn" style="background:#ffe4e9; color:#ff6b6b;" onclick="cerrarModalCuenta()">❌ Cerrar</button>
             </div>
         </div>
     </div>
@@ -450,55 +614,61 @@
     <script src="../js/supabase-config.js"></script>
     <script>
         // ============================================
-        // VARIABLES GLOBALES
+        // PLAN ÚNICO DE CUENTAS (PUC) PARA EMPRESA COMERCIAL
         // ============================================
-        let fechaInicio = new Date();
-        fechaInicio.setDate(1);
-        fechaInicio.setHours(0,0,0,0);
         
-        let fechaFin = new Date();
-        fechaFin.setHours(23,59,59,999);
-        
-        let cuentasPUC = [
+        const puc = [
             // ACTIVOS (1)
-            { codigo: '110505', nombre: 'Caja General', naturaleza: 'activos', saldoDebito: 0, saldoCredito: 0 },
-            { codigo: '111005', nombre: 'Bancos', naturaleza: 'activos', saldoDebito: 0, saldoCredito: 0 },
-            { codigo: '143501', nombre: 'Inventario de Mercancías', naturaleza: 'activos', saldoDebito: 0, saldoCredito: 0 },
-            { codigo: '236510', nombre: 'IVA Descontable', naturaleza: 'activos', saldoDebito: 0, saldoCredito: 0 },
+            { codigo: '110505', nombre: 'Caja General', clase: 'activo', tipo: 'debito', saldo: 0 },
+            { codigo: '111005', nombre: 'Bancos', clase: 'activo', tipo: 'debito', saldo: 0 },
+            { codigo: '130505', nombre: 'Clientes', clase: 'activo', tipo: 'debito', saldo: 0 },
+            { codigo: '143501', nombre: 'Inventario de Mercancías', clase: 'activo', tipo: 'debito', saldo: 0 },
+            { codigo: '152805', nombre: 'Equipo de Oficina', clase: 'activo', tipo: 'debito', saldo: 0 },
+            { codigo: '152010', nombre: 'Muebles y Enseres', clase: 'activo', tipo: 'debito', saldo: 0 },
             
             // PASIVOS (2)
-            { codigo: '220505', nombre: 'Proveedores Nacionales', naturaleza: 'pasivos', saldoDebito: 0, saldoCredito: 0 },
-            { codigo: '236505', nombre: 'IVA por Pagar', naturaleza: 'pasivos', saldoDebito: 0, saldoCredito: 0 },
+            { codigo: '220505', nombre: 'Proveedores Nacionales', clase: 'pasivo', tipo: 'credito', saldo: 0 },
+            { codigo: '236505', nombre: 'IVA por Pagar', clase: 'pasivo', tipo: 'credito', saldo: 0 },
+            { codigo: '236510', nombre: 'IVA Descontable', clase: 'pasivo', tipo: 'debito', saldo: 0 },
+            { codigo: '233505', nombre: 'Obligaciones Laborales', clase: 'pasivo', tipo: 'credito', saldo: 0 },
             
             // PATRIMONIO (3)
-            { codigo: '310505', nombre: 'Capital Social', naturaleza: 'patrimonio', saldoDebito: 0, saldoCredito: 0 },
+            { codigo: '310505', nombre: 'Capital Suscrito y Pagado', clase: 'patrimonio', tipo: 'credito', saldo: 0 },
+            { codigo: '360505', nombre: 'Utilidad del Ejercicio', clase: 'patrimonio', tipo: 'credito', saldo: 0 },
             
             // INGRESOS (4)
-            { codigo: '413505', nombre: 'Comercio al por mayor', naturaleza: 'ingresos', saldoDebito: 0, saldoCredito: 0 },
+            { codigo: '413505', nombre: 'Comercio al por mayor', clase: 'ingreso', tipo: 'credito', saldo: 0 },
+            { codigo: '413510', nombre: 'Ventas al por menor', clase: 'ingreso', tipo: 'credito', saldo: 0 },
             
             // GASTOS (5)
-            { codigo: '510506', nombre: 'Sueldos', naturaleza: 'gastos', saldoDebito: 0, saldoCredito: 0 },
-            { codigo: '511005', nombre: 'Alquileres', naturaleza: 'gastos', saldoDebito: 0, saldoCredito: 0 },
-            { codigo: '511010', nombre: 'Servicios Públicos', naturaleza: 'gastos', saldoDebito: 0, saldoCredito: 0 },
-            { codigo: '513505', nombre: 'Publicidad', naturaleza: 'gastos', saldoDebito: 0, saldoCredito: 0 },
-            { codigo: '620501', nombre: 'Compras', naturaleza: 'gastos', saldoDebito: 0, saldoCredito: 0 }
+            { codigo: '510506', nombre: 'Sueldos', clase: 'gasto', tipo: 'debito', saldo: 0 },
+            { codigo: '511005', nombre: 'Alquileres', clase: 'gasto', tipo: 'debito', saldo: 0 },
+            { codigo: '511010', nombre: 'Servicios Públicos', clase: 'gasto', tipo: 'debito', saldo: 0 },
+            { codigo: '513505', nombre: 'Publicidad', clase: 'gasto', tipo: 'debito', saldo: 0 },
+            { codigo: '613505', nombre: 'Costo de Ventas', clase: 'gasto', tipo: 'debito', saldo: 0 },
+            { codigo: '620501', nombre: 'Compras', clase: 'gasto', tipo: 'debito', saldo: 0 }
         ];
 
+        // Movimientos contables
         let movimientos = [];
+        let fechaInicio = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+        let fechaFin = new Date();
+        let cuentaActual = null;
 
-        // ============================================
-        // INICIALIZACIÓN
-        // ============================================
+        // Cargar datos al iniciar
         document.addEventListener('DOMContentLoaded', async () => {
             await verificarSesion();
+            await cargarMovimientos();
+            cargarPUC();
+            actualizarResumen();
             cargarFechas();
-            await calcularSaldos();
         });
 
         async function verificarSesion() {
             const tokenData = localStorage.getItem('admin_token');
             if (!tokenData) {
                 window.location.href = 'login.html';
+                return;
             }
         }
 
@@ -507,371 +677,484 @@
             document.getElementById('fecha-fin').value = fechaFin.toISOString().split('T')[0];
         }
 
-        // ============================================
-        // CÁLCULO DE SALDOS CONTABLES
-        // ============================================
-        async function calcularSaldos() {
+        async function cargarMovimientos() {
             try {
-                // Obtener ventas del período
-                const ventasRes = await fetch(
-                    `${SUPABASE_URL}/rest/v1/ventas?fecha=gte.${fechaInicio.toISOString()}&fecha=lte.${fechaFin.toISOString()}`,
-                    { headers: { 'apikey': SUPABASE_KEY } }
-                );
-                const ventas = await ventasRes.json();
-                
-                // Obtener compras del período
-                const comprasRes = await fetch(
-                    `${SUPABASE_URL}/rest/v1/compras?fecha=gte.${fechaInicio.toISOString()}&fecha=lte.${fechaFin.toISOString()}`,
-                    { headers: { 'apikey': SUPABASE_KEY } }
-                );
-                const compras = await comprasRes.json();
-                
-                // Obtener gastos del período
-                const gastosRes = await fetch(
-                    `${SUPABASE_URL}/rest/v1/gastos?fecha=gte.${fechaInicio.toISOString()}&fecha=lte.${fechaFin.toISOString()}`,
-                    { headers: { 'apikey': SUPABASE_KEY } }
-                );
-                const gastos = await gastosRes.json();
-
-                // Reiniciar saldos
-                cuentasPUC.forEach(c => {
-                    c.saldoDebito = 0;
-                    c.saldoCredito = 0;
+                // Cargar ventas
+                const ventasRes = await fetch(`${SUPABASE_URL}/rest/v1/ventas?select=*`, {
+                    headers: { 'apikey': SUPABASE_KEY }
                 });
+                const ventas = await ventasRes.json();
+
+                // Cargar compras
+                const comprasRes = await fetch(`${SUPABASE_URL}/rest/v1/compras?select=*`, {
+                    headers: { 'apikey': SUPABASE_KEY }
+                });
+                const compras = await comprasRes.json();
+
+                // Cargar gastos
+                const gastosRes = await fetch(`${SUPABASE_URL}/rest/v1/gastos?select=*`, {
+                    headers: { 'apikey': SUPABASE_KEY }
+                });
+                const gastos = await gastosRes.json();
 
                 movimientos = [];
 
-                // Procesar ventas (asientos contables automáticos)
+                // Procesar ventas
                 ventas.forEach(v => {
-                    // Ingreso: Crédito a 413505
-                    const cuentaIngresos = cuentasPUC.find(c => c.codigo === '413505');
-                    if (cuentaIngresos) cuentaIngresos.saldoCredito += v.total || 0;
-                    
-                    // Efectivo: Débito a 110505
-                    const cuentaEfectivo = cuentasPUC.find(c => c.codigo === '110505');
-                    if (cuentaEfectivo) cuentaEfectivo.saldoDebito += v.total || 0;
-                    
-                    // IVA por pagar (si aplica)
-                    if (v.iva && v.iva > 0) {
-                        const cuentaIVA = cuentasPUC.find(c => c.codigo === '236505');
-                        if (cuentaIVA) cuentaIVA.saldoCredito += v.iva;
+                    if (v.total) {
+                        // Ingreso a ventas (4135)
+                        movimientos.push({
+                            fecha: new Date(v.fecha),
+                            comprobante: `VEN-${v.id}`,
+                            cuenta: '413505',
+                            detalle: `Venta de mercancía`,
+                            debito: 0,
+                            credito: v.total
+                        });
+                        
+                        // Efectivo o banco (según método de pago)
+                        const cuentaEfectivo = v.metodo_pago === 'Efectivo' ? '110505' : '111005';
+                        movimientos.push({
+                            fecha: new Date(v.fecha),
+                            comprobante: `VEN-${v.id}`,
+                            cuenta: cuentaEfectivo,
+                            detalle: `Recaudo venta`,
+                            debito: v.total,
+                            credito: 0
+                        });
+
+                        // IVA por pagar
+                        if (v.iva && v.iva > 0) {
+                            movimientos.push({
+                                fecha: new Date(v.fecha),
+                                comprobante: `VEN-${v.id}`,
+                                cuenta: '236505',
+                                detalle: `IVA generado`,
+                                debito: 0,
+                                credito: v.iva
+                            });
+                        }
+
+                        // Costo de ventas (si tienes el dato)
+                        if (v.costo) {
+                            movimientos.push({
+                                fecha: new Date(v.fecha),
+                                comprobante: `VEN-${v.id}`,
+                                cuenta: '613505',
+                                detalle: `Costo de ventas`,
+                                debito: v.costo,
+                                credito: 0
+                            });
+                            
+                            movimientos.push({
+                                fecha: new Date(v.fecha),
+                                comprobante: `VEN-${v.id}`,
+                                cuenta: '143501',
+                                detalle: `Salida de inventario`,
+                                debito: 0,
+                                credito: v.costo
+                            });
+                        }
                     }
-                    
-                    // Inventario disminuye (costo de venta aproximado)
-                    // Asumimos 60% del precio de venta como costo
-                    const costoVenta = (v.total || 0) * 0.6;
-                    const cuentaInventario = cuentasPUC.find(c => c.codigo === '143501');
-                    if (cuentaInventario) cuentaInventario.saldoCredito += costoVenta;
-                    
-                    // Registrar movimiento para detalle
-                    movimientos.push({
-                        fecha: v.fecha,
-                        tipo: 'Venta',
-                        concepto: v.productos || 'Venta',
-                        cuenta: '413505',
-                        cuentaNombre: 'Ingresos',
-                        debito: 0,
-                        credito: v.total || 0,
-                        documento: `VTA-${v.id}`
-                    });
                 });
 
                 // Procesar compras
                 compras.forEach(c => {
-                    if (c.estado === 'Recibida' || c.estado === 'Pagada') {
-                        // Compra: Débito a 620501
-                        const cuentaCompras = cuentasPUC.find(cu => cu.codigo === '620501');
-                        if (cuentaCompras) cuentaCompras.saldoDebito += c.total || 0;
-                        
-                        // Inventario aumenta
-                        const cuentaInventario = cuentasPUC.find(cu => cu.codigo === '143501');
-                        if (cuentaInventario) cuentaInventario.saldoDebito += c.total || 0;
-                        
-                        // Proveedores o efectivo
-                        if (c.estado === 'Pagada') {
-                            const cuentaEfectivo = cuentasPUC.find(cu => cu.codigo === '110505');
-                            if (cuentaEfectivo) cuentaEfectivo.saldoCredito += c.total || 0;
-                        } else {
-                            const cuentaProveedores = cuentasPUC.find(cu => cu.codigo === '220505');
-                            if (cuentaProveedores) cuentaProveedores.saldoCredito += c.total || 0;
-                        }
-                        
+                    if (c.total) {
+                        // Compra de mercancía
                         movimientos.push({
-                            fecha: c.fecha,
-                            tipo: 'Compra',
-                            concepto: c.producto || 'Compra',
+                            fecha: new Date(c.fecha),
+                            comprobante: `COM-${c.id}`,
                             cuenta: '620501',
-                            cuentaNombre: 'Compras',
-                            debito: c.total || 0,
-                            credito: 0,
-                            documento: `COM-${c.id}`
+                            detalle: `Compra de mercancía`,
+                            debito: c.total,
+                            credito: 0
                         });
+                        
+                        // Proveedor o efectivo
+                        const cuentaPago = c.estado === 'Pagada' ? '110505' : '220505';
+                        movimientos.push({
+                            fecha: new Date(c.fecha),
+                            comprobante: `COM-${c.id}`,
+                            cuenta: cuentaPago,
+                            detalle: `Compra ${c.estado === 'Pagada' ? 'pagada' : 'por pagar'}`,
+                            debito: 0,
+                            credito: c.total
+                        });
+
+                        // IVA descontable
+                        if (c.iva) {
+                            movimientos.push({
+                                fecha: new Date(c.fecha),
+                                comprobante: `COM-${c.id}`,
+                                cuenta: '236510',
+                                detalle: `IVA descontable`,
+                                debito: c.iva,
+                                credito: 0
+                            });
+                        }
+
+                        // Inventario (si está recibida)
+                        if (c.estado === 'Recibida' || c.estado === 'Pagada') {
+                            movimientos.push({
+                                fecha: new Date(c.fecha),
+                                comprobante: `COM-${c.id}`,
+                                cuenta: '143501',
+                                detalle: `Entrada a inventario`,
+                                debito: c.total,
+                                credito: 0
+                            });
+                        }
                     }
                 });
 
                 // Procesar gastos
                 gastos.forEach(g => {
-                    const cuentaGasto = cuentasPUC.find(c => c.codigo === (g.puc || '519595'));
-                    if (cuentaGasto) {
-                        cuentaGasto.saldoDebito += g.monto || 0;
-                        
-                        // Efectivo disminuye
-                        const cuentaEfectivo = cuentasPUC.find(c => c.codigo === '110505');
-                        if (cuentaEfectivo) cuentaEfectivo.saldoCredito += g.monto || 0;
+                    if (g.monto) {
+                        movimientos.push({
+                            fecha: new Date(g.fecha),
+                            comprobante: `GAS-${g.id}`,
+                            cuenta: g.puc || '511005',
+                            detalle: g.concepto,
+                            debito: g.monto,
+                            credito: 0
+                        });
                         
                         movimientos.push({
-                            fecha: g.fecha,
-                            tipo: 'Gasto',
-                            concepto: g.concepto,
-                            cuenta: g.puc || '519595',
-                            cuentaNombre: g.categoria,
-                            debito: g.monto || 0,
-                            credito: 0,
-                            documento: `GAS-${g.id}`
+                            fecha: new Date(g.fecha),
+                            comprobante: `GAS-${g.id}`,
+                            cuenta: '110505',
+                            detalle: `Pago de ${g.concepto}`,
+                            debito: 0,
+                            credito: g.monto
                         });
                     }
                 });
 
-                // Calcular totales
-                const totalActivos = cuentasPUC
-                    .filter(c => c.naturaleza === 'activos')
-                    .reduce((sum, c) => sum + c.saldoDebito - c.saldoCredito, 0);
-                
-                const totalPasivos = cuentasPUC
-                    .filter(c => c.naturaleza === 'pasivos')
-                    .reduce((sum, c) => sum + c.saldoCredito - c.saldoDebito, 0);
-                
-                const totalIngresos = cuentasPUC
-                    .filter(c => c.naturaleza === 'ingresos')
-                    .reduce((sum, c) => sum + c.saldoCredito, 0);
-                
-                const totalGastos = cuentasPUC
-                    .filter(c => c.naturaleza === 'gastos')
-                    .reduce((sum, c) => sum + c.saldoDebito, 0);
-                
-                const utilidad = totalIngresos - totalGastos;
-                const patrimonio = totalActivos - totalPasivos;
-
-                // Actualizar UI
-                document.getElementById('total-activos').textContent = `$${totalActivos.toLocaleString()}`;
-                document.getElementById('total-pasivos').textContent = `$${totalPasivos.toLocaleString()}`;
-                document.getElementById('total-patrimonio').textContent = `$${patrimonio.toLocaleString()}`;
-                document.getElementById('utilidad-periodo').textContent = `$${utilidad.toLocaleString()}`;
-
-                // Mostrar PUC
-                mostrarPUC('todos');
+                console.log('Movimientos cargados:', movimientos);
+                calcularSaldos();
 
             } catch (error) {
-                console.error('Error calculando saldos:', error);
+                console.error('Error cargando movimientos:', error);
             }
         }
 
-        // ============================================
-        // MOSTRAR PUC
-        // ============================================
-        function mostrarPUC(filtro) {
-            const tbody = document.getElementById('puc-body');
-            
-            let cuentasFiltradas = cuentasPUC;
-            if (filtro !== 'todos') {
-                cuentasFiltradas = cuentasPUC.filter(c => c.naturaleza === filtro);
-            }
-            
-            tbody.innerHTML = cuentasFiltradas.map(cuenta => {
-                const saldoDebito = cuenta.saldoDebito || 0;
-                const saldoCredito = cuenta.saldoCredito || 0;
-                
-                return `
-                    <tr>
-                        <td class="puc-codigo">${cuenta.codigo}</td>
-                        <td><strong>${cuenta.nombre}</strong></td>
-                        <td>
-                            <span style="background: ${cuenta.naturaleza === 'activos' ? '#d4edda' : cuenta.naturaleza === 'pasivos' ? '#fff3cd' : '#ffe4e9'}; 
-                                         padding: 0.2rem 0.8rem; border-radius: 50px;">
-                                ${cuenta.naturaleza}
-                            </span>
-                        </td>
-                        <td class="puc-debito">${saldoDebito > 0 ? `$${saldoDebito.toLocaleString()}` : '-'}</td>
-                        <td class="puc-credito">${saldoCredito > 0 ? `$${saldoCredito.toLocaleString()}` : '-'}</td>
-                        <td>
-                            <button class="btn-ver-detalle" onclick="verDetalleCuenta('${cuenta.codigo}')">
-                                Ver detalles
-                            </button>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
-        }
+        function calcularSaldos() {
+            // Reiniciar saldos
+            puc.forEach(cuenta => cuenta.saldo = 0);
 
-        // ============================================
-        // FILTROS Y BÚSQUEDA
-        // ============================================
-        function filtrarPUC(filtro) {
-            document.querySelectorAll('.puc-tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            event.target.classList.add('active');
-            mostrarPUC(filtro);
-        }
-
-        document.getElementById('buscar-puc').addEventListener('input', (e) => {
-            const busqueda = e.target.value.toLowerCase();
-            const cuentasFiltradas = cuentasPUC.filter(c => 
-                c.codigo.includes(busqueda) || 
-                c.nombre.toLowerCase().includes(busqueda)
+            // Filtrar movimientos por fecha
+            const movsPeriodo = movimientos.filter(m => 
+                m.fecha >= fechaInicio && m.fecha <= fechaFin
             );
-            
+
+            // Calcular saldos
+            movsPeriodo.forEach(m => {
+                const cuenta = puc.find(c => c.codigo === m.cuenta);
+                if (cuenta) {
+                    if (m.debito > 0) {
+                        cuenta.saldo += m.debito;
+                    }
+                    if (m.credito > 0) {
+                        cuenta.saldo -= m.credito;
+                    }
+                }
+            });
+
+            cargarPUC();
+            actualizarResumen();
+        }
+
+        function cargarPUC() {
             const tbody = document.getElementById('puc-body');
-            tbody.innerHTML = cuentasFiltradas.map(cuenta => {
+            
+            tbody.innerHTML = puc.map(cuenta => {
+                const saldo = cuenta.saldo;
+                const saldoFormateado = `$${Math.abs(saldo).toLocaleString()}`;
+                
+                let claseSaldo = '';
+                if (cuenta.clase === 'activo' || cuenta.clase === 'gasto') {
+                    claseSaldo = saldo >= 0 ? 'puc-debito' : 'puc-credito';
+                } else {
+                    claseSaldo = saldo >= 0 ? 'puc-credito' : 'puc-debito';
+                }
+
+                let clasePill = '';
+                if (cuenta.clase === 'activo') clasePill = 'clase-activo';
+                else if (cuenta.clase === 'pasivo') clasePill = 'clase-pasivo';
+                else if (cuenta.clase === 'patrimonio') clasePill = 'clase-patrimonio';
+                else if (cuenta.clase === 'ingreso') clasePill = 'clase-ingreso';
+                else if (cuenta.clase === 'gasto') clasePill = 'clase-gasto';
+
                 return `
                     <tr>
                         <td class="puc-codigo">${cuenta.codigo}</td>
                         <td>${cuenta.nombre}</td>
-                        <td>${cuenta.naturaleza}</td>
-                        <td class="puc-debito">${cuenta.saldoDebito > 0 ? `$${cuenta.saldoDebito.toLocaleString()}` : '-'}</td>
-                        <td class="puc-credito">${cuenta.saldoCredito > 0 ? `$${cuenta.saldoCredito.toLocaleString()}` : '-'}</td>
+                        <td><span class="puc-clase ${clasePill}">${cuenta.clase}</span></td>
+                        <td class="puc-debito">${cuenta.tipo === 'debito' && saldo > 0 ? saldoFormateado : '-'}</td>
+                        <td class="puc-credito">${cuenta.tipo === 'credito' && saldo > 0 ? saldoFormateado : '-'}</td>
+                        <td class="${claseSaldo}">${saldoFormateado}</td>
                         <td>
-                            <button class="btn-ver-detalle" onclick="verDetalleCuenta('${cuenta.codigo}')">
-                                Ver detalles
-                            </button>
+                            <button class="ver-cuenta-btn" onclick="verCuenta('${cuenta.codigo}')">Ver detalles</button>
                         </td>
                     </tr>
                 `;
             }).join('');
-        });
-
-        // ============================================
-        // VER DETALLE DE CUENTA (con opción de corrección)
-        // ============================================
-        function verDetalleCuenta(codigo) {
-            const cuenta = cuentasPUC.find(c => c.codigo === codigo);
-            if (!cuenta) return;
-            
-            const movimientosCuenta = movimientos.filter(m => m.cuenta === codigo);
-            
-            let contenido = `
-                <div style="margin-bottom: 1rem;">
-                    <p><strong>Código:</strong> ${cuenta.codigo}</p>
-                    <p><strong>Nombre:</strong> ${cuenta.nombre}</p>
-                    <p><strong>Naturaleza:</strong> ${cuenta.naturaleza}</p>
-                    <p><strong>Saldo actual:</strong> $${(cuenta.saldoDebito - cuenta.saldoCredito).toLocaleString()}</p>
-                </div>
-                
-                <h4 style="color: #ff6b6b; margin-bottom: 1rem;">Movimientos del período</h4>
-                <div class="movimientos-cuenta">
-            `;
-            
-            if (movimientosCuenta.length === 0) {
-                contenido += '<p>No hay movimientos en este período</p>';
-            } else {
-                movimientosCuenta.forEach(m => {
-                    contenido += `
-                        <div class="movimiento-item">
-                            <div style="display: flex; justify-content: space-between;">
-                                <span><strong>${new Date(m.fecha).toLocaleDateString()}</strong> - ${m.tipo}</span>
-                                <span>${m.documento}</span>
-                            </div>
-                            <p>${m.concepto}</p>
-                            <div style="display: flex; gap: 1rem; margin-top: 0.5rem;">
-                                <span class="puc-debito">Débito: $${m.debito.toLocaleString()}</span>
-                                <span class="puc-credito">Crédito: $${m.credito.toLocaleString()}</span>
-                            </div>
-                        </div>
-                    `;
-                });
-            }
-            
-            contenido += `
-                </div>
-                
-                <h4 style="color: #ff6b6b; margin: 1rem 0;">Corregir cuenta (solo administrador)</h4>
-                <div style="background: #fff9fc; padding: 1rem; border-radius: 10px;">
-                    <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
-                        <input type="number" id="correccion-debito" placeholder="Débito" class="campo-editable">
-                        <input type="number" id="correccion-credito" placeholder="Crédito" class="campo-editable">
-                    </div>
-                    <textarea id="correccion-concepto" placeholder="Motivo de la corrección" style="width:100%; padding:0.5rem; border:2px solid #ffe4e9; border-radius:10px; margin-bottom:1rem;"></textarea>
-                    <button class="btn-guardar" onclick="corregirCuenta('${codigo}')">Aplicar corrección</button>
-                </div>
-            `;
-            
-            document.getElementById('modal-titulo-cuenta').textContent = `Detalle: ${cuenta.nombre}`;
-            document.getElementById('modal-contenido-cuenta').innerHTML = contenido;
-            document.getElementById('modal-cuenta').classList.add('active');
         }
 
-        function corregirCuenta(codigo) {
-            const debito = parseFloat(document.getElementById('correccion-debito').value) || 0;
-            const credito = parseFloat(document.getElementById('correccion-credito').value) || 0;
-            const concepto = document.getElementById('correccion-concepto').value;
+        function actualizarResumen() {
+            let totalActivos = 0;
+                        let totalActivos = 0;
+            let totalPasivos = 0;
+            let totalPatrimonio = 0;
+            let totalIngresos = 0;
+            let totalGastos = 0;
+
+            puc.forEach(cuenta => {
+                if (cuenta.clase === 'activo') {
+                    totalActivos += cuenta.saldo;
+                } else if (cuenta.clase === 'pasivo') {
+                    totalPasivos += Math.abs(cuenta.saldo);
+                } else if (cuenta.clase === 'patrimonio') {
+                    totalPatrimonio += cuenta.saldo;
+                } else if (cuenta.clase === 'ingreso') {
+                    totalIngresos += cuenta.saldo;
+                } else if (cuenta.clase === 'gasto') {
+                    totalGastos += Math.abs(cuenta.saldo);
+                }
+            });
+
+            const utilidad = totalIngresos - totalGastos;
+
+            document.getElementById('total-activos').textContent = `$${totalActivos.toLocaleString()}`;
+            document.getElementById('total-pasivos').textContent = `$${totalPasivos.toLocaleString()}`;
+            document.getElementById('total-patrimonio').textContent = `$${totalPatrimonio.toLocaleString()}`;
+            document.getElementById('utilidad').textContent = `$${utilidad.toLocaleString()}`;
+            document.getElementById('utilidad').className = `resumen-valor ${utilidad >= 0 ? 'positivo' : 'negativo'}`;
+
+            // Cargar balance
+            cargarBalance();
+            cargarPyG();
+            cargarAsientos();
+        }
+
+        function cargarBalance() {
+            const activos = puc.filter(c => c.clase === 'activo' && c.saldo !== 0);
+            const pasivos = puc.filter(c => c.clase === 'pasivo' && c.saldo !== 0);
+            const patrimonio = puc.filter(c => c.clase === 'patrimonio' && c.saldo !== 0);
+
+            let activosHTML = '';
+            let totalActivosDetalle = 0;
+            activos.forEach(a => {
+                activosHTML += `
+                    <div class="balance-line">
+                        <span>${a.codigo} - ${a.nombre}</span>
+                        <span class="puc-debito">$${Math.abs(a.saldo).toLocaleString()}</span>
+                    </div>
+                `;
+                totalActivosDetalle += Math.abs(a.saldo);
+            });
+
+            let pasivosHTML = '';
+            let totalPasivosDetalle = 0;
+            pasivos.forEach(p => {
+                pasivosHTML += `
+                    <div class="balance-line">
+                        <span>${p.codigo} - ${p.nombre}</span>
+                        <span class="puc-credito">$${Math.abs(p.saldo).toLocaleString()}</span>
+                    </div>
+                `;
+                totalPasivosDetalle += Math.abs(p.saldo);
+            });
+
+            let patrimonioHTML = '';
+            let totalPatrimonioDetalle = 0;
+            patrimonio.forEach(p => {
+                patrimonioHTML += `
+                    <div class="balance-line">
+                        <span>${p.codigo} - ${p.nombre}</span>
+                        <span>$${Math.abs(p.saldo).toLocaleString()}</span>
+                    </div>
+                `;
+                totalPatrimonioDetalle += Math.abs(p.saldo);
+            });
+
+            document.getElementById('activos-lista').innerHTML = activosHTML || '<div class="balance-line">No hay movimientos</div>';
+            document.getElementById('pasivos-lista').innerHTML = pasivosHTML || '<div class="balance-line">No hay movimientos</div>';
+            document.getElementById('patrimonio-lista').innerHTML = patrimonioHTML || '<div class="balance-line">No hay movimientos</div>';
             
-            if (debito === 0 && credito === 0) {
-                alert('Debe ingresar un valor');
+            document.getElementById('total-activos-detalle').textContent = `$${totalActivosDetalle.toLocaleString()}`;
+            document.getElementById('total-pasivos-detalle').textContent = `$${totalPasivosDetalle.toLocaleString()}`;
+            document.getElementById('total-patrimonio-detalle').textContent = `$${totalPatrimonioDetalle.toLocaleString()}`;
+        }
+
+        function cargarPyG() {
+            const ingresos = puc.filter(c => c.clase === 'ingreso' && c.saldo !== 0);
+            const gastos = puc.filter(c => c.clase === 'gasto' && c.saldo !== 0);
+
+            let ingresosHTML = '';
+            let totalIngresosDetalle = 0;
+            ingresos.forEach(i => {
+                ingresosHTML += `
+                    <div class="balance-line">
+                        <span>${i.codigo} - ${i.nombre}</span>
+                        <span class="puc-debito">$${Math.abs(i.saldo).toLocaleString()}</span>
+                    </div>
+                `;
+                totalIngresosDetalle += Math.abs(i.saldo);
+            });
+
+            let gastosHTML = '';
+            let totalGastosDetalle = 0;
+            gastos.forEach(g => {
+                gastosHTML += `
+                    <div class="balance-line">
+                        <span>${g.codigo} - ${g.nombre}</span>
+                        <span class="puc-credito">$${Math.abs(g.saldo).toLocaleString()}</span>
+                    </div>
+                `;
+                totalGastosDetalle += Math.abs(g.saldo);
+            });
+
+            document.getElementById('ingresos-lista').innerHTML = ingresosHTML || '<div class="balance-line">No hay ingresos</div>';
+            document.getElementById('gastos-lista').innerHTML = gastosHTML || '<div class="balance-line">No hay gastos</div>';
+            
+            document.getElementById('total-ingresos').textContent = `$${totalIngresosDetalle.toLocaleString()}`;
+            document.getElementById('total-gastos').textContent = `$${totalGastosDetalle.toLocaleString()}`;
+            
+            const utilidadNeta = totalIngresosDetalle - totalGastosDetalle;
+            document.getElementById('utilidad-neta').textContent = `$${utilidadNeta.toLocaleString()}`;
+            document.getElementById('utilidad-neta').className = utilidadNeta >= 0 ? 'puc-debito' : 'puc-credito';
+        }
+
+        function cargarAsientos() {
+            const tbody = document.getElementById('asientos-body');
+            
+            if (movimientos.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No hay asientos en este período</td></tr>';
                 return;
             }
+
+            const movsPeriodo = movimientos
+                .filter(m => m.fecha >= fechaInicio && m.fecha <= fechaFin)
+                .sort((a, b) => b.fecha - a.fecha);
+
+            tbody.innerHTML = movsPeriodo.map(m => `
+                <tr>
+                    <td>${m.fecha.toLocaleDateString()}</td>
+                    <td>${m.comprobante}</td>
+                    <td>${m.cuenta} - ${puc.find(c => c.codigo === m.cuenta)?.nombre || ''}</td>
+                    <td>${m.detalle}</td>
+                    <td class="puc-debito">${m.debito > 0 ? `$${m.debito.toLocaleString()}` : '-'}</td>
+                    <td class="puc-credito">${m.credito > 0 ? `$${m.credito.toLocaleString()}` : '-'}</td>
+                </tr>
+            `).join('');
+        }
+
+        // ===== FUNCIONES DE MODAL =====
+        function verCuenta(codigo) {
+            cuentaActual = puc.find(c => c.codigo === codigo);
+            if (!cuentaActual) return;
+
+            document.getElementById('modal-cuenta-titulo').textContent = `${codigo} - ${cuentaActual.nombre}`;
             
-            const cuenta = cuentasPUC.find(c => c.codigo === codigo);
-            if (!cuenta) return;
+            const info = document.getElementById('modal-cuenta-info');
+            info.innerHTML = `
+                <p><strong>Clase:</strong> ${cuentaActual.clase}</p>
+                <p><strong>Naturaleza:</strong> ${cuentaActual.tipo === 'debito' ? 'Débito' : 'Crédito'}</p>
+                <p><strong>Saldo actual:</strong> <span style="color:${cuentaActual.saldo >= 0 ? '#27ae60' : '#ff4757'}; font-weight:bold;">$${Math.abs(cuentaActual.saldo).toLocaleString()}</span></p>
+            `;
+
+            const movsCuenta = movimientos
+                .filter(m => m.cuenta === codigo && m.fecha >= fechaInicio && m.fecha <= fechaFin)
+                .sort((a, b) => b.fecha - a.fecha);
+
+            const tbody = document.getElementById('modal-movimientos-body');
             
-            cuenta.saldoDebito += debito;
-            cuenta.saldoCredito += credito;
-            
-            movimientos.push({
-                fecha: new Date(),
-                tipo: 'Corrección manual',
-                concepto: concepto || 'Ajuste contable',
-                cuenta: codigo,
-                cuentaNombre: cuenta.nombre,
-                debito: debito,
-                credito: credito,
-                documento: 'AJ-' + Date.now()
-            });
-            
-            mostrarPUC('todos');
-            cerrarModalCuenta();
-            mostrarAlerta('✅ Corrección aplicada');
+            if (movsCuenta.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">No hay movimientos en este período</td></tr>';
+            } else {
+                tbody.innerHTML = movsCuenta.map(m => `
+                    <tr>
+                        <td>${m.fecha.toLocaleDateString()}</td>
+                        <td>${m.comprobante}</td>
+                        <td>${m.detalle}</td>
+                        <td class="puc-debito">${m.debito > 0 ? `$${m.debito.toLocaleString()}` : '-'}</td>
+                        <td class="puc-credito">${m.credito > 0 ? `$${m.credito.toLocaleString()}` : '-'}</td>
+                    </tr>
+                `).join('');
+            }
+
+            document.getElementById('modal-cuenta').classList.add('active');
         }
 
         function cerrarModalCuenta() {
             document.getElementById('modal-cuenta').classList.remove('active');
         }
 
-        function mostrarAlerta(mensaje) {
-            const alerta = document.createElement('div');
-            alerta.className = 'alert success';
-            alerta.textContent = mensaje;
-            alerta.style.display = 'block';
-            document.querySelector('.contabilidad-container').insertBefore(alerta, document.querySelector('.puc-section'));
+        function corregirCuenta() {
+            if (!cuentaActual) return;
             
-            setTimeout(() => {
-                alerta.remove();
-            }, 3000);
+            const nuevoSaldo = prompt(`Ingrese el nuevo saldo para ${cuentaActual.codigo} - ${cuentaActual.nombre}:`, cuentaActual.saldo);
+            if (nuevoSaldo === null) return;
+
+            const saldoNum = parseFloat(nuevoSaldo);
+            if (isNaN(saldoNum)) {
+                alert('Ingrese un número válido');
+                return;
+            }
+
+            // Aquí puedes guardar la corrección en una tabla de ajustes
+            cuentaActual.saldo = saldoNum;
+            
+            // Actualizar vista
+            cargarPUC();
+            actualizarResumen();
+            cerrarModalCuenta();
+            
+            alert('✅ Corrección aplicada (solo en memoria)');
         }
 
-                // ============================================
-        // CAMBIAR PERÍODO
-        // ============================================
+        // ===== FUNCIONES DE TABS =====
+        function cambiarTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            document.getElementById('tab-puc').style.display = 'none';
+            document.getElementById('tab-balance').style.display = 'none';
+            document.getElementById('tab-pyg').style.display = 'none';
+            document.getElementById('tab-asientos').style.display = 'none';
+
+            if (tab === 'puc') {
+                document.getElementById('tab-puc').style.display = 'block';
+            } else if (tab === 'balance') {
+                document.getElementById('tab-balance').style.display = 'block';
+            } else if (tab === 'pyg') {
+                document.getElementById('tab-pyg').style.display = 'block';
+            } else if (tab === 'asientos') {
+                document.getElementById('tab-asientos').style.display = 'block';
+            }
+        }
+
+        // ===== FUNCIONES DE PERÍODO =====
         function cambiarPeriodo(periodo) {
             const hoy = new Date();
             
-            switch(periodo) {
-                case 'mes':
-                    fechaInicio = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
-                    fechaFin = new Date(hoy.getFullYear(), hoy.getMonth() + 1, 0, 23, 59, 59);
-                    break;
-                case 'trimestre':
-                    fechaInicio = new Date(hoy.getFullYear(), hoy.getMonth() - 2, 1);
-                    fechaFin = new Date(hoy.getFullYear(), hoy.getMonth() + 1, 0, 23, 59, 59);
-                    break;
-                case 'año':
-                    fechaInicio = new Date(hoy.getFullYear(), 0, 1);
-                    fechaFin = new Date(hoy.getFullYear(), 11, 31, 23, 59, 59);
-                    break;
+            if (periodo === 'mes') {
+                fechaInicio = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
+                fechaFin = new Date(hoy.getFullYear(), hoy.getMonth() + 1, 0, 23, 59, 59);
+            } else if (periodo === 'trimestre') {
+                fechaInicio = new Date(hoy.getFullYear(), hoy.getMonth() - 2, 1);
+                fechaFin = new Date(hoy.getFullYear(), hoy.getMonth() + 1, 0, 23, 59, 59);
+            } else if (periodo === 'anio') {
+                fechaInicio = new Date(hoy.getFullYear(), 0, 1);
+                fechaFin = new Date(hoy.getFullYear(), 11, 31, 23, 59, 59);
+            } else if (periodo === 'todo') {
+                fechaInicio = new Date(2020, 0, 1);
+                fechaFin = new Date();
             }
-            
-            document.querySelectorAll('.periodo-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
+
+            document.querySelectorAll('.periodo-btn').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
             
             cargarFechas();
@@ -881,9 +1164,21 @@
         function cambiarPeriodoPersonalizado() {
             fechaInicio = new Date(document.getElementById('fecha-inicio').value);
             fechaFin = new Date(document.getElementById('fecha-fin').value);
-            fechaFin.setHours(23, 59, 59, 999);
+            fechaFin.setHours(23, 59, 59);
+            
             calcularSaldos();
         }
+
+        // Buscador PUC
+        document.getElementById('buscar-puc')?.addEventListener('input', (e) => {
+            const busqueda = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('#puc-body tr');
+            
+            rows.forEach(row => {
+                const texto = row.textContent.toLowerCase();
+                row.style.display = texto.includes(busqueda) ? '' : 'none';
+            });
+        });
     </script>
 </body>
 </html>
