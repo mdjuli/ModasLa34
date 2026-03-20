@@ -563,7 +563,7 @@
     <!-- Header con información del usuario -->
     <header class="admin-header">
         <h1>
-            🌸 MODAS LA 34
+             MODAS LA 34
             <span>Administración</span>
         </h1>
         <div class="user-info">
@@ -611,7 +611,7 @@
                 </div>
             </div>
 
-            <!-- Formulario de compra -->
+            <!-- ===== NUEVO FORMULARIO DE COMPRAS CON PRODUCTOS ===== -->
             <div id="form-compra" class="form-container">
                 <h2 style="color: #ff6b6b; margin-bottom: 1.5rem;">🛍️ Registrar Nueva Compra</h2>
                 <form onsubmit="event.preventDefault(); guardarCompra()">
@@ -627,9 +627,42 @@
                         <input type="date" id="compra-fecha" required>
                     </div>
                     
+                    <!-- NUEVO: Selector de producto -->
                     <div class="form-group">
                         <label>Producto:</label>
-                        <input type="text" id="compra-producto" placeholder="Nombre del producto" required>
+                        <select id="compra-producto-select" onchange="cargarVariantesProducto()">
+                            <option value="">Seleccionar producto existente (opcional)</option>
+                        </select>
+                        <small style="color: #ff9a9e;">Si seleccionas un producto, se actualizará su stock automáticamente</small>
+                    </div>
+                    
+                    <!-- NUEVO: Selector de variante (talla/color) -->
+                    <div id="compra-variante-container" style="display: none;">
+                        <div class="form-group">
+                            <label>Variante (Talla/Color):</label>
+                            <select id="compra-variante-select">
+                                <option value="">Seleccionar variante</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Campos manuales (si no se selecciona producto) -->
+                    <div id="compra-manual-container">
+                        <div class="form-group">
+                            <label>Nombre del producto (manual):</label>
+                            <input type="text" id="compra-producto-manual" placeholder="Ej: Camisa básica">
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Talla:</label>
+                                <input type="text" id="compra-talla" placeholder="Ej: M, L, XL, 6, 8...">
+                            </div>
+                            <div class="form-group">
+                                <label>Color:</label>
+                                <input type="text" id="compra-color" placeholder="Ej: Azul">
+                            </div>
+                        </div>
                     </div>
                     
                     <div class="form-row">
