@@ -154,114 +154,175 @@ async function cargarDatosIniciales() {
 }
 
 // ============================================
-// FUNCIONES PARA VARIANTES (PRODUCTOS)
+// NUEVAS FUNCIONES PARA TALLAS Y COLORES
 // ============================================
 
-function agregarVariante() {
-    const container = document.getElementById('variantes-container');
-    if (!container) return;
+let tallaCount = 0;
+let colorCounters = {};
+
+// Función para agregar una nueva talla
+function agregarTalla() {
+    const container = document.getElementById('tallas-container');
+    const tallaId = tallaCount;
+    colorCounters[tallaId] = 0;
     
-    const varianteId = varianteCount;
-    
-    const varianteHTML = `
-        <div class="variante-card" id="variante-${varianteId}">
-            <div class="variante-header">
-                <h4>📦 Variante #${varianteId + 1}</h4>
-                ${varianteId > 0 ? 
-                    `<button type="button" onclick="eliminarVariante(${varianteId})" class="remove-variante">✖️ Eliminar</button>` 
+    const tallaHTML = `
+        <div class="talla-card" id="talla-${tallaId}" style="
+            background: #fff9fc;
+            border: 2px solid #ffe4e9;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        ">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h4 style="color: #ff6b6b; margin:0;">📏 Talla <span class="talla-numero">${tallaId + 1}</span></h4>
+                ${tallaId > 0 ? 
+                    `<button type="button" onclick="eliminarTalla(${tallaId})" class="remove-variante">✖️ Eliminar talla</button>` 
                     : ''
                 }
             </div>
             
-            <div class="form-row">
-                <div class="form-group" style="flex:1;">
-                    <label>Talla:</label>
-                    <input type="text" id="variante-${varianteId}-talla" placeholder="Ej: 6, 8, 10, S, M, L" required>
-                </div>
-                <div class="form-group" style="flex:1.5;">
-                    <label>Color (hexadecimal):</label>
-                    <div style="display: flex; align-items: center; gap: 5px;">
-                        <input type="text" id="variante-${varianteId}-color-hex" placeholder="Ej: #ff0000" value="#cccccc" style="flex:1;">
-                        <span class="color-muestra" id="muestra-${varianteId}" style="background-color: #cccccc;"></span>
-                    </div>
-                </div>
-                <div class="form-group" style="flex:1.5;">
-                    <label>Nombre del color:</label>
-                    <input type="text" id="variante-${varianteId}-color-nombre" placeholder="Ej: Azul">
-                </div>
+            <div class="form-group">
+                <label>Nombre de la talla:</label>
+                <input type="text" id="talla-${tallaId}-nombre" placeholder="Ej: S, M, L, XL, 6, 8, 10..." required>
             </div>
             
-            <div class="form-row">
-                <div class="form-group" style="flex:1;">
-                    <label>Stock:</label>
-                    <input type="number" id="variante-${varianteId}-stock" min="0" value="0" required>
+            <div style="margin: 1rem 0;">
+                <h5 style="color: #ff6b6b; margin-bottom: 0.5rem;">🎨 Colores para esta talla:</h5>
+                <div id="talla-${tallaId}-colores-container" class="colores-container-talla"></div>
+                <button type="button" onclick="agregarColorATalla(${tallaId})" class="add-btn" style="margin-top: 0.5rem;">
+                    ➕ Agregar color
+                </button>
+            </div>
+        </div>
+    `;
+    
+    container.insertAdjacentHTML('beforeend', tallaHTML);
+    
+    // Agregar un color por defecto
+    setTimeout(() => {
+        agregarColorATalla(tallaId);
+    }, 100);
+    
+    tallaCount++;
+}
+
+// Función para agregar un color a una talla específica
+function agregarColorATalla(tallaId) {
+    const container = document.getElementById(`talla-${tallaId}-colores-container`);
+    const colorId = colorCounters[tallaId];
+    
+    const colorHTML = `
+        <div class="color-row" id="talla-${tallaId}-color-${colorId}" style="
+            background: white;
+            border: 1px solid #ffe4e9;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        ">
+            <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+                <div style="flex: 2; min-width: 150px;">
+                                    <label style="font-size: 0.9rem; color: #ff6b6b;">Color:</label>
+                    <div style="display: flex; gap: 0.5rem; align-items: center;">
+                        <input type="color" id="talla-${tallaId}-color-${colorId}-hex" value="#ff0000" style="width: 50px; height: 40px; border: 2px solid #ffe4e9; border-radius: 10px;">
+                        <input type="text" id="talla-${tallaId}-color-${colorId}-nombre" placeholder="Nombre del color (ej: Rojo)" style="flex:1; padding:0.5rem; border:2px solid #ffe4e9; border-radius:10px;">
+                    </div>
                 </div>
-                <div class="form-group" style="flex:1;">
-                    <label>Precio venta:</label>
-                    <input type="number" id="variante-${varianteId}-precio" min="0" required>
+                
+                <div style="flex: 1; min-width: 120px;">
+                    <label style="font-size: 0.9rem; color: #ff6b6b;">Stock:</label>
+                    <input type="number" id="talla-${tallaId}-color-${colorId}-stock" value="0" min="0" style="width:100%; padding:0.5rem; border:2px solid #ffe4e9; border-radius:10px;">
                 </div>
-                <div class="form-group" style="flex:1;">
-                    <label>Precio compra:</label>
-                    <input type="number" id="variante-${varianteId}-precio-compra" min="0">
+                
+                <div style="flex: 1; min-width: 120px;">
+                    <label style="font-size: 0.9rem; color: #ff6b6b;">Precio:</label>
+                    <input type="number" id="talla-${tallaId}-color-${colorId}-precio" value="0" min="0" step="100" style="width:100%; padding:0.5rem; border:2px solid #ffe4e9; border-radius:10px;" required>
+                </div>
+                
+                <div style="flex: 1; min-width: 120px;">
+                    <label style="font-size: 0.9rem; color: #ff6b6b;">Precio compra:</label>
+                    <input type="number" id="talla-${tallaId}-color-${colorId}-precio-compra" value="0" min="0" step="100" style="width:100%; padding:0.5rem; border:2px solid #ffe4e9; border-radius:10px;">
+                </div>
+                
+                <div>
+                    <button type="button" onclick="eliminarColor(${tallaId}, ${colorId})" style="
+                        background: #ffe4e9;
+                        border: none;
+                        width: 40px;
+                        height: 40px;
+                        border-radius: 50%;
+                        cursor: pointer;
+                        color: #ff6b6b;
+                        font-size: 1.2rem;
+                    ">✖️</button>
                 </div>
             </div>
         </div>
     `;
     
-    container.insertAdjacentHTML('beforeend', varianteHTML);
-    
-    // Agregar evento para actualizar muestra de color
-    const colorInput = document.getElementById(`variante-${varianteId}-color-hex`);
-    if (colorInput) {
-        colorInput.addEventListener('input', function() {
-            const muestra = document.getElementById(`muestra-${varianteId}`);
-            if (muestra) {
-                muestra.style.backgroundColor = this.value;
-            }
-        });
-    }
-    
-    varianteCount++;
+    container.insertAdjacentHTML('beforeend', colorHTML);
+    colorCounters[tallaId]++;
 }
 
-function eliminarVariante(id) {
-    const element = document.getElementById(`variante-${id}`);
+// Función para eliminar una talla completa
+function eliminarTalla(tallaId) {
+    const element = document.getElementById(`talla-${tallaId}`);
+    if (element) {
+        element.remove();
+        delete colorCounters[tallaId];
+    }
+}
+
+// Función para eliminar un color específico
+function eliminarColor(tallaId, colorId) {
+    const element = document.getElementById(`talla-${tallaId}-color-${colorId}`);
     if (element) {
         element.remove();
     }
 }
 
-function getVariantesFromForm() {
-    const variantes = [];
+// Función para obtener los datos del formulario
+function getProductoDataFromForm() {
+    const tallas = [];
     
-    for (let i = 0; i < varianteCount; i++) {
-        const tallaInput = document.getElementById(`variante-${i}-talla`);
-        if (tallaInput && tallaInput.value.trim() !== '') {
-            const hexInput = document.getElementById(`variante-${i}-color-hex`);
-            const nombreInput = document.getElementById(`variante-${i}-color-nombre`);
-            const stockInput = document.getElementById(`variante-${i}-stock`);
-            const precioInput = document.getElementById(`variante-${i}-precio`);
-            const precioCompraInput = document.getElementById(`variante-${i}-precio-compra`);
+    for (let i = 0; i < tallaCount; i++) {
+        const tallaElement = document.getElementById(`talla-${i}-nombre`);
+        if (tallaElement && tallaElement.value.trim() !== '') {
+            const colores = [];
+            const colorCount = colorCounters[i] || 0;
             
-            let hexValue = hexInput?.value || '#cccccc';
-            if (!hexValue.startsWith('#')) {
-                hexValue = '#' + hexValue;
+            for (let j = 0; j < colorCount; j++) {
+                const colorNombre = document.getElementById(`talla-${i}-color-${j}-nombre`);
+                const colorHex = document.getElementById(`talla-${i}-color-${j}-hex`);
+                const stock = document.getElementById(`talla-${i}-color-${j}-stock`);
+                const precio = document.getElementById(`talla-${i}-color-${j}-precio`);
+                const precioCompra = document.getElementById(`talla-${i}-color-${j}-precio-compra`);
+                
+                // Solo agregar si el color tiene nombre o si se ha configurado algo
+                if (colorNombre && (colorNombre.value.trim() !== '' || (precio && precio.value > 0))) {
+                    colores.push({
+                        nombre: colorNombre.value.trim() || 'Color',
+                        codigo: colorHex ? colorHex.value : '#cccccc',
+                        stock: parseInt(stock?.value) || 0,
+                        precio: parseFloat(precio?.value) || 0,
+                        precioCompra: parseFloat(precioCompra?.value) || 0
+                    });
+                }
             }
             
-            variantes.push({
-                talla: tallaInput.value.trim(),
-                color_nombre: nombreInput?.value?.trim() || null,
-                color_codigo: hexValue,
-                stock: parseInt(stockInput?.value) || 0,
-                precio_venta: parseFloat(precioInput?.value) || 0,
-                precio_compra: parseFloat(precioCompraInput?.value) || 0
-            });
+            if (colores.length > 0) {
+                tallas.push({
+                    nombre: tallaElement.value.trim(),
+                    colores: colores
+                });
+            }
         }
     }
     
-    return variantes;
+    return tallas;
 }
 
+// Función guardar producto (actualizada)
 async function guardarProductoBase() {
     try {
         const token = JSON.parse(localStorage.getItem('admin_token'));
@@ -276,23 +337,23 @@ async function guardarProductoBase() {
             return;
         }
         
-        // 2. Obtener variantes
-        const variantes = getVariantesFromForm();
-        if (variantes.length === 0) {
-            mostrarAlerta('Debe agregar al menos una variante', 'error');
+        // 2. Obtener tallas y colores
+        const tallas = getProductoDataFromForm();
+        if (tallas.length === 0) {
+            mostrarAlerta('Debe agregar al menos una talla con colores', 'error');
             return;
         }
         
-        console.log('Guardando producto:', { codigo, nombre, categoria, variantes });
+        console.log('Guardando producto:', { codigo, nombre, categoria, tallas });
         
-        // 3. Verificar si estamos editando o creando
+        // 3. Verificar si estamos editando
         const formProducto = document.getElementById('form-producto');
         const editId = formProducto?.dataset.editId;
         
         let productoId;
         
         if (editId) {
-            // ACTUALIZAR producto existente
+            // Actualizar producto existente
             productoId = parseInt(editId);
             
             const productoBase = {
@@ -302,7 +363,7 @@ async function guardarProductoBase() {
                 imagen_url: document.getElementById('producto-imagen')?.value || null
             };
             
-            const updateResponse = await fetch(`${SUPABASE_URL}/rest/v1/productos_base?id=eq.${productoId}`, {
+            await fetch(`${SUPABASE_URL}/rest/v1/productos_base?id=eq.${productoId}`, {
                 method: 'PATCH',
                 headers: {
                     'apikey': SUPABASE_KEY,
@@ -312,12 +373,8 @@ async function guardarProductoBase() {
                 body: JSON.stringify(productoBase)
             });
             
-            if (!updateResponse.ok) {
-                throw new Error('Error al actualizar producto base');
-            }
-            
-            // Eliminar variantes antiguas
-            await fetch(`${SUPABASE_URL}/rest/v1/variantes_producto?producto_id=eq.${productoId}`, {
+            // Eliminar tallas y colores antiguos
+            await fetch(`${SUPABASE_URL}/rest/v1/producto_tallas?producto_id=eq.${productoId}`, {
                 method: 'DELETE',
                 headers: {
                     'apikey': SUPABASE_KEY,
@@ -326,7 +383,7 @@ async function guardarProductoBase() {
             });
             
         } else {
-            // CREAR nuevo producto
+            // Crear nuevo producto
             const productoBase = {
                 codigo: codigo,
                 nombre: nombre,
@@ -345,71 +402,61 @@ async function guardarProductoBase() {
                 body: JSON.stringify(productoBase)
             });
             
-            if (!response.ok) {
-                const error = await response.json();
-                throw new Error(error.message || 'Error al guardar producto base');
-            }
-            
+            if (!response.ok) throw new Error('Error al crear producto');
             const productoGuardado = await response.json();
             productoId = productoGuardado[0].id;
         }
         
-        // 4. Guardar variantes una por una con manejo de errores
-        let variantesGuardadas = 0;
-        let variantesConError = 0;
-        
-        for (const variante of variantes) {
-            try {
-                // Generar SKU único
-                const timestamp = Date.now();
-                const random = Math.floor(Math.random() * 1000);
-                const skuBase = `${codigo}-${variante.talla}-${variante.color_nombre || 'COLOR'}`.replace(/[^a-zA-Z0-9-]/g, '');
-                
-                const varianteData = {
+        // 4. Guardar tallas y colores
+        for (let i = 0; i < tallas.length; i++) {
+            const talla = tallas[i];
+            
+            // Insertar talla
+            const tallaResponse = await fetch(`${SUPABASE_URL}/rest/v1/producto_tallas`, {
+                method: 'POST',
+                headers: {
+                    'apikey': SUPABASE_KEY,
+                    'Authorization': `Bearer ${token.access_token}`,
+                    'Content-Type': 'application/json',
+                    'Prefer': 'return=representation'
+                },
+                body: JSON.stringify({
                     producto_id: productoId,
-                    talla: variante.talla,
-                    color_nombre: variante.color_nombre || null,
-                    color_codigo: variante.color_codigo || '#cccccc',
-                    stock: variante.stock || 0,
-                    precio_venta: variante.precio_venta || 0,
-                    precio_compra: variante.precio_compra || 0,
-                    sku: `${skuBase}-${timestamp}-${random}`
-                };
+                    talla: talla.nombre,
+                    orden: i
+                })
+            });
+            
+            if (!tallaResponse.ok) continue;
+            
+            const tallaData = await tallaResponse.json();
+            const tallaId = tallaData[0].id;
+            
+            // Insertar colores para esta talla
+            for (const color of talla.colores) {
+                const sku = `${codigo}-${talla.nombre}-${color.nombre}`.replace(/[^a-zA-Z0-9-]/g, '') + '-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
                 
-                const varResponse = await fetch(`${SUPABASE_URL}/rest/v1/variantes_producto`, {
+                await fetch(`${SUPABASE_URL}/rest/v1/talla_colores`, {
                     method: 'POST',
                     headers: {
                         'apikey': SUPABASE_KEY,
                         'Authorization': `Bearer ${token.access_token}`,
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(varianteData)
+                    body: JSON.stringify({
+                        talla_id: tallaId,
+                        color_nombre: color.nombre,
+                        color_codigo: color.codigo,
+                        stock: color.stock,
+                        precio_venta: color.precio,
+                        precio_compra: color.precioCompra || 0,
+                        sku: sku
+                    })
                 });
-                
-                if (varResponse.ok) {
-                    variantesGuardadas++;
-                } else {
-                    variantesConError++;
-                    const errorText = await varResponse.text();
-                    console.error('Error guardando variante:', variante, errorText);
-                }
-                
-                // Pequeña pausa para no saturar la API
-                await new Promise(resolve => setTimeout(resolve, 100));
-                
-            } catch (varError) {
-                variantesConError++;
-                console.error('Excepción guardando variante:', varError);
             }
         }
         
-        // 5. Mostrar mensaje final
-        if (variantesConError === 0) {
-            mostrarAlerta(`🌸 Producto guardado con ${variantesGuardadas} variantes`, 'success');
-        } else {
-            mostrarAlerta(`⚠️ Producto guardado con ${variantesGuardadas} variantes (${variantesConError} errores)`, 'error');
-        }
-        
+        mostrarAlerta(editId ? '🌸 Producto actualizado correctamente' : '🌸 Producto guardado correctamente', 'success');
         cerrarFormulario('producto');
         await cargarProductos();
         
@@ -419,38 +466,36 @@ async function guardarProductoBase() {
         document.getElementById('producto-categoria').value = '';
         document.getElementById('producto-imagen').value = '';
         
-        const container = document.getElementById('variantes-container');
+        const container = document.getElementById('tallas-container');
         if (container) {
             container.innerHTML = '';
         }
-        varianteCount = 0;
-        agregarVariante();
+        tallaCount = 0;
+        colorCounters = {};
         
-        // Limpiar ID de edición
-        if (formProducto) {
-            delete formProducto.dataset.editId;
+        // Agregar una talla por defecto
+        agregarTalla();
+        
+        if (editId) {
+            delete document.getElementById('form-producto').dataset.editId;
             const submitBtn = document.querySelector('#form-producto .submit-btn');
             if (submitBtn) {
-                submitBtn.textContent = '🌸 Guardar Producto con Variantes';
+                submitBtn.textContent = '🌸 Guardar Producto';
             }
         }
         
     } catch (error) {
-        console.error('Error general:', error);
+        console.error('Error:', error);
         mostrarAlerta('Error: ' + error.message, 'error');
     }
 }
 
+// Función cargar productos (actualizada)
 async function cargarProductos() {
     try {
-        // Usar la vista completa
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/vista_productos_completa`, {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/vista_productos_completa?order=nombre`, {
             headers: { 'apikey': SUPABASE_KEY }
         });
-        
-        if (!response.ok) {
-            throw new Error('Error al cargar productos');
-        }
         
         const productos = await response.json();
         console.log('Productos cargados:', productos);
@@ -478,16 +523,17 @@ async function cargarProductos() {
         }
         
         tbody.innerHTML = productos.map(p => {
-            const variantes = p.variantes || [];
-            const totalStock = variantes.reduce((sum, v) => sum + (v.stock || 0), 0);
-            const precios = variantes.map(v => v.precio_venta || 0);
-            const precioMin = precios.length ? Math.min(...precios) : 0;
-            const precioMax = precios.length ? Math.max(...precios) : 0;
-            const precioTexto = precioMin === precioMax ? 
-                `$${precioMin}` : 
-                `$${precioMin} - $${precioMax}`;
+            const tallas = p.tallas || [];
+            const numTallas = tallas.length;
+            const totalColores = tallas.reduce((sum, t) => sum + (t.colores?.length || 0), 0);
             
-            const stockBajo = variantes.filter(v => v.stock < 5).length;
+            // Verificar stock bajo
+            let stockBajo = 0;
+            tallas.forEach(t => {
+                t.colores?.forEach(c => {
+                    if (c.stock < 5) stockBajo++;
+                });
+            });
             
             return `
                 <tr ${stockBajo > 0 ? 'style="background: #fff0f3;"' : ''}>
@@ -505,16 +551,16 @@ async function cargarProductos() {
                         </span>
                     </td>
                     <td>
-                        <span title="${variantes.length} variantes">
-                            ${variantes.length} tallas/colores
+                        <span title="${numTallas} tallas, ${totalColores} colores">
+                            ${numTallas} tallas
                             ${stockBajo > 0 ? `<span style="color: #ff4757; margin-left: 5px;">⚠️${stockBajo}</span>` : ''}
                         </span>
                     </td>
-                    <td>${totalStock}</td>
-                    <td>${precioTexto}</td>
+                    <td>${p.stock_total || 0}</td>
+                    <td>$${(p.precio_min || 0).toLocaleString()} - $${(p.precio_max || 0).toLocaleString()}</td>
                     <td>
                         <button class="action-btn" onclick="editarProducto(${p.id})" title="Editar">✏️</button>
-                        <button class="action-btn" onclick="verVariantes(${p.id})" title="Ver variantes">📋</button>
+                        <button class="action-btn" onclick="verVariantes(${p.id})" title="Ver tallas y colores">📋</button>
                         <button class="action-btn delete-btn" onclick="eliminarProducto(${p.id})" title="Eliminar">🗑️</button>
                     </td>
                 </tr>
@@ -526,6 +572,7 @@ async function cargarProductos() {
     }
 }
 
+// Función para editar producto (actualizada)
 async function editarProducto(id) {
     try {
         // Cargar datos del producto
@@ -540,11 +587,11 @@ async function editarProducto(id) {
             return;
         }
         
-        // Cargar variantes
-        const varResponse = await fetch(`${SUPABASE_URL}/rest/v1/variantes_producto?producto_id=eq.${id}`, {
+        // Cargar tallas y colores
+        const tallasRes = await fetch(`${SUPABASE_URL}/rest/v1/producto_tallas?producto_id=eq.${id}`, {
             headers: { 'apikey': SUPABASE_KEY }
         });
-        const variantes = await varResponse.json();
+        const tallas = await tallasRes.json();
         
         // Mostrar formulario
         mostrarFormulario('producto');
@@ -555,73 +602,79 @@ async function editarProducto(id) {
         document.getElementById('producto-categoria').value = p.categoria || '';
         document.getElementById('producto-imagen').value = p.imagen_url || '';
         
-        // Limpiar y recrear variantes
-        const container = document.getElementById('variantes-container');
+        // Limpiar y recrear tallas
+        const container = document.getElementById('tallas-container');
         if (container) {
             container.innerHTML = '';
-            varianteCount = 0;
+            tallaCount = 0;
+            colorCounters = {};
             
-            variantes.forEach(v => {
-                const varianteId = varianteCount;
-                const varianteHTML = `
-                    <div class="variante-card" id="variante-${varianteId}">
-                        <div class="variante-header">
-                            <h4>📦 Variante #${varianteId + 1}</h4>
-                            <button type="button" onclick="eliminarVariante(${varianteId})" class="remove-variante">✖️ Eliminar</button>
-                        </div>
-                        
-                        <div class="form-row">
-                            <div class="form-group" style="flex:1;">
-                                <label>Talla:</label>
-                                <input type="text" id="variante-${varianteId}-talla" value="${v.talla || ''}" required>
-                            </div>
-                            <div class="form-group" style="flex:1.5;">
-                                <label>Color (hex):</label>
-                                <div style="display: flex; align-items: center; gap: 5px;">
-                                    <input type="text" id="variante-${varianteId}-color-hex" value="${v.color_codigo || '#cccccc'}" style="flex:1;">
-                                    <span class="color-muestra" id="muestra-${varianteId}" style="background-color: ${v.color_codigo || '#cccccc'};"></span>
+            for (const talla of tallas) {
+                const tallaId = tallaCount;
+                
+                // Crear la talla
+                agregarTalla();
+                
+                // Esperar a que se cree el DOM
+                setTimeout(async () => {
+                    document.getElementById(`talla-${tallaId}-nombre`).value = talla.talla;
+                    
+                    // Cargar colores de esta talla
+                    const coloresRes = await fetch(`${SUPABASE_URL}/rest/v1/talla_colores?talla_id=eq.${talla.id}`, {
+                        headers: { 'apikey': SUPABASE_KEY }
+                    });
+                    const colores = await coloresRes.json();
+                    
+                    // Eliminar el color por defecto
+                    const containerColores = document.getElementById(`talla-${tallaId}-colores-container`);
+                    containerColores.innerHTML = '';
+                    
+                    // Agregar colores existentes
+                    for (const color of colores) {
+                        const colorId = colorCounters[tallaId] || 0;
+                        const colorHTML = `
+                            <div class="color-row" id="talla-${tallaId}-color-${colorId}" style="background: white; border:1px solid #ffe4e9; border-radius:10px; padding:1rem; margin-bottom:1rem;">
+                                <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+                                    <div style="flex:2; min-width:150px;">
+                                        <label style="font-size:0.9rem; color:#ff6b6b;">Color:</label>
+                                        <div style="display:flex; gap:0.5rem; align-items:center;">
+                                            <input type="color" id="talla-${tallaId}-color-${colorId}-hex" value="${color.color_codigo || '#ff0000'}" style="width:50px; height:40px; border:2px solid #ffe4e9; border-radius:10px;">
+                                            <input type="text" id="talla-${tallaId}-color-${colorId}-nombre" value="${color.color_nombre || ''}" placeholder="Nombre del color" style="flex:1; padding:0.5rem; border:2px solid #ffe4e9; border-radius:10px;">
+                                        </div>
+                                    </div>
+                                    <div style="flex:1; min-width:120px;">
+                                        <label style="font-size:0.9rem; color:#ff6b6b;">Stock:</label>
+                                        <input type="number" id="talla-${tallaId}-color-${colorId}-stock" value="${color.stock || 0}" min="0" style="width:100%; padding:0.5rem; border:2px solid #ffe4e9; border-radius:10px;">
+                                    </div>
+                                    <div style="flex:1; min-width:120px;">
+                                        <label style="font-size:0.9rem; color:#ff6b6b;">Precio:</label>
+                                        <input type="number" id="talla-${tallaId}-color-${colorId}-precio" value="${color.precio_venta || 0}" min="0" style="width:100%; padding:0.5rem; border:2px solid #ffe4e9; border-radius:10px;" required>
+                                    </div>
+                                    <div style="flex:1; min-width:120px;">
+                                        <label style="font-size:0.9rem; color:#ff6b6b;">Precio compra:</label>
+                                        <input type="number" id="talla-${tallaId}-color-${colorId}-precio-compra" value="${color.precio_compra || 0}" min="0" style="width:100%; padding:0.5rem; border:2px solid #ffe4e9; border-radius:10px;">
+                                    </div>
+                                    <div>
+                                        <button type="button" onclick="eliminarColor(${tallaId}, ${colorId})" style="background:#ffe4e9; border:none; width:40px; height:40px; border-radius:50%; cursor:pointer; color:#ff6b6b;">✖️</button>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="form-group" style="flex:1.5;">
-                                <label>Nombre color:</label>
-                                <input type="text" id="variante-${varianteId}-color-nombre" value="${v.color_nombre || ''}">
-                            </div>
-                        </div>
-                        
-                        <div class="form-row">
-                            <div class="form-group" style="flex:1;">
-                                <label>Stock:</label>
-                                <input type="number" id="variante-${varianteId}-stock" value="${v.stock || 0}" min="0" required>
-                            </div>
-                            <div class="form-group" style="flex:1;">
-                                <label>Precio venta:</label>
-                                <input type="number" id="variante-${varianteId}-precio" value="${v.precio_venta || 0}" required>
-                            </div>
-                            <div class="form-group" style="flex:1;">
-                                <label>Precio compra:</label>
-                                <input type="number" id="variante-${varianteId}-precio-compra" value="${v.precio_compra || 0}">
-                            </div>
-                        </div>
-                    </div>
-                `;
-                container.insertAdjacentHTML('beforeend', varianteHTML);
+                        `;
+                        containerColores.insertAdjacentHTML('beforeend', colorHTML);
+                        colorCounters[tallaId]++;
+                    }
+                    
+                    // Agregar botón para nuevo color
+                    const btnHTML = `<button type="button" onclick="agregarColorATalla(${tallaId})" class="add-btn" style="margin-top:0.5rem;">➕ Agregar color</button>`;
+                    containerColores.insertAdjacentHTML('beforeend', btnHTML);
+                    
+                }, 200 * (tallaId + 1)); // Delay para evitar conflictos
                 
-                // Agregar evento para muestra de color
-                const colorInput = document.getElementById(`variante-${varianteId}-color-hex`);
-                if (colorInput) {
-                    colorInput.addEventListener('input', function() {
-                        const muestra = document.getElementById(`muestra-${varianteId}`);
-                        if (muestra) {
-                            muestra.style.backgroundColor = this.value;
-                        }
-                    });
-                }
-                
-                varianteCount++;
-            });
+                tallaCount++;
+            }
         }
         
-        // Guardar ID para actualizar
+        // Guardar ID para editar
         document.getElementById('form-producto').dataset.editId = id;
         
         // Cambiar texto del botón
@@ -636,70 +689,13 @@ async function editarProducto(id) {
     }
 }
 
-async function eliminarProducto(id) {
-    if (!confirm('¿Estás segura de eliminar este producto? También se eliminarán todas sus variantes.')) {
-        return;
+// Inicializar con una talla por defecto
+setTimeout(() => {
+    if (document.getElementById('tallas-container') && document.getElementById('tallas-container').children.length === 0) {
+        agregarTalla();
     }
-    
-    try {
-        const token = JSON.parse(localStorage.getItem('admin_token'));
-        
-        // Eliminar producto base (las variantes se eliminan en cascada por ON DELETE CASCADE)
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/productos_base?id=eq.${id}`, {
-            method: 'DELETE',
-            headers: {
-                'apikey': SUPABASE_KEY,
-                'Authorization': `Bearer ${token.access_token}`
-            }
-        });
-        
-        if (response.ok) {
-            mostrarAlerta('✅ Producto eliminado correctamente', 'success');
-            await cargarProductos();
-        } else {
-            mostrarAlerta('Error al eliminar el producto', 'error');
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        mostrarAlerta('Error de conexión', 'error');
-    }
-}
-
-function verVariantes(id) {
-    // Buscar el producto
-    fetch(`${SUPABASE_URL}/rest/v1/vista_productos_completa?id=eq.${id}`, {
-        headers: { 'apikey': SUPABASE_KEY }
-    })
-    .then(res => res.json())
-    .then(data => {
-        if (data.length === 0) return;
-        
-        const producto = data[0];
-        const variantes = producto.variantes || [];
-        
-        let mensaje = `📋 VARIANTES DE ${producto.nombre}\n`;
-        mensaje += `Código: ${producto.codigo}\n`;
-        mensaje += `Categoría: ${producto.categoria}\n`;
-        mensaje += `Stock total: ${producto.stock_total}\n`;
-        mensaje += `Precio: $${producto.precio_min} - $${producto.precio_max}\n`;
-        mensaje += `\n📦 DETALLE POR VARIANTE:\n`;
-        
-        variantes.forEach((v, i) => {
-            mensaje += `\n${i+1}. Talla: ${v.talla}\n`;
-            mensaje += `   Color: ${v.color_nombre || 'No especificado'} (${v.color_codigo || 'N/A'})\n`;
-            mensaje += `   Stock: ${v.stock}\n`;
-            mensaje += `   Precio: $${v.precio_venta}\n`;
-            mensaje += `   SKU: ${v.sku}\n`;
-        });
-        
-        alert(mensaje);
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        mostrarAlerta('Error al cargar variantes', 'error');
-    });
-}
-
+}, 500);
+                   
 // ============================================
 // FUNCIÓN PARA VER DETALLE DE VARIANTES (MEJORADA)
 // ============================================
