@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🌸 Contabilidad - Mi Local de Ropa</title>
+    <title>📊 Contabilidad - Modas La 34</title>
     <link rel="stylesheet" href="../css/estilo-comun.css">
     <style>
         * {
@@ -37,46 +36,6 @@
             gap: 10px;
         }
 
-        .contabilidad-header h1 span {
-            font-size: 1rem;
-            background: #ff6b6b;
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-weight: normal;
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-        }
-
-        .fecha-selector {
-            background: rgba(255,255,255,0.2);
-            padding: 0.5rem 1rem;
-            border-radius: 50px;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .fecha-selector input {
-            background: transparent;
-            border: 1px solid rgba(255,255,255,0.3);
-            color: white;
-            padding: 0.3rem 0.5rem;
-            border-radius: 5px;
-        }
-
-        .fecha-selector button {
-            background: #ff6b6b;
-            border: none;
-            color: white;
-            padding: 0.3rem 1rem;
-            border-radius: 50px;
-            cursor: pointer;
-        }
-
         .volver-btn {
             background: rgba(255,255,255,0.2);
             color: white;
@@ -85,7 +44,6 @@
             border-radius: 50px;
             font-weight: 600;
             transition: all 0.3s;
-            border: 1px solid rgba(255,255,255,0.3);
         }
 
         .volver-btn:hover {
@@ -100,6 +58,59 @@
             margin: 0 auto;
         }
 
+        /* Selector de período */
+        .periodo-selector {
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+            border: 1px solid #ffe4e9;
+            box-shadow: 0 10px 25px rgba(255,182,193,0.2);
+        }
+
+        .periodo-btn {
+            background: #fff0f3;
+            border: 2px solid #ffe4e9;
+            padding: 0.5rem 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 500;
+            color: #ff6b6b;
+            transition: all 0.3s;
+        }
+
+        .periodo-btn:hover, .periodo-btn.active {
+            background: #ffb6c1;
+            color: white;
+            border-color: #ff9a9e;
+        }
+
+        .periodo-personalizado {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            margin-left: auto;
+        }
+
+        .periodo-personalizado input {
+            padding: 0.5rem;
+            border: 2px solid #ffe4e9;
+            border-radius: 10px;
+        }
+
+        .aplicar-btn {
+            background: #ff9a9e;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            cursor: pointer;
+        }
+
         /* Tarjetas de resumen */
         .resumen-grid {
             display: grid;
@@ -112,30 +123,14 @@
             background: white;
             border-radius: 20px;
             padding: 1.5rem;
-            box-shadow: 0 10px 25px rgba(255, 182, 193, 0.2);
+            box-shadow: 0 10px 25px rgba(255,182,193,0.2);
             border: 1px solid #ffe4e9;
-            transition: transform 0.3s;
         }
 
-        .resumen-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .resumen-card.ingresos {
-            border-bottom: 5px solid #27ae60;
-        }
-
-        .resumen-card.egresos {
-            border-bottom: 5px solid #ff6b6b;
-        }
-
-        .resumen-card.balance {
-            border-bottom: 5px solid #ff9a9e;
-        }
-
-        .resumen-card.iva {
-            border-bottom: 5px solid #f39c12;
-        }
+        .resumen-card.ingresos { border-bottom: 5px solid #27ae60; }
+        .resumen-card.egresos { border-bottom: 5px solid #ff6b6b; }
+        .resumen-card.balance { border-bottom: 5px solid #ff9a9e; }
+        .resumen-card.iva { border-bottom: 5px solid #f39c12; }
 
         .card-header {
             display: flex;
@@ -150,7 +145,7 @@
         }
 
         .card-icon {
-            font-size: 1.8rem;
+            font-size: 2rem;
         }
 
         .card-valor {
@@ -159,176 +154,15 @@
             margin-bottom: 0.5rem;
         }
 
-        .card-valor.positivo {
-            color: #27ae60;
-        }
-
-        .card-valor.negativo {
-            color: #ff4757;
-        }
-
-        .card-comparativo {
-            font-size: 0.9rem;
-            color: #a5a5a5;
-        }
-
-        .card-comparativo span {
-            font-weight: 600;
-        }
-
-        /* Selector de período */
-        .periodo-selector {
-            background: white;
-            border-radius: 20px;
-            padding: 1rem 1.5rem;
-            margin-bottom: 2rem;
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-            align-items: center;
-            border: 1px solid #ffe4e9;
-        }
-
-        .periodo-btn {
-            background: #fff0f3;
-            border: 2px solid #ffe4e9;
-            padding: 0.5rem 1.2rem;
-            border-radius: 50px;
-            cursor: pointer;
-            font-weight: 500;
-            color: #ff6b6b;
-            transition: all 0.3s;
-        }
-
-        .periodo-btn:hover {
-            background: #ffb6c1;
-            color: white;
-            border-color: #ff9a9e;
-        }
-
-        .periodo-btn.active {
-            background: #ffb6c1;
-            color: white;
-            border-color: #ff9a9e;
-        }
-
-        .periodo-personalizado {
-            display: flex;
-            gap: 0.5rem;
-            align-items: center;
-            margin-left: auto;
-        }
-
-        .periodo-personalizado input {
-            padding: 0.4rem;
-            border: 2px solid #ffe4e9;
-            border-radius: 10px;
-        }
-
-        .aplicar-btn {
-            background: #ff9a9e;
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 50px;
-            cursor: pointer;
-        }
-
-        /* Gráficos */
-        .graficos-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .grafico-card {
-            background: white;
-            border-radius: 20px;
-            padding: 1.5rem;
-            box-shadow: 0 10px 25px rgba(255, 182, 193, 0.2);
-            border: 1px solid #ffe4e9;
-        }
-
-        .grafico-card h3 {
-            color: #ff6b6b;
-            margin-bottom: 1rem;
-        }
-
-        .grafico-barras {
-            display: flex;
-            justify-content: space-around;
-            align-items: flex-end;
-            height: 200px;
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        .barra-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            flex: 1;
-        }
-
-        .barra {
-            width: 40px;
-            background: linear-gradient(to top, #ff9a9e, #fad0c4);
-            border-radius: 10px 10px 0 0;
-            transition: height 0.3s;
-            min-height: 10px;
-        }
-
-        .barra-label {
-            margin-top: 0.5rem;
-            color: #ff6b6b;
-            font-weight: 500;
-        }
-
-        .barra-valor {
-            font-size: 0.8rem;
-            color: #a5a5a5;
-        }
-
-        .grafico-pastel {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 200px;
-            position: relative;
-        }
-
-        .pastel-segmento {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            background: conic-gradient(#ff9a9e 0deg 200deg, #ffb6c1 200deg 300deg, #ffe4e9 300deg 360deg);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-        .pastel-leyenda {
-            margin-left: 1rem;
-        }
-
-        .leyenda-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .leyenda-color {
-            width: 15px;
-            height: 15px;
-            border-radius: 5px;
-        }
+        .card-valor.positivo { color: #27ae60; }
+        .card-valor.negativo { color: #ff4757; }
 
         /* PUC - Plan Único de Cuentas */
         .puc-section {
             background: white;
             border-radius: 20px;
             padding: 1.5rem;
-            box-shadow: 0 10px 25px rgba(255, 182, 193, 0.2);
+            box-shadow: 0 10px 25px rgba(255,182,193,0.2);
             border: 1px solid #ffe4e9;
             margin-bottom: 2rem;
         }
@@ -338,6 +172,8 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
         .puc-header h2 {
@@ -355,6 +191,7 @@
             display: flex;
             gap: 0.5rem;
             margin-bottom: 1rem;
+            flex-wrap: wrap;
         }
 
         .puc-tab {
@@ -364,17 +201,25 @@
             border-radius: 50px;
             cursor: pointer;
             color: #ff6b6b;
+            transition: all 0.3s;
         }
 
-        .puc-tab.active {
+        .puc-tab:hover, .puc-tab.active {
             background: #ffb6c1;
             color: white;
             border-color: #ff9a9e;
         }
 
+        .puc-table-container {
+            overflow-x: auto;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
         .puc-table {
             width: 100%;
             border-collapse: collapse;
+            min-width: 800px;
         }
 
         .puc-table th {
@@ -382,6 +227,9 @@
             color: #ff6b6b;
             padding: 1rem;
             text-align: left;
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
 
         .puc-table td {
@@ -402,106 +250,153 @@
         .puc-debito {
             color: #27ae60;
             font-weight: 600;
+            text-align: right;
         }
 
         .puc-credito {
             color: #ff4757;
             font-weight: 600;
+            text-align: right;
         }
 
-        /* Tabla de movimientos */
-        .movimientos-section {
+        .puc-saldo {
+            font-weight: bold;
+            text-align: right;
+        }
+
+        .btn-ajustar {
+            background: #ffe4e9;
+            border: none;
+            padding: 0.3rem 1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            color: #ff6b6b;
+            font-size: 0.8rem;
+        }
+
+        .btn-ajustar:hover {
+            background: #ffd9e2;
+        }
+
+        /* Asientos contables */
+        .asientos-section {
             background: white;
             border-radius: 20px;
             padding: 1.5rem;
-            box-shadow: 0 10px 25px rgba(255, 182, 193, 0.2);
+            box-shadow: 0 10px 25px rgba(255,182,193,0.2);
             border: 1px solid #ffe4e9;
         }
 
-        .movimientos-header {
+        .asientos-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 1.5rem;
         }
 
-        .movimientos-header h2 {
+        .asientos-header h2 {
             color: #ff6b6b;
         }
 
-        .exportar-btn {
+        .btn-generar {
             background: #ff9a9e;
             color: white;
             border: none;
             padding: 0.5rem 1.2rem;
             border-radius: 50px;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
         }
 
-        .movimientos-table {
+        .asientos-table {
             width: 100%;
             border-collapse: collapse;
         }
 
-        .movimientos-table th {
+        .asientos-table th {
             background: #fff0f3;
             color: #ff6b6b;
             padding: 1rem;
             text-align: left;
         }
 
-        .movimientos-table td {
-            padding: 0.8rem 1rem;
+        .asientos-table td {
+            padding: 1rem;
             border-bottom: 1px solid #ffe4e9;
         }
 
-        .tipo-badge {
-            padding: 0.3rem 0.8rem;
-            border-radius: 50px;
-            font-size: 0.8rem;
+        .asiento-debito {
+            color: #27ae60;
             font-weight: 600;
         }
 
-        .tipo-venta {
-            background: #d4edda;
-            color: #27ae60;
+        .asiento-credito {
+            color: #ff4757;
+            font-weight: 600;
         }
 
-        .tipo-compra {
-            background: #fff3cd;
-            color: #856404;
+        /* Modal de ajuste */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
         }
 
-        .tipo-gasto {
-            background: #f8d7da;
-            color: #721c24;
-        }
-
-        .resumen-movimientos {
+        .modal.active {
             display: flex;
-            justify-content: flex-end;
-            gap: 2rem;
-            margin-top: 1.5rem;
-            padding-top: 1rem;
-            border-top: 2px solid #ffe4e9;
         }
 
-        /* Responsive */
-        @media (max-width: 900px) {
-            .graficos-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .periodo-selector {
-                flex-direction: column;
-            }
-            
-            .periodo-personalizado {
-                margin-left: 0;
-            }
+        .modal-content {
+            background: white;
+            border-radius: 25px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            border: 3px solid #ffe4e9;
+        }
+
+        .modal-content h3 {
+            color: #ff6b6b;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-content input, .modal-content select {
+            width: 100%;
+            padding: 0.8rem;
+            margin-bottom: 1rem;
+            border: 2px solid #ffe4e9;
+            border-radius: 10px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .modal-buttons button {
+            flex: 1;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn-guardar {
+            background: #ff9a9e;
+            color: white;
+        }
+
+        .btn-cancelar {
+            background: #ffe4e9;
+            color: #ff6b6b;
         }
     </style>
 </head>
@@ -509,65 +404,12 @@
     <header class="contabilidad-header">
         <h1>
             📊 CONTABILIDAD
-            <span>🌸 Mi Local de Ropa</span>
+            <span>🌸 Modas La 34</span>
         </h1>
-        <div class="header-actions">
-            <div class="fecha-selector">
-                <input type="month" id="mes-seleccionado" value="2026-03">
-                <button onclick="cambiarMes()">Actualizar</button>
-            </div>
-            <a href="dashboard.html" class="volver-btn">← Volver al Dashboard</a>
-        </div>
+        <a href="dashboard.html" class="volver-btn">← Volver al Dashboard</a>
     </header>
 
     <div class="contabilidad-container">
-        <!-- Tarjetas de resumen -->
-        <div class="resumen-grid">
-            <div class="resumen-card ingresos">
-                <div class="card-header">
-                    <h3>Ingresos Totales</h3>
-                    <span class="card-icon">💰</span>
-                </div>
-                <div class="card-valor positivo" id="total-ingresos">$0</div>
-                <div class="card-comparativo">
-                    <span id="ingresos-periodo">Este mes</span>
-                </div>
-            </div>
-
-            <div class="resumen-card egresos">
-                <div class="card-header">
-                    <h3>Egresos Totales</h3>
-                    <span class="card-icon">💸</span>
-                </div>
-                <div class="card-valor negativo" id="total-egresos">$0</div>
-                <div class="card-comparativo">
-                    Compras + Gastos
-                </div>
-            </div>
-
-            <div class="resumen-card balance">
-                <div class="card-header">
-                    <h3>Balance Neto</h3>
-                    <span class="card-icon">⚖️</span>
-                </div>
-                <div class="card-valor" id="balance-neto">$0</div>
-                <div class="card-comparativo">
-                    Ingresos - Egresos
-                </div>
-            </div>
-
-            <div class="resumen-card iva">
-                <div class="card-header">
-                    <h3>IVA Generado</h3>
-                    <span class="card-icon">📊</span>
-                </div>
-                <div class="card-valor" id="total-iva">$0</div>
-                <div class="card-comparativo">
-                    <span id="iva-desglose">19%: $0 | 5%: $0</span>
-                </div>
-            </div>
-        </div>
-
         <!-- Selector de período -->
         <div class="periodo-selector">
             <button class="periodo-btn active" onclick="cambiarPeriodo('mes')">Este Mes</button>
@@ -582,30 +424,42 @@
             </div>
         </div>
 
-        <!-- Gráficos -->
-        <div class="graficos-grid">
-            <div class="grafico-card">
-                <h3>📈 Evolución de Ingresos vs Egresos</h3>
-                <div class="grafico-barras" id="grafico-evolucion">
-                    <!-- Se llena con JavaScript -->
+        <!-- Tarjetas de resumen -->
+        <div class="resumen-grid">
+            <div class="resumen-card ingresos">
+                <div class="card-header">
+                    <h3>Ingresos Totales</h3>
+                    <span class="card-icon">💰</span>
                 </div>
+                <div class="card-valor positivo" id="total-ingresos">$0</div>
+                <div>Cuenta PUC: 4135</div>
             </div>
 
-            <div class="grafico-card">
-                <h3>🥧 Distribución de Egresos</h3>
-                <div class="grafico-pastel">
-                    <div class="pastel-segmento"></div>
-                    <div class="pastel-leyenda" id="leyenda-egresos">
-                        <div class="leyenda-item">
-                            <div class="leyenda-color" style="background: #ff9a9e;"></div>
-                            <span>Compras: 70%</span>
-                        </div>
-                        <div class="leyenda-item">
-                            <div class="leyenda-color" style="background: #ffb6c1;"></div>
-                            <span>Gastos: 30%</span>
-                        </div>
-                    </div>
+            <div class="resumen-card egresos">
+                <div class="card-header">
+                    <h3>Egresos Totales</h3>
+                    <span class="card-icon">💸</span>
                 </div>
+                <div class="card-valor negativo" id="total-egresos">$0</div>
+                <div>Compras (6205) + Gastos (51...)</div>
+            </div>
+
+            <div class="resumen-card balance">
+                <div class="card-header">
+                    <h3>Balance Neto</h3>
+                    <span class="card-icon">⚖️</span>
+                </div>
+                <div class="card-valor" id="balance-neto">$0</div>
+                <div>Ingresos - Egresos</div>
+            </div>
+
+            <div class="resumen-card iva">
+                <div class="card-header">
+                    <h3>IVA Generado</h3>
+                    <span class="card-icon">📊</span>
+                </div>
+                <div class="card-valor" id="total-iva">$0</div>
+                <div>Cuenta PUC: 2365</div>
             </div>
         </div>
 
@@ -613,68 +467,97 @@
         <div class="puc-section">
             <div class="puc-header">
                 <h2>📋 Plan Único de Cuentas (PUC)</h2>
-                <input type="text" class="puc-buscar" placeholder="🔍 Buscar cuenta..." id="buscar-puc">
+                <input type="text" id="buscar-puc" class="puc-buscar" placeholder="🔍 Buscar cuenta...">
             </div>
 
             <div class="puc-tabs">
                 <button class="puc-tab active" onclick="filtrarPUC('todos')">Todos</button>
-                <button class="puc-tab" onclick="filtrarPUC('activos')">Activos</button>
-                <button class="puc-tab" onclick="filtrarPUC('pasivos')">Pasivos</button>
-                <button class="puc-tab" onclick="filtrarPUC('patrimonio')">Patrimonio</button>
-                <button class="puc-tab" onclick="filtrarPUC('ingresos')">Ingresos</button>
-                <button class="puc-tab" onclick="filtrarPUC('gastos')">Gastos</button>
+                <button class="puc-tab" onclick="filtrarPUC('activo')">Activos (1)</button>
+                <button class="puc-tab" onclick="filtrarPUC('pasivo')">Pasivos (2)</button>
+                <button class="puc-tab" onclick="filtrarPUC('patrimonio')">Patrimonio (3)</button>
+                <button class="puc-tab" onclick="filtrarPUC('ingreso')">Ingresos (4)</button>
+                <button class="puc-tab" onclick="filtrarPUC('gasto')">Gastos (5)</button>
+                <button class="puc-tab" onclick="filtrarPUC('costo')">Costos (6)</button>
             </div>
 
-            <table class="puc-table" id="tabla-puc">
+            <div class="puc-table-container">
+                <table class="puc-table" id="tabla-puc">
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Cuenta</th>
+                            <th>Naturaleza</th>
+                            <th>Débito</th>
+                            <th>Crédito</th>
+                            <th>Saldo</th>
+                            <th>Ajustar</th>
+                        </tr>
+                    </thead>
+                    <tbody id="puc-body">
+                        <tr>
+                            <td colspan="7" style="text-align: center;">Cargando cuentas...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Asientos contables -->
+        <div class="asientos-section">
+            <div class="asientos-header">
+                <h2>📝 Asientos Contables del Período</h2>
+                <button class="btn-generar" onclick="generarAsientos()">🔄 Regenerar Asientos</button>
+            </div>
+
+            <table class="asientos-table" id="tabla-asientos">
                 <thead>
                     <tr>
-                        <th>Código</th>
-                        <th>Cuenta</th>
-                        <th>Naturaleza</th>
-                        <th>Saldo Débito</th>
-                        <th>Saldo Crédito</th>
+                        <th>Fecha</th>
+                        <th>Descripción</th>
+                        <th>Cuenta Débito</th>
+                        <th>Valor Débito</th>
+                        <th>Cuenta Crédito</th>
+                        <th>Valor Crédito</th>
                     </tr>
                 </thead>
-                <tbody id="puc-body">
+                <tbody id="asientos-body">
                     <tr>
-                        <td colspan="5" style="text-align: center;">Cargando PUC...</td>
+                        <td colspan="6" style="text-align: center;">Cargando asientos...</td>
                     </tr>
                 </tbody>
             </table>
         </div>
+    </div>
 
-        <!-- Movimientos del período -->
-        <div class="movimientos-section">
-            <div class="movimientos-header">
-                <h2>📝 Movimientos del Período</h2>
-                <button class="exportar-btn" onclick="exportarExcel()">
-                    📥 Exportar a Excel
-                </button>
-            </div>
-
-            <table class="movimientos-table" id="tabla-movimientos">
-                <thead>
-                    <tr>
-                        <th>Fecha</th>
-                        <th>Tipo</th>
-                        <th>Concepto</th>
-                        <th>PUC</th>
-                        <th>Ingreso</th>
-                        <th>Egreso</th>
-                        <th>IVA</th>
-                    </tr>
-                </thead>
-                <tbody id="movimientos-body">
-                    <tr>
-                        <td colspan="7" style="text-align: center;">Cargando movimientos...</td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <div class="resumen-movimientos">
-                <div><strong>Total Ingresos:</strong> <span id="resumen-ingresos">$0</span></div>
-                <div><strong>Total Egresos:</strong> <span id="resumen-egresos">$0</span></div>
-                <div><strong>IVA Total:</strong> <span id="resumen-iva">$0</span></div>
+    <!-- Modal de ajuste de cuenta -->
+    <div class="modal" id="modal-ajuste">
+        <div class="modal-content">
+            <h3 id="modal-titulo">Ajustar cuenta</h3>
+            <input type="hidden" id="ajuste-cuenta-id">
+            <input type="hidden" id="ajuste-cuenta-codigo">
+            
+            <label>Cuenta:</label>
+            <input type="text" id="ajuste-cuenta-nombre" readonly disabled>
+            
+            <label>Saldo actual:</label>
+            <input type="text" id="ajuste-saldo-actual" readonly disabled>
+            
+            <label>Tipo de ajuste:</label>
+            <select id="ajuste-tipo">
+                <option value="debito">➕ Aumentar Débito</option>
+                <option value="credito">➖ Aumentar Crédito</option>
+                <option value="corregir">✏️ Corregir saldo</option>
+            </select>
+            
+            <label>Valor del ajuste:</label>
+            <input type="number" id="ajuste-valor" min="0" step="100">
+            
+            <label>Concepto:</label>
+            <input type="text" id="ajuste-concepto" placeholder="Ej: Ajuste manual por...">
+            
+            <div class="modal-buttons">
+                <button class="btn-guardar" onclick="guardarAjuste()">Guardar Ajuste</button>
+                <button class="btn-cancelar" onclick="cerrarModalAjuste()">Cancelar</button>
             </div>
         </div>
     </div>
@@ -684,18 +567,20 @@
         // Variables globales
         let fechaInicio = new Date();
         fechaInicio.setDate(1);
-        fechaInicio.setHours(0, 0, 0, 0);
+        fechaInicio.setHours(0,0,0,0);
         
         let fechaFin = new Date();
-        fechaFin.setHours(23, 59, 59, 999);
+        fechaFin.setHours(23,59,59,999);
         
-        let periodoActual = 'mes';
+        let cuentasPUC = [];
 
-        // Cargar datos al iniciar
+        // Inicializar
         document.addEventListener('DOMContentLoaded', async () => {
             await verificarSesion();
             cargarFechas();
-            await cargarTodosLosDatos();
+            await cargarPUC();
+            await calcularResumen();
+            await cargarAsientos();
         });
 
         // Verificar sesión
@@ -707,22 +592,14 @@
             }
         }
 
-        // Cargar fechas en los inputs
+        // Cargar fechas
         function cargarFechas() {
-            const mesInput = document.getElementById('mes-seleccionado');
-            const año = fechaInicio.getFullYear();
-            const mes = String(fechaInicio.getMonth() + 1).padStart(2, '0');
-            mesInput.value = `${año}-${mes}`;
-            
             document.getElementById('fecha-inicio').value = fechaInicio.toISOString().split('T')[0];
             document.getElementById('fecha-fin').value = fechaFin.toISOString().split('T')[0];
         }
 
         // Cambiar período
         function cambiarPeriodo(periodo) {
-            periodoActual = periodo;
-            
-            // Actualizar botones
             document.querySelectorAll('.periodo-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
@@ -750,469 +627,524 @@
             }
             
             cargarFechas();
-            cargarTodosLosDatos();
+            actualizarTodo();
         }
 
-        // Cambiar mes desde el selector
-        function cambiarMes() {
-            const mesInput = document.getElementById('mes-seleccionado').value;
-            const [año, mes] = mesInput.split('-');
-            
-            fechaInicio = new Date(parseInt(año), parseInt(mes) - 1, 1);
-            fechaFin = new Date(parseInt(año), parseInt(mes), 0, 23, 59, 59);
-            
-            cargarFechas();
-            cargarTodosLosDatos();
-        }
-
-        // Cambiar período personalizado
         function cambiarPeriodoPersonalizado() {
             fechaInicio = new Date(document.getElementById('fecha-inicio').value);
             fechaFin = new Date(document.getElementById('fecha-fin').value);
-            fechaFin.setHours(23, 59, 59, 999);
-            
-            cargarTodosLosDatos();
+            fechaFin.setHours(23,59,59,999);
+            actualizarTodo();
         }
 
-        // Cargar todos los datos
-        async function cargarTodosLosDatos() {
-            await cargarResumen();
-            await cargarGraficos();
+        async function actualizarTodo() {
+            await calcularResumen();
             await cargarPUC();
-            await cargarMovimientos();
+            await cargarAsientos();
         }
 
-        // Cargar resumen de tarjetas
-        async function cargarResumen() {
-            try {
-                // Obtener ventas del período
-                const ventasRes = await fetch(
-                    `${SUPABASE_URL}/rest/v1/ventas?fecha=gte.${fechaInicio.toISOString()}&fecha=lte.${fechaFin.toISOString()}`,
-                    { headers: { 'apikey': SUPABASE_KEY } }
-                );
-                const ventas = await ventasRes.json();
-                
-                // Obtener compras del período
-                const comprasRes = await fetch(
-                    `${SUPABASE_URL}/rest/v1/compras?fecha=gte.${fechaInicio.toISOString()}&fecha=lte.${fechaFin.toISOString()}`,
-                    { headers: { 'apikey': SUPABASE_KEY } }
-                );
-                const compras = await comprasRes.json();
-                
-                // Obtener gastos del período
-                const gastosRes = await fetch(
-                    `${SUPABASE_URL}/rest/v1/gastos?fecha=gte.${fechaInicio.toISOString()}&fecha=lte.${fechaFin.toISOString()}`,
-                    { headers: { 'apikey': SUPABASE_KEY } }
-                );
-                const gastos = await gastosRes.json();
-                
-                const totalVentas = ventas.reduce((sum, v) => sum + (v.total || 0), 0);
-                const totalCompras = compras.reduce((sum, c) => sum + (c.total || 0), 0);
-                const totalGastos = gastos.reduce((sum, g) => sum + (g.monto || 0), 0);
-                const totalEgresos = totalCompras + totalGastos;
-                const balance = totalVentas - totalEgresos;
-                
-                // Calcular IVA por porcentaje
-                const iva19 = ventas.filter(v => v.iva_porcentaje === 19).reduce((sum, v) => sum + (v.iva || 0), 0);
-                const iva5 = ventas.filter(v => v.iva_porcentaje === 5).reduce((sum, v) => sum + (v.iva || 0), 0);
-                const totalIVA = iva19 + iva5;
-                
-                document.getElementById('total-ingresos').textContent = `$${totalVentas.toLocaleString()}`;
-                document.getElementById('total-egresos').textContent = `$${totalEgresos.toLocaleString()}`;
-                document.getElementById('balance-neto').textContent = `$${balance.toLocaleString()}`;
-                document.getElementById('balance-neto').className = `card-valor ${balance >= 0 ? 'positivo' : 'negativo'}`;
-                document.getElementById('total-iva').textContent = `$${totalIVA.toLocaleString()}`;
-                document.getElementById('iva-desglose').textContent = `19%: $${iva19.toLocaleString()} | 5%: $${iva5.toLocaleString()}`;
-                
-            } catch (error) {
-                console.error('Error cargando resumen:', error);
-            }
-        }
+        // ============================================
+        // PUC - PLAN ÚNICO DE CUENTAS
+        // ============================================
 
-        // Cargar gráficos
-        async function cargarGraficos() {
-            try {
-                // Gráfico de evolución (últimos 6 meses)
-                const meses = [];
-                const datosIngresos = [];
-                const datosEgresos = [];
-                
-                for (let i = 5; i >= 0; i--) {
-                    const mes = new Date();
-                    mes.setMonth(mes.getMonth() - i);
-                    const mesInicio = new Date(mes.getFullYear(), mes.getMonth(), 1);
-                    const mesFin = new Date(mes.getFullYear(), mes.getMonth() + 1, 0, 23, 59, 59);
-                    
-                    // Ventas del mes
-                    const ventasRes = await fetch(
-                        `${SUPABASE_URL}/rest/v1/ventas?fecha=gte.${mesInicio.toISOString()}&fecha=lte.${mesFin.toISOString()}`,
-                        { headers: { 'apikey': SUPABASE_KEY } }
-                    );
-                    const ventas = await ventasRes.json();
-                    
-                    // Compras del mes
-                    const comprasRes = await fetch(
-                        `${SUPABASE_URL}/rest/v1/compras?fecha=gte.${mesInicio.toISOString()}&fecha=lte.${mesFin.toISOString()}`,
-                        { headers: { 'apikey': SUPABASE_KEY } }
-                    );
-                    const compras = await comprasRes.json();
-                    
-                    // Gastos del mes
-                    const gastosRes = await fetch(
-                        `${SUPABASE_URL}/rest/v1/gastos?fecha=gte.${mesInicio.toISOString()}&fecha=lte.${mesFin.toISOString()}`,
-                        { headers: { 'apikey': SUPABASE_KEY } }
-                    );
-                    const gastos = await gastosRes.json();
-                    
-                    const totalVentas = ventas.reduce((sum, v) => sum + (v.total || 0), 0);
-                    const totalCompras = compras.reduce((sum, c) => sum + (c.total || 0), 0);
-                    const totalGastos = gastos.reduce((sum, g) => sum + (g.monto || 0), 0);
-                    
-                    meses.push(mes.toLocaleDateString('es', { month: 'short' }));
-                    datosIngresos.push(totalVentas);
-                    datosEgresos.push(totalCompras + totalGastos);
-                }
-                
-                const maxValor = Math.max(...datosIngresos, ...datosEgresos, 1);
-                
-                let graficoHTML = '';
-                for (let i = 0; i < meses.length; i++) {
-                    const alturaIngreso = (datosIngresos[i] / maxValor) * 180;
-                    const alturaEgreso = (datosEgresos[i] / maxValor) * 180;
-                    
-                    graficoHTML += `
-                        <div class="barra-container">
-                            <div class="barra" style="height: ${Math.max(alturaIngreso, 10)}px; background: linear-gradient(to top, #27ae60, #2ecc71);"></div>
-                            <div class="barra" style="height: ${Math.max(alturaEgreso, 10)}px; background: linear-gradient(to top, #ff6b6b, #ff4757);"></div>
-                            <span class="barra-label">${meses[i]}</span>
-                            <span class="barra-valor">$${Math.round(datosIngresos[i]/1000)}k</span>
-                        </div>
-                    `;
-                }
-                
-                document.getElementById('grafico-evolucion').innerHTML = graficoHTML;
-                
-                // Gráfico de distribución de egresos
-                const comprasRes = await fetch(
-                    `${SUPABASE_URL}/rest/v1/compras?fecha=gte.${fechaInicio.toISOString()}&fecha=lte.${fechaFin.toISOString()}`,
-                    { headers: { 'apikey': SUPABASE_KEY } }
-                );
-                const compras = await comprasRes.json();
-                
-                const gastosRes = await fetch(
-                    `${SUPABASE_URL}/rest/v1/gastos?fecha=gte.${fechaInicio.toISOString()}&fecha=lte.${fechaFin.toISOString()}`,
-                    { headers: { 'apikey': SUPABASE_KEY } }
-                );
-                const gastos = await gastosRes.json();
-                
-                const totalCompras = compras.reduce((sum, c) => sum + (c.total || 0), 0);
-                const totalGastos = gastos.reduce((sum, g) => sum + (g.monto || 0), 0);
-                const totalEgresos = totalCompras + totalGastos;
-                
-                if (totalEgresos > 0) {
-                    const porcentajeCompras = Math.round((totalCompras / totalEgresos) * 100);
-                    const porcentajeGastos = 100 - porcentajeCompras;
-                    
-                    const anguloCompras = (porcentajeCompras / 100) * 360;
-                    
-                    document.querySelector('.pastel-segmento').style.background = 
-                        `conic-gradient(#ff9a9e 0deg ${anguloCompras}deg, #ffb6c1 ${anguloCompras}deg 360deg)`;
-                    
-                    document.getElementById('leyenda-egresos').innerHTML = `
-                        <div class="leyenda-item">
-                            <div class="leyenda-color" style="background: #ff9a9e;"></div>
-                            <span>Compras: ${porcentajeCompras}%</span>
-                        </div>
-                        <div class="leyenda-item">
-                            <div class="leyenda-color" style="background: #ffb6c1;"></div>
-                            <span>Gastos: ${porcentajeGastos}%</span>
-                        </div>
-                    `;
-                }
-                
-            } catch (error) {
-                console.error('Error cargando gráficos:', error);
-            }
-        }
-
-        // Cargar PUC
         async function cargarPUC() {
             try {
-                // Obtener todos los movimientos agrupados por PUC
-                const ventasRes = await fetch(
-                    `${SUPABASE_URL}/rest/v1/ventas?select=*&fecha=gte.${fechaInicio.toISOString()}&fecha=lte.${fechaFin.toISOString()}`,
-                    { headers: { 'apikey': SUPABASE_KEY } }
-                );
-                const ventas = await ventasRes.json();
-                
-                const comprasRes = await fetch(
-                                        `${SUPABASE_URL}/rest/v1/compras?select=*&fecha=gte.${fechaInicio.toISOString()}&fecha=lte.${fechaFin.toISOString()}`,
-                    { headers: { 'apikey': SUPABASE_KEY } }
-                );
-                const compras = await comprasRes.json();
-                
-                const gastosRes = await fetch(
-                    `${SUPABASE_URL}/rest/v1/gastos?select=*&fecha=gte.${fechaInicio.toISOString()}&fecha=lte.${fechaFin.toISOString()}`,
-                    { headers: { 'apikey': SUPABASE_KEY } }
-                );
-                const gastos = await gastosRes.json();
+                // Obtener movimientos del período
+                const ventas = await obtenerVentas();
+                const compras = await obtenerCompras();
+                const gastos = await obtenerGastos();
 
-                // Estructura PUC base (puedes ampliarla según necesites)
-                const cuentasPUC = [
-                    // Activos (1)
-                    { codigo: '110505', nombre: 'Caja General', naturaleza: 'activos', saldoDebito: 0, saldoCredito: 0 },
-                    { codigo: '111005', nombre: 'Bancos', naturaleza: 'activos', saldoDebito: 0, saldoCredito: 0 },
-                    { codigo: '143501', nombre: 'Inventario de Mercancías', naturaleza: 'activos', saldoDebito: 0, saldoCredito: 0 },
+                // Definir cuentas PUC base
+                cuentasPUC = [
+                    // ACTIVOS (1)
+                    { codigo: '110505', nombre: 'Caja General', naturaleza: 'activo', saldoDebito: 0, saldoCredito: 0 },
+                    { codigo: '111005', nombre: 'Bancos', naturaleza: 'activo', saldoDebito: 0, saldoCredito: 0 },
+                    { codigo: '130505', nombre: 'Clientes', naturaleza: 'activo', saldoDebito: 0, saldoCredito: 0 },
+                    { codigo: '143501', nombre: 'Inventario de Mercancías', naturaleza: 'activo', saldoDebito: 0, saldoCredito: 0 },
+                    { codigo: '170505', nombre: 'Equipo de Oficina', naturaleza: 'activo', saldoDebito: 0, saldoCredito: 0 },
                     
-                    // Pasivos (2)
-                    { codigo: '220505', nombre: 'Proveedores Nacionales', naturaleza: 'pasivos', saldoDebito: 0, saldoCredito: 0 },
-                    { codigo: '236505', nombre: 'IVA por Pagar', naturaleza: 'pasivos', saldoDebito: 0, saldoCredito: 0 },
-                    { codigo: '236510', nombre: 'IVA Descontable', naturaleza: 'pasivos', saldoDebito: 0, saldoCredito: 0 },
+                    // PASIVOS (2)
+                    { codigo: '220505', nombre: 'Proveedores Nacionales', naturaleza: 'pasivo', saldoDebito: 0, saldoCredito: 0 },
+                    { codigo: '236505', nombre: 'IVA por Pagar (19%)', naturaleza: 'pasivo', saldoDebito: 0, saldoCredito: 0 },
+                    { codigo: '236510', nombre: 'IVA por Pagar (5%)', naturaleza: 'pasivo', saldoDebito: 0, saldoCredito: 0 },
+                    { codigo: '237005', nombre: 'Retención en la Fuente', naturaleza: 'pasivo', saldoDebito: 0, saldoCredito: 0 },
                     
-                    // Patrimonio (3)
+                    // PATRIMONIO (3)
                     { codigo: '310505', nombre: 'Capital Social', naturaleza: 'patrimonio', saldoDebito: 0, saldoCredito: 0 },
+                    { codigo: '360505', nombre: 'Utilidad del Ejercicio', naturaleza: 'patrimonio', saldoDebito: 0, saldoCredito: 0 },
                     
-                    // Ingresos (4)
-                    { codigo: '413505', nombre: 'Comercio al por mayor', naturaleza: 'ingresos', saldoDebito: 0, saldoCredito: 0 },
+                    // INGRESOS (4)
+                    { codigo: '413505', nombre: 'Comercio al por mayor y menor', naturaleza: 'ingreso', saldoDebito: 0, saldoCredito: 0 },
+                    { codigo: '417505', nombre: 'Devoluciones en Ventas', naturaleza: 'ingreso', saldoDebito: 0, saldoCredito: 0 },
                     
-                    // Gastos (5)
-                    { codigo: '510506', nombre: 'Sueldos', naturaleza: 'gastos', saldoDebito: 0, saldoCredito: 0 },
-                    { codigo: '511005', nombre: 'Alquileres', naturaleza: 'gastos', saldoDebito: 0, saldoCredito: 0 },
-                    { codigo: '511010', nombre: 'Servicios Públicos', naturaleza: 'gastos', saldoDebito: 0, saldoCredito: 0 },
-                    { codigo: '513505', nombre: 'Publicidad', naturaleza: 'gastos', saldoDebito: 0, saldoCredito: 0 },
-                    { codigo: '620501', nombre: 'Compras', naturaleza: 'gastos', saldoDebito: 0, saldoCredito: 0 }
+                    // GASTOS (5)
+                    { codigo: '510506', nombre: 'Sueldos y Salarios', naturaleza: 'gasto', saldoDebito: 0, saldoCredito: 0 },
+                    { codigo: '511005', nombre: 'Alquileres', naturaleza: 'gasto', saldoDebito: 0, saldoCredito: 0 },
+                    { codigo: '511010', nombre: 'Servicios Públicos', naturaleza: 'gasto', saldoDebito: 0, saldoCredito: 0 },
+                    { codigo: '513505', nombre: 'Publicidad y Propaganda', naturaleza: 'gasto', saldoDebito: 0, saldoCredito: 0 },
+                    { codigo: '519595', nombre: 'Diversos', naturaleza: 'gasto', saldoDebito: 0, saldoCredito: 0 },
+                    
+                    // COSTOS (6)
+                    { codigo: '613505', nombre: 'Compras', naturaleza: 'costo', saldoDebito: 0, saldoCredito: 0 },
+                    { codigo: '614505', nombre: 'Devoluciones en Compras', naturaleza: 'costo', saldoDebito: 0, saldoCredito: 0 }
                 ];
 
-                // Calcular saldos
+                // Calcular saldos basados en movimientos
                 ventas.forEach(v => {
-                    // Ingresos (413505)
-                    const cuentaIngresos = cuentasPUC.find(c => c.codigo === '413505');
-                    if (cuentaIngresos) cuentaIngresos.saldoCredito += v.total || 0;
+                    // Ingreso: 4135
+                    const ingreso = cuentasPUC.find(c => c.codigo === '413505');
+                    if (ingreso) ingreso.saldoCredito += v.total || 0;
                     
-                    // IVA por pagar (236505)
+                    // IVA: 2365 según porcentaje
                     if (v.iva && v.iva > 0) {
-                        const cuentaIVA = cuentasPUC.find(c => c.codigo === '236505');
+                        const cuentaIVA = v.iva_porcentaje === 19 ? 
+                            cuentasPUC.find(c => c.codigo === '236505') : 
+                            cuentasPUC.find(c => c.codigo === '236510');
                         if (cuentaIVA) cuentaIVA.saldoCredito += v.iva;
                     }
+                    
+                    // Efectivo: 1105 o 1110
+                    const efectivo = cuentasPUC.find(c => c.codigo === '110505');
+                    if (efectivo) efectivo.saldoDebito += v.total || 0;
                 });
 
                 compras.forEach(c => {
-                    // Compras (620501)
-                    const cuentaCompras = cuentasPUC.find(cu => cu.codigo === '620501');
-                    if (cuentaCompras) cuentaCompras.saldoDebito += c.total || 0;
+                    // Compras: 6135
+                    const comprasCuenta = cuentasPUC.find(cu => cu.codigo === '613505');
+                    if (comprasCuenta) comprasCuenta.saldoDebito += c.total || 0;
                     
-                    // Inventario (143501) - cuando la compra está recibida
-                    if (c.estado === 'Recibida' || c.estado === 'Pagada') {
-                        const cuentaInventario = cuentasPUC.find(cu => cu.codigo === '143501');
-                        if (cuentaInventario) cuentaInventario.saldoDebito += c.total || 0;
+                    // Inventario: 1435
+                    if (c.estado === 'Recibida') {
+                        const inventario = cuentasPUC.find(cu => cu.codigo === '143501');
+                        if (inventario) inventario.saldoDebito += c.total || 0;
+                        
+                        // Proveedores: 2205
+                        const proveedores = cuentasPUC.find(cu => cu.codigo === '220505');
+                        if (proveedores) proveedores.saldoCredito += c.total || 0;
                     }
                 });
 
                 gastos.forEach(g => {
                     let cuentaGasto = cuentasPUC.find(c => c.codigo === g.puc);
                     if (!cuentaGasto) {
-                        // Buscar por categoría si no se encuentra por PUC
                         switch(g.categoria) {
-                            case 'Alquiler':
-                                cuentaGasto = cuentasPUC.find(c => c.codigo === '511005');
-                                break;
-                            case 'Servicios':
-                                cuentaGasto = cuentasPUC.find(c => c.codigo === '511010');
-                                break;
-                            case 'Sueldos':
-                                cuentaGasto = cuentasPUC.find(c => c.codigo === '510506');
-                                break;
-                            case 'Marketing':
-                                cuentaGasto = cuentasPUC.find(c => c.codigo === '513505');
-                                break;
-                            default:
-                                cuentaGasto = cuentasPUC.find(c => c.codigo === '519595');
+                            case 'Alquiler': cuentaGasto = cuentasPUC.find(c => c.codigo === '511005'); break;
+                            case 'Servicios': cuentaGasto = cuentasPUC.find(c => c.codigo === '511010'); break;
+                            case 'Sueldos': cuentaGasto = cuentasPUC.find(c => c.codigo === '510506'); break;
+                            case 'Marketing': cuentaGasto = cuentasPUC.find(c => c.codigo === '513505'); break;
+                            default: cuentaGasto = cuentasPUC.find(c => c.codigo === '519595');
                         }
                     }
                     
                     if (cuentaGasto) {
                         cuentaGasto.saldoDebito += g.monto || 0;
+                        // Efectivo disminuye
+                        const efectivo = cuentasPUC.find(c => c.codigo === '110505');
+                        if (efectivo) efectivo.saldoCredito += g.monto || 0;
                     }
                 });
 
-                // Mostrar PUC
-                mostrarPUC(cuentasPUC);
+                // Calcular saldos
+                cuentasPUC.forEach(c => {
+                    if (c.naturaleza === 'activo' || c.naturaleza === 'gasto' || c.naturaleza === 'costo') {
+                        c.saldo = c.saldoDebito - c.saldoCredito;
+                    } else {
+                        c.saldo = c.saldoCredito - c.saldoDebito;
+                    }
+                });
+
+                mostrarPUC();
 
             } catch (error) {
                 console.error('Error cargando PUC:', error);
             }
         }
 
-        // Mostrar tabla PUC
-        function mostrarPUC(cuentas) {
+        function mostrarPUC() {
             const tbody = document.getElementById('puc-body');
             
-            tbody.innerHTML = cuentas.map(cuenta => `
-                <tr>
-                    <td class="puc-codigo">${cuenta.codigo}</td>
-                    <td>${cuenta.nombre}</td>
-                    <td>
-                        <span style="background: ${cuenta.naturaleza === 'activos' ? '#d4edda' : cuenta.naturaleza === 'pasivos' ? '#fff3cd' : '#ffe4e9'}; 
-                                     padding: 0.2rem 0.8rem; border-radius: 50px; font-size: 0.8rem;">
-                            ${cuenta.naturaleza}
-                        </span>
-                    </td>
-                    <td class="puc-debito">${cuenta.saldoDebito > 0 ? `$${cuenta.saldoDebito.toLocaleString()}` : '-'}</td>
-                    <td class="puc-credito">${cuenta.saldoCredito > 0 ? `$${cuenta.saldoCredito.toLocaleString()}` : '-'}</td>
-                </tr>
-            `).join('');
+            tbody.innerHTML = cuentasPUC.map(c => {
+                const saldoClass = c.saldo >= 0 ? 'puc-debito' : 'puc-credito';
+                const saldoAbs = Math.abs(c.saldo);
+                
+                return `
+                    <tr>
+                        <td class="puc-codigo">${c.codigo}</td>
+                        <td>${c.nombre}</td>
+                        <td>
+                            <span style="background: ${c.naturaleza === 'activo' ? '#d4edda' : 
+                                                     c.naturaleza === 'pasivo' ? '#fff3cd' : 
+                                                     c.naturaleza === 'ingreso' ? '#cce5ff' : '#ffe4e9'}; 
+                                         padding: 0.2rem 0.8rem; border-radius: 50px; font-size: 0.8rem;">
+                                ${c.naturaleza}
+                            </span>
+                        </td>
+                        <td class="puc-debito">${c.saldoDebito > 0 ? `$${c.saldoDebito.toLocaleString()}` : '-'}</td>
+                        <td class="puc-credito">${c.saldoCredito > 0 ? `$${c.saldoCredito.toLocaleString()}` : '-'}</td>
+                        <td class="${saldoClass}">$${saldoAbs.toLocaleString()}</td>
+                        <td>
+                            <button class="btn-ajustar" onclick="abrirModalAjuste('${c.codigo}', '${c.nombre}', ${c.saldo})">
+                                ✏️ Ajustar
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
         }
 
-        // Filtrar PUC por naturaleza
+        // Filtrar PUC
         function filtrarPUC(naturaleza) {
             document.querySelectorAll('.puc-tab').forEach(tab => {
                 tab.classList.remove('active');
             });
             event.target.classList.add('active');
             
-            // Aquí iría la lógica de filtrado
-            // Por ahora solo actualizamos la UI
-        }
-
-        // Buscar en PUC
-        document.getElementById('buscar-puc')?.addEventListener('input', (e) => {
-            const busqueda = e.target.value.toLowerCase();
-            // Aquí iría la lógica de búsqueda
-        });
-
-        // Cargar movimientos
-        async function cargarMovimientos() {
-            try {
-                // Obtener ventas
-                const ventasRes = await fetch(
-                    `${SUPABASE_URL}/rest/v1/ventas?fecha=gte.${fechaInicio.toISOString()}&fecha=lte.${fechaFin.toISOString()}&order=fecha.desc`,
-                    { headers: { 'apikey': SUPABASE_KEY } }
-                );
-                const ventas = await ventasRes.json();
-                
-                // Obtener compras
-                const comprasRes = await fetch(
-                    `${SUPABASE_URL}/rest/v1/compras?fecha=gte.${fechaInicio.toISOString()}&fecha=lte.${fechaFin.toISOString()}&order=fecha.desc`,
-                    { headers: { 'apikey': SUPABASE_KEY } }
-                );
-                const compras = await comprasRes.json();
-                
-                // Obtener gastos
-                const gastosRes = await fetch(
-                    `${SUPABASE_URL}/rest/v1/gastos?fecha=gte.${fechaInicio.toISOString()}&fecha=lte.${fechaFin.toISOString()}&order=fecha.desc`,
-                    { headers: { 'apikey': SUPABASE_KEY } }
-                );
-                const gastos = await gastosRes.json();
-
-                // Combinar todos los movimientos
-                const movimientos = [
-                    ...ventas.map(v => ({
-                        fecha: new Date(v.fecha),
-                        tipo: 'Venta',
-                        concepto: v.productos || 'Venta de productos',
-                        puc: '413505',
-                        ingreso: v.total || 0,
-                        egreso: 0,
-                        iva: v.iva || 0,
-                        iva_porcentaje: v.iva_porcentaje || 0
-                    })),
-                    ...compras.map(c => ({
-                        fecha: new Date(c.fecha),
-                        tipo: 'Compra',
-                        concepto: c.producto || 'Compra a proveedor',
-                        puc: c.puc || '620501',
-                        ingreso: 0,
-                        egreso: c.total || 0,
-                        iva: 0,
-                        iva_porcentaje: 0
-                    })),
-                    ...gastos.map(g => ({
-                        fecha: new Date(g.fecha),
-                        tipo: 'Gasto',
-                        concepto: g.concepto,
-                        puc: g.puc || '519595',
-                        ingreso: 0,
-                        egreso: g.monto || 0,
-                        iva: 0,
-                        iva_porcentaje: 0
-                    }))
-                ].sort((a, b) => b.fecha - a.fecha);
-
-                const tbody = document.getElementById('movimientos-body');
-                
-                if (movimientos.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">No hay movimientos en este período</td></tr>';
-                    return;
-                }
-
-                let totalIngresos = 0;
-                let totalEgresos = 0;
-                let totalIVA = 0;
-
-                tbody.innerHTML = movimientos.map(m => {
-                    totalIngresos += m.ingreso;
-                    totalEgresos += m.egreso;
-                    totalIVA += m.iva;
-
+            const tbody = document.getElementById('puc-body');
+            
+            if (naturaleza === 'todos') {
+                mostrarPUC();
+            } else {
+                const filtradas = cuentasPUC.filter(c => c.naturaleza === naturaleza);
+                tbody.innerHTML = filtradas.map(c => {
+                    const saldoClass = c.saldo >= 0 ? 'puc-debito' : 'puc-credito';
+                    const saldoAbs = Math.abs(c.saldo);
+                    
                     return `
                         <tr>
-                            <td>${m.fecha.toLocaleDateString()}</td>
+                            <td class="puc-codigo">${c.codigo}</td>
+                            <td>${c.nombre}</td>
                             <td>
-                                <span class="tipo-badge tipo-${m.tipo.toLowerCase()}">
-                                    ${m.tipo}
+                                <span style="background: ${c.naturaleza === 'activo' ? '#d4edda' : 
+                                                         c.naturaleza === 'pasivo' ? '#fff3cd' : 
+                                                         c.naturaleza === 'ingreso' ? '#cce5ff' : '#ffe4e9'}; 
+                                             padding: 0.2rem 0.8rem; border-radius: 50px; font-size: 0.8rem;">
+                                    ${c.naturaleza}
                                 </span>
                             </td>
-                            <td>${m.concepto}</td>
-                            <td class="puc-codigo">${m.puc}</td>
-                            <td class="puc-debito">${m.ingreso > 0 ? `$${m.ingreso.toLocaleString()}` : '-'}</td>
-                            <td class="puc-credito">${m.egreso > 0 ? `$${m.egreso.toLocaleString()}` : '-'}</td>
-                            <td>${m.iva > 0 ? `$${m.iva.toLocaleString()} (${m.iva_porcentaje}%)` : '-'}</td>
+                            <td class="puc-debito">${c.saldoDebito > 0 ? `$${c.saldoDebito.toLocaleString()}` : '-'}</td>
+                            <td class="puc-credito">${c.saldoCredito > 0 ? `$${c.saldoCredito.toLocaleString()}` : '-'}</td>
+                            <td class="${saldoClass}">$${saldoAbs.toLocaleString()}</td>
+                            <td>
+                                <button class="btn-ajustar" onclick="abrirModalAjuste('${c.codigo}', '${c.nombre}', ${c.saldo})">
+                                    ✏️ Ajustar
+                                </button>
+                            </td>
                         </tr>
                     `;
                 }).join('');
-
-                document.getElementById('resumen-ingresos').textContent = `$${totalIngresos.toLocaleString()}`;
-                document.getElementById('resumen-egresos').textContent = `$${totalEgresos.toLocaleString()}`;
-                document.getElementById('resumen-iva').textContent = `$${totalIVA.toLocaleString()}`;
-
-            } catch (error) {
-                console.error('Error cargando movimientos:', error);
             }
         }
 
-        // Exportar a Excel
-        function exportarExcel() {
-            // Crear contenido CSV
-            const rows = [];
+        // Buscar en PUC
+        document.getElementById('buscar-puc').addEventListener('input', (e) => {
+            const busqueda = e.target.value.toLowerCase();
+            const tbody = document.getElementById('puc-body');
             
-            // Cabeceras
-            rows.push(['Fecha', 'Tipo', 'Concepto', 'PUC', 'Ingreso', 'Egreso', 'IVA']);
+            const filtradas = cuentasPUC.filter(c => 
+                c.codigo.includes(busqueda) || 
+                c.nombre.toLowerCase().includes(busqueda)
+            );
             
-            // Obtener datos de la tabla
-            const tabla = document.getElementById('movimientos-body');
-            const filas = tabla.querySelectorAll('tr');
-            
-            filas.forEach(fila => {
-                const celdas = fila.querySelectorAll('td');
-                if (celdas.length > 0 && celdas[0].colSpan !== 7) {
-                    const filaDatos = [];
-                    celdas.forEach(celda => {
-                        filaDatos.push(celda.textContent.trim());
+            tbody.innerHTML = filtradas.map(c => {
+                const saldoClass = c.saldo >= 0 ? 'puc-debito' : 'puc-credito';
+                const saldoAbs = Math.abs(c.saldo);
+                
+                return `
+                    <tr>
+                        <td class="puc-codigo">${c.codigo}</td>
+                        <td>${c.nombre}</td>
+                        <td>
+                            <span style="background: ${c.naturaleza === 'activo' ? '#d4edda' : 
+                                                     c.naturaleza === 'pasivo' ? '#fff3cd' : 
+                                                     c.naturaleza === 'ingreso' ? '#cce5ff' : '#ffe4e9'}; 
+                                         padding: 0.2rem 0.8rem; border-radius: 50px; font-size: 0.8rem;">
+                                ${c.naturaleza}
+                            </span>
+                        </td>
+                        <td class="puc-debito">${c.saldoDebito > 0 ? `$${c.saldoDebito.toLocaleString()}` : '-'}</td>
+                        <td class="puc-credito">${c.saldoCredito > 0 ? `$${c.saldoCredito.toLocaleString()}` : '-'}</td>
+                        <td class="${saldoClass}">$${saldoAbs.toLocaleString()}</td>
+                        <td>
+                            <button class="btn-ajustar" onclick="abrirModalAjuste('${c.codigo}', '${c.nombre}', ${c.saldo})">
+                                ✏️ Ajustar
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        });
+        // ============================================
+        // FUNCIONES PARA OBTENER DATOS
+        // ============================================
+
+        async function obtenerVentas() {
+            try {
+                const response = await fetch(
+                    `${SUPABASE_URL}/rest/v1/ventas?fecha=gte.${fechaInicio.toISOString()}&fecha=lte.${fechaFin.toISOString()}`,
+                    { headers: { 'apikey': SUPABASE_KEY } }
+                );
+                return await response.json();
+            } catch (error) {
+                console.error('Error obteniendo ventas:', error);
+                return [];
+            }
+        }
+
+        async function obtenerCompras() {
+            try {
+                const response = await fetch(
+                    `${SUPABASE_URL}/rest/v1/compras?fecha=gte.${fechaInicio.toISOString()}&fecha=lte.${fechaFin.toISOString()}`,
+                    { headers: { 'apikey': SUPABASE_KEY } }
+                );
+                return await response.json();
+            } catch (error) {
+                console.error('Error obteniendo compras:', error);
+                return [];
+            }
+        }
+
+        async function obtenerGastos() {
+            try {
+                const response = await fetch(
+                    `${SUPABASE_URL}/rest/v1/gastos?fecha=gte.${fechaInicio.toISOString()}&fecha=lte.${fechaFin.toISOString()}`,
+                    { headers: { 'apikey': SUPABASE_KEY } }
+                );
+                return await response.json();
+            } catch (error) {
+                console.error('Error obteniendo gastos:', error);
+                return [];
+            }
+        }
+
+        // ============================================
+        // CÁLCULO DE RESUMEN
+        // ============================================
+
+        async function calcularResumen() {
+            try {
+                const ventas = await obtenerVentas();
+                const compras = await obtenerCompras();
+                const gastos = await obtenerGastos();
+
+                const totalVentas = ventas.reduce((sum, v) => sum + (v.total || 0), 0);
+                const totalCompras = compras.reduce((sum, c) => sum + (c.total || 0), 0);
+                const totalGastos = gastos.reduce((sum, g) => sum + (g.monto || 0), 0);
+                const totalEgresos = totalCompras + totalGastos;
+                const balance = totalVentas - totalEgresos;
+
+                const iva19 = ventas.filter(v => v.iva_porcentaje === 19).reduce((sum, v) => sum + (v.iva || 0), 0);
+                const iva5 = ventas.filter(v => v.iva_porcentaje === 5).reduce((sum, v) => sum + (v.iva || 0), 0);
+                const totalIVA = iva19 + iva5;
+
+                document.getElementById('total-ingresos').textContent = `$${totalVentas.toLocaleString()}`;
+                document.getElementById('total-egresos').textContent = `$${totalEgresos.toLocaleString()}`;
+                document.getElementById('balance-neto').textContent = `$${balance.toLocaleString()}`;
+                document.getElementById('balance-neto').className = `card-valor ${balance >= 0 ? 'positivo' : 'negativo'}`;
+                document.getElementById('total-iva').textContent = `$${totalIVA.toLocaleString()}`;
+
+            } catch (error) {
+                console.error('Error calculando resumen:', error);
+            }
+        }
+
+        // ============================================
+        // ASIENTOS CONTABLES
+        // ============================================
+
+        async function cargarAsientos() {
+            try {
+                const ventas = await obtenerVentas();
+                const compras = await obtenerCompras();
+                const gastos = await obtenerGastos();
+
+                const asientos = [];
+
+                // Asientos de ventas
+                ventas.forEach(v => {
+                    // Débito: Caja (110505) por el total
+                    asientos.push({
+                        fecha: new Date(v.fecha),
+                        descripcion: `Venta de productos - Factura #${v.id}`,
+                        cuentaDebito: '110505',
+                        nombreDebito: 'Caja General',
+                        valorDebito: v.total || 0,
+                        cuentaCredito: '413505',
+                        nombreCredito: 'Comercio al por mayor',
+                        valorCredito: v.total || 0
                     });
-                    rows.push(filaDatos);
+
+                    // Si tiene IVA, asiento separado
+                    if (v.iva && v.iva > 0) {
+                        const cuentaIVA = v.iva_porcentaje === 19 ? '236505' : '236510';
+                        const nombreIVA = v.iva_porcentaje === 19 ? 'IVA por Pagar (19%)' : 'IVA por Pagar (5%)';
+                        
+                        asientos.push({
+                            fecha: new Date(v.fecha),
+                            descripcion: `IVA generado en venta #${v.id} (${v.iva_porcentaje}%)`,
+                            cuentaDebito: '110505',
+                            nombreDebito: 'Caja General',
+                            valorDebito: v.iva || 0,
+                            cuentaCredito: cuentaIVA,
+                            nombreCredito: nombreIVA,
+                            valorCredito: v.iva || 0
+                        });
+                    }
+                });
+
+                // Asientos de compras (cuando están recibidas)
+                compras.filter(c => c.estado === 'Recibida').forEach(c => {
+                    asientos.push({
+                        fecha: new Date(c.fecha),
+                        descripcion: `Compra de mercancía - ${c.producto}`,
+                        cuentaDebito: '613505',
+                        nombreDebito: 'Compras',
+                        valorDebito: c.total || 0,
+                        cuentaCredito: '220505',
+                        nombreCredito: 'Proveedores Nacionales',
+                        valorCredito: c.total || 0
+                    });
+
+                    asientos.push({
+                        fecha: new Date(c.fecha),
+                        descripcion: `Entrada a inventario - ${c.producto}`,
+                        cuentaDebito: '143501',
+                        nombreDebito: 'Inventario de Mercancías',
+                        valorDebito: c.total || 0,
+                        cuentaCredito: '613505',
+                        nombreCredito: 'Compras',
+                        valorCredito: c.total || 0
+                    });
+                });
+
+                // Asientos de gastos
+                gastos.forEach(g => {
+                    let cuentaGasto = g.puc || '519595';
+                    let nombreGasto = 'Gastos Diversos';
+                    
+                    switch(g.categoria) {
+                        case 'Alquiler': nombreGasto = 'Alquileres'; break;
+                        case 'Servicios': nombreGasto = 'Servicios Públicos'; break;
+                        case 'Sueldos': nombreGasto = 'Sueldos y Salarios'; break;
+                        case 'Marketing': nombreGasto = 'Publicidad'; break;
+                    }
+
+                    asientos.push({
+                        fecha: new Date(g.fecha),
+                        descripcion: g.concepto,
+                        cuentaDebito: cuentaGasto,
+                        nombreDebito: nombreGasto,
+                        valorDebito: g.monto || 0,
+                        cuentaCredito: '110505',
+                        nombreCredito: 'Caja General',
+                        valorCredito: g.monto || 0
+                    });
+                });
+
+                // Ordenar por fecha
+                asientos.sort((a, b) => b.fecha - a.fecha);
+
+                const tbody = document.getElementById('asientos-body');
+                
+                if (asientos.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No hay asientos en este período</td></tr>';
+                    return;
                 }
-            });
-            
-            // Convertir a CSV
-            const csv = rows.map(row => row.join(',')).join('\n');
-            
-            // Descargar archivo
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `contabilidad_${fechaInicio.toISOString().split('T')[0]}_a_${fechaFin.toISOString().split('T')[0]}.csv`;
-            a.click();
+
+                tbody.innerHTML = asientos.map(a => `
+                    <tr>
+                        <td>${a.fecha.toLocaleDateString()}</td>
+                        <td>${a.descripcion}</td>
+                        <td>${a.cuentaDebito} - ${a.nombreDebito}</td>
+                        <td class="asiento-debito">$${a.valorDebito.toLocaleString()}</td>
+                        <td>${a.cuentaCredito} - ${a.nombreCredito}</td>
+                        <td class="asiento-credito">$${a.valorCredito.toLocaleString()}</td>
+                    </tr>
+                `).join('');
+
+            } catch (error) {
+                console.error('Error cargando asientos:', error);
+            }
+        }
+
+        function generarAsientos() {
+            if (confirm('¿Regenerar todos los asientos contables? Esto recalculará todo desde cero.')) {
+                cargarAsientos();
+                mostrarAlerta('Asientos regenerados correctamente', 'success');
+            }
+        }
+
+        // ============================================
+        // AJUSTES MANUALES
+        // ============================================
+
+        function abrirModalAjuste(codigo, nombre, saldoActual) {
+            document.getElementById('ajuste-cuenta-codigo').value = codigo;
+            document.getElementById('ajuste-cuenta-nombre').value = `${codigo} - ${nombre}`;
+            document.getElementById('ajuste-saldo-actual').value = `$${Math.abs(saldoActual).toLocaleString()} ${saldoActual >= 0 ? 'DB' : 'CR'}`;
+            document.getElementById('ajuste-valor').value = '';
+            document.getElementById('ajuste-concepto').value = '';
+            document.getElementById('modal-ajuste').classList.add('active');
+        }
+
+        function cerrarModalAjuste() {
+            document.getElementById('modal-ajuste').classList.remove('active');
+        }
+
+        async function guardarAjuste() {
+            const codigo = document.getElementById('ajuste-cuenta-codigo').value;
+            const tipo = document.getElementById('ajuste-tipo').value;
+            const valor = parseFloat(document.getElementById('ajuste-valor').value);
+            const concepto = document.getElementById('ajuste-concepto').value;
+
+            if (!valor || valor <= 0) {
+                alert('Ingrese un valor válido');
+                return;
+            }
+
+            if (!concepto) {
+                alert('Ingrese un concepto para el ajuste');
+                return;
+            }
+
+            try {
+                const token = JSON.parse(localStorage.getItem('admin_token'));
+                
+                // Guardar el ajuste como un gasto especial o en una tabla de ajustes
+                const ajuste = {
+                    fecha: new Date().toISOString().split('T')[0],
+                    concepto: `AJUSTE MANUAL: ${concepto} (Cuenta ${codigo})`,
+                    categoria: 'Ajustes',
+                    monto: valor,
+                    metodo_pago: 'Ajuste Contable',
+                    puc: codigo
+                };
+
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/gastos`, {
+                    method: 'POST',
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${token.access_token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(ajuste)
+                });
+
+                if (response.ok) {
+                    mostrarAlerta('✅ Ajuste guardado correctamente', 'success');
+                    cerrarModalAjuste();
+                    await actualizarTodo();
+                } else {
+                    mostrarAlerta('Error al guardar ajuste', 'error');
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+                mostrarAlerta('Error de conexión', 'error');
+            }
+        }
+
+        function mostrarAlerta(mensaje, tipo) {
+            alert(mensaje); // Placeholder - puedes implementar un sistema de alertas más bonito
         }
     </script>
 </body>
