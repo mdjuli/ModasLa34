@@ -700,9 +700,199 @@ function verVariantes(id) {
     });
 }
 
-function verVariantes(id) {
-    // Función para mostrar todas las variantes de un producto
-    alert('Función para ver detalles de variantes próximamente');
+// ============================================
+// FUNCIÓN PARA VER DETALLE DE VARIANTES (MEJORADA)
+// ============================================
+
+async function verVariantes(id) {
+    try {
+        console.log('Ver variantes del producto:', id);
+        
+        // Mostrar indicador de carga
+        mostrarAlerta('Cargando variantes...', 'success');
+        
+        // Buscar el producto con sus variantes
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/vista_productos_completa?id=eq.${id}`, {
+            headers: { 'apikey': SUPABASE_KEY }
+        });
+        
+        if (!response.ok) {
+            throw new Error('Error al cargar variantes');
+        }
+        
+        const data = await response.json();
+        
+        if (data.length === 0) {
+            mostrarAlerta('Producto no encontrado', 'error');
+            return;
+        }
+        
+        const producto = data[0];
+        const variantes = producto.variantes || [];
+        
+        // Función para obtener emoji según categoría
+        function getEmojiCategoria(cat) {
+            const emojis = {
+                'vestidos': '👗',
+                'blusas': '👚',
+                'pantalones': '👖',
+                'deportivo': '⚽',
+                'caballero': '👔',
+                'accesorios': '🎀'
+            };
+            return emojis[cat] || '📦';
+        }
+        
+        // Crear modal bonito
+        const modalHTML = `
+            <div id="modal-variantes" style="
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0,0,0,0.5);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 10000;
+                backdrop-filter: blur(5px);
+            ">
+                <div style="
+                    background: white;
+                    border-radius: 25px;
+                    padding: 2rem;
+                    max-width: 800px;
+                    width: 90%;
+                    max-height: 80vh;
+                    overflow-y: auto;
+                    box-shadow: 0 20px 40px rgba(255,154,158,0.3);
+                    border: 3px solid #ffe4e9;
+                ">
+                    <!-- Header -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <h2 style="color: #ff6b6b; display: flex; align-items: center; gap: 10px;">
+                            <span style="font-size: 2rem;">${getEmojiCategoria(producto.categoria)}</span>
+                            ${producto.nombre}
+                        </h2>
+                        <button onclick="cerrarModalVariantes()" style="
+                            background: #ffe4e9;
+                            border: none;
+                            width: 40px;
+                            height: 40px;
+                            border-radius: 50%;
+                            font-size: 1.5rem;
+                            cursor: pointer;
+                            color: #ff6b6b;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                        ">×</button>
+                    </div>
+                    
+                    <!-- Info del producto -->
+                    <div style="
+                        background: #fff9fc;
+                        border-radius: 15px;
+                        padding: 1rem;
+                        margin-bottom: 1.5rem;
+                        display: flex;
+                        gap: 2rem;
+                        flex-wrap: wrap;
+                    ">
+                        <div><strong>Código:</strong> ${producto.codigo}</div>
+                        <div><strong>Categoría:</strong> ${producto.categoria}</div>
+                        <div><strong>Stock total:</strong> <span style="color: #27ae60; font-weight: bold;">${producto.stock_total || 0}</span> unidades</div>
+                        <div><strong>Rango precio:</strong> $${producto.precio_min || 0} - $${producto.precio_max || 0}</div>
+                    </div>
+                    
+                    <!-- Tabla de variantes -->
+                    <h3 style="color: #ff6b6b; margin-bottom: 1rem;">📋 Variantes (${variantes.length})</h3>
+                    
+                    <table style="
+                        width: 100%;
+                        border-collapse: collapse;
+                        background: white;
+                        border-radius: 15px;
+                        overflow: hidden;
+                    ">
+                        <thead>
+                            <tr style="background: #fff0f3;">
+                                <th style="padding: 1rem; text-align: left; color: #ff6b6b;">Talla</th>
+                                <th style="padding: 1rem; text-align: left; color: #ff6b6b;">Color</th>
+                                <th style="padding: 1rem; text-align: right; color: #ff6b6b;">Stock</th>
+                                <th style="padding: 1rem; text-align: right; color: #ff6b6b;">Precio</th>
+                                <th style="padding: 1rem; text-align: left; color: #ff6b6b;">SKU</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${variantes.map(v => `
+                                <tr style="border-bottom: 1px solid #ffe4e9;">
+                                    <td style="padding: 1rem; font-weight: 600;">${v.talla}</td>
+                                    <td style="padding: 1rem;">
+                                        <div style="display: flex; align-items: center; gap: 10px;">
+                                            <span style="
+                                                display: inline-block;
+                                                width: 25px;
+                                                height: 25px;
+                                                background-color: ${v.color_codigo || '#cccccc'};
+                                                border-radius: 50%;
+                                                border: 2px solid white;
+                                                box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+                                            "></span>
+                                            <span>${v.color_nombre || 'No especificado'}</span>
+                                        </div>
+                                    </td>
+                                    <td style="padding: 1rem; text-align: right; font-weight: bold; color: ${v.stock < 5 ? '#ff4757' : '#27ae60'};">
+                                        ${v.stock || 0}
+                                        ${v.stock < 5 ? ' ⚠️' : ''}
+                                    </td>
+                                    <td style="padding: 1rem; text-align: right; font-weight: bold;">$${(v.precio_venta || 0).toLocaleString()}</td>
+                                    <td style="padding: 1rem; font-family: monospace; font-size: 0.85rem; color: #a5a5a5;">${v.sku}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                    
+                    <!-- Botón de cierre -->
+                    <div style="margin-top: 2rem; text-align: center;">
+                        <button onclick="cerrarModalVariantes()" style="
+                            background: #ffb6c1;
+                            color: white;
+                            border: none;
+                            padding: 1rem 2rem;
+                            border-radius: 50px;
+                            font-size: 1rem;
+                            font-weight: 600;
+                            cursor: pointer;
+                            width: 200px;
+                        ">
+                            Cerrar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Agregar modal al body
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+        
+        // Cerrar la alerta de carga
+        const alerta = document.getElementById('alertMessage');
+        if (alerta) alerta.style.display = 'none';
+        
+    } catch (error) {
+        console.error('Error al ver variantes:', error);
+        mostrarAlerta('Error al cargar variantes', 'error');
+    }
+}
+
+// Función para cerrar el modal de variantes
+function cerrarModalVariantes() {
+    const modal = document.getElementById('modal-variantes');
+    if (modal) {
+        modal.remove();
+    }
 }
 
 // ============================================
