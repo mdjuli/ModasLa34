@@ -80,6 +80,60 @@ function filtrarPorCategoria(categoria) {
     }
 }
 
+// Función para obtener todas las tallas únicas de un producto
+function obtenerTallasUnicas(producto) {
+    const variantes = producto.variantes || [];
+    return variantes.map(v => v.talla).filter((v, i, a) => a.indexOf(v) === i);
+}
+
+// Función para obtener todos los colores únicos de un producto
+function obtenerColoresUnicos(producto) {
+    const variantes = producto.variantes || [];
+    const coloresVistos = new Set();
+    const coloresUnicos = [];
+    
+    variantes.forEach(v => {
+        const colores = v.colores || [];
+        colores.forEach(c => {
+            if (c.codigo && !coloresVistos.has(c.codigo)) {
+                coloresVistos.add(c.codigo);
+                coloresUnicos.push({
+                    nombre: c.nombre || 'Color',
+                    codigo: c.codigo
+                });
+            }
+        });
+    });
+    
+    return coloresUnicos;
+}
+
+// Función para obtener el rango de precios
+function obtenerRangoPrecios(producto) {
+    const variantes = producto.variantes || [];
+    const precios = variantes.map(v => v.precio_venta || 0);
+    const min = Math.min(...precios);
+    const max = Math.max(...precios);
+    
+    if (min === max) {
+        return `$${min.toLocaleString()}`;
+    }
+    return `$${min.toLocaleString()} - $${max.toLocaleString()}`;
+}
+
+// Función para obtener el stock total
+function obtenerStockTotal(producto) {
+    const variantes = producto.variantes || [];
+    let total = 0;
+    variantes.forEach(v => {
+        const colores = v.colores || [];
+        colores.forEach(c => {
+            total += c.stock || 0;
+        });
+    });
+    return total;
+}
+
 // Función para mostrar productos según categoría
 function mostrarProductos(categoria) {
     const catalogo = document.getElementById('catalogo-productos');
@@ -117,38 +171,12 @@ function mostrarProductos(categoria) {
         return emojis[cat] || '📦';
     }
     
-    // Función para obtener todas las tallas disponibles
-    function obtenerTallas(producto) {
-        if (!producto.tallas || producto.tallas.length === 0) return '';
-        return producto.tallas.map(t => t.talla).join(' - ');
-    }
-    
-    // Función para obtener todos los colores únicos
-    function obtenerColoresUnicos(producto) {
-        const coloresVistos = new Set();
-        const coloresUnicos = [];
-        
-        producto.tallas?.forEach(t => {
-            t.colores?.forEach(c => {
-                const clave = `${c.color_codigo}-${c.color_nombre}`;
-                if (!coloresVistos.has(clave) && c.color_codigo) {
-                    coloresVistos.add(clave);
-                    coloresUnicos.push({
-                        nombre: c.color_nombre || 'Color',
-                        codigo: c.color_codigo
-                    });
-                }
-            });
-        });
-        
-        return coloresUnicos;
-    }
-    
     // Generar HTML de los productos
     catalogo.innerHTML = productosFiltrados.map(p => {
-        const tallasTexto = obtenerTallas(p);
+        const tallasUnicas = obtenerTallasUnicas(p);
         const coloresUnicos = obtenerColoresUnicos(p);
-        const stockTotal = p.stock_total || 0;
+        const stockTotal = obtenerStockTotal(p);
+        const rangoPrecios = obtenerRangoPrecios(p);
         
         return `
             <div class="producto-card" onclick="verProducto(${p.id})" style="cursor: pointer;">
@@ -161,9 +189,9 @@ function mostrarProductos(categoria) {
                 <div class="producto-info">
                     <h3 class="producto-titulo">${p.nombre}</h3>
                     
-                    ${tallasTexto ? `
+                    ${tallasUnicas.length > 0 ? `
                         <p class="producto-detalle" style="font-size: 0.9rem; color: #666;">
-                            <strong>Tallas:</strong> ${tallasTexto}
+                            <strong>Tallas:</strong> ${tallasUnicas.join(' - ')}
                         </p>
                     ` : ''}
                     
@@ -185,7 +213,7 @@ function mostrarProductos(categoria) {
                         </div>
                     ` : ''}
                     
-                    <p class="producto-precio">$${p.precio_min || 0} - $${p.precio_max || 0}</p>
+                    <p class="producto-precio">${rangoPrecios}</p>
                     
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
                         <span style="font-size: 0.8rem; color: ${stockTotal > 0 ? '#27ae60' : '#ff4757'};">
@@ -237,12 +265,12 @@ async function verProducto(id) {
     }
 }
 
-// Función para llenar el modal (actualizada para nueva estructura)
+// Función para llenar el modal (actualizada para la nueva estructura)
 function llenarModal(producto) {
     const contenedor = document.getElementById('modal-contenido-producto');
     if (!contenedor) return;
     
-    const tallas = producto.tallas || [];
+    const variantes = producto.variantes || [];
     
     // Emoji según categoría
     const emojis = {
@@ -256,25 +284,31 @@ function llenarModal(producto) {
     const emoji = emojis[producto.categoria] || '📦';
     
     // Calcular stock total
-    const stockTotal = producto.stock_total || 0;
+    let stockTotal = 0;
+    variantes.forEach(v => {
+        const colores = v.colores || [];
+        colores.forEach(c => {
+            stockTotal += c.stock || 0;
+        });
+    });
     
     // Generar HTML de tallas y colores
     let tallasHTML = '';
     
-    if (tallas.length > 0) {
+    if (variantes.length > 0) {
         tallasHTML = '<div style="margin: 1.5rem 0;">';
         tallasHTML += '<h4 style="color: #ff6b6b; margin-bottom: 1rem;">📋 Tallas y colores disponibles:</h4>';
         
-        tallas.forEach(t => {
-            if (t.colores && t.colores.length > 0) {
+        variantes.forEach(v => {
+            const colores = v.colores || [];
+            if (colores.length > 0) {
                 tallasHTML += `
                     <div style="margin-bottom: 1.5rem; padding: 1rem; background: #fff9fc; border-radius: 15px; border: 1px solid #ffe4e9;">
-                        <h5 style="color: #ff6b6b; margin-bottom: 0.8rem;">Talla ${t.talla}</h5>
+                        <h5 style="color: #ff6b6b; margin-bottom: 0.8rem;">Talla ${v.talla} - Precio: $${(v.precio_venta || 0).toLocaleString()}</h5>
                         <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 1rem;">
                 `;
                 
-                t.colores.forEach(c => {
-                    const stockClass = c.stock > 5 ? 'disponible' : (c.stock > 0 ? 'bajo' : 'agotado');
+                colores.forEach(c => {
                     const stockColor = c.stock > 5 ? '#27ae60' : (c.stock > 0 ? '#f39c12' : '#ff4757');
                     
                     tallasHTML += `
@@ -283,22 +317,30 @@ function llenarModal(producto) {
                                 display: inline-block;
                                 width: 40px;
                                 height: 40px;
-                                background-color: ${c.color_codigo || '#cccccc'};
+                                background-color: ${c.codigo || '#cccccc'};
                                 border-radius: 50%;
                                 border: 3px solid white;
                                 box-shadow: 0 3px 10px rgba(0,0,0,0.2);
                                 margin-bottom: 5px;
                             "></div>
-                            <p style="font-size: 0.9rem; font-weight: bold; margin: 5px 0;">${c.color_nombre || 'Color'}</p>
+                            <p style="font-size: 0.9rem; font-weight: bold; margin: 5px 0;">${c.nombre || 'Color'}</p>
                             <p style="font-size: 0.8rem; color: ${stockColor};">
                                 Stock: ${c.stock}
                             </p>
-                            <p style="font-size: 0.9rem; font-weight: bold;">$${(c.precio_venta || 0).toLocaleString()}</p>
                         </div>
                     `;
                 });
                 
                 tallasHTML += `</div></div>`;
+            } else {
+                // Sin colores específicos
+                tallasHTML += `
+                    <div style="margin-bottom: 1.5rem; padding: 1rem; background: #fff9fc; border-radius: 15px; border: 1px solid #ffe4e9;">
+                        <h5 style="color: #ff6b6b; margin-bottom: 0.8rem;">Talla ${v.talla}</h5>
+                        <p style="color: #a5a5a5;">Stock disponible: ${v.stock_total || 0} unidades</p>
+                        <p><strong>Precio:</strong> $${(v.precio_venta || 0).toLocaleString()}</p>
+                    </div>
+                `;
             }
         });
         
@@ -306,6 +348,14 @@ function llenarModal(producto) {
     } else {
         tallasHTML = '<p style="color: #a5a5a5; text-align: center;">No hay variantes disponibles</p>';
     }
+    
+    // Obtener rango de precios
+    const precios = variantes.map(v => v.precio_venta || 0);
+    const precioMin = Math.min(...precios);
+    const precioMax = Math.max(...precios);
+    const rangoPrecios = precioMin === precioMax ? 
+        `$${precioMin.toLocaleString()}` : 
+        `$${precioMin.toLocaleString()} - $${precioMax.toLocaleString()}`;
     
     contenedor.innerHTML = `
         <div class="modal-grid">
@@ -329,7 +379,7 @@ function llenarModal(producto) {
                 </div>
                 
                 <div class="modal-precio">
-                    $${producto.precio_min || 0} - $${producto.precio_max || 0}
+                    ${rangoPrecios}
                 </div>
                 
                 <div class="modal-botones">
@@ -390,14 +440,12 @@ function configurarBuscador() {
                     if (p.nombre?.toLowerCase().includes(busqueda)) return true;
                     if (p.categoria?.toLowerCase().includes(busqueda)) return true;
                     
-                    if (p.tallas) {
-                        for (const t of p.tallas) {
-                            if (t.talla?.toLowerCase().includes(busqueda)) return true;
-                            if (t.colores) {
-                                for (const c of t.colores) {
-                                    if (c.color_nombre?.toLowerCase().includes(busqueda)) return true;
-                                }
-                            }
+                    const variantes = p.variantes || [];
+                    for (const v of variantes) {
+                        if (v.talla?.toLowerCase().includes(busqueda)) return true;
+                        const colores = v.colores || [];
+                        for (const c of colores) {
+                            if (c.nombre?.toLowerCase().includes(busqueda)) return true;
                         }
                     }
                     return false;
