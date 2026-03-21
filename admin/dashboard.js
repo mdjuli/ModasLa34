@@ -149,9 +149,15 @@ function agregarVariante() {
     const varianteHTML = `
         <div class="variante-card" id="variante-${varianteId}">
             <div class="variante-header">
-                <div>
-                    <label style="color: #ff6b6b;">📏 Talla:</label>
-                    <input type="text" id="variante-${varianteId}-talla" placeholder="Ej: S, M, L, 6, 8..." required>
+                <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+                    <div>
+                        <label style="color: #ff6b6b;">📏 Talla:</label>
+                        <input type="text" id="variante-${varianteId}-talla" placeholder="Ej: S, M, L, 6, 8..." required>
+                    </div>
+                    <div>
+                        <label style="color: #ff6b6b;">💰 Precio de venta:</label>
+                        <input type="number" id="variante-${varianteId}-precio" placeholder="Ej: 45000" min="0" step="1000" required style="width: 120px;">
+                    </div>
                 </div>
                 ${varianteId > 0 ? `<button type="button" onclick="eliminarVariante(${varianteId})" class="btn-eliminar-talla">✖️ Eliminar talla</button>` : ''}
             </div>
@@ -239,9 +245,18 @@ function getVariantesFromForm() {
     
     for (let i = 0; i < varianteCount; i++) {
         const tallaInput = document.getElementById(`variante-${i}-talla`);
+        const precioInput = document.getElementById(`variante-${i}-precio`);
+        
         if (!tallaInput || !tallaInput.value.trim()) continue;
         
         const talla = tallaInput.value.trim();
+        const precioVenta = parseFloat(precioInput?.value) || 0;
+        
+        if (precioVenta === 0) {
+            mostrarAlerta(`⚠️ La talla ${talla} no tiene precio asignado`, 'error');
+            return [];
+        }
+        
         const colores = [];
         
         const coloresContainer = document.getElementById(`colores-${i}-container`);
@@ -279,7 +294,7 @@ function getVariantesFromForm() {
             });
         }
         
-        // Si no hay colores, crear uno por defecto
+        // Si no hay colores, crear uno por defecto con stock 0
         if (colores.length === 0) {
             colores.push({
                 nombre: 'Sin color',
@@ -292,6 +307,7 @@ function getVariantesFromForm() {
         
         variantes.push({
             talla: talla,
+            precio_venta: precioVenta,
             colores: colores,
             stock_total: stockTotal
         });
@@ -315,8 +331,16 @@ async function guardarProductoBase() {
         
         const variantes = getVariantesFromForm();
         if (variantes.length === 0) {
-            mostrarAlerta('Debe agregar al menos una talla', 'error');
+            mostrarAlerta('Debe agregar al menos una talla con precio', 'error');
             return;
+        }
+        
+        // Verificar que todas las variantes tengan precio
+        for (const v of variantes) {
+            if (v.precio_venta === 0) {
+                mostrarAlerta(`La talla ${v.talla} no tiene precio asignado`, 'error');
+                return;
+            }
         }
         
         // Guardar producto base
@@ -346,19 +370,19 @@ async function guardarProductoBase() {
         const productoGuardado = await response.json();
         const productoId = productoGuardado[0].id;
         
-        // Guardar variantes
+        // Guardar variantes con precio
         for (const variante of variantes) {
             const varianteData = {
                 producto_id: productoId,
                 talla: variante.talla,
                 colores: variante.colores,
                 stock_total: variante.stock_total,
-                precio_venta: 0,
+                precio_venta: variante.precio_venta,
                 precio_compra: 0,
                 sku: `${codigo}-${variante.talla}`.toUpperCase()
             };
             
-            await fetch(`${SUPABASE_URL}/rest/v1/variantes_producto`, {
+            const varResponse = await fetch(`${SUPABASE_URL}/rest/v1/variantes_producto`, {
                 method: 'POST',
                 headers: {
                     'apikey': SUPABASE_KEY,
@@ -367,6 +391,10 @@ async function guardarProductoBase() {
                 },
                 body: JSON.stringify(varianteData)
             });
+            
+            if (!varResponse.ok) {
+                console.error('Error guardando variante:', await varResponse.text());
+            }
         }
         
         mostrarAlerta('🌸 Producto guardado correctamente', 'success');
