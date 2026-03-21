@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
-    <title>Dashboard - Modas La 34</title>
+    <title>🌸 Dashboard - Modas La 34</title>
     <link rel="stylesheet" href="../css/estilo-comun.css">
     <style>
         /* ===== ESTILOS DEL DASHBOARD ===== */
@@ -836,15 +835,14 @@
                 </div>
             </div>
 
-            <!-- ===== FORMULARIO DE PRODUCTOS CON MÚLTIPLES COLORES ===== -->
+            <!-- ===== NUEVO FORMULARIO DE PRODUCTOS (TALLAS → COLORES) ===== -->
             <div id="form-producto" class="form-container">
-                <h2 style="color: #ff6b6b; margin-bottom: 1.5rem;">👗 Producto con Variantes</h2>
+                <h2 style="color: #ff6b6b; margin-bottom: 1.5rem;">👗 Producto con Tallas y Colores</h2>
                 <form onsubmit="event.preventDefault(); guardarProductoBase()">
                     <!-- Información general del producto -->
                     <div class="form-group">
                         <label>Código base:</label>
                         <input type="text" id="producto-codigo" placeholder="Ej: PANT001" required>
-                        <small style="color: #ff9a9e;">Código único para identificar el producto</small>
                     </div>
                     
                     <div class="form-group">
@@ -868,22 +866,17 @@
                     <div class="form-group">
                         <label>🖼️ URL de la imagen principal:</label>
                         <input type="url" id="producto-imagen" placeholder="https://ejemplo.com/imagen.jpg">
-                        <small style="color: #ff9a9e;">Puedes subir imágenes a Imgur y pegar el enlace</small>
                     </div>
                     
-                    <!-- SECCIÓN DE VARIANTES CON MÚLTIPLES COLORES -->
-                    <h3 style="color: #ff6b6b; margin: 1.5rem 0 1rem 0;">📦 Variantes (Tallas con colores)</h3>
-                    <small style="color: #ff9a9e; margin-bottom: 1rem; display: block;">
-                        💡 Cada talla puede tener varios colores. Cada color tiene su propio stock.
-                        Usa "Sin color" para productos que no tienen color específico.
-                    </small>
+                    <!-- SECCIÓN DE TALLAS Y COLORES -->
+                    <h3 style="color: #ff6b6b; margin: 1.5rem 0 1rem 0;">📏 Tallas y Colores</h3>
                     
-                    <div id="variantes-container">
-                        <!-- Las variantes se agregarán aquí dinámicamente -->
+                    <div id="tallas-container">
+                        <!-- Las tallas se agregarán aquí dinámicamente -->
                     </div>
                     
-                    <button type="button" onclick="agregarVariante()" class="add-btn" style="margin-bottom: 1.5rem; background: #ffb6c1;">
-                        ➕ Agregar nueva talla
+                    <button type="button" onclick="agregarTalla()" class="add-btn" style="margin-bottom: 1.5rem;">
+                        ➕ Agregar otra talla
                     </button>
                     
                     <button type="submit" class="submit-btn">🌸 Guardar Producto</button>
@@ -917,6 +910,7 @@
                     </tbody>
                 </table>
             </div>
+        </div>
 
         <!-- ===== MÓDULO PERFILES ===== -->
         <div id="modulo-perfiles" class="module-section" style="display: none;">
