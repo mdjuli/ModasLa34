@@ -673,6 +673,119 @@ async function eliminarProveedor(id) {
 }
 
 // ============================================
+// FUNCIONES DE PROVEEDORES (COMPLETAS CON EDICIÓN)
+// ============================================
+
+async function editarProveedor(id) {
+    try {
+        console.log('Editando proveedor:', id);
+        
+        // Cargar datos del proveedor
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/proveedores?id=eq.${id}`, {
+            headers: { 'apikey': SUPABASE_KEY }
+        });
+        
+        if (!response.ok) throw new Error('Error al cargar proveedor');
+        
+        const proveedores = await response.json();
+        if (proveedores.length === 0) throw new Error('Proveedor no encontrado');
+        
+        const proveedor = proveedores[0];
+        
+        // Mostrar formulario
+        mostrarFormulario('proveedor');
+        
+        // Llenar campos
+        document.getElementById('proveedor-nombre').value = proveedor.nombre || '';
+        document.getElementById('proveedor-contacto').value = proveedor.contacto || '';
+        document.getElementById('proveedor-telefono').value = proveedor.telefono || '';
+        document.getElementById('proveedor-email').value = proveedor.email || '';
+        document.getElementById('proveedor-direccion').value = proveedor.direccion || '';
+        
+        // Guardar ID para actualizar
+        document.getElementById('form-proveedor').dataset.editId = id;
+        
+        // Cambiar texto del botón
+        const submitBtn = document.querySelector('#form-proveedor .submit-btn');
+        if (submitBtn) {
+            submitBtn.textContent = '🌸 Actualizar Proveedor';
+        }
+        
+    } catch (error) {
+        console.error('Error:', error);
+        mostrarAlerta('Error al cargar el proveedor', 'error');
+    }
+}
+
+// Modificar guardarProveedor para manejar edición
+async function guardarProveedor() {
+    try {
+        const token = JSON.parse(localStorage.getItem('admin_token'));
+        
+        const proveedor = {
+            nombre: document.getElementById('proveedor-nombre').value,
+            contacto: document.getElementById('proveedor-contacto').value || null,
+            telefono: document.getElementById('proveedor-telefono').value || null,
+            email: document.getElementById('proveedor-email').value || null,
+            direccion: document.getElementById('proveedor-direccion').value || null
+        };
+        
+        if (!proveedor.nombre) {
+            mostrarAlerta('El nombre del proveedor es obligatorio', 'error');
+            return;
+        }
+        
+        // Verificar si estamos editando o creando
+        const editId = document.getElementById('form-proveedor').dataset.editId;
+        let url = `${SUPABASE_URL}/rest/v1/proveedores`;
+        let method = 'POST';
+        
+        if (editId) {
+            url += `?id=eq.${editId}`;
+            method = 'PATCH';
+        }
+        
+        const response = await fetch(url, {
+            method: method,
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${token.access_token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(proveedor)
+        });
+        
+        if (response.ok) {
+            mostrarAlerta(editId ? '🌸 Proveedor actualizado correctamente' : '🌸 Proveedor guardado correctamente', 'success');
+            cerrarFormulario('proveedor');
+            await cargarProveedores();
+            
+            // Limpiar formulario
+            document.getElementById('proveedor-nombre').value = '';
+            document.getElementById('proveedor-contacto').value = '';
+            document.getElementById('proveedor-telefono').value = '';
+            document.getElementById('proveedor-email').value = '';
+            document.getElementById('proveedor-direccion').value = '';
+            
+            // Limpiar ID de edición
+            delete document.getElementById('form-proveedor').dataset.editId;
+            
+            // Restaurar texto del botón
+            const submitBtn = document.querySelector('#form-proveedor .submit-btn');
+            if (submitBtn) {
+                submitBtn.textContent = '🌸 Guardar Proveedor';
+            }
+        } else {
+            const error = await response.json();
+            mostrarAlerta('Error: ' + (error.message || 'No se pudo guardar'), 'error');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        mostrarAlerta('Error de conexión', 'error');
+    }
+}
+
+// ============================================
 // FUNCIONES DE COMPRAS (COMPLETAS)
 // ============================================
 
@@ -1402,6 +1515,202 @@ function eliminarPerfil(id) {
 }
 
 // ============================================
+// FUNCIONES DE PERFILES (COMPLETAS CON EDICIÓN)
+// ============================================
+
+async function editarPerfil(id) {
+    try {
+        console.log('Editando perfil:', id);
+        
+        // Cargar datos del perfil
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/perfiles?id=eq.${id}`, {
+            headers: { 'apikey': SUPABASE_KEY }
+        });
+        
+        if (!response.ok) throw new Error('Error al cargar perfil');
+        
+        const perfiles = await response.json();
+        if (perfiles.length === 0) throw new Error('Perfil no encontrado');
+        
+        const perfil = perfiles[0];
+        
+        // Mostrar formulario
+        mostrarFormulario('perfil');
+        
+        // Llenar campos
+        document.getElementById('perfil-nombre').value = perfil.nombre || '';
+        document.getElementById('perfil-email').value = perfil.email || '';
+        document.getElementById('perfil-rol').value = perfil.rol || 'empleado';
+        
+        // Guardar ID para actualizar
+        document.getElementById('form-perfil').dataset.editId = id;
+        
+        // Ocultar campo de contraseña (no se puede editar directamente)
+        const passwordField = document.getElementById('perfil-password');
+        if (passwordField) {
+            passwordField.placeholder = 'Dejar vacío para mantener la misma';
+            passwordField.required = false;
+        }
+        
+        // Cambiar texto del botón
+        const submitBtn = document.querySelector('#form-perfil .submit-btn');
+        if (submitBtn) {
+            submitBtn.textContent = '🌸 Actualizar Usuario';
+        }
+        
+    } catch (error) {
+        console.error('Error:', error);
+        mostrarAlerta('Error al cargar el usuario', 'error');
+    }
+}
+
+// Modificar guardarPerfil para manejar edición
+async function guardarPerfil() {
+    try {
+        const token = JSON.parse(localStorage.getItem('admin_token'));
+        
+        const nombre = document.getElementById('perfil-nombre').value;
+        const email = document.getElementById('perfil-email').value;
+        const password = document.getElementById('perfil-password').value;
+        const rol = document.getElementById('perfil-rol').value;
+        
+        if (!nombre || !email) {
+            mostrarAlerta('Nombre y email son obligatorios', 'error');
+            return;
+        }
+        
+        const editId = document.getElementById('form-perfil').dataset.editId;
+        
+        if (editId) {
+            // ACTUALIZAR perfil existente
+            const perfilData = {
+                nombre: nombre,
+                email: email,
+                rol: rol
+            };
+            
+            const response = await fetch(`${SUPABASE_URL}/rest/v1/perfiles?id=eq.${editId}`, {
+                method: 'PATCH',
+                headers: {
+                    'apikey': SUPABASE_KEY,
+                    'Authorization': `Bearer ${token.access_token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(perfilData)
+            });
+            
+            if (response.ok) {
+                mostrarAlerta('🌸 Usuario actualizado correctamente', 'success');
+                cerrarFormulario('perfil');
+                await cargarPerfiles();
+            } else {
+                const error = await response.json();
+                mostrarAlerta('Error: ' + (error.message || 'No se pudo actualizar'), 'error');
+            }
+            
+        } else {
+            // CREAR nuevo usuario
+            if (!password || password.length < 6) {
+                mostrarAlerta('La contraseña debe tener al menos 6 caracteres', 'error');
+                return;
+            }
+            
+            // Crear usuario en Auth
+            const authResponse = await fetch(`${SUPABASE_URL}/auth/v1/signup`, {
+                method: 'POST',
+                headers: {
+                    'apikey': SUPABASE_KEY,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, password })
+            });
+            
+            const authData = await authResponse.json();
+            
+            if (!authResponse.ok) {
+                throw new Error(authData.msg || 'Error al crear usuario');
+            }
+            
+            // Crear perfil
+            const perfilResponse = await fetch(`${SUPABASE_URL}/rest/v1/perfiles`, {
+                method: 'POST',
+                headers: {
+                    'apikey': SUPABASE_KEY,
+                    'Authorization': `Bearer ${token.access_token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    id: authData.user.id,
+                    nombre: nombre,
+                    email: email,
+                    rol: rol
+                })
+            });
+            
+            if (perfilResponse.ok) {
+                mostrarAlerta('🌸 Usuario creado correctamente', 'success');
+                cerrarFormulario('perfil');
+                await cargarPerfiles();
+            } else {
+                throw new Error('Error al crear perfil');
+            }
+        }
+        
+        // Limpiar formulario
+        document.getElementById('perfil-nombre').value = '';
+        document.getElementById('perfil-email').value = '';
+        document.getElementById('perfil-password').value = '';
+        
+        // Limpiar ID de edición
+        delete document.getElementById('form-perfil').dataset.editId;
+        
+        // Restaurar campo de contraseña
+        const passwordField = document.getElementById('perfil-password');
+        if (passwordField) {
+            passwordField.placeholder = 'Contraseña';
+            passwordField.required = true;
+        }
+        
+        // Restaurar texto del botón
+        const submitBtn = document.querySelector('#form-perfil .submit-btn');
+        if (submitBtn) {
+            submitBtn.textContent = '🌸 Crear Usuario';
+        }
+        
+    } catch (error) {
+        console.error('Error:', error);
+        mostrarAlerta('Error: ' + error.message, 'error');
+    }
+}
+
+async function eliminarPerfil(id) {
+    if (!confirm('¿Estás segura de eliminar este usuario?')) return;
+    
+    try {
+        const token = JSON.parse(localStorage.getItem('admin_token'));
+        
+        // Eliminar perfil (el usuario en auth se elimina automáticamente si hay trigger)
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/perfiles?id=eq.${id}`, {
+            method: 'DELETE',
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${token.access_token}`
+            }
+        });
+        
+        if (response.ok) {
+            mostrarAlerta('✅ Usuario eliminado', 'success');
+            await cargarPerfiles();
+        } else {
+            mostrarAlerta('Error al eliminar', 'error');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        mostrarAlerta('Error de conexión', 'error');
+    }
+}
+
+// ============================================
 // FUNCIONES DE VENTAS
 // ============================================
 
@@ -1497,7 +1806,7 @@ function cerrarFormulario(tipo) {
             delete form.dataset.editId;
             const submitBtn = document.querySelector('#form-producto .submit-btn');
             if (submitBtn) {
-                submitBtn.textContent = '🌸 Guardar Producto con Variantes';
+                submitBtn.textContent = '🌸 Guardar Producto';
             }
         } else if (tipo === 'compra') {
             delete form.dataset.editId;
@@ -1516,6 +1825,19 @@ function cerrarFormulario(tipo) {
             const submitBtn = document.querySelector('#form-proveedor .submit-btn');
             if (submitBtn) {
                 submitBtn.textContent = '🌸 Guardar Proveedor';
+            }
+        } else if (tipo === 'perfil') {
+            delete form.dataset.editId;
+            const submitBtn = document.querySelector('#form-perfil .submit-btn');
+            if (submitBtn) {
+                submitBtn.textContent = '🌸 Crear Usuario';
+            }
+            // Restaurar campo de contraseña
+            const passwordField = document.getElementById('perfil-password');
+            if (passwordField) {
+                passwordField.placeholder = 'Contraseña';
+                passwordField.required = true;
+                passwordField.value = '';
             }
         }
     }
