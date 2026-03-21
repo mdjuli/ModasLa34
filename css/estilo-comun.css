@@ -1206,3 +1206,16 @@ footer {
     border-radius: 50px;
     cursor: pointer;
 }
+
+/* Campo de precio */
+.variante-card input[type="number"] {
+    padding: 0.5rem;
+    border: 2px solid #ffe4e9;
+    border-radius: 10px;
+    text-align: right;
+}
+
+.variante-header input[type="number"] {
+    background: #fff9fc;
+    font-weight: 600;
+}
