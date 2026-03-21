@@ -650,7 +650,6 @@ async function editarProducto(id) {
                             const colorId = `${varianteId}-${Date.now()}-${Math.random()}`;
                             
                             if (!color.nombre || color.nombre === 'Sin color') {
-                                // Es "sin color"
                                 const sinColorHTML = `
                                     <div class="color-row sin-color-item" id="color-${colorId}">
                                         <span style="font-size: 1.5rem;">⚪</span>
@@ -1116,37 +1115,46 @@ async function editarCompra(id) {
         if (compras.length === 0) throw new Error('Compra no encontrada');
         
         const compra = compras[0];
+        console.log('Compra cargada:', compra);
         
         // Mostrar formulario
         mostrarFormulario('compra');
         
-        // Cargar proveedores y productos
+        // Cargar proveedores en el select
         await cargarProveedoresSelect('compra');
-        await cargarProductosSelect();
         
-        // Llenar campos básicos
-        document.getElementById('compra-proveedor').value = compra.proveedor_id || '';
-        document.getElementById('compra-fecha').value = compra.fecha.split('T')[0];
-        document.getElementById('compra-cantidad').value = compra.cantidad || '';
-        document.getElementById('compra-precio').value = compra.precio_unitario || '';
-        document.getElementById('compra-estado').value = compra.estado || 'Pendiente';
+        // Pequeña pausa para asegurar que el select se cargó
+        await new Promise(resolve => setTimeout(resolve, 100));
         
-        // Si tiene producto asociado
-        if (compra.producto_id) {
-            document.getElementById('compra-producto-select').value = compra.producto_id;
-            await cargarVariantesProducto();
-            
-            // Esperar un momento para que carguen las variantes
-            setTimeout(() => {
-                if (compra.variante_id) {
-                    document.getElementById('compra-variante-select').value = compra.variante_id;
-                }
-            }, 500);
-        } else {
-            // Producto manual
-            document.getElementById('compra-producto-manual').value = compra.producto || '';
-            document.getElementById('compra-talla').value = compra.talla || '';
-            document.getElementById('compra-color').value = compra.color_nombre || '';
+        // Llenar campos básicos (verificando que existan)
+        const proveedorSelect = document.getElementById('compra-proveedor');
+        if (proveedorSelect && compra.proveedor_id) {
+            proveedorSelect.value = compra.proveedor_id;
+        }
+        
+        const fechaInput = document.getElementById('compra-fecha');
+        if (fechaInput && compra.fecha) {
+            fechaInput.value = compra.fecha.split('T')[0];
+        }
+        
+        const productoInput = document.getElementById('compra-producto');
+        if (productoInput && compra.producto) {
+            productoInput.value = compra.producto;
+        }
+        
+        const cantidadInput = document.getElementById('compra-cantidad');
+        if (cantidadInput && compra.cantidad) {
+            cantidadInput.value = compra.cantidad;
+        }
+        
+        const precioInput = document.getElementById('compra-precio');
+        if (precioInput && compra.precio_unitario) {
+            precioInput.value = compra.precio_unitario;
+        }
+        
+        const estadoSelect = document.getElementById('compra-estado');
+        if (estadoSelect && compra.estado) {
+            estadoSelect.value = compra.estado;
         }
         
         // Guardar ID para actualizar
@@ -1160,7 +1168,7 @@ async function editarCompra(id) {
         
     } catch (error) {
         console.error('Error:', error);
-        mostrarAlerta('Error al cargar la compra', 'error');
+        mostrarAlerta('Error al cargar la compra: ' + error.message, 'error');
     }
 }
 
