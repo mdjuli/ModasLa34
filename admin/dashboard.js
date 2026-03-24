@@ -383,43 +383,96 @@ async function guardarProductoBase() {
             }
         }
         
-        // Guardar producto base
-        const productoBase = {
-            codigo: codigo,
-            nombre: nombre,
-            categoria: categoria,
-            imagen_url: document.getElementById('producto-imagen')?.value || null
-        };
+        // 🔑 CLAVE: Verificar si estamos EDITANDO o CREANDO
+        const editId = document.getElementById('form-producto').dataset.editId;
+        let productoId;
         
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/productos_base`, {
-            method: 'POST',
-            headers: {
-                'apikey': SUPABASE_KEY,
-                'Authorization': `Bearer ${token.access_token}`,
-                'Content-Type': 'application/json',
-                'Prefer': 'return=representation'
-            },
-            body: JSON.stringify(productoBase)
-        });
+        console.log('Modo:', editId ? 'EDITANDO producto ID: ' + editId : 'CREANDO nuevo producto');
         
-        if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.message || 'Error al guardar');
+        if (editId) {
+            // ========== MODO EDICIÓN ==========
+            productoId = parseInt(editId);
+            
+            // 1. Actualizar producto base
+            const productoBase = {
+                codigo: codigo,
+                nombre: nombre,
+                categoria: categoria,
+                imagen_url: document.getElementById('producto-imagen')?.value || null
+            };
+            
+            const updateResponse = await fetch(`${SUPABASE_URL}/rest/v1/productos_base?id=eq.${productoId}`, {
+                method: 'PATCH',
+                headers: {
+                    'apikey': SUPABASE_KEY,
+                    'Authorization': `Bearer ${token.access_token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(productoBase)
+            });
+            
+            if (!updateResponse.ok) {
+                const error = await updateResponse.json();
+                throw new Error('Error al actualizar producto base: ' + (error.message || ''));
+            }
+            
+            console.log('✅ Producto base actualizado');
+            
+            // 2. Eliminar variantes antiguas
+            const deleteResponse = await fetch(`${SUPABASE_URL}/rest/v1/variantes_producto?producto_id=eq.${productoId}`, {
+                method: 'DELETE',
+                headers: {
+                    'apikey': SUPABASE_KEY,
+                    'Authorization': `Bearer ${token.access_token}`
+                }
+            });
+            
+            if (!deleteResponse.ok) {
+                console.warn('Error al eliminar variantes antiguas:', await deleteResponse.text());
+            } else {
+                console.log('✅ Variantes antiguas eliminadas');
+            }
+            
+        } else {
+            // ========== MODO CREACIÓN ==========
+            const productoBase = {
+                codigo: codigo,
+                nombre: nombre,
+                categoria: categoria,
+                imagen_url: document.getElementById('producto-imagen')?.value || null
+            };
+            
+            const response = await fetch(`${SUPABASE_URL}/rest/v1/productos_base`, {
+                method: 'POST',
+                headers: {
+                    'apikey': SUPABASE_KEY,
+                    'Authorization': `Bearer ${token.access_token}`,
+                    'Content-Type': 'application/json',
+                    'Prefer': 'return=representation'
+                },
+                body: JSON.stringify(productoBase)
+            });
+            
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.message || 'Error al guardar producto base');
+            }
+            
+            const productoGuardado = await response.json();
+            productoId = productoGuardado[0].id;
+            console.log('✅ Nuevo producto base creado con ID:', productoId);
         }
         
-        const productoGuardado = await response.json();
-        const productoId = productoGuardado[0].id;
-        
-        // Guardar variantes con SKU ÚNICO
+        // ========== GUARDAR NUEVAS VARIANTES ==========
         let variantesGuardadas = 0;
         let variantesConError = 0;
         
         for (const variante of variantes) {
-            // Generar SKU ÚNICO usando timestamp para evitar duplicados
+            // Generar SKU único
             const timestamp = Date.now();
-            const random = Math.floor(Math.random() * 10000);
+            const randomPart = Math.random().toString(36).substring(2, 10);
             const skuBase = `${codigo}-${variante.talla}`.toUpperCase().replace(/[^A-Z0-9-]/g, '');
-            const skuUnico = `${skuBase}-${timestamp}-${random}`;
+            const skuUnico = `${skuBase}-${timestamp}-${randomPart}`;
             
             const varianteData = {
                 producto_id: productoId,
@@ -430,8 +483,6 @@ async function guardarProductoBase() {
                 precio_compra: 0,
                 sku: skuUnico
             };
-            
-            console.log('Guardando variante:', varianteData);
             
             try {
                 const varResponse = await fetch(`${SUPABASE_URL}/rest/v1/variantes_producto`, {
@@ -446,27 +497,29 @@ async function guardarProductoBase() {
                 
                 if (varResponse.ok) {
                     variantesGuardadas++;
+                    console.log(`✅ Variante ${variante.talla} guardada`);
                 } else {
                     variantesConError++;
                     const errorText = await varResponse.text();
-                    console.error('Error guardando variante:', errorText);
+                    console.error(`❌ Error guardando variante ${variante.talla}:`, errorText);
                 }
                 
-                // Pequeña pausa para no saturar la API
                 await new Promise(resolve => setTimeout(resolve, 100));
                 
             } catch (varError) {
                 variantesConError++;
-                console.error('Excepción guardando variante:', varError);
+                console.error(`❌ Excepción en variante ${variante.talla}:`, varError);
             }
         }
         
+        // Mensaje final
         if (variantesConError === 0) {
-            mostrarAlerta(`🌸 Producto guardado con ${variantesGuardadas} variantes`, 'success');
+            mostrarAlerta(`🌸 Producto ${editId ? 'actualizado' : 'guardado'} con ${variantesGuardadas} variantes`, 'success');
         } else {
             mostrarAlerta(`⚠️ Producto guardado con ${variantesGuardadas} variantes (${variantesConError} errores)`, 'error');
         }
         
+        // Cerrar formulario y recargar
         cerrarFormulario('producto');
         await cargarProductos();
         
@@ -478,6 +531,15 @@ async function guardarProductoBase() {
         document.getElementById('variantes-container').innerHTML = '';
         varianteCount = 0;
         agregarVariante();
+        
+        // Limpiar ID de edición
+        delete document.getElementById('form-producto').dataset.editId;
+        
+        // Restaurar texto del botón
+        const submitBtn = document.querySelector('#form-producto .submit-btn');
+        if (submitBtn) {
+            submitBtn.textContent = '🌸 Guardar Producto';
+        }
         
     } catch (error) {
         console.error('Error:', error);
@@ -641,6 +703,9 @@ async function editarProducto(id) {
         // Mostrar formulario
         mostrarFormulario('producto');
         
+        // 🔑 CLAVE: Guardar el ID del producto que estamos editando
+        document.getElementById('form-producto').dataset.editId = id;
+        
         // Llenar datos básicos
         document.getElementById('producto-codigo').value = producto.codigo || '';
         document.getElementById('producto-nombre').value = producto.nombre || '';
@@ -653,97 +718,96 @@ async function editarProducto(id) {
             container.innerHTML = '';
             varianteCount = 0;
             
-            variantes.forEach(v => {
-                const varianteId = varianteCount;
-                const varianteHTML = `
-                    <div class="variante-card" id="variante-${varianteId}">
-                        <div class="variante-header">
-                            <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
-                                <div>
-                                    <label style="color: #ff6b6b;">📏 Talla:</label>
-                                    <input type="text" id="variante-${varianteId}-talla" value="${v.talla}" required>
+            if (variantes.length === 0) {
+                // Si no hay variantes, agregar una vacía
+                agregarVariante();
+            } else {
+                variantes.forEach(v => {
+                    const varianteId = varianteCount;
+                    const varianteHTML = `
+                        <div class="variante-card" id="variante-${varianteId}">
+                            <div class="variante-header">
+                                <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+                                    <div>
+                                        <label style="color: #ff6b6b;">📏 Talla:</label>
+                                        <input type="text" id="variante-${varianteId}-talla" value="${v.talla}" required>
+                                    </div>
+                                    <div>
+                                        <label style="color: #ff6b6b;">💰 Precio de venta:</label>
+                                        <input type="number" id="variante-${varianteId}-precio" value="${v.precio_venta}" min="0" step="1000" required style="width: 120px;">
+                                    </div>
                                 </div>
+                                <button type="button" onclick="eliminarVariante(${varianteId})" class="btn-eliminar-talla">✖️ Eliminar talla</button>
+                            </div>
+                            
+                            <div style="margin-top: 1rem;">
+                                <label style="color: #ff6b6b;">🎨 Colores y stock:</label>
+                                <div id="colores-${varianteId}-container" class="colores-container"></div>
                                 <div>
-                                    <label style="color: #ff6b6b;">💰 Precio de venta:</label>
-                                    <input type="number" id="variante-${varianteId}-precio" value="${v.precio_venta}" min="0" step="1000" required style="width: 120px;">
+                                    <button type="button" onclick="agregarColorAVariante(${varianteId})" class="btn-agregar-color">➕ Agregar color</button>
+                                    <button type="button" onclick="agregarSinColor(${varianteId})" class="btn-sin-color">⚪ Sin color (stock único)</button>
                                 </div>
                             </div>
-                            <button type="button" onclick="eliminarVariante(${varianteId})" class="btn-eliminar-talla">✖️ Eliminar talla</button>
                         </div>
-                        
-                        <div style="margin-top: 1rem;">
-                            <label style="color: #ff6b6b;">🎨 Colores y stock:</label>
-                            <div id="colores-${varianteId}-container" class="colores-container"></div>
-                            <div>
-                                <button type="button" onclick="agregarColorAVariante(${varianteId})" class="btn-agregar-color">➕ Agregar color</button>
-                                <button type="button" onclick="agregarSinColor(${varianteId})" class="btn-sin-color">⚪ Sin color (stock único)</button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                container.insertAdjacentHTML('beforeend', varianteHTML);
-                
-                // Agregar colores existentes
-                const coloresContainer = document.getElementById(`colores-${varianteId}-container`);
-                const colores = v.colores || [];
-                
-                if (colores.length > 0) {
-                    colores.forEach(color => {
-                        const colorId = `${varianteId}-${Date.now()}-${Math.random()}`;
-                        let colorHTML = '';
-                        
-                        if (color.nombre === null && color.codigo === null) {
-                            // Sin color
-                            colorHTML = `
-                                <div class="color-row sin-color-item" id="color-${colorId}">
-                                    <span style="font-size: 1.5rem;">⚪</span>
-                                    <span style="flex: 1; font-weight: 500;">Sin color específico</span>
-                                    <input type="number" id="color-stock-${colorId}" value="${color.stock}" placeholder="Stock" min="0" class="color-stock-input" style="width: 80px;">
-                                    <button type="button" onclick="eliminarColor('${colorId}')" class="btn-eliminar-color">🗑️</button>
-                                </div>
-                            `;
-                        } else {
-                            // Color normal
-                            colorHTML = `
-                                <div class="color-row" id="color-${colorId}">
-                                    <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; width: 100%;">
-                                        <input type="color" id="color-hex-${colorId}" value="${color.codigo || '#ff0000'}" class="color-picker" style="width: 50px; height: 40px;">
-                                        <input type="text" id="color-hex-text-${colorId}" value="${color.codigo || '#ff0000'}" placeholder="Código hex" class="color-hex-text" style="flex: 1; min-width: 100px;">
-                                        <input type="text" id="color-nombre-${colorId}" value="${color.nombre || ''}" placeholder="Nombre del color" class="color-nombre-input" style="flex: 2;">
+                    `;
+                    container.insertAdjacentHTML('beforeend', varianteHTML);
+                    
+                    // Agregar colores existentes
+                    const coloresContainer = document.getElementById(`colores-${varianteId}-container`);
+                    const colores = v.colores || [];
+                    
+                    if (colores.length > 0) {
+                        colores.forEach(color => {
+                            const colorId = `${varianteId}-${Date.now()}-${Math.random()}`;
+                            let colorHTML = '';
+                            
+                            if (color.nombre === null && color.codigo === null) {
+                                colorHTML = `
+                                    <div class="color-row sin-color-item" id="color-${colorId}">
+                                        <span style="font-size: 1.5rem;">⚪</span>
+                                        <span style="flex: 1; font-weight: 500;">Sin color específico</span>
                                         <input type="number" id="color-stock-${colorId}" value="${color.stock}" placeholder="Stock" min="0" class="color-stock-input" style="width: 80px;">
                                         <button type="button" onclick="eliminarColor('${colorId}')" class="btn-eliminar-color">🗑️</button>
                                     </div>
-                                </div>
-                            `;
-                        }
-                        
-                        coloresContainer.insertAdjacentHTML('beforeend', colorHTML);
-                        
-                        // Sincronizar color picker con texto
-                        if (!color.nombre === null) {
-                            const colorPicker = document.getElementById(`color-hex-${colorId}`);
-                            const colorText = document.getElementById(`color-hex-text-${colorId}`);
-                            if (colorPicker && colorText) {
-                                colorPicker.addEventListener('input', function() { colorText.value = this.value; });
-                                colorText.addEventListener('input', function() {
-                                    let val = this.value;
-                                    if (!val.startsWith('#')) val = '#' + val;
-                                    if (/^#[0-9A-Fa-f]{6}$/.test(val)) colorPicker.value = val;
-                                });
+                                `;
+                            } else {
+                                colorHTML = `
+                                    <div class="color-row" id="color-${colorId}">
+                                        <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; width: 100%;">
+                                            <input type="color" id="color-hex-${colorId}" value="${color.codigo || '#ff0000'}" class="color-picker" style="width: 50px; height: 40px;">
+                                            <input type="text" id="color-hex-text-${colorId}" value="${color.codigo || '#ff0000'}" placeholder="Código hex" class="color-hex-text" style="flex: 1; min-width: 100px;">
+                                            <input type="text" id="color-nombre-${colorId}" value="${color.nombre || ''}" placeholder="Nombre del color" class="color-nombre-input" style="flex: 2;">
+                                            <input type="number" id="color-stock-${colorId}" value="${color.stock}" placeholder="Stock" min="0" class="color-stock-input" style="width: 80px;">
+                                            <button type="button" onclick="eliminarColor('${colorId}')" class="btn-eliminar-color">🗑️</button>
+                                        </div>
+                                    </div>
+                                `;
                             }
-                        }
-                    });
-                } else {
-                    // Agregar un color por defecto
-                    agregarColorAVariante(varianteId);
-                }
-                
-                varianteCount++;
-            });
+                            
+                            coloresContainer.insertAdjacentHTML('beforeend', colorHTML);
+                            
+                            // Sincronizar color picker con texto
+                            if (color.nombre !== null) {
+                                const colorPicker = document.getElementById(`color-hex-${colorId}`);
+                                const colorText = document.getElementById(`color-hex-text-${colorId}`);
+                                if (colorPicker && colorText) {
+                                    colorPicker.addEventListener('input', function() { colorText.value = this.value; });
+                                    colorText.addEventListener('input', function() {
+                                        let val = this.value;
+                                        if (!val.startsWith('#')) val = '#' + val;
+                                        if (/^#[0-9A-Fa-f]{6}$/.test(val)) colorPicker.value = val;
+                                    });
+                                }
+                            }
+                        });
+                    } else {
+                        agregarColorAVariante(varianteId);
+                    }
+                    
+                    varianteCount++;
+                });
+            }
         }
-        
-        // Guardar ID para actualizar
-        document.getElementById('form-producto').dataset.editId = id;
         
         // Cambiar texto del botón
         const submitBtn = document.querySelector('#form-producto .submit-btn');
@@ -1932,7 +1996,6 @@ function cerrarFormulario(tipo) {
     if (form) {
         form.classList.remove('active');
         
-        // Limpiar ID de edición según el tipo
         if (tipo === 'producto') {
             delete form.dataset.editId;
             const submitBtn = document.querySelector('#form-producto .submit-btn');
