@@ -191,14 +191,37 @@ function agregarColorAVariante(varianteId) {
     
     const colorHTML = `
         <div class="color-row" id="color-${colorId}">
-            <input type="color" id="color-hex-${colorId}" value="#ff0000" class="color-picker">
-            <input type="text" id="color-nombre-${colorId}" placeholder="Nombre del color (ej: Rojo)" class="color-nombre-input">
-            <input type="number" id="color-stock-${colorId}" placeholder="Stock" min="0" value="0" class="color-stock-input">
-            <button type="button" onclick="eliminarColor('${colorId}')" class="btn-eliminar-color">🗑️</button>
+            <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; width: 100%;">
+                <input type="color" id="color-hex-${colorId}" value="#ff0000" class="color-picker" style="width: 50px; height: 40px;">
+                <input type="text" id="color-hex-text-${colorId}" value="#ff0000" placeholder="Código hex (ej: #ff0000)" class="color-hex-text" style="flex: 1; min-width: 100px; padding: 0.5rem; border: 2px solid #ffe4e9; border-radius: 10px; font-family: monospace;">
+                <input type="text" id="color-nombre-${colorId}" placeholder="Nombre del color (ej: Rojo)" class="color-nombre-input" style="flex: 2; min-width: 120px;">
+                <input type="number" id="color-stock-${colorId}" placeholder="Stock" min="0" value="0" class="color-stock-input" style="width: 80px;">
+                <button type="button" onclick="eliminarColor('${colorId}')" class="btn-eliminar-color">🗑️</button>
+            </div>
         </div>
     `;
     
     container.insertAdjacentHTML('beforeend', colorHTML);
+    
+    // Sincronizar el color picker con el campo de texto
+    const colorPicker = document.getElementById(`color-hex-${colorId}`);
+    const colorText = document.getElementById(`color-hex-text-${colorId}`);
+    
+    if (colorPicker && colorText) {
+        colorPicker.addEventListener('input', function() {
+            colorText.value = this.value;
+        });
+        
+        colorText.addEventListener('input', function() {
+            let value = this.value;
+            if (!value.startsWith('#')) {
+                value = '#' + value;
+            }
+            if (/^#[0-9A-Fa-f]{6}$/.test(value)) {
+                colorPicker.value = value;
+            }
+        });
+    }
 }
 
 function agregarSinColor(varianteId) {
@@ -280,13 +303,30 @@ function getVariantesFromForm() {
                 } else {
                     // Para colores con nombre
                     const nombreInput = document.getElementById(`color-nombre-${colorId}`);
-                    const hexInput = document.getElementById(`color-hex-${colorId}`);
+                    let hexInput = document.getElementById(`color-hex-${colorId}`);
+                    const hexTextInput = document.getElementById(`color-hex-text-${colorId}`);
                     const stockInput = document.getElementById(`color-stock-${colorId}`);
+                    
+                    // Obtener el valor hexadecimal (priorizar el texto si existe)
+                    let hexValue = '#ff0000';
+                    if (hexTextInput && hexTextInput.value) {
+                        hexValue = hexTextInput.value;
+                    } else if (hexInput && hexInput.value) {
+                        hexValue = hexInput.value;
+                    }
+                    
+                    // Validar y formatear el código hexadecimal
+                    if (!hexValue.startsWith('#')) {
+                        hexValue = '#' + hexValue;
+                    }
+                    if (!/^#[0-9A-Fa-f]{6}$/.test(hexValue)) {
+                        hexValue = '#cccccc';
+                    }
                     
                     if (nombreInput && nombreInput.value.trim()) {
                         colores.push({
                             nombre: nombreInput.value.trim(),
-                            codigo: hexInput ? hexInput.value : '#cccccc',
+                            codigo: hexValue,
                             stock: parseInt(stockInput?.value) || 0
                         });
                     }
@@ -294,7 +334,7 @@ function getVariantesFromForm() {
             });
         }
         
-        // Si no hay colores, crear uno por defecto con stock 0
+        // Si no hay colores válidos, crear uno por defecto
         if (colores.length === 0) {
             colores.push({
                 nombre: 'Sin color',
@@ -1032,13 +1072,32 @@ async function guardarCompra() {
         const cantidad = parseInt(document.getElementById('compra-cantidad').value);
         const precio = parseFloat(document.getElementById('compra-precio').value);
         
-        // CORRECCIÓN: Obtener la fecha en formato YYYY-MM-DD sin conversión de zona
+        if (!cantidad || cantidad <= 0) {
+            mostrarAlerta('Cantidad debe ser mayor a 0', 'error');
+            return;
+        }
+        
+        if (!precio || precio <= 0) {
+            mostrarAlerta('Precio debe ser mayor a 0', 'error');
+            return;
+        }
+        
         const fechaInput = document.getElementById('compra-fecha').value;
+        if (!fechaInput) {
+            mostrarAlerta('Debe seleccionar una fecha', 'error');
+            return;
+        }
+        
+        const producto = document.getElementById('compra-producto').value;
+        if (!producto) {
+            mostrarAlerta('Debe especificar el producto', 'error');
+            return;
+        }
         
         const compra = {
-            proveedor_id: proveedorId,
-            fecha: fechaInput, // Guardar exactamente como YYYY-MM-DD
-            producto: document.getElementById('compra-producto').value,
+            proveedor_id: parseInt(proveedorId),
+            fecha: fechaInput,
+            producto: producto,
             cantidad: cantidad,
             precio_unitario: precio,
             total: cantidad * precio,
@@ -1046,10 +1105,7 @@ async function guardarCompra() {
             puc: '620501'
         };
         
-        if (!compra.fecha || !compra.producto) {
-            mostrarAlerta('Fecha y producto son obligatorios', 'error');
-            return;
-        }
+        console.log('Guardando compra:', compra);
         
         // Verificar si estamos editando o creando
         const editId = document.getElementById('form-compra').dataset.editId;
@@ -1066,7 +1122,8 @@ async function guardarCompra() {
             headers: {
                 'apikey': SUPABASE_KEY,
                 'Authorization': `Bearer ${token.access_token}`,
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Prefer': 'return=representation'
             },
             body: JSON.stringify(compra)
         });
@@ -1077,6 +1134,7 @@ async function guardarCompra() {
             await cargarCompras();
             
             // Limpiar formulario
+            document.getElementById('compra-proveedor').value = '';
             document.getElementById('compra-fecha').value = '';
             document.getElementById('compra-producto').value = '';
             document.getElementById('compra-cantidad').value = '';
@@ -1092,11 +1150,12 @@ async function guardarCompra() {
             }
         } else {
             const error = await response.json();
+            console.error('Error respuesta:', error);
             mostrarAlerta('Error: ' + (error.message || 'No se pudo guardar'), 'error');
         }
     } catch (error) {
         console.error('Error:', error);
-        mostrarAlerta('Error de conexión', 'error');
+        mostrarAlerta('Error de conexión: ' + error.message, 'error');
     }
 }
 
@@ -1259,119 +1318,6 @@ async function cargarVariantesProducto() {
         
     } catch (error) {
         console.error('Error cargando variantes:', error);
-    }
-}
-
-// Actualizar la función guardarCompra
-async function guardarCompra() {
-    try {
-        const token = JSON.parse(localStorage.getItem('admin_token'));
-        
-        const proveedorId = document.getElementById('compra-proveedor').value;
-        if (!proveedorId) {
-            mostrarAlerta('Debe seleccionar un proveedor', 'error');
-            return;
-        }
-        
-        const cantidad = parseInt(document.getElementById('compra-cantidad').value);
-        const precio = parseFloat(document.getElementById('compra-precio').value);
-        
-        // Datos básicos de la compra
-        const compra = {
-            proveedor_id: proveedorId,
-            fecha: document.getElementById('compra-fecha').value,
-            cantidad: cantidad,
-            precio_unitario: precio,
-            total: cantidad * precio,
-            estado: document.getElementById('compra-estado').value,
-            puc: '620501'
-        };
-        
-        // Verificar si se seleccionó un producto existente
-        const productoId = document.getElementById('compra-producto-select').value;
-        const varianteSelect = document.getElementById('compra-variante-select');
-        
-        if (productoId && varianteSelect.value) {
-            // Se seleccionó producto y variante
-            const varianteOption = varianteSelect.options[varianteSelect.selectedIndex];
-            
-            compra.producto_id = productoId;
-            compra.variante_id = varianteSelect.value;
-            compra.producto = varianteOption.text.split('|')[0].replace('Talla:', '').trim();
-            compra.talla = varianteOption.dataset.talla;
-            compra.color_nombre = varianteOption.dataset.colorNombre;
-            compra.color_codigo = varianteOption.dataset.colorCodigo;
-            
-        } else {
-            // Producto manual
-            compra.producto = document.getElementById('compra-producto-manual').value;
-            compra.talla = document.getElementById('compra-talla').value || null;
-            compra.color_nombre = document.getElementById('compra-color').value || null;
-        }
-        
-        if (!compra.producto) {
-            mostrarAlerta('Debe especificar el producto', 'error');
-            return;
-        }
-        
-        // Verificar si estamos editando o creando
-        const editId = document.getElementById('form-compra').dataset.editId;
-        let url = `${SUPABASE_URL}/rest/v1/compras`;
-        let method = 'POST';
-        
-        if (editId) {
-            url += `?id=eq.${editId}`;
-            method = 'PATCH';
-        }
-        
-        const response = await fetch(url, {
-            method: method,
-            headers: {
-                'apikey': SUPABASE_KEY,
-                'Authorization': `Bearer ${token.access_token}`,
-                'Content-Type': 'application/json',
-                'Prefer': 'return=representation'
-            },
-            body: JSON.stringify(compra)
-        });
-        
-        if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.message || 'Error al guardar');
-        }
-        
-        // Si la compra está "Recibida" y tiene variante, actualizar stock
-        if (compra.estado === 'Recibida' && compra.variante_id) {
-            await actualizarStockPorCompra(compra.variante_id, cantidad);
-        }
-        
-        mostrarAlerta(editId ? '🌸 Compra actualizada correctamente' : '🌸 Compra guardada correctamente', 'success');
-        cerrarFormulario('compra');
-        await cargarCompras();
-        
-        // Limpiar formulario
-        document.getElementById('compra-fecha').value = '';
-        document.getElementById('compra-producto-select').value = '';
-        document.getElementById('compra-producto-manual').value = '';
-        document.getElementById('compra-talla').value = '';
-        document.getElementById('compra-color').value = '';
-        document.getElementById('compra-cantidad').value = '';
-        document.getElementById('compra-precio').value = '';
-        document.getElementById('compra-variante-container').style.display = 'none';
-        document.getElementById('compra-manual-container').style.display = 'block';
-        
-        // Limpiar ID de edición
-        delete document.getElementById('form-compra').dataset.editId;
-        
-        // Restaurar texto del botón
-        const submitBtn = document.querySelector('#form-compra .submit-btn');
-        if (submitBtn) {
-            submitBtn.textContent = '🌸 Guardar Compra';
-        }
-        
-    } catch (error) {
-        console.error('Error:', error);
-        mostrarAlerta('Error: ' + error.message, 'error');
     }
 }
 
