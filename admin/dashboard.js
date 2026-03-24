@@ -410,8 +410,17 @@ async function guardarProductoBase() {
         const productoGuardado = await response.json();
         const productoId = productoGuardado[0].id;
         
-        // Guardar variantes con precio
+        // Guardar variantes con SKU ÚNICO
+        let variantesGuardadas = 0;
+        let variantesConError = 0;
+        
         for (const variante of variantes) {
+            // Generar SKU ÚNICO usando timestamp para evitar duplicados
+            const timestamp = Date.now();
+            const random = Math.floor(Math.random() * 10000);
+            const skuBase = `${codigo}-${variante.talla}`.toUpperCase().replace(/[^A-Z0-9-]/g, '');
+            const skuUnico = `${skuBase}-${timestamp}-${random}`;
+            
             const varianteData = {
                 producto_id: productoId,
                 talla: variante.talla,
@@ -419,25 +428,45 @@ async function guardarProductoBase() {
                 stock_total: variante.stock_total,
                 precio_venta: variante.precio_venta,
                 precio_compra: 0,
-                sku: `${codigo}-${variante.talla}`.toUpperCase()
+                sku: skuUnico
             };
             
-            const varResponse = await fetch(`${SUPABASE_URL}/rest/v1/variantes_producto`, {
-                method: 'POST',
-                headers: {
-                    'apikey': SUPABASE_KEY,
-                    'Authorization': `Bearer ${token.access_token}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(varianteData)
-            });
+            console.log('Guardando variante:', varianteData);
             
-            if (!varResponse.ok) {
-                console.error('Error guardando variante:', await varResponse.text());
+            try {
+                const varResponse = await fetch(`${SUPABASE_URL}/rest/v1/variantes_producto`, {
+                    method: 'POST',
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${token.access_token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(varianteData)
+                });
+                
+                if (varResponse.ok) {
+                    variantesGuardadas++;
+                } else {
+                    variantesConError++;
+                    const errorText = await varResponse.text();
+                    console.error('Error guardando variante:', errorText);
+                }
+                
+                // Pequeña pausa para no saturar la API
+                await new Promise(resolve => setTimeout(resolve, 100));
+                
+            } catch (varError) {
+                variantesConError++;
+                console.error('Excepción guardando variante:', varError);
             }
         }
         
-        mostrarAlerta('🌸 Producto guardado correctamente', 'success');
+        if (variantesConError === 0) {
+            mostrarAlerta(`🌸 Producto guardado con ${variantesGuardadas} variantes`, 'success');
+        } else {
+            mostrarAlerta(`⚠️ Producto guardado con ${variantesGuardadas} variantes (${variantesConError} errores)`, 'error');
+        }
+        
         cerrarFormulario('producto');
         await cargarProductos();
         
