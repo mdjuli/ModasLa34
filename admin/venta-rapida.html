@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🌸 Venta Rápida - Modas La 34</title>
+    <title> Venta Rápida - Modas La 34</title>
     <link rel="stylesheet" href="../css/estilo-comun.css">
     <style>
         * {
@@ -29,6 +29,8 @@
             justify-content: space-between;
             align-items: center;
             box-shadow: 0 4px 15px rgba(255, 154, 158, 0.3);
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
         .venta-header h1 {
@@ -394,8 +396,86 @@
             font-weight: 600;
         }
 
+        /* Modal de selección de variantes */
+        .modal-variantes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-variantes-contenido {
+            background: white;
+            border-radius: 25px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-variantes-contenido h3 {
+            color: #ff6b6b;
+            margin-bottom: 1rem;
+        }
+
+        .variante-opcion {
+            border: 2px solid #ffe4e9;
+            border-radius: 15px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s;
+        }
+
+        .variante-opcion:hover {
+            border-color: #ff9a9e;
+            background: #fff9fc;
+            transform: translateX(5px);
+        }
+
+        .variante-color {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+
+        .variante-info {
+            flex: 1;
+        }
+
+        .variante-info p {
+            margin: 0.2rem 0;
+        }
+
+        .variante-precio {
+            font-weight: bold;
+            color: #ff9a9e;
+        }
+
+        .variante-stock {
+            font-size: 0.8rem;
+            color: #a5a5a5;
+        }
+
+        .variante-stock.bajo {
+            color: #ff4757;
+        }
+
         /* Modal de factura */
-        .modal {
+        .modal-factura {
             display: none;
             position: fixed;
             top: 0;
@@ -408,11 +488,11 @@
             z-index: 1000;
         }
 
-        .modal.active {
+        .modal-factura.active {
             display: flex;
         }
 
-        .modal-content {
+        .modal-factura-contenido {
             background: white;
             border-radius: 25px;
             padding: 2rem;
@@ -460,6 +540,42 @@
             
             .carrito-panel {
                 position: static;
+            }
+        }
+
+        /* Estilos para impresión térmica */
+        @media print {
+            body {
+                background: white;
+                margin: 0;
+                padding: 0;
+            }
+            
+            .venta-header,
+            .productos-panel,
+            .selector-iva,
+            .metodo-pago,
+            .finalizar-btn,
+            .cancelar-btn,
+            .volver-btn,
+            .modal-buttons {
+                display: none !important;
+            }
+            
+            .carrito-panel {
+                box-shadow: none;
+                border: none;
+                padding: 0;
+                margin: 0;
+                position: static;
+            }
+            
+            .carrito-items {
+                max-height: none;
+            }
+            
+            .carrito-item {
+                break-inside: avoid;
             }
         }
     </style>
@@ -524,7 +640,7 @@
                     </div>
                 </div>
                 <p style="font-size: 0.7rem; color: #a5a5a5; margin-top: 0.5rem;">
-                    ℹ️ El IVA se extrae del precio de venta
+                    ℹ️ El IVA se extrae del precio de venta (precio final ya incluye IVA)
                 </p>
             </div>
 
@@ -569,9 +685,9 @@
         </div>
     </div>
 
-    <!-- Modal de factura -->
-    <div class="modal" id="modal-factura">
-        <div class="modal-content">
+    <!-- Modal de factura (se abrirá en nueva página) -->
+    <div class="modal-factura" id="modal-factura">
+        <div class="modal-factura-contenido">
             <div class="modal-icon">🧾</div>
             <h3>¡Venta Completada!</h3>
             <p style="margin: 1rem 0; color: #4a4a4a;">La venta se ha registrado exitosamente.</p>
@@ -581,7 +697,7 @@
                 <p><strong>Método de pago:</strong> <span id="factura-metodo">Efectivo</span></p>
             </div>
             <div class="modal-buttons">
-                <button class="btn-imprimir" onclick="imprimirFactura()">🖨️ Imprimir</button>
+                <button class="btn-imprimir" onclick="abrirFacturaImprimir()">🖨️ Imprimir</button>
                 <button class="btn-nueva" onclick="nuevaVenta()">➕ Nueva Venta</button>
             </div>
         </div>
@@ -589,12 +705,16 @@
 
     <script src="../js/supabase-config.js"></script>
     <script>
+        // ============================================
+        // 🌸 VENTA RÁPIDA - MODAS LA 34
+        // ============================================
+
         // Variables globales
         let todosLosProductos = [];
         let carrito = [];
         let filtroActual = 'todos';
         let busquedaActual = '';
-        let variantesCache = new Map();
+        let ventaActualId = null;
 
         // Cargar productos al iniciar
         document.addEventListener('DOMContentLoaded', async () => {
@@ -630,6 +750,7 @@
                 mostrarProductos();
             } catch (error) {
                 console.error('Error cargando productos:', error);
+                document.getElementById('grid-productos').innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2rem;color:#ff4757;">Error al cargar productos</div>';
             }
         }
 
@@ -706,11 +827,10 @@
         });
 
         // Seleccionar producto y mostrar variantes
-        async function seleccionarProducto(productoId) {
+        function seleccionarProducto(productoId) {
             const producto = todosLosProductos.find(p => p.id === productoId);
             if (!producto) return;
             
-            // Crear selector de variantes
             const variantes = producto.variantes || [];
             if (variantes.length === 0) {
                 alert('Este producto no tiene variantes disponibles');
@@ -719,24 +839,40 @@
             
             // Crear modal de selección de variante
             let varianteHTML = `
-                <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 10000;">
-                    <div style="background: white; border-radius: 25px; padding: 2rem; max-width: 500px; width: 90%;">
-                        <h3 style="color: #ff6b6b; margin-bottom: 1rem;">Seleccionar variante: ${producto.nombre}</h3>
+                <div class="modal-variantes" id="modal-variantes">
+                    <div class="modal-variantes-contenido">
+                        <h3>Seleccionar variante: ${producto.nombre}</h3>
+                        <div style="max-height: 400px; overflow-y: auto;">
             `;
             
             variantes.forEach(v => {
-                if (v.stock > 0) {
+                const colores = v.colores || [];
+                
+                if (colores.length > 0) {
+                    colores.forEach(color => {
+                        const stockDisponible = color.stock || 0;
+                        if (stockDisponible > 0) {
+                            varianteHTML += `
+                                <div class="variante-opcion" onclick="agregarAlCarrito(${producto.id}, ${v.id}, '${v.talla}', '${color.nombre || 'Color'}', '${color.codigo || '#cccccc'}', ${v.precio_venta || 0}, ${stockDisponible})">
+                                    <div class="variante-color" style="background-color: ${color.codigo || '#cccccc'};"></div>
+                                    <div class="variante-info">
+                                        <p><strong>Talla: ${v.talla}</strong> | Color: ${color.nombre || 'Sin color'}</p>
+                                        <p class="variante-precio">$${(v.precio_venta || 0).toLocaleString()}</p>
+                                        <p class="variante-stock ${stockDisponible < 5 ? 'bajo' : ''}">Stock: ${stockDisponible}</p>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    });
+                } else if (v.stock_total > 0) {
+                    // Sin color específico
                     varianteHTML += `
-                        <div onclick="agregarAlCarrito(${producto.id}, '${v.id}', '${v.talla}', '${v.color_nombre || 'Color'}', '${v.color_codigo || '#cccccc'}', ${v.precio_venta}, ${v.stock})" 
-                             style="border: 2px solid #ffe4e9; border-radius: 15px; padding: 1rem; margin-bottom: 1rem; cursor: pointer; display: flex; align-items: center; gap: 1rem;">
-                            <div style="width: 40px; height: 40px; background: ${v.color_codigo || '#cccccc'}; border-radius: 50%; border: 3px solid white; box-shadow: 0 3px 10px rgba(0,0,0,0.2);"></div>
-                            <div style="flex:1;">
-                                <p><strong>Talla:</strong> ${v.talla}</p>
-                                <p><strong>Color:</strong> ${v.color_nombre || 'No especificado'}</p>
-                            </div>
-                            <div>
-                                <p><strong>$${v.precio_venta.toLocaleString()}</strong></p>
-                                <p><small>Stock: ${v.stock}</small></p>
+                        <div class="variante-opcion" onclick="agregarAlCarrito(${producto.id}, ${v.id}, '${v.talla}', 'Sin color', '#cccccc', ${v.precio_venta || 0}, ${v.stock_total || 0})">
+                            <div class="variante-color" style="background-color: #cccccc;"></div>
+                            <div class="variante-info">
+                                <p><strong>Talla: ${v.talla}</strong> | Sin color específico</p>
+                                <p class="variante-precio">$${(v.precio_venta || 0).toLocaleString()}</p>
+                                <p class="variante-stock ${(v.stock_total || 0) < 5 ? 'bajo' : ''}">Stock: ${v.stock_total || 0}</p>
                             </div>
                         </div>
                     `;
@@ -744,10 +880,8 @@
             });
             
             varianteHTML += `
-                        <button onclick="this.parentElement.parentElement.remove()" 
-                                style="background: #ffe4e9; color: #ff6b6b; border: none; padding: 0.8rem; border-radius: 50px; width: 100%; margin-top: 1rem; cursor: pointer;">
-                            Cancelar
-                        </button>
+                        </div>
+                        <button onclick="cerrarModalVariantes()" style="width:100%; margin-top:1rem; padding:0.8rem; background:#ffe4e9; border:none; border-radius:50px; cursor:pointer;">Cancelar</button>
                     </div>
                 </div>
             `;
@@ -755,11 +889,16 @@
             document.body.insertAdjacentHTML('beforeend', varianteHTML);
         }
 
+        function cerrarModalVariantes() {
+            const modal = document.getElementById('modal-variantes');
+            if (modal) modal.remove();
+        }
+
         // Agregar al carrito
         function agregarAlCarrito(productoId, varianteId, talla, colorNombre, colorCodigo, precioBase, stockMaximo) {
-            // Cerrar el modal de selección
-            document.body.lastElementChild.remove();
+            cerrarModalVariantes();
             
+            const producto = todosLosProductos.find(p => p.id === productoId);
             const itemExistente = carrito.find(i => i.varianteId === varianteId);
             
             if (itemExistente) {
@@ -773,12 +912,12 @@
                 carrito.push({
                     productoId: productoId,
                     varianteId: varianteId,
-                    nombre: document.querySelector(`[onclick*="${productoId}"] h4`).textContent,
+                    nombre: producto?.nombre || 'Producto',
                     talla: talla,
                     colorNombre: colorNombre,
                     colorCodigo: colorCodigo,
                     precioBase: precioBase,
-                    precioVenta: precioBase, // Precio editable
+                    precioVenta: precioBase,
                     cantidad: 1,
                     stockMaximo: stockMaximo
                 });
@@ -820,6 +959,7 @@
                                 <span class="item-detalle">
                                     Talla: ${item.talla} | Color: 
                                     <span style="display: inline-block; width: 15px; height: 15px; background: ${item.colorCodigo}; border-radius: 50%;"></span>
+                                    ${item.colorNombre}
                                 </span>
                                 <input type="number" class="item-precio-input" value="${item.precioVenta}" 
                                        onchange="cambiarPrecio(${index}, this.value)" min="0" step="100">
@@ -834,11 +974,9 @@
             const cantidadTotal = carrito.reduce((sum, i) => sum + i.cantidad, 0);
             cantidadSpan.textContent = cantidadTotal;
             
-            // Calcular subtotal (base gravable)
             const subtotal = carrito.reduce((sum, i) => sum + (i.precioVenta * i.cantidad), 0);
             
             if (porcentajeIVA > 0) {
-                // Calcular base y IVA (precio YA incluye IVA)
                 const base = subtotal / (1 + (porcentajeIVA / 100));
                 const iva = subtotal - base;
                 
@@ -849,7 +987,7 @@
                 totalSpan.textContent = `$${subtotal.toLocaleString()}`;
             } else {
                 ivaLinea.style.display = 'none';
-                subtotalSpan.textContent = `$${subtotal.toLocaleString()}`;
+                                subtotalSpan.textContent = `$${subtotal.toLocaleString()}`;
                 totalSpan.textContent = `$${subtotal.toLocaleString()}`;
             }
         }
@@ -902,7 +1040,6 @@
             const metodoPago = document.getElementById('metodo-pago').value;
             const porcentajeIVA = parseInt(document.querySelector('input[name="tipo-iva"]:checked').value);
             
-            // Calcular totales
             const subtotal = carrito.reduce((sum, i) => sum + (i.precioVenta * i.cantidad), 0);
             
             let base = subtotal;
@@ -936,7 +1073,7 @@
                     iva: iva,
                     iva_porcentaje: porcentajeIVA,
                     metodo_pago: metodoPago,
-                    productos: carrito.map(i => `${i.cantidad}x ${i.nombre} (Talla: ${i.talla})`).join(', '),
+                    productos: carrito.map(i => `${i.cantidad}x ${i.nombre} (Talla: ${i.talla}, Color: ${i.colorNombre})`).join(', '),
                     vendedor_id: user.id
                 };
                 
@@ -952,11 +1089,12 @@
                 });
                 
                 if (!ventaResponse.ok) {
-                    throw new Error('Error al crear la venta');
+                    const error = await ventaResponse.json();
+                    throw new Error(error.message || 'Error al crear la venta');
                 }
                 
                 const venta = await ventaResponse.json();
-                const ventaId = Array.isArray(venta) ? venta[0].id : venta.id;
+                ventaActualId = venta[0].id;
                 
                 // 2. Guardar detalles y actualizar stock
                 for (const item of carrito) {
@@ -969,7 +1107,7 @@
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify({
-                            venta_id: ventaId,
+                            venta_id: ventaActualId,
                             producto_id: item.productoId,
                             variante_id: item.varianteId,
                             cantidad: item.cantidad,
@@ -986,7 +1124,14 @@
                     const variante = varianteData[0];
                     
                     if (variante) {
-                        const nuevoStock = variante.stock - item.cantidad;
+                        const colores = variante.colores || [];
+                        const colorIndex = colores.findIndex(c => c.nombre === item.colorNombre);
+                        
+                        if (colorIndex >= 0) {
+                            colores[colorIndex].stock = (colores[colorIndex].stock || 0) - item.cantidad;
+                        }
+                        
+                        const nuevoStockTotal = colores.reduce((sum, c) => sum + (c.stock || 0), 0);
                         
                         await fetch(`${SUPABASE_URL}/rest/v1/variantes_producto?id=eq.${item.varianteId}`, {
                             method: 'PATCH',
@@ -996,7 +1141,8 @@
                                 'Content-Type': 'application/json'
                             },
                             body: JSON.stringify({
-                                stock: nuevoStock
+                                colores: colores,
+                                stock_total: nuevoStockTotal
                             })
                         });
                     }
@@ -1007,17 +1153,6 @@
                 document.getElementById('factura-iva').textContent = porcentajeIVA > 0 ? `${porcentajeIVA}%` : 'Exento';
                 document.getElementById('factura-metodo').textContent = metodoPago;
                 document.getElementById('modal-factura').classList.add('active');
-                
-                // Guardar la venta actual para imprimir
-                window.ultimaVenta = {
-                    items: [...carrito],
-                    total: subtotal,
-                    base: base,
-                    iva: iva,
-                    porcentajeIVA: porcentajeIVA,
-                    metodo: metodoPago,
-                    fecha: new Date()
-                };
                 
                 // Limpiar carrito
                 carrito = [];
@@ -1032,126 +1167,20 @@
             }
         }
 
-        // Imprimir factura
-        function imprimirFactura() {
-            if (!window.ultimaVenta) return;
-            
-            const venta = window.ultimaVenta;
-            
-            const facturaHTML = `
-                <html>
-                <head>
-                    <title>Factura de Venta - Modas La 34</title>
-                    <style>
-                        body { 
-                            font-family: 'Courier New', monospace; 
-                            max-width: 80mm; 
-                            margin: 0 auto; 
-                            padding: 10px;
-                            font-size: 12px;
-                        }
-                        h2, h3 { 
-                            text-align: center; 
-                            margin: 5px 0;
-                        }
-                        .header {
-                            text-align: center;
-                            margin-bottom: 15px;
-                            border-bottom: 1px dashed #000;
-                            padding-bottom: 10px;
-                        }
-                        .empresa {
-                            font-size: 18px;
-                            font-weight: bold;
-                            color: #ff6b6b;
-                        }
-                        table { 
-                            width: 100%; 
-                            border-collapse: collapse; 
-                            margin: 10px 0;
-                        }
-                        th { 
-                            text-align: left; 
-                            border-bottom: 1px solid #000;
-                        }
-                        td { 
-                            padding: 3px 0; 
-                        }
-                        .total { 
-                            font-weight: bold; 
-                            border-top: 1px dashed #000;
-                            margin-top: 10px;
-                            padding-top: 10px;
-                        }
-                        .footer {
-                            text-align: center;
-                            margin-top: 20px;
-                            border-top: 1px dashed #000;
-                            padding-top: 10px;
-                            font-size: 10px;
-                        }
-                        .puc-info {
-                            font-size: 9px;
-                            color: #666;
-                        }
-                    </style>
-                </head>
-                <body>
-                    <div class="header">
-                        <div class="empresa">🌸 MODAS LA 34</div>
-                        <div>NIT: 123.456.789-0</div>
-                        <div>${venta.fecha.toLocaleDateString()} ${venta.fecha.toLocaleTimeString()}</div>
-                    </div>
-                    
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Cant</th>
-                                <th>Producto</th>
-                                <th>Talla</th>
-                                <th>Precio</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${venta.items.map(item => `
-                                <tr>
-                                    <td>${item.cantidad}</td>
-                                    <td>${item.nombre}</td>
-                                    <td>${item.talla}</td>
-                                    <td>$${item.precioVenta.toLocaleString()}</td>
-                                </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
-                    
-                    <div class="total">
-                        <p><strong>SUBTOTAL (Base):</strong> $${venta.base.toLocaleString()}</p>
-                        ${venta.porcentajeIVA > 0 ? `
-                            <p><strong>IVA ${venta.porcentajeIVA}%:</strong> $${venta.iva.toLocaleString()}</p>
-                        ` : ''}
-                        <p><strong>TOTAL:</strong> $${venta.total.toLocaleString()}</p>
-                    </div>
-                    
-                    <p><strong>Método de pago:</strong> ${venta.metodo}</p>
-                    
-                    <div class="footer">
-                        <p>¡Gracias por su compra!</p>
-                        <p>www.modasla34.com</p>
-                    </div>
-                </body>
-                </html>
-            `;
-            
-            const ventana = window.open('', '_blank');
-            ventana.document.write(facturaHTML);
-            ventana.document.close();
-            ventana.print();
+        // Abrir factura en nueva página para imprimir
+        function abrirFacturaImprimir() {
+            if (ventaActualId) {
+                window.open(`factura.html?id=${ventaActualId}`, '_blank');
+                nuevaVenta();
+            } else {
+                alert('No se pudo generar la factura');
+            }
         }
 
         // Nueva venta
         function nuevaVenta() {
             document.getElementById('modal-factura').classList.remove('active');
-            window.ultimaVenta = null;
+            ventaActualId = null;
         }
 
         // Cerrar modal si se hace clic fuera
