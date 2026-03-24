@@ -2,493 +2,160 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
-    <title>Venta Rápida - Modas La 34</title>
-    <link rel="stylesheet" href="../css/estilo-comun.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>🧾 Factura de Venta - Modas La 34</title>
     <style>
-        /* ===== ESTILOS (igual que antes, más los nuevos para modal de variantes) ===== */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', 'Poppins', sans-serif;
         }
 
         body {
-            background: #fff9fc;
+            font-family: 'Courier New', 'Lucida Console', monospace;
+            background: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+            padding: 20px;
         }
 
-        .venta-header {
-            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
-            color: white;
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 4px 15px rgba(255, 154, 158, 0.3);
-        }
-
-        .venta-header h1 {
-            font-size: 1.8rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .volver-btn {
-            background: rgba(255,255,255,0.2);
-            color: white;
-            text-decoration: none;
-            padding: 0.5rem 1.5rem;
-            border-radius: 50px;
-            font-weight: 600;
-            transition: all 0.3s;
-            border: 1px solid rgba(255,255,255,0.3);
-        }
-
-        .volver-btn:hover {
-            background: rgba(255,255,255,0.3);
-            transform: scale(1.05);
-        }
-
-        .venta-container {
-            display: grid;
-            grid-template-columns: 1fr 450px;
-            gap: 2rem;
-            padding: 2rem;
-            max-width: 1400px;
+        /* Contenedor para impresión térmica - ancho estándar 80mm */
+        .factura-container {
+            max-width: 80mm;
+            width: 100%;
+            background: white;
+            padding: 10px 8px;
             margin: 0 auto;
-            flex: 1;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-radius: 5px;
         }
 
-        .productos-panel {
-            background: white;
-            border-radius: 25px;
-            padding: 1.5rem;
-            box-shadow: 0 10px 25px rgba(255, 182, 193, 0.2);
-            border: 1px solid #ffe4e9;
-        }
-
-        .buscador {
-            margin-bottom: 1.5rem;
-        }
-
-        .buscador input {
-            width: 100%;
-            padding: 1rem;
-            border: 2px solid #ffe4e9;
-            border-radius: 50px;
-            font-size: 1rem;
-            background: #fff9fc;
-        }
-
-        .buscador input:focus {
-            outline: none;
-            border-color: #ffb6c1;
-            box-shadow: 0 0 0 4px rgba(255, 182, 193, 0.2);
-        }
-
-        .categorias {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-            margin-bottom: 1.5rem;
-        }
-
-        .categoria-btn {
-            background: #fff0f3;
-            border: 2px solid #ffe4e9;
-            padding: 0.5rem 1rem;
-            border-radius: 50px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            color: #ff6b6b;
-            transition: all 0.3s;
-        }
-
-        .categoria-btn:hover, .categoria-btn.active {
-            background: #ffb6c1;
-            color: white;
-            border-color: #ff9a9e;
-        }
-
-        .grid-productos-venta {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 1rem;
-            max-height: 600px;
-            overflow-y: auto;
-            padding-right: 0.5rem;
-        }
-
-        .producto-card-venta {
-            background: #fff9fc;
-            border: 2px solid #ffe4e9;
-            border-radius: 20px;
-            padding: 1rem;
-            cursor: pointer;
-            transition: all 0.3s;
+        /* Encabezado */
+        .header {
             text-align: center;
+            margin-bottom: 15px;
+            border-bottom: 1px dashed #000;
+            padding-bottom: 10px;
         }
 
-        .producto-card-venta:hover {
-            transform: translateY(-5px);
-            border-color: #ff9a9e;
-            box-shadow: 0 5px 15px rgba(255, 154, 158, 0.3);
-        }
-
-        .producto-card-venta h4 {
-            color: #ff6b6b;
-            margin: 0.5rem 0;
-        }
-
-        .producto-precio {
-            font-size: 1.2rem;
+        .empresa {
+            font-size: 18px;
             font-weight: bold;
-            color: #ff9a9e;
+            letter-spacing: 1px;
         }
 
-        .producto-stock {
-            font-size: 0.8rem;
-            color: #a5a5a5;
+        .slogan {
+            font-size: 10px;
+            color: #666;
+            margin-top: 3px;
         }
 
-        .producto-stock.bajo {
-            color: #ff4757;
-            font-weight: 600;
+        .info-line {
+            font-size: 10px;
+            margin: 2px 0;
         }
 
-        /* Carrito */
-        .carrito-panel {
-            background: white;
-            border-radius: 25px;
-            padding: 1.5rem;
-            box-shadow: 0 10px 25px rgba(255, 182, 193, 0.2);
-            border: 1px solid #ffe4e9;
-            display: flex;
-            flex-direction: column;
-            height: fit-content;
-            position: sticky;
-            top: 2rem;
+        /* Información de factura */
+        .factura-info {
+            margin-bottom: 15px;
+            font-size: 10px;
+            border-bottom: 1px dashed #000;
+            padding-bottom: 8px;
         }
 
-        .carrito-header {
+        .info-row {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid #ffe4e9;
+            margin-bottom: 3px;
         }
 
-        .carrito-header h2 {
-            color: #ff6b6b;
-            font-size: 1.5rem;
+        /* Tabla de productos */
+        .productos-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+            font-size: 9px;
         }
 
-        .selector-iva {
-            background: #fff0f3;
-            border-radius: 15px;
-            padding: 1rem;
-            margin-bottom: 1.5rem;
+        .productos-table th {
+            text-align: left;
+            border-bottom: 1px solid #000;
+            padding: 5px 0;
         }
 
-        .selector-iva h3 {
-            color: #ff6b6b;
-            font-size: 0.9rem;
-            margin-bottom: 0.8rem;
+        .productos-table td {
+            padding: 4px 0;
+            border-bottom: 1px dotted #ccc;
         }
 
-        .iva-opciones {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .iva-opcion {
-            flex: 1;
-        }
-
-        .iva-opcion input[type="radio"] {
-            display: none;
-        }
-
-        .iva-opcion label {
-            display: block;
-            text-align: center;
-            padding: 0.5rem;
-            background: white;
-            border: 2px solid #ffe4e9;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: all 0.3s;
-        }
-
-        .iva-opcion input[type="radio"]:checked + label {
-            background: #ffb6c1;
-            color: white;
-            border-color: #ff9a9e;
-        }
-
-        .carrito-items {
-            max-height: 400px;
-            overflow-y: auto;
-            margin-bottom: 1.5rem;
-        }
-
-        .carrito-item {
-            display: grid;
-            grid-template-columns: auto 1fr auto;
-            gap: 0.8rem;
-            align-items: center;
-            padding: 1rem;
-            background: #fff9fc;
-            border-radius: 15px;
-            margin-bottom: 0.8rem;
-            border: 1px solid #ffe4e9;
-        }
-
-        .item-info {
-            display: flex;
-            flex-direction: column;
-            gap: 0.3rem;
-        }
-
-        .item-nombre {
-            font-weight: 600;
-            color: #ff6b6b;
-        }
-
-        .item-detalle {
-            font-size: 0.8rem;
-            color: #a5a5a5;
-        }
-
-        .item-precio-input {
-            width: 100px;
-            padding: 0.3rem;
-            border: 2px solid #ffe4e9;
-            border-radius: 8px;
+        .text-right {
             text-align: right;
-            font-size: 0.9rem;
         }
 
-        .item-cantidad {
-            display: flex;
-            align-items: center;
-            gap: 0.3rem;
+        .producto-nombre {
+            font-weight: 600;
         }
 
-        .item-cantidad button {
-            width: 25px;
-            height: 25px;
-            border-radius: 50%;
-            border: none;
-            background: #ffb6c1;
-            color: white;
-            cursor: pointer;
-            font-weight: bold;
+        .producto-detalle {
+            font-size: 8px;
+            color: #666;
         }
 
-        .item-cantidad span {
-            min-width: 30px;
-            text-align: center;
+        /* Totales */
+        .totales {
+            margin-bottom: 15px;
+            border-top: 1px dashed #000;
+            padding-top: 8px;
         }
 
-        .item-eliminar {
-            background: none;
-            border: none;
-            color: #ffb6c1;
-            cursor: pointer;
-            font-size: 1.2rem;
-        }
-
-        .item-eliminar:hover {
-            color: #ff4757;
-        }
-
-        .carrito-resumen {
-            border-top: 2px solid #ffe4e9;
-            padding-top: 1rem;
-        }
-
-        .resumen-linea {
+        .total-line {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 0.8rem;
-            color: #4a4a4a;
-            font-size: 0.95rem;
+            margin-bottom: 5px;
+            font-size: 10px;
         }
 
-        .resumen-total {
-            display: flex;
-            justify-content: space-between;
-            font-size: 1.3rem;
+        .total-line.final {
+            font-size: 14px;
             font-weight: bold;
-            color: #ff6b6b;
-            margin: 1rem 0;
-            padding: 1rem 0;
-            border-top: 2px solid #ffe4e9;
-            border-bottom: 2px solid #ffe4e9;
+            border-top: 1px solid #000;
+            margin-top: 5px;
+            padding-top: 5px;
         }
 
-        .metodo-pago {
-            margin: 1rem 0;
-        }
-
-        .metodo-pago select {
-            width: 100%;
-            padding: 0.8rem;
-            border: 2px solid #ffe4e9;
-            border-radius: 15px;
-            background: #fff9fc;
-            font-size: 1rem;
-            color: #4a4a4a;
-        }
-
-        .finalizar-btn {
-            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
-            color: white;
-            border: none;
-            padding: 1rem;
-            border-radius: 50px;
-            font-size: 1.2rem;
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-            transition: all 0.3s;
-        }
-
-        .finalizar-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .cancelar-btn {
-            background: #ffe4e9;
-            color: #ff6b6b;
-            border: 2px solid #ffb6c1;
-            padding: 0.8rem;
-            border-radius: 50px;
-            font-size: 1rem;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 0.5rem;
-            font-weight: 600;
-        }
-
-        /* Modal de variantes */
-        .modal-variantes {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 10000;
-        }
-
-        .modal-variantes-content {
-            background: white;
-            border-radius: 25px;
-            padding: 2rem;
-            max-width: 500px;
-            width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-
-        .modal-variantes-content h3 {
-            color: #ff6b6b;
-            margin-bottom: 1rem;
-        }
-
-        .variante-opcion {
-            border: 2px solid #ffe4e9;
-            border-radius: 15px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            transition: all 0.3s;
-        }
-
-        .variante-opcion:hover {
-            border-color: #ff9a9e;
-            background: #fff9fc;
-        }
-
-        .variante-color {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border: 3px solid white;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-        }
-
-        .variante-info {
-            flex: 1;
-        }
-
-        .variante-precio {
-            font-weight: bold;
-            color: #ff9a9e;
-        }
-
-        /* Modal de factura */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .modal.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: white;
-            border-radius: 25px;
-            padding: 2rem;
-            max-width: 500px;
-            width: 90%;
+        /* Pie de página */
+        .footer {
             text-align: center;
+            font-size: 8px;
+            border-top: 1px dashed #000;
+            padding-top: 10px;
+            margin-top: 10px;
         }
 
-        .modal-icon {
-            font-size: 4rem;
-            margin: 1rem 0;
+        .gracias {
+            font-size: 10px;
+            font-weight: bold;
+            margin: 5px 0;
         }
 
-        .modal-buttons {
+        /* Botones de acción (solo en pantalla) */
+        .acciones {
+            margin-top: 20px;
             display: flex;
-            gap: 1rem;
-            margin-top: 2rem;
+            gap: 10px;
+            justify-content: center;
         }
 
-        .modal-buttons button {
-            flex: 1;
-            padding: 1rem;
+        .btn {
+            padding: 10px 20px;
             border: none;
             border-radius: 50px;
-            cursor: pointer;
             font-weight: 600;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s;
         }
 
         .btn-imprimir {
@@ -496,463 +163,253 @@
             color: white;
         }
 
-        .btn-nueva {
+        .btn-imprimir:hover {
+            background: #ff6b6b;
+        }
+
+        .btn-volver {
             background: #ffe4e9;
             color: #ff6b6b;
         }
 
-        @media (max-width: 900px) {
-            .venta-container {
-                grid-template-columns: 1fr;
-            }
-            .carrito-panel {
-                position: static;
-            }
+        /* Estado de carga y error */
+        .loading, .error {
+            text-align: center;
+            padding: 50px;
+            font-size: 14px;
         }
 
+        .error {
+            color: #ff4757;
+        }
+
+        /* Estilos para impresión */
         @media print {
-            body * {
-                visibility: hidden;
+            body {
+                background: white;
+                padding: 0;
+                margin: 0;
             }
-            .modal-content, .modal-content * {
-                visibility: visible;
+            
+            .factura-container {
+                box-shadow: none;
+                padding: 0;
+                margin: 0;
+                max-width: 100%;
             }
-            .modal-content {
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
+            
+            .acciones {
+                display: none;
+            }
+            
+            .btn, .acciones {
+                display: none !important;
             }
         }
     </style>
 </head>
 <body>
-    <header class="venta-header">
-        <h1>🛍️ VENTA RÁPIDA <span>🌸 Modas La 34</span></h1>
-        <a href="dashboard.html" class="volver-btn">← Volver al Dashboard</a>
-    </header>
-
-    <div class="venta-container">
-        <!-- Panel izquierdo: Productos -->
-        <div class="productos-panel">
-            <h2 style="color: #ff6b6b; margin-bottom: 1.5rem;">Productos Disponibles</h2>
-            <div class="buscador">
-                <input type="text" id="buscador" placeholder="🔍 Buscar producto...">
-            </div>
-            <div class="categorias" id="categorias">
-                <button class="categoria-btn active" onclick="filtrarPorCategoria('todos')">Todos</button>
-                <button class="categoria-btn" onclick="filtrarPorCategoria('vestidos')">👗 Vestidos</button>
-                <button class="categoria-btn" onclick="filtrarPorCategoria('blusas')">👚 Blusas</button>
-                <button class="categoria-btn" onclick="filtrarPorCategoria('pantalones')">👖 Pantalones</button>
-                <button class="categoria-btn" onclick="filtrarPorCategoria('deportivo')">⚽ Deportivo</button>
-                <button class="categoria-btn" onclick="filtrarPorCategoria('caballero')">👔 Caballero</button>
-                <button class="categoria-btn" onclick="filtrarPorCategoria('accesorios')">🎀 Accesorios</button>
-            </div>
-            <div class="grid-productos-venta" id="grid-productos">
-                <div style="text-align: center; padding: 2rem;">Cargando productos...</div>
-            </div>
-        </div>
-
-        <!-- Panel derecho: Carrito -->
-        <div class="carrito-panel">
-            <div class="carrito-header">
-                <h2>🛒 Carrito</h2>
-                <span id="carrito-cantidad" style="background:#ffb6c1; color:white; padding:0.3rem 0.8rem; border-radius:50px;">0</span>
+    <div class="factura-container" id="factura-container">
+        <div id="loading" class="loading">📄 Cargando factura...</div>
+        <div id="error" class="error" style="display: none;">❌ Error al cargar la factura</div>
+        
+        <div id="factura-contenido" style="display: none;">
+            <!-- Encabezado -->
+            <div class="header">
+                <div class="empresa">🌸 MODAS LA 34</div>
+                <div class="slogan">Moda para todos los estilos</div>
+                <div class="info-line">NIT: 123.456.789-0</div>
+                <div class="info-line">Calle 123 #45-67, Bogotá</div>
+                <div class="info-line">Tel: (601) 234 5678</div>
             </div>
 
-            <div class="selector-iva">
-                <h3>📊 IVA incluido:</h3>
-                <div class="iva-opciones">
-                    <div class="iva-opcion"><input type="radio" name="tipo-iva" id="iva-0" value="0" checked><label for="iva-0">Exento (0%)</label></div>
-                    <div class="iva-opcion"><input type="radio" name="tipo-iva" id="iva-5" value="5"><label for="iva-5">5%</label></div>
-                    <div class="iva-opcion"><input type="radio" name="tipo-iva" id="iva-19" value="19"><label for="iva-19">19%</label></div>
+            <!-- Información de la factura -->
+            <div class="factura-info">
+                <div class="info-row">
+                    <span>Factura No:</span>
+                    <span id="factura-numero">001-2026-000001</span>
+                </div>
+                <div class="info-row">
+                    <span>Fecha:</span>
+                    <span id="factura-fecha">--/--/---- --:--</span>
+                </div>
+                <div class="info-row">
+                    <span>Vendedor:</span>
+                    <span id="factura-vendedor">---</span>
+                </div>
+                <div class="info-row">
+                    <span>Método pago:</span>
+                    <span id="factura-metodo-pago">---</span>
                 </div>
             </div>
 
-            <div class="carrito-items" id="carrito-items"><div style="text-align:center; padding:2rem;">Carrito vacío</div></div>
+            <!-- Tabla de productos -->
+            <table class="productos-table" id="tabla-productos">
+                <thead>
+                    <tr>
+                        <th>Cant</th>
+                        <th>Producto / Detalle</th>
+                        <th class="text-right">Total</th>
+                    </tr>
+                </thead>
+                <tbody id="productos-body">
+                    <!-- Se llena con JavaScript -->
+                </tbody>
+            </table>
 
-            <div class="carrito-resumen">
-                <div class="resumen-linea"><span>Base gravable:</span><span id="subtotal">$0</span></div>
-                <div class="resumen-linea" id="iva-linea" style="display:none;"><span>IVA <span id="iva-porcentaje">0</span>%:</span><span id="iva-valor">$0</span></div>
-                <div class="resumen-total"><span>TOTAL:</span><span id="total">$0</span></div>
-                <div class="metodo-pago">
-                    <select id="metodo-pago">
-                        <option value="Efectivo">💵 Efectivo</option>
-                        <option value="Tarjeta Débito">💳 Tarjeta Débito</option>
-                        <option value="Tarjeta Crédito">💳 Tarjeta Crédito</option>
-                        <option value="Transferencia">📱 Transferencia</option>
-                        <option value="Nequi">📱 Nequi</option>
-                    </select>
+            <!-- Totales -->
+            <div class="totales">
+                <div class="total-line">
+                    <span>SUBTOTAL:</span>
+                    <span id="subtotal">$0</span>
                 </div>
-                <button class="finalizar-btn" id="finalizar-btn" onclick="finalizarVenta()" disabled>Finalizar Venta</button>
-                <button class="cancelar-btn" onclick="limpiarCarrito()">Vaciar Carrito</button>
+                <div class="total-line" id="iva-line">
+                    <span>IVA <span id="iva-porcentaje">0</span>%:</span>
+                    <span id="iva-valor">$0</span>
+                </div>
+                <div class="total-line final">
+                    <span>TOTAL:</span>
+                    <span id="total">$0</span>
+                </div>
             </div>
-        </div>
-    </div>
 
-    <!-- Modal de factura -->
-    <div class="modal" id="modal-factura">
-        <div class="modal-content">
-            <div class="modal-icon">🧾</div>
-            <h3>¡Venta Completada!</h3>
-            <div style="background:#fff9fc; padding:1rem; border-radius:15px; margin:1rem 0;">
-                <p><strong>Total:</strong> <span id="factura-total">$0</span></p>
-                <p><strong>IVA:</strong> <span id="factura-iva">0%</span></p>
-                <p><strong>Pago:</strong> <span id="factura-metodo">Efectivo</span></p>
+            <!-- Pie de página -->
+            <div class="footer">
+                <div class="gracias">¡Gracias por su compra!</div>
+                <div>www.modasla34.com</div>
+                <div style="margin-top: 5px;">* Factura electrónica *</div>
+                <div style="font-size: 7px; margin-top: 3px;">Resolución DIAN No. 1876000000001</div>
             </div>
-            <div class="modal-buttons">
-                <button class="btn-imprimir" onclick="imprimirFactura()">🖨️ Imprimir</button>
-                <button class="btn-nueva" onclick="nuevaVenta()">➕ Nueva Venta</button>
+
+            <!-- Botones de acción (solo pantalla) -->
+            <div class="acciones">
+                <button class="btn btn-imprimir" onclick="window.print()">🖨️ Imprimir</button>
+                <button class="btn btn-volver" onclick="cerrarVentana()">❌ Cerrar</button>
             </div>
         </div>
     </div>
 
     <script src="../js/supabase-config.js"></script>
     <script>
-        // ============================================
-        // 🌸 VENTA RÁPIDA - VERSIÓN CORREGIDA
-        // ============================================
+        // Obtener ID de la factura de la URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const ventaId = urlParams.get('id');
 
-        let todosLosProductos = [];
-        let carrito = [];
-        let filtroActual = 'todos';
-        let busquedaActual = '';
-        let ventaActualId = null;
-
-        document.addEventListener('DOMContentLoaded', async () => {
-            await verificarSesion();
-            await cargarProductos();
-            document.querySelectorAll('input[name="tipo-iva"]').forEach(r => r.addEventListener('change', actualizarCarrito));
-        });
-
-        async function verificarSesion() {
-            if (!localStorage.getItem('admin_token')) window.location.href = 'login.html';
+        // Si no hay ID, mostrar error
+        if (!ventaId) {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('error').style.display = 'block';
+            document.getElementById('error').innerHTML = '❌ No se especificó la factura';
+        } else {
+            cargarFactura(ventaId);
         }
 
-        async function cargarProductos() {
+        // Función para cargar la factura
+        async function cargarFactura(id) {
             try {
-                const res = await fetch(`${SUPABASE_URL}/rest/v1/vista_productos_completa?order=nombre`, {
+                console.log('📄 Cargando factura ID:', id);
+                
+                // Obtener datos de la venta
+                const ventaResponse = await fetch(`${SUPABASE_URL}/rest/v1/ventas?id=eq.${id}`, {
                     headers: { 'apikey': SUPABASE_KEY }
                 });
-                todosLosProductos = await res.json();
-                mostrarProductos();
-            } catch (error) {
-                console.error('Error:', error);
-            }
-        }
 
-        function mostrarProductos() {
-            const grid = document.getElementById('grid-productos');
-            let filtrados = todosLosProductos.filter(p => {
-                if (filtroActual !== 'todos' && p.categoria !== filtroActual) return false;
-                if (busquedaActual && !p.nombre.toLowerCase().includes(busquedaActual) && !p.codigo.toLowerCase().includes(busquedaActual)) return false;
-                return true;
-            });
+                if (!ventaResponse.ok) {
+                    throw new Error('Error al cargar la venta');
+                }
 
-            if (!filtrados.length) {
-                grid.innerHTML = '<div style="text-align:center; padding:2rem;">No hay productos</div>';
-                return;
-            }
+                const ventas = await ventaResponse.json();
+                
+                if (ventas.length === 0) {
+                    throw new Error('Venta no encontrada');
+                }
 
-            const emojis = { vestidos:'👗', blusas:'👚', pantalones:'👖', deportivo:'⚽', caballero:'👔', accesorios:'🎀' };
-            grid.innerHTML = filtrados.map(p => `
-                <div class="producto-card-venta" data-id="${p.id}" data-nombre="${p.nombre}" onclick="seleccionarProducto(${p.id})">
-                    <div style="font-size:2rem;">${emojis[p.categoria] || '📦'}</div>
-                    <h4>${p.nombre}</h4>
-                    <div class="producto-precio">$${(p.precio_min || 0).toLocaleString()}</div>
-                    <div class="producto-stock">Stock: ${p.stock_total || 0}</div>
-                    <small>${p.codigo}</small>
-                </div>
-            `).join('');
-        }
+                const venta = ventas[0];
+                console.log('✅ Venta encontrada:', venta);
 
-        function filtrarPorCategoria(cat) {
-            filtroActual = cat;
-            document.querySelectorAll('.categoria-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            mostrarProductos();
-        }
+                // Obtener detalles de la venta
+                const detallesResponse = await fetch(`${SUPABASE_URL}/rest/v1/detalle_ventas?venta_id=eq.${id}`, {
+                    headers: { 'apikey': SUPABASE_KEY }
+                });
 
-        document.getElementById('buscador').addEventListener('input', e => {
-            busquedaActual = e.target.value.toLowerCase();
-            mostrarProductos();
-        });
+                const detalles = await detallesResponse.json();
+                console.log('📦 Detalles encontrados:', detalles);
 
-        // Seleccionar producto y mostrar variantes con sus colores
-        function seleccionarProducto(id) {
-            const producto = todosLosProductos.find(p => p.id === id);
-            if (!producto) return;
+                // Ocultar loading y mostrar contenido
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('factura-contenido').style.display = 'block';
 
-            const variantes = producto.variantes || [];
-            if (!variantes.length) {
-                alert('Este producto no tiene variantes');
-                return;
-            }
+                // Formatear fecha
+                const fecha = new Date(venta.fecha);
+                const fechaFormateada = fecha.toLocaleDateString('es-CO', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit'
+                });
+                const horaFormateada = fecha.toLocaleTimeString('es-CO', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
 
-            let html = `<div class="modal-variantes" id="modal-variantes"><div class="modal-variantes-content"><h3>${producto.nombre}</h3>`;
-            
-            variantes.forEach(v => {
-                const colores = v.colores || [];
-                if (colores.length) {
-                    colores.forEach(color => {
-                        if (color.stock > 0) {
-                            html += `
-                                <div class="variante-opcion" onclick="agregarAlCarrito(${producto.id}, ${v.id}, '${v.talla}', '${color.nombre || 'Color'}', '${color.codigo || '#cccccc'}', ${v.precio_venta || 0}, ${color.stock})">
-                                    <div class="variante-color" style="background:${color.codigo || '#cccccc'}"></div>
-                                    <div class="variante-info">
-                                        <p><strong>Talla ${v.talla}</strong> | ${color.nombre || 'Color'}</p>
-                                        <p class="variante-precio">$${(v.precio_venta || 0).toLocaleString()}</p>
-                                        <small>Stock: ${color.stock}</small>
-                                    </div>
-                                </div>
-                            `;
-                        }
-                    });
-                } else if (v.stock_total > 0) {
-                    html += `
-                        <div class="variante-opcion" onclick="agregarAlCarrito(${producto.id}, ${v.id}, '${v.talla}', 'Sin color', '#cccccc', ${v.precio_venta || 0}, ${v.stock_total})">
-                            <div class="variante-color" style="background:#cccccc"></div>
-                            <div class="variante-info">
-                                <p><strong>Talla ${v.talla}</strong> | Sin color</p>
-                                <p class="variante-precio">$${(v.precio_venta || 0).toLocaleString()}</p>
-                                <small>Stock: ${v.stock_total}</small>
-                            </div>
-                        </div>
+                // Llenar información de factura
+                document.getElementById('factura-numero').textContent = `FAC-${String(id).padStart(8, '0')}`;
+                document.getElementById('factura-fecha').textContent = `${fechaFormateada} ${horaFormateada}`;
+                document.getElementById('factura-vendedor').textContent = venta.vendedor || 'Administrador';
+                document.getElementById('factura-metodo-pago').textContent = venta.metodo_pago || 'Efectivo';
+
+                // Llenar tabla de productos
+                const productosBody = document.getElementById('productos-body');
+                
+                if (detalles.length === 0) {
+                    // Si no hay detalles, usar el campo productos de la venta
+                    const productosText = venta.productos || 'Productos';
+                    productosBody.innerHTML = `
+                        <tr>
+                            <td colspan="3" style="text-align: center;">${productosText}</td>
+                        </tr>
                     `;
-                }
-            });
-
-            html += `<button onclick="document.getElementById('modal-variantes').remove()" style="width:100%; margin-top:1rem; padding:0.8rem; background:#ffe4e9; border:none; border-radius:50px;">Cancelar</button></div></div>`;
-            document.body.insertAdjacentHTML('beforeend', html);
-        }
-
-        function agregarAlCarrito(productoId, varianteId, talla, colorNombre, colorCodigo, precio, stockMaximo) {
-            document.getElementById('modal-variantes')?.remove();
-
-            const producto = todosLosProductos.find(p => p.id === productoId);
-            const existente = carrito.find(i => i.varianteId === varianteId && i.colorNombre === colorNombre);
-
-            if (existente) {
-                if (existente.cantidad < stockMaximo) existente.cantidad++;
-                else { alert('Stock insuficiente'); return; }
-            } else {
-                carrito.push({
-                    productoId, varianteId, talla, colorNombre, colorCodigo,
-                    nombre: producto.nombre,
-                    precioVenta: precio,
-                    cantidad: 1,
-                    stockMaximo
-                });
-            }
-            actualizarCarrito();
-        }
-
-        function actualizarCarrito() {
-            const iva = parseInt(document.querySelector('input[name="tipo-iva"]:checked').value);
-            const subtotal = carrito.reduce((s, i) => s + i.precioVenta * i.cantidad, 0);
-            const base = iva ? subtotal / (1 + iva/100) : subtotal;
-            const valorIVA = subtotal - base;
-
-            document.getElementById('carrito-cantidad').textContent = carrito.reduce((s, i) => s + i.cantidad, 0);
-            document.getElementById('subtotal').textContent = `$${base.toLocaleString()}`;
-            document.getElementById('total').textContent = `$${subtotal.toLocaleString()}`;
-            
-            if (iva) {
-                document.getElementById('iva-porcentaje').textContent = iva;
-                document.getElementById('iva-valor').textContent = `$${valorIVA.toLocaleString()}`;
-                document.getElementById('iva-linea').style.display = 'flex';
-            } else {
-                document.getElementById('iva-linea').style.display = 'none';
-            }
-
-            const container = document.getElementById('carrito-items');
-            if (!carrito.length) {
-                container.innerHTML = '<div style="text-align:center; padding:2rem;">Carrito vacío</div>';
-                document.getElementById('finalizar-btn').disabled = true;
-                return;
-            }
-
-            container.innerHTML = carrito.map((item, idx) => `
-                <div class="carrito-item">
-                    <div class="item-cantidad">
-                        <button onclick="cambiarCantidad(${idx}, -1)">-</button>
-                        <span>${item.cantidad}</span>
-                        <button onclick="cambiarCantidad(${idx}, 1)">+</button>
-                    </div>
-                    <div class="item-info">
-                        <span class="item-nombre">${item.nombre}</span>
-                        <span class="item-detalle">Talla: ${item.talla} | Color: <span style="display:inline-block; width:15px; height:15px; background:${item.colorCodigo}; border-radius:50%;"></span> ${item.colorNombre}</span>
-                        <input type="number" class="item-precio-input" value="${item.precioVenta}" onchange="cambiarPrecio(${idx}, this.value)" step="1000">
-                    </div>
-                    <button class="item-eliminar" onclick="eliminarDelCarrito(${idx})">🗑️</button>
-                </div>
-            `).join('');
-            document.getElementById('finalizar-btn').disabled = false;
-        }
-
-        function cambiarPrecio(idx, nuevo) {
-            let precio = parseFloat(nuevo);
-            if (!isNaN(precio) && precio >= 0) carrito[idx].precioVenta = precio;
-            actualizarCarrito();
-        }
-
-        function cambiarCantidad(idx, delta) {
-            let item = carrito[idx];
-            let nueva = item.cantidad + delta;
-            if (nueva <= 0) eliminarDelCarrito(idx);
-            else if (nueva <= item.stockMaximo) item.cantidad = nueva;
-            else alert('Stock insuficiente');
-            actualizarCarrito();
-        }
-
-        function eliminarDelCarrito(idx) {
-            carrito.splice(idx, 1);
-            actualizarCarrito();
-        }
-
-        function limpiarCarrito() {
-            if (carrito.length && confirm('¿Vaciar carrito?')) {
-                carrito = [];
-                actualizarCarrito();
-            }
-        }
-
-        async function finalizarVenta() {
-            if (!carrito.length) return;
-
-            const metodo = document.getElementById('metodo-pago').value;
-            const iva = parseInt(document.querySelector('input[name="tipo-iva"]:checked').value);
-            const subtotal = carrito.reduce((s, i) => s + i.precioVenta * i.cantidad, 0);
-            const base = iva ? subtotal / (1 + iva/100) : subtotal;
-            const valorIVA = subtotal - base;
-
-            if (!confirm(`Confirmar venta por $${subtotal.toLocaleString()}?`)) return;
-
-            try {
-                const token = JSON.parse(localStorage.getItem('admin_token'));
-                const userRes = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
-                    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}` }
-                });
-                const user = await userRes.json();
-
-                const ventaRes = await fetch(`${SUPABASE_URL}/rest/v1/ventas`, {
-                    method: 'POST',
-                    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}`, 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        total: subtotal, subtotal: base, iva: valorIVA, iva_porcentaje: iva,
-                        metodo_pago: metodo, productos: carrito.map(i => `${i.cantidad}x ${i.nombre} (${i.talla}, ${i.colorNombre})`).join(', '),
-                        vendedor_id: user.id
-                    })
-                });
-                const venta = await ventaRes.json();
-                ventaActualId = venta[0]?.id;
-
-                for (let item of carrito) {
-                    await fetch(`${SUPABASE_URL}/rest/v1/detalle_ventas`, {
-                        method: 'POST',
-                        headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}`, 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ venta_id: ventaActualId, producto_id: item.productoId, variante_id: item.varianteId, cantidad: item.cantidad, precio_unitario: item.precioVenta, subtotal: item.precioVenta * item.cantidad })
-                    });
-
-                    const varRes = await fetch(`${SUPABASE_URL}/rest/v1/variantes_producto?id=eq.${item.varianteId}`, {
-                        headers: { 'apikey': SUPABASE_KEY }
-                    });
-                    const variante = (await varRes.json())[0];
-                    if (variante) {
-                        let colores = variante.colores || [];
-                        let idxColor = colores.findIndex(c => c.nombre === item.colorNombre);
-                        if (idxColor >= 0) colores[idxColor].stock -= item.cantidad;
-                        let nuevoTotal = colores.reduce((s, c) => s + (c.stock || 0), 0);
-                        await fetch(`${SUPABASE_URL}/rest/v1/variantes_producto?id=eq.${item.varianteId}`, {
-                            method: 'PATCH',
-                            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}`, 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ colores, stock_total: nuevoTotal })
-                        });
-                    }
+                } else {
+                    productosBody.innerHTML = detalles.map(d => `
+                        <tr>
+                            <td>${d.cantidad}</td>
+                            <td>
+                                <div class="producto-nombre">Producto ID: ${d.producto_id}</div>
+                                <div class="producto-detalle">Precio unit: $${d.precio_unitario.toLocaleString()}</div>
+                            </td>
+                            <td class="text-right">$${d.subtotal.toLocaleString()}</td>
+                        </tr>
+                    `).join('');
                 }
 
-                document.getElementById('factura-total').textContent = `$${subtotal.toLocaleString()}`;
-                                document.getElementById('factura-iva').textContent = iva ? `${iva}%` : 'Exento';
-                document.getElementById('factura-metodo').textContent = metodo;
-                document.getElementById('modal-factura').classList.add('active');
+                // Calcular y mostrar totales
+                const subtotal = venta.subtotal || venta.total;
+                const ivaValor = venta.iva || 0;
+                const ivaPorcentaje = venta.iva_porcentaje || 0;
+                const total = venta.total || 0;
 
-                window.ultimaVenta = {
-                    items: [...carrito],
-                    total: subtotal,
-                    base: base,
-                    iva: valorIVA,
-                    porcentajeIVA: iva,
-                    metodo: metodo,
-                    fecha: new Date()
-                };
-
-                carrito = [];
-                actualizarCarrito();
-                await cargarProductos();
+                document.getElementById('subtotal').textContent = `$${subtotal.toLocaleString()}`;
+                
+                if (ivaPorcentaje > 0) {
+                    document.getElementById('iva-porcentaje').textContent = ivaPorcentaje;
+                    document.getElementById('iva-valor').textContent = `$${ivaValor.toLocaleString()}`;
+                    document.getElementById('iva-line').style.display = 'flex';
+                } else {
+                    document.getElementById('iva-line').style.display = 'none';
+                }
+                
+                document.getElementById('total').textContent = `$${total.toLocaleString()}`;
 
             } catch (error) {
-                console.error('Error:', error);
-                alert('Error al procesar la venta');
+                console.error('❌ Error:', error);
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('error').style.display = 'block';
+                document.getElementById('error').innerHTML = `❌ ${error.message}`;
             }
         }
 
-        function imprimirFactura() {
-            if (!window.ultimaVenta) return;
-            const v = window.ultimaVenta;
-            const factura = `
-                <html>
-                <head>
-                    <title>Factura Modas La 34</title>
-                    <style>
-                        body { font-family: 'Courier New', monospace; max-width: 80mm; margin: 0 auto; padding: 10px; font-size: 12px; }
-                        .header { text-align: center; border-bottom: 1px dashed #000; padding-bottom: 10px; margin-bottom: 10px; }
-                        .empresa { font-size: 18px; font-weight: bold; color: #ff6b6b; }
-                        table { width: 100%; border-collapse: collapse; margin: 10px 0; }
-                        th { text-align: left; border-bottom: 1px solid #000; }
-                        td { padding: 3px 0; }
-                        .total { border-top: 1px dashed #000; margin-top: 10px; padding-top: 10px; font-weight: bold; }
-                        .footer { text-align: center; border-top: 1px dashed #000; margin-top: 20px; padding-top: 10px; font-size: 10px; }
-                    </style>
-                </head>
-                <body>
-                    <div class="header">
-                        <div class="empresa">🌸 MODAS LA 34</div>
-                        <div>NIT: 123.456.789-0</div>
-                        <div>${v.fecha.toLocaleDateString()} ${v.fecha.toLocaleTimeString()}</div>
-                    </div>
-                    <table>
-                        <thead><tr><th>Cant</th><th>Producto</th><th>Talla</th><th>Precio</th></tr></thead>
-                        <tbody>
-                            ${v.items.map(i => `<tr><td>${i.cantidad}</td><td>${i.nombre}</td><td>${i.talla}</td><td>$${i.precioVenta.toLocaleString()}</td></tr>`).join('')}
-                        </tbody>
-                    </table>
-                    <div class="total">
-                        <p>Base: $${v.base.toLocaleString()}</p>
-                        ${v.porcentajeIVA > 0 ? `<p>IVA ${v.porcentajeIVA}%: $${v.iva.toLocaleString()}</p>` : ''}
-                        <p><strong>TOTAL: $${v.total.toLocaleString()}</strong></p>
-                        <p>Método de pago: ${v.metodo}</p>
-                    </div>
-                    <div class="footer">
-                        <p>¡Gracias por su compra!</p>
-                        <p>www.modasla34.com</p>
-                    </div>
-                </body>
-                </html>
-            `;
-            const win = window.open('', '_blank');
-            win.document.write(factura);
-            win.document.close();
-            win.print();
+        function cerrarVentana() {
+            window.close();
         }
-
-        function nuevaVenta() {
-            document.getElementById('modal-factura').classList.remove('active');
-            window.ultimaVenta = null;
-        }
-
-        window.onclick = function(e) {
-            if (e.target === document.getElementById('modal-factura')) nuevaVenta();
-        };
     </script>
 </body>
 </html>
