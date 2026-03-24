@@ -617,68 +617,55 @@ async function eliminarProducto(id) {
 
 async function editarProducto(id) {
     try {
-        console.log('Editando producto ID:', id);
+        console.log('Editando producto:', id);
         
-        // Cargar datos del producto base
+        // Cargar datos del producto
         const response = await fetch(`${SUPABASE_URL}/rest/v1/productos_base?id=eq.${id}`, {
             headers: { 'apikey': SUPABASE_KEY }
         });
         
-        if (!response.ok) {
-            throw new Error('Error al cargar producto');
-        }
+        if (!response.ok) throw new Error('Error al cargar producto');
         
         const productos = await response.json();
-        if (productos.length === 0) {
-            throw new Error('Producto no encontrado');
-        }
+        if (productos.length === 0) throw new Error('Producto no encontrado');
         
         const producto = productos[0];
-        console.log('Producto cargado:', producto);
         
-        // Cargar variantes del producto
+        // Cargar variantes
         const varResponse = await fetch(`${SUPABASE_URL}/rest/v1/variantes_producto?producto_id=eq.${id}`, {
             headers: { 'apikey': SUPABASE_KEY }
         });
         
         const variantes = await varResponse.json();
-        console.log('Variantes cargadas:', variantes);
         
         // Mostrar formulario
         mostrarFormulario('producto');
         
-        // Limpiar el contenedor de variantes
-        const container = document.getElementById('variantes-container');
-        if (container) {
-            container.innerHTML = '';
-            varianteCount = 0;
-        }
-        
-        // Llenar campos básicos
+        // Llenar datos básicos
         document.getElementById('producto-codigo').value = producto.codigo || '';
         document.getElementById('producto-nombre').value = producto.nombre || '';
         document.getElementById('producto-categoria').value = producto.categoria || '';
         document.getElementById('producto-imagen').value = producto.imagen_url || '';
         
-        // Si no hay variantes, agregar una por defecto
-        if (variantes.length === 0) {
-            agregarVariante();
-        } else {
-            // Recrear variantes con los datos existentes
-            variantes.forEach((variante, index) => {
+        // Limpiar y recrear variantes
+        const container = document.getElementById('variantes-container');
+        if (container) {
+            container.innerHTML = '';
+            varianteCount = 0;
+            
+            variantes.forEach(v => {
                 const varianteId = varianteCount;
-                
                 const varianteHTML = `
                     <div class="variante-card" id="variante-${varianteId}">
                         <div class="variante-header">
                             <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
                                 <div>
                                     <label style="color: #ff6b6b;">📏 Talla:</label>
-                                    <input type="text" id="variante-${varianteId}-talla" value="${variante.talla}" required style="width: 100px;">
+                                    <input type="text" id="variante-${varianteId}-talla" value="${v.talla}" required>
                                 </div>
                                 <div>
                                     <label style="color: #ff6b6b;">💰 Precio de venta:</label>
-                                    <input type="number" id="variante-${varianteId}-precio" value="${variante.precio_venta || 0}" min="0" step="1000" required style="width: 120px;">
+                                    <input type="number" id="variante-${varianteId}-precio" value="${v.precio_venta}" min="0" step="1000" required style="width: 120px;">
                                 </div>
                             </div>
                             <button type="button" onclick="eliminarVariante(${varianteId})" class="btn-eliminar-talla">✖️ Eliminar talla</button>
@@ -694,53 +681,61 @@ async function editarProducto(id) {
                         </div>
                     </div>
                 `;
-                
                 container.insertAdjacentHTML('beforeend', varianteHTML);
                 
-                // Agregar colores a esta variante
-                const colores = variante.colores || [];
+                // Agregar colores existentes
                 const coloresContainer = document.getElementById(`colores-${varianteId}-container`);
+                const colores = v.colores || [];
                 
-                if (coloresContainer) {
-                    if (colores.length === 0) {
-                        // Agregar un color por defecto
+                if (colores.length > 0) {
+                    colores.forEach(color => {
                         const colorId = `${varianteId}-${Date.now()}-${Math.random()}`;
-                        const colorHTML = `
-                            <div class="color-row" id="color-${colorId}">
-                                <input type="color" id="color-hex-${colorId}" value="#ff0000" class="color-picker">
-                                <input type="text" id="color-nombre-${colorId}" placeholder="Nombre del color" class="color-nombre-input">
-                                <input type="number" id="color-stock-${colorId}" placeholder="Stock" min="0" value="0" class="color-stock-input">
-                                <button type="button" onclick="eliminarColor('${colorId}')" class="btn-eliminar-color">🗑️</button>
-                            </div>
-                        `;
+                        let colorHTML = '';
+                        
+                        if (color.nombre === null && color.codigo === null) {
+                            // Sin color
+                            colorHTML = `
+                                <div class="color-row sin-color-item" id="color-${colorId}">
+                                    <span style="font-size: 1.5rem;">⚪</span>
+                                    <span style="flex: 1; font-weight: 500;">Sin color específico</span>
+                                    <input type="number" id="color-stock-${colorId}" value="${color.stock}" placeholder="Stock" min="0" class="color-stock-input" style="width: 80px;">
+                                    <button type="button" onclick="eliminarColor('${colorId}')" class="btn-eliminar-color">🗑️</button>
+                                </div>
+                            `;
+                        } else {
+                            // Color normal
+                            colorHTML = `
+                                <div class="color-row" id="color-${colorId}">
+                                    <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; width: 100%;">
+                                        <input type="color" id="color-hex-${colorId}" value="${color.codigo || '#ff0000'}" class="color-picker" style="width: 50px; height: 40px;">
+                                        <input type="text" id="color-hex-text-${colorId}" value="${color.codigo || '#ff0000'}" placeholder="Código hex" class="color-hex-text" style="flex: 1; min-width: 100px;">
+                                        <input type="text" id="color-nombre-${colorId}" value="${color.nombre || ''}" placeholder="Nombre del color" class="color-nombre-input" style="flex: 2;">
+                                        <input type="number" id="color-stock-${colorId}" value="${color.stock}" placeholder="Stock" min="0" class="color-stock-input" style="width: 80px;">
+                                        <button type="button" onclick="eliminarColor('${colorId}')" class="btn-eliminar-color">🗑️</button>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                        
                         coloresContainer.insertAdjacentHTML('beforeend', colorHTML);
-                    } else {
-                        colores.forEach(color => {
-                            const colorId = `${varianteId}-${Date.now()}-${Math.random()}`;
-                            
-                            if (!color.nombre || color.nombre === 'Sin color') {
-                                const sinColorHTML = `
-                                    <div class="color-row sin-color-item" id="color-${colorId}">
-                                        <span style="font-size: 1.5rem;">⚪</span>
-                                        <span style="flex: 1; font-weight: 500;">Sin color específico</span>
-                                        <input type="number" id="color-stock-${colorId}" value="${color.stock || 0}" placeholder="Stock" min="0" class="color-stock-input">
-                                        <button type="button" onclick="eliminarColor('${colorId}')" class="btn-eliminar-color">🗑️</button>
-                                    </div>
-                                `;
-                                coloresContainer.insertAdjacentHTML('beforeend', sinColorHTML);
-                            } else {
-                                const colorHTML = `
-                                    <div class="color-row" id="color-${colorId}">
-                                        <input type="color" id="color-hex-${colorId}" value="${color.codigo || '#ff0000'}" class="color-picker">
-                                        <input type="text" id="color-nombre-${colorId}" value="${color.nombre}" placeholder="Nombre del color" class="color-nombre-input">
-                                        <input type="number" id="color-stock-${colorId}" value="${color.stock || 0}" placeholder="Stock" min="0" class="color-stock-input">
-                                        <button type="button" onclick="eliminarColor('${colorId}')" class="btn-eliminar-color">🗑️</button>
-                                    </div>
-                                `;
-                                coloresContainer.insertAdjacentHTML('beforeend', colorHTML);
+                        
+                        // Sincronizar color picker con texto
+                        if (!color.nombre === null) {
+                            const colorPicker = document.getElementById(`color-hex-${colorId}`);
+                            const colorText = document.getElementById(`color-hex-text-${colorId}`);
+                            if (colorPicker && colorText) {
+                                colorPicker.addEventListener('input', function() { colorText.value = this.value; });
+                                colorText.addEventListener('input', function() {
+                                    let val = this.value;
+                                    if (!val.startsWith('#')) val = '#' + val;
+                                    if (/^#[0-9A-Fa-f]{6}$/.test(val)) colorPicker.value = val;
+                                });
                             }
-                        });
-                    }
+                        }
+                    });
+                } else {
+                    // Agregar un color por defecto
+                    agregarColorAVariante(varianteId);
                 }
                 
                 varianteCount++;
@@ -757,8 +752,8 @@ async function editarProducto(id) {
         }
         
     } catch (error) {
-        console.error('Error al editar producto:', error);
-        mostrarAlerta('Error al cargar el producto: ' + error.message, 'error');
+        console.error('Error al editar:', error);
+        mostrarAlerta('Error al cargar el producto', 'error');
     }
 }
                    
