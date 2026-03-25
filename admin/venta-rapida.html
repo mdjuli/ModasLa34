@@ -729,10 +729,33 @@
 
         // Verificar sesión
         async function verificarSesion() {
-            const tokenData = localStorage.getItem('admin_token');
-            if (!tokenData) {
+            const token = await obtenerTokenValido();
+            if (!token) {
                 window.location.href = 'login.html';
-                return;
+                return false;
+            }
+            
+            try {
+                const response = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${token.access_token}`
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Sesión inválida');
+                }
+                
+                const user = await response.json();
+                console.log('Usuario autenticado:', user.email);
+                return true;
+                
+            } catch (error) {
+                console.error('Error de sesión:', error);
+                localStorage.removeItem('admin_token');
+                window.location.href = 'login.html';
+                return false;
             }
         }
 
@@ -1055,18 +1078,25 @@
             }
             
             try {
-                const token = JSON.parse(localStorage.getItem('admin_token'));
+                // OBTENER TOKEN VÁLIDO
+                const token = await obtenerTokenValido();
+                if (!token) return;
                 
-                // Obtener información del usuario
+                // Obtener información del usuario con el token actualizado
                 const userResponse = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
                     headers: {
                         'apikey': SUPABASE_KEY,
                         'Authorization': `Bearer ${token.access_token}`
                     }
                 });
+                
+                if (!userResponse.ok) {
+                    throw new Error('No se pudo obtener información del usuario');
+                }
+                
                 const user = await userResponse.json();
                 
-                // 1. Crear la venta con todos los campos necesarios
+                // 1. Crear la venta
                 const ventaData = {
                     total: subtotal,
                     subtotal: Math.round(base),
@@ -1095,7 +1125,7 @@
                 if (!ventaResponse.ok) {
                     const errorText = await ventaResponse.text();
                     console.error('Error response:', errorText);
-                    throw new Error('Error al crear la venta');
+                    throw new Error('Error al crear la venta: ' + errorText);
                 }
                 
                 const ventaResult = await ventaResponse.json();
@@ -1105,7 +1135,7 @@
                     throw new Error('No se pudo obtener el ID de la venta');
                 }
                 
-                console.log('Venta creada con ID:', ventaId);
+                console.log('✅ Venta creada con ID:', ventaId);
                 
                 // 2. Guardar detalles y actualizar stock
                 for (const item of carrito) {
@@ -1121,8 +1151,6 @@
                         talla: item.talla,
                         color_nombre: item.colorNombre
                     };
-                    
-                    console.log('Guardando detalle:', detalleData);
                     
                     await fetch(`${SUPABASE_URL}/rest/v1/detalle_ventas`, {
                         method: 'POST',
@@ -1209,6 +1237,62 @@
             const modal = document.getElementById('modal-factura');
             if (event.target === modal) {
                 nuevaVenta();
+            }
+        }
+
+        // ============================================
+        // FUNCIÓN PARA OBTENER TOKEN VÁLIDO
+        // ============================================
+        
+        async function obtenerTokenValido() {
+            const tokenData = localStorage.getItem('admin_token');
+            if (!tokenData) {
+                window.location.href = 'login.html';
+                return null;
+            }
+            
+            try {
+                const token = JSON.parse(tokenData);
+                
+                // Verificar si el token está expirado
+                // El token JWT tiene un campo 'exp' (expiración)
+                if (token.expires_at) {
+                    const expiracion = new Date(token.expires_at);
+                    const ahora = new Date();
+                    
+                    if (ahora > expiracion) {
+                        console.log('Token expirado, refrescando...');
+                        // Intentar refrescar el token
+                        const refreshResponse = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=refresh_token`, {
+                            method: 'POST',
+                            headers: {
+                                'apikey': SUPABASE_KEY,
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                refresh_token: token.refresh_token
+                            })
+                        });
+                        
+                        if (refreshResponse.ok) {
+                            const nuevoToken = await refreshResponse.json();
+                            localStorage.setItem('admin_token', JSON.stringify(nuevoToken));
+                            return nuevoToken;
+                        } else {
+                            // Si no se puede refrescar, redirigir al login
+                            localStorage.removeItem('admin_token');
+                            window.location.href = 'login.html';
+                            return null;
+                        }
+                    }
+                }
+                
+                return token;
+            } catch (error) {
+                console.error('Error verificando token:', error);
+                localStorage.removeItem('admin_token');
+                window.location.href = 'login.html';
+                return null;
             }
         }
     </script>
