@@ -1066,16 +1066,20 @@
                 });
                 const user = await userResponse.json();
                 
-                // 1. Crear la venta
+                // 1. Crear la venta con todos los campos necesarios
                 const ventaData = {
                     total: subtotal,
-                    subtotal: base,
-                    iva: iva,
+                    subtotal: Math.round(base),
+                    iva: Math.round(iva),
                     iva_porcentaje: porcentajeIVA,
                     metodo_pago: metodoPago,
-                    productos: carrito.map(i => `${i.cantidad}x ${i.nombre} (Talla: ${i.talla}, Color: ${i.colorNombre})`).join(', '),
-                    vendedor_id: user.id
+                    productos: carrito.map(i => `${i.cantidad}x ${i.nombre} (Talla: ${i.talla})`).join(', '),
+                    vendedor_id: user.id,
+                    vendedor: user.email,
+                    documento: `VTA-${Date.now()}`
                 };
+                
+                console.log('Guardando venta:', ventaData);
                 
                 const ventaResponse = await fetch(`${SUPABASE_URL}/rest/v1/ventas`, {
                     method: 'POST',
@@ -1089,16 +1093,37 @@
                 });
                 
                 if (!ventaResponse.ok) {
-                    const error = await ventaResponse.json();
-                    throw new Error(error.message || 'Error al crear la venta');
+                    const errorText = await ventaResponse.text();
+                    console.error('Error response:', errorText);
+                    throw new Error('Error al crear la venta');
                 }
                 
-                const venta = await ventaResponse.json();
-                ventaActualId = venta[0].id;
+                const ventaResult = await ventaResponse.json();
+                const ventaId = ventaResult[0]?.id;
+                
+                if (!ventaId) {
+                    throw new Error('No se pudo obtener el ID de la venta');
+                }
+                
+                console.log('Venta creada con ID:', ventaId);
                 
                 // 2. Guardar detalles y actualizar stock
                 for (const item of carrito) {
                     // Guardar detalle
+                    const detalleData = {
+                        venta_id: ventaId,
+                        producto_id: item.productoId,
+                        variante_id: item.varianteId,
+                        cantidad: item.cantidad,
+                        precio_unitario: item.precioVenta,
+                        subtotal: item.precioVenta * item.cantidad,
+                        producto_nombre: item.nombre,
+                        talla: item.talla,
+                        color_nombre: item.colorNombre
+                    };
+                    
+                    console.log('Guardando detalle:', detalleData);
+                    
                     await fetch(`${SUPABASE_URL}/rest/v1/detalle_ventas`, {
                         method: 'POST',
                         headers: {
@@ -1106,14 +1131,7 @@
                             'Authorization': `Bearer ${token.access_token}`,
                             'Content-Type': 'application/json'
                         },
-                        body: JSON.stringify({
-                            venta_id: ventaActualId,
-                            producto_id: item.productoId,
-                            variante_id: item.varianteId,
-                            cantidad: item.cantidad,
-                            precio_unitario: item.precioVenta,
-                            subtotal: item.precioVenta * item.cantidad
-                        })
+                        body: JSON.stringify(detalleData)
                     });
                     
                     // Actualizar stock de la variante
@@ -1147,6 +1165,9 @@
                         });
                     }
                 }
+                
+                // Guardar el ID para la factura
+                ventaActualId = ventaId;
                 
                 // Mostrar modal de factura
                 document.getElementById('factura-total').textContent = `$${subtotal.toLocaleString()}`;
