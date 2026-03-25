@@ -210,6 +210,205 @@
             background: #ff9a9e;
         }
 
+        /* Pestañas para cambiar entre vistas */
+        .tabs-container {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            border-bottom: 2px solid #ffe4e9;
+            padding-bottom: 0.5rem;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #ff6b6b;
+            cursor: pointer;
+            border-radius: 50px;
+            transition: all 0.3s;
+        }
+
+        .tab-btn:hover {
+            background: #fff0f3;
+        }
+
+        .tab-btn.active {
+            background: #ffb6c1;
+            color: white;
+        }
+
+        /* Contenedor de pestañas */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Estado de Resultados */
+        .estado-resultados, .balance-general, .mayor-cuentas {
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 25px rgba(255, 182, 193, 0.2);
+            border: 1px solid #ffe4e9;
+            overflow-x: auto;
+        }
+
+        .estado-resultados h2, .balance-general h2, .mayor-cuentas h2 {
+            color: #ff6b6b;
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .estado-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        .estado-table th {
+            background: #fff0f3;
+            color: #ff6b6b;
+            padding: 0.8rem;
+            text-align: left;
+            border-bottom: 2px solid #ffb6c1;
+        }
+
+        .estado-table td {
+            padding: 0.8rem;
+            border-bottom: 1px solid #ffe4e9;
+        }
+
+        .estado-table tr.total-row {
+            background: #fff0f3;
+            font-weight: bold;
+            border-top: 2px solid #ffb6c1;
+        }
+
+        .estado-table .valor {
+            text-align: right;
+            font-weight: bold;
+        }
+
+        .valor-positivo {
+            color: #27ae60;
+        }
+
+        .valor-negativo {
+            color: #ff4757;
+        }
+
+        /* Mayor de cuentas */
+        .cuenta-selector {
+            margin-bottom: 1.5rem;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .cuenta-selector select {
+            padding: 0.8rem;
+            border: 2px solid #ffe4e9;
+            border-radius: 15px;
+            font-size: 1rem;
+            background: white;
+            min-width: 250px;
+        }
+
+        .mayor-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        .mayor-table th {
+            background: #fff0f3;
+            color: #ff6b6b;
+            padding: 0.8rem;
+            text-align: center;
+            border-bottom: 2px solid #ffb6c1;
+        }
+
+        .mayor-table td {
+            padding: 0.8rem;
+            border-bottom: 1px solid #ffe4e9;
+            text-align: center;
+        }
+
+        .mayor-table .debito {
+            color: #27ae60;
+        }
+
+        .mayor-table .credito {
+            color: #ff4757;
+        }
+
+        .saldo-final {
+            background: #fff0f3;
+            font-weight: bold;
+        }
+
+        /* T-account */
+        .t-account {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .t-card {
+            background: white;
+            border-radius: 15px;
+            border: 2px solid #ffe4e9;
+            width: 300px;
+            overflow: hidden;
+        }
+
+        .t-card-header {
+            background: #ffb6c1;
+            color: white;
+            text-align: center;
+            padding: 0.5rem;
+            font-weight: bold;
+        }
+
+        .t-card-body {
+            display: flex;
+        }
+
+        .t-debe, .t-haber {
+            flex: 1;
+            padding: 0.5rem;
+            text-align: center;
+        }
+
+        .t-debe {
+            border-right: 1px solid #ffe4e9;
+        }
+
+        .t-debe h4, .t-haber h4 {
+            color: #ff6b6b;
+            margin-bottom: 0.5rem;
+        }
+
+        .t-valor {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-top: 0.5rem;
+            padding-top: 0.5rem;
+            border-top: 1px solid #ffe4e9;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .libro-table {
@@ -219,205 +418,6 @@
                 padding: 0.4rem;
             }
         }
-
-        /* Pestañas para cambiar entre vistas */
-.tabs-container {
-    display: flex;
-    gap: 0.5rem;
-    margin-bottom: 2rem;
-    flex-wrap: wrap;
-    border-bottom: 2px solid #ffe4e9;
-    padding-bottom: 0.5rem;
-}
-
-.tab-btn {
-    background: none;
-    border: none;
-    padding: 0.8rem 1.5rem;
-    font-size: 1rem;
-    font-weight: 600;
-    color: #ff6b6b;
-    cursor: pointer;
-    border-radius: 50px;
-    transition: all 0.3s;
-}
-
-.tab-btn:hover {
-    background: #fff0f3;
-}
-
-.tab-btn.active {
-    background: #ffb6c1;
-    color: white;
-}
-
-/* Contenedor de pestañas */
-.tab-content {
-    display: none;
-}
-
-.tab-content.active {
-    display: block;
-}
-
-/* Estado de Resultados */
-.estado-resultados, .balance-general, .mayor-cuentas {
-    background: white;
-    border-radius: 20px;
-    padding: 1.5rem;
-    box-shadow: 0 10px 25px rgba(255, 182, 193, 0.2);
-    border: 1px solid #ffe4e9;
-    overflow-x: auto;
-}
-
-.estado-resultados h2, .balance-general h2, .mayor-cuentas h2 {
-    color: #ff6b6b;
-    margin-bottom: 1.5rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.estado-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.9rem;
-}
-
-.estado-table th {
-    background: #fff0f3;
-    color: #ff6b6b;
-    padding: 0.8rem;
-    text-align: left;
-    border-bottom: 2px solid #ffb6c1;
-}
-
-.estado-table td {
-    padding: 0.8rem;
-    border-bottom: 1px solid #ffe4e9;
-}
-
-.estado-table tr.total-row {
-    background: #fff0f3;
-    font-weight: bold;
-    border-top: 2px solid #ffb6c1;
-}
-
-.estado-table .valor {
-    text-align: right;
-    font-weight: bold;
-}
-
-.valor-positivo {
-    color: #27ae60;
-}
-
-.valor-negativo {
-    color: #ff4757;
-}
-
-/* Mayor de cuentas */
-.cuenta-selector {
-    margin-bottom: 1.5rem;
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-    flex-wrap: wrap;
-}
-
-.cuenta-selector select {
-    padding: 0.8rem;
-    border: 2px solid #ffe4e9;
-    border-radius: 15px;
-    font-size: 1rem;
-    background: white;
-    min-width: 250px;
-}
-
-.mayor-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.9rem;
-}
-
-.mayor-table th {
-    background: #fff0f3;
-    color: #ff6b6b;
-    padding: 0.8rem;
-    text-align: center;
-    border-bottom: 2px solid #ffb6c1;
-}
-
-.mayor-table td {
-    padding: 0.8rem;
-    border-bottom: 1px solid #ffe4e9;
-    text-align: center;
-}
-
-.mayor-table .debito {
-    color: #27ae60;
-}
-
-.mayor-table .credito {
-    color: #ff4757;
-}
-
-.saldo-final {
-    background: #fff0f3;
-    font-weight: bold;
-}
-
-/* T-account */
-.t-account {
-    display: flex;
-    justify-content: center;
-    gap: 2rem;
-    margin-top: 2rem;
-    flex-wrap: wrap;
-}
-
-.t-card {
-    background: white;
-    border-radius: 15px;
-    border: 2px solid #ffe4e9;
-    width: 300px;
-    overflow: hidden;
-}
-
-.t-card-header {
-    background: #ffb6c1;
-    color: white;
-    text-align: center;
-    padding: 0.5rem;
-    font-weight: bold;
-}
-
-.t-card-body {
-    display: flex;
-}
-
-.t-debe, .t-haber {
-    flex: 1;
-    padding: 0.5rem;
-    text-align: center;
-}
-
-.t-debe {
-    border-right: 1px solid #ffe4e9;
-}
-
-.t-debe h4, .t-haber h4 {
-    color: #ff6b6b;
-    margin-bottom: 0.5rem;
-}
-
-.t-valor {
-    font-size: 1.2rem;
-    font-weight: bold;
-    margin-top: 0.5rem;
-    padding-top: 0.5rem;
-    border-top: 1px solid #ffe4e9;
-}
     </style>
 </head>
 <body>
@@ -429,159 +429,17 @@
         <a href="dashboard.html" class="volver-btn">← Volver al Dashboard</a>
     </header>
 
-        <div class="contabilidad-container">
-            <!-- Selector de período -->
-            <div class="periodo-selector">
-                <button class="periodo-btn active" onclick="cambiarPeriodo('mes')">Este Mes</button>
-                <button class="periodo-btn" onclick="cambiarPeriodo('trimestre')">Último Trimestre</button>
-                <button class="periodo-btn" onclick="cambiarPeriodo('año')">Este Año</button>
-                
-                <div class="periodo-personalizado">
-                    <input type="date" id="fecha-inicio">
-                    <input type="date" id="fecha-fin">
-                    <button class="aplicar-btn" onclick="cambiarPeriodoPersonalizado()">Aplicar</button>
-                </div>
-            </div>
-        
-            <!-- Tarjetas de resumen -->
-            <div class="resumen-grid">
-                <div class="resumen-card">
-                    <h4>💰 Total Ingresos</h4>
-                    <div class="valor positivo" id="total-ingresos">$0</div>
-                </div>
-                <div class="resumen-card">
-                    <h4>💸 Total Egresos</h4>
-                    <div class="valor negativo" id="total-egresos">$0</div>
-                </div>
-                <div class="resumen-card">
-                    <h4>📊 Utilidad del Período</h4>
-                    <div class="valor" id="utilidad">$0</div>
-                </div>
-                <div class="resumen-card">
-                    <h4>🏦 Saldo en Caja</h4>
-                    <div class="valor positivo" id="saldo-caja">$0</div>
-                </div>
-                <div class="resumen-card">
-                    <h4>🏛️ Saldo en Bancos</h4>
-                    <div class="valor positivo" id="saldo-bancos">$0</div>
-                </div>
-                <div class="resumen-card">
-                    <h4>📦 Inventario</h4>
-                    <div class="valor" id="saldo-inventario">$0</div>
-                </div>
-            </div>
-        
-            <!-- Pestañas de navegación -->
-            <div class="tabs-container">
-                <button class="tab-btn active" onclick="mostrarTab('libro')">📒 Libro Diario</button>
-                <button class="tab-btn" onclick="mostrarTab('resultados')">📊 Estado de Resultados</button>
-                <button class="tab-btn" onclick="mostrarTab('balance')">⚖️ Balance General</button>
-                <button class="tab-btn" onclick="mostrarTab('mayor')">📋 Mayor de Cuentas</button>
-            </div>
-        
-            <!-- Pestaña 1: Libro Diario -->
-            <div id="tab-libro" class="tab-content active">
-                <div class="libro-diario">
-                    <h2>
-                        📒 LIBRO DIARIO CONTABLE
-                        <button class="exportar-btn" onclick="exportarExcel()">📥 Exportar a Excel</button>
-                    </h2>
-                    <table class="libro-table" id="tabla-libro-diario">
-                        <thead>
-                            <tr>
-                                <th>Clase</th>
-                                <th>Nro</th>
-                                <th>Fecha</th>
-                                <th>Código Cuenta</th>
-                                <th>Nombre Cuenta</th>
-                                <th>Detalle Transacción</th>
-                                <th>Débitos</th>
-                                <th>Créditos</th>
-                            </thead>
-                        <tbody id="libro-body">
-                            <tr><td colspan="8" style="text-align: center;">Cargando movimientos...</td></tr>
-                        </tbody>
-                        <tfoot id="libro-footer" style="display: none;">
-                            <tr class="totales-row">
-                                <td colspan="6" style="text-align: right;"><strong>TOTALES:</strong></td>
-                                <td id="total-debitos" class="debito"><strong>$0</strong></td>
-                                <td id="total-creditos" class="credito"><strong>$0</strong></td>
-                            </tr>
-                        </tfoot>
-                    </table>
-                </div>
-            </div>
-        
-            <!-- Pestaña 2: Estado de Resultados -->
-            <div id="tab-resultados" class="tab-content">
-                <div class="estado-resultados">
-                    <h2>
-                        📊 ESTADO DE RESULTADOS (PyG)
-                        <button class="exportar-btn" onclick="exportarResultados()">📥 Exportar</button>
-                    </h2>
-                    <table class="estado-table" id="tabla-resultados">
-                        <tbody>
-                            <tr><td colspan="3" style="font-weight: bold; color: #ff6b6b;">INGRESOS OPERACIONALES</td></tr>
-                            <tr id="row-ingresos"></tr>
-                            <tr><td colspan="3" style="padding: 0.5rem;"></td></tr>
-                            <tr><td colspan="3" style="font-weight: bold; color: #ff6b6b;">COSTO DE VENTAS</td></tr>
-                            <tr id="row-costo"></tr>
-                            <tr class="total-row"><td colspan="2"><strong>UTILIDAD BRUTA</strong></td><td id="utilidad-bruta" class="valor"></td></tr>
-                            <tr><td colspan="3" style="padding: 0.5rem;"></td></tr>
-                            <tr><td colspan="3" style="font-weight: bold; color: #ff6b6b;">GASTOS OPERACIONALES</td></tr>
-                            <tr id="row-gastos"></tr>
-                            <tr class="total-row"><td colspan="2"><strong>UTILIDAD OPERACIONAL</strong></td><td id="utilidad-operacional" class="valor"></td></tr>
-                            <tr><td colspan="3" style="padding: 0.5rem;"></td></tr>
-                            <tr><td colspan="3" style="font-weight: bold; color: #ff6b6b;">GASTOS NO OPERACIONALES</td></tr>
-                            <tr id="row-gastos-no"></tr>
-                            <tr class="total-row"><td colspan="2"><strong>UTILIDAD NETA</strong></td><td id="utilidad-neta" class="valor"></td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        
-            <!-- Pestaña 3: Balance General -->
-            <div id="tab-balance" class="tab-content">
-                <div class="balance-general">
-                    <h2>
-                        ⚖️ BALANCE GENERAL
-                        <button class="exportar-btn" onclick="exportarBalance()">📥 Exportar</button>
-                    </h2>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
-                        <div>
-                            <h3 style="color: #ff6b6b; margin-bottom: 1rem;">ACTIVOS</h3>
-                            <table class="estado-table" id="tabla-activos">
-                                <tbody></tbody>
-                            </table>
-                            <div class="total-row" style="margin-top: 1rem;"><strong>TOTAL ACTIVOS: </strong><span id="total-activos" style="float: right;">$0</span></div>
-                        </div>
-                        <div>
-                            <h3 style="color: #ff6b6b; margin-bottom: 1rem;">PASIVOS Y PATRIMONIO</h3>
-                            <table class="estado-table" id="tabla-pasivos">
-                                <tbody></tbody>
-                            </table>
-                            <div class="total-row" style="margin-top: 1rem;"><strong>TOTAL PASIVOS: </strong><span id="total-pasivos" style="float: right;">$0</span></div>
-                            <div class="total-row" style="margin-top: 1rem;"><strong>PATRIMONIO: </strong><span id="total-patrimonio" style="float: right;">$0</span></div>
-                            <div class="total-row" style="margin-top: 1rem; border-top: 2px solid #ffb6c1;"><strong>TOTAL PASIVO + PATRIMONIO: </strong><span id="total-pasivo-patrimonio" style="float: right;">$0</span></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        
-            <!-- Pestaña 4: Mayor de Cuentas -->
-            <div id="tab-mayor" class="tab-content">
-                <div class="mayor-cuentas">
-                    <h2>📋 MAYOR DE CUENTAS</h2>
-                    <div class="cuenta-selector">
-                        <select id="select-cuenta-mayor" onchange="cargarMayorCuenta()">
-                            <option value="">Seleccionar cuenta...</option>
-                        </select>
-                        <button class="exportar-btn" onclick="exportarMayor()">📥 Exportar</button>
-                    </div>
-                    <div id="mayor-contenido">
-                        <p style="text-align: center; color: #a5a5a5;">Selecciona una cuenta para ver su movimiento</p>
-                    </div>
-                </div>
+    <div class="contabilidad-container">
+        <!-- Selector de período -->
+        <div class="periodo-selector">
+            <button class="periodo-btn active" onclick="cambiarPeriodo('mes')">Este Mes</button>
+            <button class="periodo-btn" onclick="cambiarPeriodo('trimestre')">Último Trimestre</button>
+            <button class="periodo-btn" onclick="cambiarPeriodo('año')">Este Año</button>
+            
+            <div class="periodo-personalizado">
+                <input type="date" id="fecha-inicio">
+                <input type="date" id="fecha-fin">
+                <button class="aplicar-btn" onclick="cambiarPeriodoPersonalizado()">Aplicar</button>
             </div>
         </div>
 
@@ -613,38 +471,116 @@
             </div>
         </div>
 
-        <!-- Libro Diario -->
-        <div class="libro-diario">
-            <h2>
-                📒 LIBRO DIARIO CONTABLE
-                <button class="exportar-btn" onclick="exportarExcel()">📥 Exportar a Excel</button>
-            </h2>
-            <table class="libro-table" id="tabla-libro-diario">
-                <thead>
-                    <tr>
-                        <th>Clase</th>
-                        <th>Nro</th>
-                        <th>Fecha</th>
-                        <th>Código Cuenta</th>
-                        <th>Nombre Cuenta</th>
-                        <th>Detalle Transacción</th>
-                        <th>Débitos</th>
-                        <th>Créditos</th>
-                    </tr>
-                </thead>
-                <tbody id="libro-body">
-                    <tr>
-                        <td colspan="8" style="text-align: center;">Cargando movimientos...</td>
-                    </tr>
-                </tbody>
-                <tfoot id="libro-footer" style="display: none;">
-                    <tr class="totales-row">
-                        <td colspan="6" style="text-align: right;"><strong>TOTALES:</strong></td>
-                        <td id="total-debitos" class="debito"><strong>$0</strong></td>
-                        <td id="total-creditos" class="credito"><strong>$0</strong></td>
-                    </tr>
-                </tfoot>
-            </table>
+        <!-- Pestañas de navegación -->
+        <div class="tabs-container">
+            <button class="tab-btn active" onclick="mostrarTab('libro')">📒 Libro Diario</button>
+            <button class="tab-btn" onclick="mostrarTab('resultados')">📊 Estado de Resultados</button>
+            <button class="tab-btn" onclick="mostrarTab('balance')">⚖️ Balance General</button>
+            <button class="tab-btn" onclick="mostrarTab('mayor')">📋 Mayor de Cuentas</button>
+        </div>
+
+        <!-- Pestaña 1: Libro Diario -->
+        <div id="tab-libro" class="tab-content active">
+            <div class="libro-diario">
+                <h2>
+                    📒 LIBRO DIARIO CONTABLE
+                    <button class="exportar-btn" onclick="exportarExcel()">📥 Exportar a Excel</button>
+                </h2>
+                <table class="libro-table" id="tabla-libro-diario">
+                    <thead>
+                        <tr>
+                            <th>Clase</th>
+                            <th>Nro</th>
+                            <th>Fecha</th>
+                            <th>Código Cuenta</th>
+                            <th>Nombre Cuenta</th>
+                            <th>Detalle Transacción</th>
+                            <th>Débitos</th>
+                            <th>Créditos</th>
+                        </thead>
+                    <tbody id="libro-body">
+                        <tr><td colspan="8" style="text-align: center;">Cargando movimientos...<\/td>\(        \)     </tbody>
+                    <tfoot id="libro-footer" style="display: none;">
+                        <tr class="totales-row">
+                            <td colspan="6" style="text-align: right;"><strong>TOTALES:</strong>\(
+                            <td id="total-debitos" class="debito"><strong>$0</strong>\(
+                            <td id="total-creditos" class="credito"><strong>$0</strong>\(
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+
+        <!-- Pestaña 2: Estado de Resultados -->
+        <div id="tab-resultados" class="tab-content">
+            <div class="estado-resultados">
+                <h2>
+                    📊 ESTADO DE RESULTADOS (PyG)
+                    <button class="exportar-btn" onclick="exportarResultados()">📥 Exportar</button>
+                </h2>
+                <table class="estado-table" id="tabla-resultados">
+                    <tbody>
+                        <tr><td colspan="3" style="font-weight: bold; color: #ff6b6b;">INGRESOS OPERACIONALES</td></tr>
+                        <tr id="row-ingresos"></tr>
+                        <tr><td colspan="3" style="padding: 0.5rem;"></td></tr>
+                        <tr><td colspan="3" style="font-weight: bold; color: #ff6b6b;">COSTO DE VENTAS</td></tr>
+                        <tr id="row-costo"></tr>
+                        <tr class="total-row"><td colspan="2"><strong>UTILIDAD BRUTA</strong></td><td id="utilidad-bruta" class="valor"></td></tr>
+                        <tr><td colspan="3" style="padding: 0.5rem;"></td></tr>
+                        <tr><td colspan="3" style="font-weight: bold; color: #ff6b6b;">GASTOS OPERACIONALES</td></tr>
+                        <tr id="row-gastos"></tr>
+                        <tr class="total-row"><td colspan="2"><strong>UTILIDAD OPERACIONAL</strong></td><td id="utilidad-operacional" class="valor"></td></tr>
+                        <tr><td colspan="3" style="padding: 0.5rem;"></td></tr>
+                        <tr><td colspan="3" style="font-weight: bold; color: #ff6b6b;">GASTOS NO OPERACIONALES</td></tr>
+                        <tr id="row-gastos-no"></tr>
+                        <tr class="total-row"><td colspan="2"><strong>UTILIDAD NETA</strong></td><td id="utilidad-neta" class="valor"></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Pestaña 3: Balance General -->
+        <div id="tab-balance" class="tab-content">
+            <div class="balance-general">
+                <h2>
+                    ⚖️ BALANCE GENERAL
+                    <button class="exportar-btn" onclick="exportarBalance()">📥 Exportar</button>
+                </h2>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                    <div>
+                        <h3 style="color: #ff6b6b; margin-bottom: 1rem;">ACTIVOS</h3>
+                        <table class="estado-table" id="tabla-activos">
+                            <tbody></tbody>
+                        </table>
+                        <div class="total-row" style="margin-top: 1rem;"><strong>TOTAL ACTIVOS: </strong><span id="total-activos" style="float: right;">$0</span></div>
+                    </div>
+                    <div>
+                        <h3 style="color: #ff6b6b; margin-bottom: 1rem;">PASIVOS Y PATRIMONIO</h3>
+                        <table class="estado-table" id="tabla-pasivos">
+                            <tbody></tbody>
+                        </table>
+                        <div class="total-row" style="margin-top: 1rem;"><strong>TOTAL PASIVOS: </strong><span id="total-pasivos" style="float: right;">$0</span></div>
+                        <div class="total-row" style="margin-top: 1rem;"><strong>PATRIMONIO: </strong><span id="total-patrimonio" style="float: right;">$0</span></div>
+                        <div class="total-row" style="margin-top: 1rem; border-top: 2px solid #ffb6c1;"><strong>TOTAL PASIVO + PATRIMONIO: </strong><span id="total-pasivo-patrimonio" style="float: right;">$0</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pestaña 4: Mayor de Cuentas -->
+        <div id="tab-mayor" class="tab-content">
+            <div class="mayor-cuentas">
+                <h2>📋 MAYOR DE CUENTAS</h2>
+                <div class="cuenta-selector">
+                    <select id="select-cuenta-mayor" onchange="cargarMayorCuenta()">
+                        <option value="">Seleccionar cuenta...</option>
+                    </select>
+                    <button class="exportar-btn" onclick="exportarMayor()">📥 Exportar</button>
+                </div>
+                <div id="mayor-contenido">
+                    <p style="text-align: center; color: #a5a5a5;">Selecciona una cuenta para ver su movimiento</p>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -691,129 +627,95 @@
             try {
                 console.log('Cargando movimientos contables...');
                 
-                // Obtener ventas del período
                 const ventasRes = await fetch(
                     `${SUPABASE_URL}/rest/v1/ventas?fecha=gte.${fechaInicio.toISOString()}&fecha=lte.${fechaFin.toISOString()}&order=fecha.asc`,
                     { headers: { 'apikey': SUPABASE_KEY } }
                 );
                 const ventas = await ventasRes.json();
                 
-                // Obtener compras del período
                 const comprasRes = await fetch(
                     `${SUPABASE_URL}/rest/v1/compras?fecha=gte.${fechaInicio.toISOString()}&fecha=lte.${fechaFin.toISOString()}&order=fecha.asc`,
                     { headers: { 'apikey': SUPABASE_KEY } }
                 );
                 const compras = await comprasRes.json();
                 
-                // Obtener gastos del período
                 const gastosRes = await fetch(
                     `${SUPABASE_URL}/rest/v1/gastos?fecha=gte.${fechaInicio.toISOString()}&fecha=lte.${fechaFin.toISOString()}&order=fecha.asc`,
                     { headers: { 'apikey': SUPABASE_KEY } }
                 );
                 const gastos = await gastosRes.json();
                 
-                // Construir movimientos
                 movimientos = [];
                 let contador = 1;
                 
-                // 1. MOVIMIENTOS POR VENTAS
+                // MOVIMIENTOS POR VENTAS
                 for (const venta of ventas) {
                     const total = venta.total || 0;
                     const iva = venta.iva || 0;
                     const base = total - iva;
                     
-                    // Asiento de venta
                     movimientos.push({
-                        clase: 1,
-                        nro: contador,
-                        fecha: venta.fecha,
-                        codigo: '110505',
-                        nombre: 'CAJA GENERAL',
+                        clase: 1, nro: contador, fecha: venta.fecha,
+                        codigo: '110505', nombre: 'CAJA GENERAL',
                         detalle: `Venta #${venta.id} - ${venta.productos || 'Productos varios'}`,
-                        debito: total,
-                        credito: 0
+                        debito: total, credito: 0
                     });
                     
                     movimientos.push({
-                        clase: 4,
-                        nro: contador,
-                        fecha: venta.fecha,
-                        codigo: '413505',
-                        nombre: 'COMERCIO AL POR MAYOR Y MENOR',
+                        clase: 4, nro: contador, fecha: venta.fecha,
+                        codigo: '413505', nombre: 'COMERCIO AL POR MAYOR Y MENOR',
                         detalle: `Venta #${venta.id}`,
-                        debito: 0,
-                        credito: base
+                        debito: 0, credito: base
                     });
                     
                     if (iva > 0) {
                         movimientos.push({
-                            clase: 2,
-                            nro: contador,
-                            fecha: venta.fecha,
-                            codigo: '250810',
-                            nombre: 'IVA GENERADO',
+                            clase: 2, nro: contador, fecha: venta.fecha,
+                            codigo: '250810', nombre: 'IVA GENERADO',
                             detalle: `IVA 19% sobre venta #${venta.id}`,
-                            debito: 0,
-                            credito: iva
+                            debito: 0, credito: iva
                         });
                     }
                     contador++;
                 }
                 
-                // 2. MOVIMIENTOS POR COMPRAS
+                // MOVIMIENTOS POR COMPRAS
                 for (const compra of compras) {
                     const total = compra.total || 0;
-                    const iva = total * 0.19; // Asumiendo 19% IVA
                     
                     movimientos.push({
-                        clase: 6,
-                        nro: contador,
-                        fecha: compra.fecha,
-                        codigo: '620501',
-                        nombre: 'COMPRAS',
+                        clase: 6, nro: contador, fecha: compra.fecha,
+                        codigo: '620501', nombre: 'COMPRAS',
                         detalle: `Compra #${compra.id} - ${compra.producto || 'Productos varios'}`,
-                        debito: total,
-                        credito: 0
+                        debito: total, credito: 0
                     });
                     
                     movimientos.push({
-                        clase: 1,
-                        nro: contador,
-                        fecha: compra.fecha,
-                        codigo: '143505',
-                        nombre: 'MERCANCIAS NO FABRICADAS',
+                        clase: 1, nro: contador, fecha: compra.fecha,
+                        codigo: '143505', nombre: 'MERCANCIAS NO FABRICADAS',
                         detalle: `Compra #${compra.id}`,
-                        debito: total,
-                        credito: 0
+                        debito: total, credito: 0
                     });
                     
                     if (compra.estado === 'Pagada') {
                         movimientos.push({
-                            clase: 1,
-                            nro: contador,
-                            fecha: compra.fecha,
-                            codigo: '110505',
-                            nombre: 'CAJA GENERAL',
+                            clase: 1, nro: contador, fecha: compra.fecha,
+                            codigo: '110505', nombre: 'CAJA GENERAL',
                             detalle: `Pago compra #${compra.id}`,
-                            debito: 0,
-                            credito: total
+                            debito: 0, credito: total
                         });
                     } else {
                         movimientos.push({
-                            clase: 2,
-                            nro: contador,
-                            fecha: compra.fecha,
-                            codigo: '220505',
-                            nombre: 'PROVEEDORES NACIONALES',
+                            clase: 2, nro: contador, fecha: compra.fecha,
+                            codigo: '220505', nombre: 'PROVEEDORES NACIONALES',
                             detalle: `Compra a crédito #${compra.id}`,
-                            debito: 0,
-                            credito: total
+                            debito: 0, credito: total
                         });
                     }
                     contador++;
                 }
                 
-                // 3. MOVIMIENTOS POR GASTOS
+                // MOVIMIENTOS POR GASTOS
                 for (const gasto of gastos) {
                     const monto = gasto.monto || 0;
                     let codigoGasto = '519595';
@@ -839,49 +741,37 @@
                     }
                     
                     movimientos.push({
-                        clase: 5,
-                        nro: contador,
-                        fecha: gasto.fecha,
-                        codigo: codigoGasto,
-                        nombre: nombreGasto,
+                        clase: 5, nro: contador, fecha: gasto.fecha,
+                        codigo: codigoGasto, nombre: nombreGasto,
                         detalle: gasto.concepto,
-                        debito: monto,
-                        credito: 0
+                        debito: monto, credito: 0
                     });
                     
                     movimientos.push({
-                        clase: 1,
-                        nro: contador,
-                        fecha: gasto.fecha,
-                        codigo: '110505',
-                        nombre: 'CAJA GENERAL',
+                        clase: 1, nro: contador, fecha: gasto.fecha,
+                        codigo: '110505', nombre: 'CAJA GENERAL',
                         detalle: `Pago: ${gasto.concepto}`,
-                        debito: 0,
-                        credito: monto
+                        debito: 0, credito: monto
                     });
                     contador++;
                 }
                 
-                // Ordenar por fecha
                 movimientos.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
-                
-                // Re-numerar
                 movimientos.forEach((m, idx) => { m.nro = idx + 1; });
                 
-                // Mostrar en tabla
                 mostrarLibroDiario();
-                
-                // Calcular resumen
                 calcularResumen();
+                
+                // Cargar datos para otras pestañas
+                cargarEstadoResultados();
+                cargarBalanceGeneral();
+                cargarListaCuentasMayor();
                 
             } catch (error) {
                 console.error('Error cargando movimientos:', error);
             }
         }
 
-        // ============================================
-        // MOSTRAR LIBRO DIARIO
-        // ============================================
         function mostrarLibroDiario() {
             const tbody = document.getElementById('libro-body');
             const footer = document.getElementById('libro-footer');
@@ -898,8 +788,6 @@
             tbody.innerHTML = movimientos.map(m => {
                 totalDebitos += m.debito;
                 totalCreditos += m.credito;
-                
-                // Formatear fecha
                 const fecha = new Date(m.fecha);
                 const fechaStr = `${fecha.getDate()}/${fecha.getMonth() + 1}/${fecha.getFullYear()}`;
                 
@@ -922,9 +810,6 @@
             footer.style.display = 'table-row-group';
         }
 
-        // ============================================
-        // CALCULAR RESUMEN
-        // ============================================
         function calcularResumen() {
             let ingresos = 0;
             let egresos = 0;
@@ -938,6 +823,10 @@
                 if (m.codigo === '110505') {
                     saldoCaja += m.debito;
                     saldoCaja -= m.credito;
+                }
+                if (m.codigo === '111005') {
+                    saldoBancos += m.debito;
+                    saldoBancos -= m.credito;
                 }
                 if (m.codigo === '143505') {
                     saldoInventario += m.debito;
@@ -956,9 +845,6 @@
             document.getElementById('saldo-inventario').textContent = `$${saldoInventario.toLocaleString()}`;
         }
 
-        // ============================================
-        // CAMBIAR PERÍODO
-        // ============================================
         function cambiarPeriodo(periodo) {
             const hoy = new Date();
             
@@ -991,11 +877,7 @@
             cargarMovimientos();
         }
 
-        // ============================================
-        // EXPORTAR A EXCEL
-        // ============================================
         function exportarExcel() {
-            // Crear contenido CSV
             let csvContent = "Clase,Nro,Fecha,Código Cuenta,Nombre Cuenta,Detalle Transacción,Débitos,Créditos\n";
             
             movimientos.forEach(m => {
@@ -1016,12 +898,12 @@
         }
 
         // ============================================
-        // VARIABLES PARA ESTADOS FINANCIEROS
+        // ESTADOS FINANCIEROS
         // ============================================
         let cuentasActivos = [
             { codigo: '110505', nombre: 'CAJA GENERAL', saldo: 0 },
             { codigo: '111005', nombre: 'BANCOS', saldo: 0 },
-            { codigo: '143505', nombre: 'MERCANCIAS NO FABRICADAS', saldo: 0 },
+                        { codigo: '143505', nombre: 'MERCANCIAS NO FABRICADAS', saldo: 0 },
             { codigo: '152005', nombre: 'MAQUINARIA Y EQUIPO', saldo: 0 }
         ];
         
@@ -1040,21 +922,17 @@
         // FUNCIONES PARA PESTAÑAS
         // ============================================
         function mostrarTab(tabId) {
-            // Ocultar todas las pestañas
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.classList.remove('active');
             });
             
-            // Mostrar la pestaña seleccionada
             document.getElementById(`tab-${tabId}`).classList.add('active');
             
-            // Actualizar botones
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
             event.target.classList.add('active');
             
-            // Cargar datos según la pestaña
             if (tabId === 'resultados') {
                 cargarEstadoResultados();
             } else if (tabId === 'balance') {
@@ -1067,18 +945,15 @@
         // ============================================
         // ESTADO DE RESULTADOS (PyG)
         // ============================================
-        async function cargarEstadoResultados() {
-            // Calcular ingresos (413505)
+        function cargarEstadoResultados() {
             const ingresos = movimientos
                 .filter(m => m.codigo === '413505')
                 .reduce((sum, m) => sum + m.credito, 0);
             
-            // Calcular costo de ventas (620501)
             const costoVentas = movimientos
                 .filter(m => m.codigo === '620501')
                 .reduce((sum, m) => sum + m.debito, 0);
             
-            // Calcular gastos por categoría
             const gastosAlquiler = movimientos.filter(m => m.codigo === '511005').reduce((sum, m) => sum + m.debito, 0);
             const gastosServicios = movimientos.filter(m => m.codigo === '511010').reduce((sum, m) => sum + m.debito, 0);
             const gastosSueldos = movimientos.filter(m => m.codigo === '510506').reduce((sum, m) => sum + m.debito, 0);
@@ -1088,17 +963,16 @@
             const totalGastosOp = gastosAlquiler + gastosServicios + gastosSueldos + gastosPublicidad + gastosOtros;
             const utilidadBruta = ingresos - costoVentas;
             const utilidadOperacional = utilidadBruta - totalGastosOp;
-            const utilidadNeta = utilidadOperacional; // Por ahora sin gastos no operacionales
+            const utilidadNeta = utilidadOperacional;
             
-            // Llenar tabla
             document.getElementById('row-ingresos').innerHTML = `
-                <td>Ventas totales</td>
+                <tr><td>Ventas totales</td>
                 <td class="valor">$${ingresos.toLocaleString()}</td>
                 <td></td>
             `;
             
             document.getElementById('row-costo').innerHTML = `
-                <td>Costo de ventas</td>
+                <tr><td>Costo de ventas</td>
                 <td class="valor">$${costoVentas.toLocaleString()}</td>
                 <td></td>
             `;
@@ -1126,7 +1000,6 @@
         // BALANCE GENERAL
         // ============================================
         function cargarBalanceGeneral() {
-            // Calcular saldos de activos
             let activosHTML = '';
             let totalActivos = 0;
             
@@ -1142,7 +1015,6 @@
             document.getElementById('tabla-activos').innerHTML = `<tbody>${activosHTML}</tbody>`;
             document.getElementById('total-activos').innerHTML = `$${totalActivos.toLocaleString()}`;
             
-            // Calcular saldos de pasivos
             let pasivosHTML = '';
             let totalPasivos = 0;
             
@@ -1158,7 +1030,6 @@
             document.getElementById('tabla-pasivos').innerHTML = `<tbody>${pasivosHTML}</tbody>`;
             document.getElementById('total-pasivos').innerHTML = `$${totalPasivos.toLocaleString()}`;
             
-            // Patrimonio (utilidad del período)
             const ingresos = movimientos.filter(m => m.codigo === '413505').reduce((sum, m) => sum + m.credito, 0);
             const gastos = movimientos.filter(m => m.codigo >= '510000' && m.codigo <= '599999').reduce((sum, m) => sum + m.debito, 0);
             const utilidad = ingresos - gastos;
@@ -1178,7 +1049,8 @@
             patrimonioHTML += `<tr><td>Utilidad del período</td><td class="valor">$${utilidad.toLocaleString()}</td></tr>`;
             patrimonioTotal += utilidad;
             
-            document.getElementById('tabla-pasivos').innerHTML += `<tr><td colspan="2" style="padding: 0.5rem;"></td></tr><tr><td style="font-weight: bold;">PATRIMONIO</td><td></td></tr>${patrimonioHTML}`;
+            const pasivosTable = document.getElementById('tabla-pasivos');
+            pasivosTable.innerHTML += `<tr><td colspan="2" style="padding: 0.5rem;"></td></tr><tr><td style="font-weight: bold;">PATRIMONIO</td><td></td></tr>${patrimonioHTML}`;
             document.getElementById('total-patrimonio').innerHTML = `$${patrimonioTotal.toLocaleString()}`;
             document.getElementById('total-pasivo-patrimonio').innerHTML = `$${(totalPasivos + patrimonioTotal).toLocaleString()}`;
         }
@@ -1189,7 +1061,6 @@
         function cargarListaCuentasMayor() {
             const select = document.getElementById('select-cuenta-mayor');
             
-            // Obtener cuentas únicas de los movimientos
             const cuentasUnicas = {};
             for (const m of movimientos) {
                 if (!cuentasUnicas[m.codigo]) {
@@ -1215,7 +1086,6 @@
             const movimientosCuenta = movimientos.filter(m => m.codigo === codigo);
             const nombreCuenta = movimientosCuenta[0]?.nombre || 'Cuenta';
             
-            // Calcular saldo inicial (0), saldo final
             let saldo = 0;
             let totalDebitos = 0;
             let totalCreditos = 0;
@@ -1235,8 +1105,7 @@
                             <th>Detalle</th>
                             <th>Débito</th>
                             <th>Crédito</th>
-                        </tr>
-                    </thead>
+                        </thead>
                     <tbody>
             `;
             
@@ -1268,7 +1137,6 @@
                     </tfoot>
                 </table>
                 
-                <!-- T-Account -->
                 <div class="t-account">
                     <div class="t-card">
                         <div class="t-card-header">${nombreCuenta}</div>
@@ -1294,15 +1162,76 @@
         
         // Funciones de exportación adicionales
         function exportarResultados() {
-            alert('Exportar Estado de Resultados próximamente');
+            let csvContent = "Concepto,Valor\n";
+            const ingresos = movimientos.filter(m => m.codigo === '413505').reduce((sum, m) => sum + m.credito, 0);
+            const costoVentas = movimientos.filter(m => m.codigo === '620501').reduce((sum, m) => sum + m.debito, 0);
+            const utilidadBruta = ingresos - costoVentas;
+            
+            csvContent += `"Ventas totales",${ingresos}\n`;
+            csvContent += `"Costo de ventas",${costoVentas}\n`;
+            csvContent += `"Utilidad Bruta",${utilidadBruta}\n`;
+            
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', `estado_resultados_${fechaInicio.toISOString().split('T')[0]}.csv`);
+            link.click();
+            URL.revokeObjectURL(url);
         }
         
         function exportarBalance() {
-            alert('Exportar Balance General próximamente');
+            let csvContent = "Cuenta,Saldo\n";
+            
+            for (const cuenta of cuentasActivos) {
+                const saldo = cuenta.saldo;
+                csvContent += `"${cuenta.nombre}",${saldo}\n`;
+            }
+            
+            for (const cuenta of cuentasPasivos) {
+                const saldo = cuenta.saldo;
+                csvContent += `"${cuenta.nombre}",${saldo}\n`;
+            }
+            
+            const ingresos = movimientos.filter(m => m.codigo === '413505').reduce((sum, m) => sum + m.credito, 0);
+            const gastos = movimientos.filter(m => m.codigo >= '510000' && m.codigo <= '599999').reduce((sum, m) => sum + m.debito, 0);
+            const utilidad = ingresos - gastos;
+            csvContent += `"Utilidad del período",${utilidad}\n`;
+            
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', `balance_general_${fechaInicio.toISOString().split('T')[0]}.csv`);
+            link.click();
+            URL.revokeObjectURL(url);
         }
         
         function exportarMayor() {
-            alert('Exportar Mayor de Cuentas próximamente');
+            const codigo = document.getElementById('select-cuenta-mayor').value;
+            if (!codigo) {
+                alert('Selecciona una cuenta primero');
+                return;
+            }
+            
+            const movimientosCuenta = movimientos.filter(m => m.codigo === codigo);
+            const nombreCuenta = movimientosCuenta[0]?.nombre || 'Cuenta';
+            
+            let csvContent = "Fecha,Detalle,Débito,Crédito\n";
+            
+            for (const m of movimientosCuenta) {
+                const fecha = new Date(m.fecha);
+                const fechaStr = `${fecha.getDate()}/${fecha.getMonth() + 1}/${fecha.getFullYear()}`;
+                csvContent += `"${fechaStr}","${m.detalle}",${m.debito},${m.credito}\n`;
+            }
+            
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', `mayor_${codigo}_${fechaInicio.toISOString().split('T')[0]}.csv`);
+            link.click();
+            URL.revokeObjectURL(url);
         }
     </script>
 </body>
