@@ -671,6 +671,8 @@ footer {
         color: #ff6b6b;
     }
 
+            }    
+
 /* ===== MODAL DE PRODUCTO ===== */
 .modal {
     display: none;
@@ -1218,3 +1220,22 @@ footer {
     background: #fff9fc;
     font-weight: 600;
 }
+
+/* Ajustes para pantallas táctiles */
+@media (hover: none) and (pointer: coarse) {
+    /* Aumentar área táctil de botones */
+    .producto-btn, .nav-btn, .categoria-btn {
+        min-height: 44px; /* Mínimo recomendado para touch */
+    }
+
+    /* Eliminar efectos hover en móvil */
+    .producto-card:hover {
+        transform: none;
+    }
+
+    .nav-btn:hover {
+        background: none;
+        color: #ff6b6b;
+    }
+
+            }    
