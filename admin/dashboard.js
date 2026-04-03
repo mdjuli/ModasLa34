@@ -1908,7 +1908,7 @@ async function eliminarPerfil(id) {
 }
 
 // ============================================
-// FUNCIONES PARA INVENTARIO
+// FUNCIONES PARA INVENTARIO (AGRUPADO POR PRODUCTO)
 // ============================================
 
 async function cargarInventario() {
@@ -1924,82 +1924,141 @@ async function cargarInventario() {
         
         if (!tbody) return;
         
-        let todasVariantes = [];
         let valorTotalInventario = 0;
         let gananciaTotalPotencial = 0;
         
-        productos.forEach(p => {
-            const variantes = p.variantes || [];
+        if (productos.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="9" style="text-align: center;">No hay productos en inventario</td></tr>';
+            return;
+        }
+        
+        // Función para obtener emoji de categoría
+        function getEmojiCategoria(cat) {
+            const emojis = {
+                'vestidos': '👗',
+                'blusas': '👚',
+                'pantalones': '👖',
+                'deportivo': '⚽',
+                'caballero': '👔',
+                'accesorios': '🎀'
+            };
+            return emojis[cat] || '📦';
+        }
+        
+        // Función para generar HTML de tallas y colores
+        function generarDetalleVariantes(variantes) {
+            if (!variantes || variantes.length === 0) return '-';
+            
+            let html = '<div style="font-size: 0.85rem;">';
             
             variantes.forEach(v => {
                 const colores = v.colores || [];
+                const tieneStock = colores.some(c => (c.stock || 0) > 0);
+                
+                if (!tieneStock) return;
+                
+                html += `<div style="margin-bottom: 8px; border-bottom: 1px solid #ffe4e9; padding-bottom: 5px;">`;
+                html += `<strong style="color: #ff6b6b;">Talla ${v.talla}</strong><br>`;
+                
+                if (colores.length > 0) {
+                    html += `<div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 5px;">`;
+                    colores.forEach(c => {
+                        if ((c.stock || 0) > 0) {
+                            const colorMuestra = c.codigo ? 
+                                `<span style="display:inline-block;width:12px;height:12px;background:${c.codigo};border-radius:50%;margin-right:3px;"></span>` : '';
+                            html += `<span style="background:#fff9fc; padding:2px 6px; border-radius:10px; font-size:0.75rem;">
+                                ${colorMuestra} ${c.nombre || 'Sin color'} (${c.stock})
+                            </span>`;
+                        }
+                    });
+                    html += `</div>`;
+                } else {
+                    html += `<span style="background:#fff9fc; padding:2px 6px; border-radius:10px; font-size:0.75rem;">
+                        Sin color (${v.stock_total || 0})
+                    </span>`;
+                }
+                html += `</div>`;
+            });
+            
+            html += '</div>';
+            return html;
+        }
+        
+        // Calcular precios y stocks totales por producto
+        productos.forEach(p => {
+            const variantes = p.variantes || [];
+            let stockTotal = 0;
+            let precioCompraMin = Infinity;
+            let precioVentaMin = Infinity;
+            let gananciaProducto = 0;
+            
+            variantes.forEach(v => {
+                const colores = v.colores || [];
+                let stockVariante = 0;
                 
                 colores.forEach(c => {
                     const stock = c.stock || 0;
-                    const precioCompra = v.precio_compra || 0;
-                    const precioVenta = v.precio_venta || 0;
-                    const gananciaUnidad = precioVenta - precioCompra;
-                    const valorTotal = stock * precioCompra;
-                    const gananciaTotal = stock * gananciaUnidad;
-                    
-                    valorTotalInventario += valorTotal;
-                    gananciaTotalPotencial += gananciaTotal;
-                    
-                    todasVariantes.push({
-                        imagen: p.imagen_url,
-                        codigo: p.codigo,
-                        nombre: p.nombre,
-                        talla: v.talla,
-                        color: c.nombre || 'Sin color',
-                        stock: stock,
-                        precio_compra: precioCompra,
-                        precio_venta: precioVenta,
-                        ganancia_unidad: gananciaUnidad,
-                        valor_total: valorTotal
-                    });
+                    stockVariante += stock;
+                    stockTotal += stock;
                 });
+                
+                if (stockVariante > 0) {
+                    if (v.precio_compra && v.precio_compra < precioCompraMin) precioCompraMin = v.precio_compra;
+                    if (v.precio_venta && v.precio_venta < precioVentaMin) precioVentaMin = v.precio_venta;
+                    
+                    // Ganancia = (precio_venta - precio_compra) * stock
+                    const gananciaVariante = (v.precio_venta - v.precio_compra) * stockVariante;
+                    gananciaProducto += gananciaVariante;
+                }
             });
+            
+            if (precioCompraMin === Infinity) precioCompraMin = 0;
+            if (precioVentaMin === Infinity) precioVentaMin = 0;
+            
+            const valorInventarioProducto = stockTotal * precioCompraMin;
+            valorTotalInventario += valorInventarioProducto;
+            gananciaTotalPotencial += gananciaProducto;
+            
+            p.stock_total = stockTotal;
+            p.precio_compra_min = precioCompraMin;
+            p.precio_venta_min = precioVentaMin;
+            p.ganancia_total = gananciaProducto;
+            p.valor_inventario = valorInventarioProducto;
         });
         
         // Actualizar tarjetas de resumen
         document.getElementById('valor-inventario').textContent = `$${valorTotalInventario.toLocaleString()}`;
         document.getElementById('ganancia-potencial').textContent = `$${gananciaTotalPotencial.toLocaleString()}`;
         
-        // Mostrar tabla
-        if (todasVariantes.length === 0) {
-            tbody.innerHTML = '<td><td colspan="10" style="text-align: center;">No hay productos en inventario</td></tr>';
-            return;
-        }
-        
-        tbody.innerHTML = todasVariantes.map(item => {
-            const gananciaClass = item.ganancia_unidad > 0 ? 'puc-debito' : 'puc-credito';
-            const stockClass = item.stock < 5 ? 'estado-pendiente' : '';
+        // Mostrar tabla agrupada por producto
+        tbody.innerHTML = productos.filter(p => p.stock_total > 0).map(p => {
+            const gananciaClass = p.ganancia_total > 0 ? 'puc-debito' : 'puc-credito';
             
             return `
-                <tr class="${stockClass}">
-                    <td>
-                        ${item.imagen ? 
-                            `<img src="${item.imagen}" style="width:50px;height:50px;object-fit:cover;border-radius:10px;">` : 
-                            `<div style="width:50px;height:50px;background:#ffe4e9;border-radius:10px;display:flex;align-items:center;justify-content:center;">📦</div>`
+                <tr style="border-bottom: 2px solid #ffb6c1;">
+                    <td style="vertical-align: top;">
+                        ${p.imagen_url ? 
+                            `<img src="${p.imagen_url}" style="width:60px;height:60px;object-fit:cover;border-radius:10px;">` : 
+                            `<div style="width:60px;height:60px;background:#ffe4e9;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:2rem;">${getEmojiCategoria(p.categoria)}</div>`
                         }
                     </td>
-                    <td>${item.codigo}</td>
-                    <td><strong>${item.nombre}</strong></td>
-                    <td>${item.talla}</td>
-                    <td>
-                        <div style="display:flex;align-items:center;gap:8px;">
-                            ${item.color !== 'Sin color' ? `<div style="width:20px;height:20px;background:${item.color};border-radius:50%;border:2px solid white;box-shadow:0 2px 5px rgba(0,0,0,0.2);"></div>` : '⚪'}
-                            ${item.color}
-                        </div>
-                    </td>
-                    <td><span style="font-weight:bold;color:${item.stock < 5 ? '#ff4757' : '#27ae60'};">${item.stock}</span></td>
-                    <td>$${item.precio_compra.toLocaleString()}</td>
-                    <td>$${item.precio_venta.toLocaleString()}</td>
-                    <td><span class="${gananciaClass}">$${item.ganancia_unidad.toLocaleString()}</span></td>
-                    <td>$${item.valor_total.toLocaleString()}</td>
+                    <td style="vertical-align: top;"><strong>${p.codigo}</strong></td>
+                    <td style="vertical-align: top;"><strong>${p.nombre}</strong></td>
+                    <td style="vertical-align: top;">${p.categoria || '-'}</td>
+                    <td style="vertical-align: top;">${generarDetalleVariantes(p.variantes)}</td>
+                    <td style="vertical-align: top; text-align: center; font-weight: bold; color: #27ae60;">${p.stock_total}</td>
+                    <td style="vertical-align: top;">$${p.precio_compra_min.toLocaleString()}</td>
+                    <td style="vertical-align: top;">$${p.precio_venta_min.toLocaleString()}</td>
+                    <td style="vertical-align: top;" class="${gananciaClass}">$${p.ganancia_total.toLocaleString()}</td>
+                    <td style="vertical-align: top;">$${p.valor_inventario.toLocaleString()}</td>
                 </tr>
             `;
         }).join('');
+        
+        // Si no hay productos con stock
+        if (productos.filter(p => p.stock_total > 0).length === 0) {
+            tbody.innerHTML = '<tr><td colspan="10" style="text-align: center;">No hay productos con stock</td></tr>';
+        }
         
     } catch (error) {
         console.error('Error cargando inventario:', error);
@@ -2009,46 +2068,6 @@ async function cargarInventario() {
         }
     }
 }
-
-function exportarInventario() {
-    // Obtener la tabla
-    const tabla = document.getElementById('tabla-inventario');
-    const filas = tabla.querySelectorAll('tr');
-    
-    let csv = [];
-    
-    // Cabeceras
-    const headers = ['Código', 'Producto', 'Talla', 'Color', 'Stock', 'Precio Compra', 'Precio Venta', 'Ganancia x Unidad', 'Valor Total'];
-    csv.push(headers.join(','));
-    
-    // Datos
-    filas.forEach(fila => {
-        const celdas = fila.querySelectorAll('td');
-        if (celdas.length > 0 && celdas[0].colSpan !== 10) {
-            const filaData = [];
-            // Saltar la columna de imagen (índice 0)
-            for (let i = 1; i < celdas.length; i++) {
-                let texto = celdas[i].innerText.replace(/,/g, '.').trim();
-                filaData.push(texto);
-            }
-            csv.push(filaData.join(','));
-        }
-    });
-    
-    // Descargar archivo
-    const blob = new Blob([csv.join('\n')], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    const url = URL.createObjectURL(blob);
-    link.href = url;
-    link.setAttribute('download', `inventario_${new Date().toISOString().split('T')[0]}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-    
-    mostrarAlerta('📥 Inventario exportado correctamente', 'success');
-}
-
 // ============================================
 // FUNCIONES DE VENTAS
 // ============================================
