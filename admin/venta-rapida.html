@@ -829,7 +829,6 @@
                     iva_porcentaje: porcentajeIVA,
                     metodo_pago: metodoPago,
                     productos: carrito.map(i => `${i.cantidad}x ${i.nombre} (Talla: ${i.talla})`).join(', '),
-                    vendedor_id: user.id,
                     vendedor: user.email
                 };
 
