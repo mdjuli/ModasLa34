@@ -829,7 +829,6 @@
                     iva_porcentaje: porcentajeIVA,
                     metodo_pago: metodoPago,
                     productos: carrito.map(i => `${i.cantidad}x ${i.nombre} (Talla: ${i.talla})`).join(', '),
-                    vendedor: user.email
                 };
 
                 const ventaRes = await fetch(`${SUPABASE_URL}/rest/v1/ventas`, {
