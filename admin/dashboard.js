@@ -1,5 +1,5 @@
 // ============================================
-// 🌸 DASHBOARD ADMIN - MODAS LA 34
+// DASHBOARD ADMIN - MODAS LA 34
 // ============================================
 
 // Variables globales
@@ -12,9 +12,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.log('Dashboard iniciado');
     await verificarSesion();
     await cargarDatosIniciales();
-    cambiarModulo('productos', null); // Cambiar a productos por defecto
+    cambiarModulo('productos', null);
     
-    // Inicializar variantes si el formulario existe
     setTimeout(() => {
         if (document.getElementById('variantes-container')) {
             agregarVariante();
@@ -113,7 +112,6 @@ async function cargarDatosModulo(modulo) {
             await cargarVentas();
             break;
         case 'contabilidad':
-            // No cargar nada por ahora
             break;
     }
 }
@@ -166,9 +164,7 @@ function agregarVariante() {
             
             <div style="margin-top: 1rem;">
                 <label style="color: #ff6b6b;">🎨 Colores y stock:</label>
-                <div id="colores-${varianteId}-container" class="colores-container">
-                    <!-- Los colores se agregan aquí -->
-                </div>
+                <div id="colores-${varianteId}-container" class="colores-container"></div>
                 <div>
                     <button type="button" onclick="agregarColorAVariante(${varianteId})" class="btn-agregar-color">➕ Agregar color</button>
                     <button type="button" onclick="agregarSinColor(${varianteId})" class="btn-sin-color">⚪ Sin color (stock único)</button>
@@ -178,10 +174,7 @@ function agregarVariante() {
     `;
     
     container.insertAdjacentHTML('beforeend', varianteHTML);
-    
-    // Inicializar con un color por defecto
     agregarColorAVariante(varianteId);
-    
     varianteCount++;
 }
 
@@ -205,7 +198,6 @@ function agregarColorAVariante(varianteId) {
     
     container.insertAdjacentHTML('beforeend', colorHTML);
     
-    // Sincronizar el color picker con el campo de texto
     const colorPicker = document.getElementById(`color-hex-${colorId}`);
     const colorText = document.getElementById(`color-hex-text-${colorId}`);
     
@@ -230,7 +222,6 @@ function agregarSinColor(varianteId) {
     const container = document.getElementById(`colores-${varianteId}-container`);
     if (!container) return;
     
-    // Verificar si ya existe un "sin color"
     const existingSinColor = container.querySelector('.sin-color-item');
     if (existingSinColor) {
         alert('⚠️ Ya existe una opción "Sin color" para esta talla');
@@ -265,8 +256,10 @@ function eliminarVariante(varianteId) {
     }
 }
 
+// ===== FUNCIÓN ACTUALIZADA CON PRECIO_COMPRA =====
 function getVariantesFromForm() {
     const variantes = [];
+    const precioCompraGlobal = document.getElementById('producto-precio-compra')?.value || 0;
     
     for (let i = 0; i < varianteCount; i++) {
         const tallaInput = document.getElementById(`variante-${i}-talla`);
@@ -276,6 +269,7 @@ function getVariantesFromForm() {
         
         const talla = tallaInput.value.trim();
         const precioVenta = parseFloat(precioInput?.value) || 0;
+        const precioCompra = parseFloat(precioCompraGlobal) || 0;
         
         if (precioVenta === 0) {
             mostrarAlerta(`⚠️ La talla ${talla} no tiene precio asignado`, 'error');
@@ -291,7 +285,6 @@ function getVariantesFromForm() {
             colorRows.forEach(row => {
                 const colorId = row.id.replace('color-', '');
                 
-                // Para "sin color"
                 if (row.classList.contains('sin-color-item')) {
                     const stockInput = document.getElementById(`color-stock-${colorId}`);
                     const stock = parseInt(stockInput?.value) || 0;
@@ -303,13 +296,11 @@ function getVariantesFromForm() {
                         });
                     }
                 } else {
-                    // Para colores con nombre
                     const nombreInput = document.getElementById(`color-nombre-${colorId}`);
                     let hexInput = document.getElementById(`color-hex-${colorId}`);
                     const hexTextInput = document.getElementById(`color-hex-text-${colorId}`);
                     const stockInput = document.getElementById(`color-stock-${colorId}`);
                     
-                    // Obtener el valor hexadecimal (priorizar el texto si existe)
                     let hexValue = '#ff0000';
                     if (hexTextInput && hexTextInput.value) {
                         hexValue = hexTextInput.value;
@@ -317,7 +308,6 @@ function getVariantesFromForm() {
                         hexValue = hexInput.value;
                     }
                     
-                    // Validar y formatear el código hexadecimal
                     if (!hexValue.startsWith('#')) {
                         hexValue = '#' + hexValue;
                     }
@@ -336,7 +326,6 @@ function getVariantesFromForm() {
             });
         }
         
-        // Si no hay colores válidos, crear uno por defecto
         if (colores.length === 0) {
             colores.push({
                 nombre: 'Sin color',
@@ -350,6 +339,7 @@ function getVariantesFromForm() {
         variantes.push({
             talla: talla,
             precio_venta: precioVenta,
+            precio_compra: precioCompra,
             colores: colores,
             stock_total: stockTotal
         });
@@ -358,6 +348,7 @@ function getVariantesFromForm() {
     return variantes;
 }
 
+// ===== FUNCIÓN ACTUALIZADA CON PRECIO_COMPRA =====
 async function guardarProductoBase() {
     try {
         const token = JSON.parse(localStorage.getItem('admin_token'));
@@ -377,7 +368,6 @@ async function guardarProductoBase() {
             return;
         }
         
-        // Verificar que todas las variantes tengan precio
         for (const v of variantes) {
             if (v.precio_venta === 0) {
                 mostrarAlerta(`La talla ${v.talla} no tiene precio asignado`, 'error');
@@ -385,17 +375,14 @@ async function guardarProductoBase() {
             }
         }
         
-        // 🔑 CLAVE: Verificar si estamos EDITANDO o CREANDO
         const editId = document.getElementById('form-producto').dataset.editId;
         let productoId;
         
         console.log('Modo:', editId ? 'EDITANDO producto ID: ' + editId : 'CREANDO nuevo producto');
         
         if (editId) {
-            // ========== MODO EDICIÓN ==========
             productoId = parseInt(editId);
             
-            // 1. Actualizar producto base
             const productoBase = {
                 codigo: codigo,
                 nombre: nombre,
@@ -420,7 +407,6 @@ async function guardarProductoBase() {
             
             console.log('✅ Producto base actualizado');
             
-            // 2. Eliminar variantes antiguas
             const deleteResponse = await fetch(`${SUPABASE_URL}/rest/v1/variantes_producto?producto_id=eq.${productoId}`, {
                 method: 'DELETE',
                 headers: {
@@ -436,7 +422,6 @@ async function guardarProductoBase() {
             }
             
         } else {
-            // ========== MODO CREACIÓN ==========
             const productoBase = {
                 codigo: codigo,
                 nombre: nombre,
@@ -465,12 +450,10 @@ async function guardarProductoBase() {
             console.log('✅ Nuevo producto base creado con ID:', productoId);
         }
         
-        // ========== GUARDAR NUEVAS VARIANTES ==========
         let variantesGuardadas = 0;
         let variantesConError = 0;
         
         for (const variante of variantes) {
-            // Generar SKU único
             const timestamp = Date.now();
             const randomPart = Math.random().toString(36).substring(2, 10);
             const skuBase = `${codigo}-${variante.talla}`.toUpperCase().replace(/[^A-Z0-9-]/g, '');
@@ -482,7 +465,7 @@ async function guardarProductoBase() {
                 colores: variante.colores,
                 stock_total: variante.stock_total,
                 precio_venta: variante.precio_venta,
-                precio_compra: 0,
+                precio_compra: variante.precio_compra,
                 sku: skuUnico
             };
             
@@ -514,30 +497,26 @@ async function guardarProductoBase() {
             }
         }
         
-        // Mensaje final
         if (variantesConError === 0) {
             mostrarAlerta(`🌸 Producto ${editId ? 'actualizado' : 'guardado'} con ${variantesGuardadas} variantes`, 'success');
         } else {
             mostrarAlerta(`⚠️ Producto guardado con ${variantesGuardadas} variantes (${variantesConError} errores)`, 'error');
         }
         
-        // Cerrar formulario y recargar
         cerrarFormulario('producto');
         await cargarProductos();
         
-        // Limpiar formulario
         document.getElementById('producto-codigo').value = '';
         document.getElementById('producto-nombre').value = '';
         document.getElementById('producto-categoria').value = '';
         document.getElementById('producto-imagen').value = '';
+        document.getElementById('producto-precio-compra').value = '';
         document.getElementById('variantes-container').innerHTML = '';
         varianteCount = 0;
         agregarVariante();
         
-        // Limpiar ID de edición
         delete document.getElementById('form-producto').dataset.editId;
         
-        // Restaurar texto del botón
         const submitBtn = document.querySelector('#form-producto .submit-btn');
         if (submitBtn) {
             submitBtn.textContent = '🌸 Guardar Producto';
@@ -563,7 +542,7 @@ async function cargarProductos() {
         if (!tbody) return;
         
         if (productos.length === 0) {
-            tbody.innerHTML = '}<tr><td colspan="8" style="text-align: center;">No hay productos registrados</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="8" style="text-align: center;">No hay productos registrados</td></tr>';
             return;
         }
         
@@ -627,7 +606,8 @@ async function verVariantes(id) {
         
         variantes.forEach(v => {
             mensaje += `📏 TALLA: ${v.talla}\n`;
-            mensaje += `💰 Precio: $${v.precio_venta}\n`;
+            mensaje += `💰 Precio venta: $${v.precio_venta}\n`;
+            mensaje += `💰 Precio compra: $${v.precio_compra || 0}\n`;
             
             const colores = v.colores || [];
             if (colores.length > 0) {
@@ -675,15 +655,11 @@ async function eliminarProducto(id) {
     }
 }
 
-// ============================================
-// FUNCIÓN PARA EDITAR PRODUCTO
-// ============================================
-
+// ===== FUNCIÓN ACTUALIZADA CON PRECIO_COMPRA =====
 async function editarProducto(id) {
     try {
         console.log('Editando producto:', id);
         
-        // Cargar datos del producto
         const response = await fetch(`${SUPABASE_URL}/rest/v1/productos_base?id=eq.${id}`, {
             headers: { 'apikey': SUPABASE_KEY }
         });
@@ -695,33 +671,34 @@ async function editarProducto(id) {
         
         const producto = productos[0];
         
-        // Cargar variantes
         const varResponse = await fetch(`${SUPABASE_URL}/rest/v1/variantes_producto?producto_id=eq.${id}`, {
             headers: { 'apikey': SUPABASE_KEY }
         });
         
         const variantes = await varResponse.json();
         
-        // Mostrar formulario
         mostrarFormulario('producto');
         
-        // 🔑 CLAVE: Guardar el ID del producto que estamos editando
         document.getElementById('form-producto').dataset.editId = id;
         
-        // Llenar datos básicos
         document.getElementById('producto-codigo').value = producto.codigo || '';
         document.getElementById('producto-nombre').value = producto.nombre || '';
         document.getElementById('producto-categoria').value = producto.categoria || '';
         document.getElementById('producto-imagen').value = producto.imagen_url || '';
         
-        // Limpiar y recrear variantes
+        // Cargar precio de compra
+        if (variantes.length > 0 && variantes[0].precio_compra) {
+            document.getElementById('producto-precio-compra').value = variantes[0].precio_compra;
+        } else {
+            document.getElementById('producto-precio-compra').value = '';
+        }
+        
         const container = document.getElementById('variantes-container');
         if (container) {
             container.innerHTML = '';
             varianteCount = 0;
             
             if (variantes.length === 0) {
-                // Si no hay variantes, agregar una vacía
                 agregarVariante();
             } else {
                 variantes.forEach(v => {
@@ -754,7 +731,6 @@ async function editarProducto(id) {
                     `;
                     container.insertAdjacentHTML('beforeend', varianteHTML);
                     
-                    // Agregar colores existentes
                     const coloresContainer = document.getElementById(`colores-${varianteId}-container`);
                     const colores = v.colores || [];
                     
@@ -788,7 +764,6 @@ async function editarProducto(id) {
                             
                             coloresContainer.insertAdjacentHTML('beforeend', colorHTML);
                             
-                            // Sincronizar color picker con texto
                             if (color.nombre !== null) {
                                 const colorPicker = document.getElementById(`color-hex-${colorId}`);
                                 const colorText = document.getElementById(`color-hex-text-${colorId}`);
@@ -811,7 +786,6 @@ async function editarProducto(id) {
             }
         }
         
-        // Cambiar texto del botón
         const submitBtn = document.querySelector('#form-producto .submit-btn');
         if (submitBtn) {
             submitBtn.textContent = '🌸 Actualizar Producto';
@@ -822,7 +796,6 @@ async function editarProducto(id) {
         mostrarAlerta('Error al cargar el producto', 'error');
     }
 }
-                   
 
 // ============================================
 // FUNCIONES DE PROVEEDORES
@@ -924,8 +897,40 @@ async function guardarProveedor() {
     }
 }
 
-function editarProveedor(id) {
-    alert('Función de editar proveedor en desarrollo');
+async function editarProveedor(id) {
+    try {
+        console.log('Editando proveedor:', id);
+        
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/proveedores?id=eq.${id}`, {
+            headers: { 'apikey': SUPABASE_KEY }
+        });
+        
+        if (!response.ok) throw new Error('Error al cargar proveedor');
+        
+        const proveedores = await response.json();
+        if (proveedores.length === 0) throw new Error('Proveedor no encontrado');
+        
+        const proveedor = proveedores[0];
+        
+        mostrarFormulario('proveedor');
+        
+        document.getElementById('proveedor-nombre').value = proveedor.nombre || '';
+        document.getElementById('proveedor-contacto').value = proveedor.contacto || '';
+        document.getElementById('proveedor-telefono').value = proveedor.telefono || '';
+        document.getElementById('proveedor-email').value = proveedor.email || '';
+        document.getElementById('proveedor-direccion').value = proveedor.direccion || '';
+        
+        document.getElementById('form-proveedor').dataset.editId = id;
+        
+        const submitBtn = document.querySelector('#form-proveedor .submit-btn');
+        if (submitBtn) {
+            submitBtn.textContent = '🌸 Actualizar Proveedor';
+        }
+        
+    } catch (error) {
+        console.error('Error:', error);
+        mostrarAlerta('Error al cargar el proveedor', 'error');
+    }
 }
 
 async function eliminarProveedor(id) {
@@ -955,120 +960,7 @@ async function eliminarProveedor(id) {
 }
 
 // ============================================
-// FUNCIONES DE PROVEEDORES (COMPLETAS CON EDICIÓN)
-// ============================================
-
-async function editarProveedor(id) {
-    try {
-        console.log('Editando proveedor:', id);
-        
-        // Cargar datos del proveedor
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/proveedores?id=eq.${id}`, {
-            headers: { 'apikey': SUPABASE_KEY }
-        });
-        
-        if (!response.ok) throw new Error('Error al cargar proveedor');
-        
-        const proveedores = await response.json();
-        if (proveedores.length === 0) throw new Error('Proveedor no encontrado');
-        
-        const proveedor = proveedores[0];
-        
-        // Mostrar formulario
-        mostrarFormulario('proveedor');
-        
-        // Llenar campos
-        document.getElementById('proveedor-nombre').value = proveedor.nombre || '';
-        document.getElementById('proveedor-contacto').value = proveedor.contacto || '';
-        document.getElementById('proveedor-telefono').value = proveedor.telefono || '';
-        document.getElementById('proveedor-email').value = proveedor.email || '';
-        document.getElementById('proveedor-direccion').value = proveedor.direccion || '';
-        
-        // Guardar ID para actualizar
-        document.getElementById('form-proveedor').dataset.editId = id;
-        
-        // Cambiar texto del botón
-        const submitBtn = document.querySelector('#form-proveedor .submit-btn');
-        if (submitBtn) {
-            submitBtn.textContent = '🌸 Actualizar Proveedor';
-        }
-        
-    } catch (error) {
-        console.error('Error:', error);
-        mostrarAlerta('Error al cargar el proveedor', 'error');
-    }
-}
-
-// Modificar guardarProveedor para manejar edición
-async function guardarProveedor() {
-    try {
-        const token = JSON.parse(localStorage.getItem('admin_token'));
-        
-        const proveedor = {
-            nombre: document.getElementById('proveedor-nombre').value,
-            contacto: document.getElementById('proveedor-contacto').value || null,
-            telefono: document.getElementById('proveedor-telefono').value || null,
-            email: document.getElementById('proveedor-email').value || null,
-            direccion: document.getElementById('proveedor-direccion').value || null
-        };
-        
-        if (!proveedor.nombre) {
-            mostrarAlerta('El nombre del proveedor es obligatorio', 'error');
-            return;
-        }
-        
-        // Verificar si estamos editando o creando
-        const editId = document.getElementById('form-proveedor').dataset.editId;
-        let url = `${SUPABASE_URL}/rest/v1/proveedores`;
-        let method = 'POST';
-        
-        if (editId) {
-            url += `?id=eq.${editId}`;
-            method = 'PATCH';
-        }
-        
-        const response = await fetch(url, {
-            method: method,
-            headers: {
-                'apikey': SUPABASE_KEY,
-                'Authorization': `Bearer ${token.access_token}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(proveedor)
-        });
-        
-        if (response.ok) {
-            mostrarAlerta(editId ? '🌸 Proveedor actualizado correctamente' : '🌸 Proveedor guardado correctamente', 'success');
-            cerrarFormulario('proveedor');
-            await cargarProveedores();
-            
-            // Limpiar formulario
-            document.getElementById('proveedor-nombre').value = '';
-            document.getElementById('proveedor-contacto').value = '';
-            document.getElementById('proveedor-telefono').value = '';
-            document.getElementById('proveedor-email').value = '';
-            document.getElementById('proveedor-direccion').value = '';
-            
-            // Limpiar ID de edición
-            delete document.getElementById('form-proveedor').dataset.editId;
-            
-            // Restaurar texto del botón
-            const submitBtn = document.querySelector('#form-proveedor .submit-btn');
-            if (submitBtn) {
-                submitBtn.textContent = '🌸 Guardar Proveedor';
-            }
-        } else {
-            const error = await response.json();
-            mostrarAlerta('Error: ' + (error.message || 'No se pudo guardar'), 'error');
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        mostrarAlerta('Error de conexión', 'error');
-    }
-}
-
-// ============================================
-// FUNCIONES DE COMPRAS (COMPLETAS)
+// FUNCIONES DE COMPRAS
 // ============================================
 
 async function cargarCompras() {
@@ -1094,14 +986,12 @@ async function cargarCompras() {
             return;
         }
         
-        // Calcular total compras mes
         const fechaInicio = new Date();
         fechaInicio.setDate(1);
         fechaInicio.setHours(0, 0, 0, 0);
         
         const comprasMes = compras.filter(c => {
-            // CORRECCIÓN: Ajustar la fecha para evitar el desplazamiento
-            const fechaCompra = new Date(c.fecha + 'T12:00:00'); // Agregamos hora del mediodía para evitar problemas de zona
+            const fechaCompra = new Date(c.fecha + 'T12:00:00');
             return fechaCompra >= fechaInicio;
         });
         
@@ -1112,7 +1002,6 @@ async function cargarCompras() {
         document.getElementById('stats-compras-pendientes').textContent = pendientes;
         
         tbody.innerHTML = compras.map(compra => {
-            // CORRECCIÓN: Formatear fecha correctamente
             const fechaCompra = new Date(compra.fecha + 'T12:00:00');
             const fechaFormateada = fechaCompra.toLocaleDateString('es-CO', {
                 year: 'numeric',
@@ -1197,7 +1086,6 @@ async function guardarCompra() {
         
         console.log('Guardando compra:', compra);
         
-        // Verificar si estamos editando o creando
         const editId = document.getElementById('form-compra').dataset.editId;
         let url = `${SUPABASE_URL}/rest/v1/compras`;
         let method = 'POST';
@@ -1223,17 +1111,14 @@ async function guardarCompra() {
             cerrarFormulario('compra');
             await cargarCompras();
             
-            // Limpiar formulario
             document.getElementById('compra-proveedor').value = '';
             document.getElementById('compra-fecha').value = '';
             document.getElementById('compra-producto').value = '';
             document.getElementById('compra-cantidad').value = '';
             document.getElementById('compra-precio').value = '';
             
-            // Limpiar ID de edición
             delete document.getElementById('form-compra').dataset.editId;
             
-            // Restaurar texto del botón
             const submitBtn = document.querySelector('#form-compra .submit-btn');
             if (submitBtn) {
                 submitBtn.textContent = '🌸 Guardar Compra';
@@ -1253,7 +1138,6 @@ async function editarCompra(id) {
     try {
         console.log('Editando compra:', id);
         
-        // Cargar datos de la compra
         const response = await fetch(`${SUPABASE_URL}/rest/v1/compras?id=eq.${id}`, {
             headers: { 'apikey': SUPABASE_KEY }
         });
@@ -1266,16 +1150,12 @@ async function editarCompra(id) {
         const compra = compras[0];
         console.log('Compra cargada:', compra);
         
-        // Mostrar formulario
         mostrarFormulario('compra');
         
-        // Cargar proveedores en el select
         await cargarProveedoresSelect('compra');
         
-        // Pequeña pausa para asegurar que el select se cargó
         await new Promise(resolve => setTimeout(resolve, 100));
         
-        // Llenar campos básicos (verificando que existan)
         const proveedorSelect = document.getElementById('compra-proveedor');
         if (proveedorSelect && compra.proveedor_id) {
             proveedorSelect.value = compra.proveedor_id;
@@ -1306,10 +1186,8 @@ async function editarCompra(id) {
             estadoSelect.value = compra.estado;
         }
         
-        // Guardar ID para actualizar
         document.getElementById('form-compra').dataset.editId = id;
         
-        // Cambiar texto del botón
         const submitBtn = document.querySelector('#form-compra .submit-btn');
         if (submitBtn) {
             submitBtn.textContent = '🌸 Actualizar Compra';
@@ -1347,9 +1225,6 @@ async function eliminarCompra(id) {
     }
 }
 
-// ===== NUEVAS FUNCIONES PARA COMPRAS CON PRODUCTOS =====
-
-// Cargar productos en el select
 async function cargarProductosSelect() {
     try {
         const response = await fetch(`${SUPABASE_URL}/rest/v1/productos_base?select=id,codigo,nombre&order=nombre`, {
@@ -1369,7 +1244,6 @@ async function cargarProductosSelect() {
     }
 }
 
-// Cargar variantes del producto seleccionado
 async function cargarVariantesProducto() {
     const productoId = document.getElementById('compra-producto-select').value;
     const varianteContainer = document.getElementById('compra-variante-container');
@@ -1411,12 +1285,10 @@ async function cargarVariantesProducto() {
     }
 }
 
-// Función para actualizar stock cuando llega una compra
 async function actualizarStockPorCompra(varianteId, cantidad) {
     try {
         const token = JSON.parse(localStorage.getItem('admin_token'));
         
-        // Obtener stock actual
         const response = await fetch(`${SUPABASE_URL}/rest/v1/variantes_producto?id=eq.${varianteId}`, {
             headers: { 'apikey': SUPABASE_KEY }
         });
@@ -1427,7 +1299,6 @@ async function actualizarStockPorCompra(varianteId, cantidad) {
         const stockActual = variantes[0].stock || 0;
         const nuevoStock = stockActual + cantidad;
         
-        // Actualizar stock
         await fetch(`${SUPABASE_URL}/rest/v1/variantes_producto?id=eq.${varianteId}`, {
             method: 'PATCH',
             headers: {
@@ -1446,7 +1317,7 @@ async function actualizarStockPorCompra(varianteId, cantidad) {
 }
 
 // ============================================
-// FUNCIONES DE GASTOS (COMPLETAS)
+// FUNCIONES DE GASTOS
 // ============================================
 
 async function cargarGastos() {
@@ -1472,7 +1343,6 @@ async function cargarGastos() {
             return;
         }
         
-        // Calcular gastos del mes
         const fechaInicio = new Date();
         fechaInicio.setDate(1);
         fechaInicio.setHours(0, 0, 0, 0);
@@ -1522,7 +1392,6 @@ async function guardarGasto() {
             return;
         }
         
-        // Verificar si estamos editando o creando
         const editId = document.getElementById('form-gasto').dataset.editId;
         let url = `${SUPABASE_URL}/rest/v1/gastos`;
         let method = 'POST';
@@ -1547,16 +1416,13 @@ async function guardarGasto() {
             cerrarFormulario('gasto');
             await cargarGastos();
             
-            // Limpiar formulario
             document.getElementById('gasto-fecha').value = '';
             document.getElementById('gasto-concepto').value = '';
             document.getElementById('gasto-categoria').value = '';
             document.getElementById('gasto-monto').value = '';
             
-            // Limpiar ID de edición
             delete document.getElementById('form-gasto').dataset.editId;
             
-            // Restaurar texto del botón
             const submitBtn = document.querySelector('#form-gasto .submit-btn');
             if (submitBtn) {
                 submitBtn.textContent = '🌸 Guardar Gasto';
@@ -1587,7 +1453,6 @@ async function editarGasto(id) {
     try {
         console.log('Editando gasto:', id);
         
-        // Cargar datos del gasto
         const response = await fetch(`${SUPABASE_URL}/rest/v1/gastos?id=eq.${id}`, {
             headers: { 'apikey': SUPABASE_KEY }
         });
@@ -1599,10 +1464,8 @@ async function editarGasto(id) {
         
         const gasto = gastos[0];
         
-        // Mostrar formulario
         mostrarFormulario('gasto');
         
-        // Llenar campos
         document.getElementById('gasto-fecha').value = gasto.fecha.split('T')[0];
         document.getElementById('gasto-concepto').value = gasto.concepto || '';
         document.getElementById('gasto-categoria').value = gasto.categoria || '';
@@ -1611,10 +1474,8 @@ async function editarGasto(id) {
             document.getElementById('gasto-metodo').value = gasto.metodo_pago;
         }
         
-        // Guardar ID para actualizar
         document.getElementById('form-gasto').dataset.editId = id;
         
-        // Cambiar texto del botón
         const submitBtn = document.querySelector('#form-gasto .submit-btn');
         if (submitBtn) {
             submitBtn.textContent = '🌸 Actualizar Gasto';
@@ -1653,7 +1514,7 @@ async function eliminarGasto(id) {
 }
 
 // ============================================
-// FUNCIONES DE PERFILES (BÁSICAS)
+// FUNCIONES DE PERFILES
 // ============================================
 
 async function cargarPerfiles() {
@@ -1697,29 +1558,10 @@ async function cargarPerfiles() {
     }
 }
 
-async function guardarPerfil() {
-    mostrarAlerta('Función de guardar perfil en desarrollo', 'error');
-}
-
-function editarPerfil(id) {
-    alert('Función de editar perfil en desarrollo');
-}
-
-function eliminarPerfil(id) {
-    if (confirm('¿Eliminar este usuario?')) {
-        mostrarAlerta('Función de eliminar en desarrollo', 'error');
-    }
-}
-
-// ============================================
-// FUNCIONES DE PERFILES (COMPLETAS CON EDICIÓN)
-// ============================================
-
 async function editarPerfil(id) {
     try {
         console.log('Editando perfil:', id);
         
-        // Cargar datos del perfil
         const response = await fetch(`${SUPABASE_URL}/rest/v1/perfiles?id=eq.${id}`, {
             headers: { 'apikey': SUPABASE_KEY }
         });
@@ -1731,25 +1573,20 @@ async function editarPerfil(id) {
         
         const perfil = perfiles[0];
         
-        // Mostrar formulario
         mostrarFormulario('perfil');
         
-        // Llenar campos
         document.getElementById('perfil-nombre').value = perfil.nombre || '';
         document.getElementById('perfil-email').value = perfil.email || '';
         document.getElementById('perfil-rol').value = perfil.rol || 'empleado';
         
-        // Guardar ID para actualizar
         document.getElementById('form-perfil').dataset.editId = id;
         
-        // Ocultar campo de contraseña (no se puede editar directamente)
         const passwordField = document.getElementById('perfil-password');
         if (passwordField) {
             passwordField.placeholder = 'Dejar vacío para mantener la misma';
             passwordField.required = false;
         }
         
-        // Cambiar texto del botón
         const submitBtn = document.querySelector('#form-perfil .submit-btn');
         if (submitBtn) {
             submitBtn.textContent = '🌸 Actualizar Usuario';
@@ -1761,7 +1598,6 @@ async function editarPerfil(id) {
     }
 }
 
-// Modificar guardarPerfil para manejar edición
 async function guardarPerfil() {
     try {
         const token = JSON.parse(localStorage.getItem('admin_token'));
@@ -1779,7 +1615,6 @@ async function guardarPerfil() {
         const editId = document.getElementById('form-perfil').dataset.editId;
         
         if (editId) {
-            // ACTUALIZAR perfil existente
             const perfilData = {
                 nombre: nombre,
                 email: email,
@@ -1806,13 +1641,11 @@ async function guardarPerfil() {
             }
             
         } else {
-            // CREAR nuevo usuario
             if (!password || password.length < 6) {
                 mostrarAlerta('La contraseña debe tener al menos 6 caracteres', 'error');
                 return;
             }
             
-            // Crear usuario en Auth
             const authResponse = await fetch(`${SUPABASE_URL}/auth/v1/signup`, {
                 method: 'POST',
                 headers: {
@@ -1828,7 +1661,6 @@ async function guardarPerfil() {
                 throw new Error(authData.msg || 'Error al crear usuario');
             }
             
-            // Crear perfil
             const perfilResponse = await fetch(`${SUPABASE_URL}/rest/v1/perfiles`, {
                 method: 'POST',
                 headers: {
@@ -1853,22 +1685,18 @@ async function guardarPerfil() {
             }
         }
         
-        // Limpiar formulario
         document.getElementById('perfil-nombre').value = '';
         document.getElementById('perfil-email').value = '';
         document.getElementById('perfil-password').value = '';
         
-        // Limpiar ID de edición
         delete document.getElementById('form-perfil').dataset.editId;
         
-        // Restaurar campo de contraseña
         const passwordField = document.getElementById('perfil-password');
         if (passwordField) {
             passwordField.placeholder = 'Contraseña';
             passwordField.required = true;
         }
         
-        // Restaurar texto del botón
         const submitBtn = document.querySelector('#form-perfil .submit-btn');
         if (submitBtn) {
             submitBtn.textContent = '🌸 Crear Usuario';
@@ -1886,7 +1714,6 @@ async function eliminarPerfil(id) {
     try {
         const token = JSON.parse(localStorage.getItem('admin_token'));
         
-        // Eliminar perfil (el usuario en auth se elimina automáticamente si hay trigger)
         const response = await fetch(`${SUPABASE_URL}/rest/v1/perfiles?id=eq.${id}`, {
             method: 'DELETE',
             headers: {
@@ -1908,7 +1735,7 @@ async function eliminarPerfil(id) {
 }
 
 // ============================================
-// FUNCIONES PARA INVENTARIO (AGRUPADO POR PRODUCTO)
+// FUNCIONES PARA INVENTARIO
 // ============================================
 
 async function cargarInventario() {
@@ -1928,11 +1755,10 @@ async function cargarInventario() {
         let gananciaTotalPotencial = 0;
         
         if (productos.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="9" style="text-align: center;">No hay productos en inventario</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="10" style="text-align: center;">No hay productos en inventario</td></tr>';
             return;
         }
         
-        // Función para obtener emoji de categoría
         function getEmojiCategoria(cat) {
             const emojis = {
                 'vestidos': '👗',
@@ -1945,7 +1771,6 @@ async function cargarInventario() {
             return emojis[cat] || '📦';
         }
         
-        // Función para generar HTML de tallas y colores
         function generarDetalleVariantes(variantes) {
             if (!variantes || variantes.length === 0) return '-';
             
@@ -1984,7 +1809,6 @@ async function cargarInventario() {
             return html;
         }
         
-        // Calcular precios y stocks totales por producto
         productos.forEach(p => {
             const variantes = p.variantes || [];
             let stockTotal = 0;
@@ -2006,8 +1830,7 @@ async function cargarInventario() {
                     if (v.precio_compra && v.precio_compra < precioCompraMin) precioCompraMin = v.precio_compra;
                     if (v.precio_venta && v.precio_venta < precioVentaMin) precioVentaMin = v.precio_venta;
                     
-                    // Ganancia = (precio_venta - precio_compra) * stock
-                    const gananciaVariante = (v.precio_venta - v.precio_compra) * stockVariante;
+                    const gananciaVariante = (v.precio_venta - (v.precio_compra || 0)) * stockVariante;
                     gananciaProducto += gananciaVariante;
                 }
             });
@@ -2026,11 +1849,9 @@ async function cargarInventario() {
             p.valor_inventario = valorInventarioProducto;
         });
         
-        // Actualizar tarjetas de resumen
         document.getElementById('valor-inventario').textContent = `$${valorTotalInventario.toLocaleString()}`;
         document.getElementById('ganancia-potencial').textContent = `$${gananciaTotalPotencial.toLocaleString()}`;
         
-        // Mostrar tabla agrupada por producto
         tbody.innerHTML = productos.filter(p => p.stock_total > 0).map(p => {
             const gananciaClass = p.ganancia_total > 0 ? 'puc-debito' : 'puc-credito';
             
@@ -2055,7 +1876,6 @@ async function cargarInventario() {
             `;
         }).join('');
         
-        // Si no hay productos con stock
         if (productos.filter(p => p.stock_total > 0).length === 0) {
             tbody.innerHTML = '<tr><td colspan="10" style="text-align: center;">No hay productos con stock</td></tr>';
         }
@@ -2068,6 +1888,7 @@ async function cargarInventario() {
         }
     }
 }
+
 // ============================================
 // FUNCIONES DE VENTAS
 // ============================================
@@ -2095,7 +1916,6 @@ async function cargarVentas() {
             return;
         }
         
-        // Ventas de hoy
         const hoy = new Date();
         hoy.setHours(0, 0, 0, 0);
         
@@ -2103,7 +1923,6 @@ async function cargarVentas() {
         const totalHoy = ventasHoy.reduce((sum, v) => sum + (v.total || 0), 0);
         document.getElementById('stats-ventas-hoy').textContent = `$${totalHoy.toLocaleString()}`;
         
-        // Ventas del mes
         const fechaInicio = new Date();
         fechaInicio.setDate(1);
         fechaInicio.setHours(0, 0, 0, 0);
@@ -2138,7 +1957,6 @@ async function cargarVentas() {
     }
 }
 
-// Función para ver factura
 function verFactura(id) {
     window.open(`factura.html?id=${id}`, '_blank');
 }
@@ -2165,6 +1983,8 @@ function cerrarFormulario(tipo) {
             if (submitBtn) {
                 submitBtn.textContent = '🌸 Guardar Producto';
             }
+            const precioCompraInput = document.getElementById('producto-precio-compra');
+            if (precioCompraInput) precioCompraInput.value = '';
         } else if (tipo === 'compra') {
             delete form.dataset.editId;
             const submitBtn = document.querySelector('#form-compra .submit-btn');
@@ -2189,7 +2009,6 @@ function cerrarFormulario(tipo) {
             if (submitBtn) {
                 submitBtn.textContent = '🌸 Crear Usuario';
             }
-            // Restaurar campo de contraseña
             const passwordField = document.getElementById('perfil-password');
             if (passwordField) {
                 passwordField.placeholder = 'Contraseña';
