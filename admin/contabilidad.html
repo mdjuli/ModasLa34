@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
     <title>📊 Contabilidad - Modas La 34</title>
     <link rel="stylesheet" href="../css/estilo-comun.css">
     <style>
@@ -154,6 +154,8 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
         .libro-table {
@@ -211,7 +213,7 @@
             background: #ff9a9e;
         }
 
-        /* Pestañas para cambiar entre vistas */
+        /* Pestañas */
         .tabs-container {
             display: flex;
             gap: 0.5rem;
@@ -242,7 +244,6 @@
             color: white;
         }
 
-        /* Contenedor de pestañas */
         .tab-content {
             display: none;
         }
@@ -267,6 +268,8 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
         .estado-table {
@@ -410,13 +413,165 @@
             border-top: 1px solid #ffe4e9;
         }
 
-        /* Responsive */
+        /* MODALES */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 90%;
+            width: 1200px;
+            max-height: 90%;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #ffe4e9;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #ff6b6b;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #ff6b6b;
+            font-weight: 600;
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #ffe4e9;
+            border-radius: 15px;
+            font-size: 1rem;
+        }
+        
+        .form-group small {
+            display: block;
+            color: #999;
+            font-size: 0.8rem;
+            margin-top: 0.3rem;
+        }
+        
+        .form-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .submit-btn {
+            background: #ff9a9e;
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .cancel-btn {
+            background: #e0e0e0;
+            color: #666;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            cursor: pointer;
+        }
+        
+        .btn-primary {
+            background: #ff9a9e;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-right: 0.5rem;
+        }
+        
+        .edit-btn {
+            background: #ffb6c1;
+            color: white;
+            border: none;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-right: 0.3rem;
+        }
+        
+        .delete-btn {
+            background: #ff4757;
+            color: white;
+            border: none;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+        
+        .plan-cuentas-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .plan-cuentas-table th,
+        .plan-cuentas-table td {
+            padding: 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid #ffe4e9;
+        }
+        
+        .plan-cuentas-table th {
+            background: #fff0f3;
+            color: #ff6b6b;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
         @media (max-width: 768px) {
             .libro-table {
                 font-size: 0.7rem;
             }
             .libro-table th, .libro-table td {
                 padding: 0.4rem;
+            }
+            .modal-content {
+                width: 95%;
+                padding: 1rem;
             }
         }
     </style>
@@ -427,15 +582,20 @@
             📊 CONTABILIDAD
             <span>🌸 Modas La 34</span>
         </h1>
-        <a href="dashboard.html" class="volver-btn">← Volver al Dashboard</a>
+        <div style="display: flex; gap: 1rem;">
+            <button class="exportar-btn" onclick="abrirPlanCuentas()" style="background: #ff9a9e;">
+                📋 Plan de Cuentas
+            </button>
+            <a href="dashboard.html" class="volver-btn">← Volver al Dashboard</a>
+        </div>
     </header>
 
     <div class="contabilidad-container">
         <!-- Selector de período -->
         <div class="periodo-selector">
-            <button class="periodo-btn active" onclick="cambiarPeriodo('mes')">Este Mes</button>
-            <button class="periodo-btn" onclick="cambiarPeriodo('trimestre')">Último Trimestre</button>
-            <button class="periodo-btn" onclick="cambiarPeriodo('año')">Este Año</button>
+            <button class="periodo-btn active" onclick="cambiarPeriodo('mes', event)">Este Mes</button>
+            <button class="periodo-btn" onclick="cambiarPeriodo('trimestre', event)">Último Trimestre</button>
+            <button class="periodo-btn" onclick="cambiarPeriodo('año', event)">Este Año</button>
             
             <div class="periodo-personalizado">
                 <input type="date" id="fecha-inicio">
@@ -474,10 +634,10 @@
 
         <!-- Pestañas de navegación -->
         <div class="tabs-container">
-            <button class="tab-btn active" onclick="mostrarTab('libro')">📒 Libro Diario</button>
-            <button class="tab-btn" onclick="mostrarTab('resultados')">📊 Estado de Resultados</button>
-            <button class="tab-btn" onclick="mostrarTab('balance')">⚖️ Balance General</button>
-            <button class="tab-btn" onclick="mostrarTab('mayor')">📋 Mayor de Cuentas</button>
+            <button class="tab-btn active" onclick="mostrarTab('libro', event)">📒 Libro Diario</button>
+            <button class="tab-btn" onclick="mostrarTab('resultados', event)">📊 Estado de Resultados</button>
+            <button class="tab-btn" onclick="mostrarTab('balance', event)">⚖️ Balance General</button>
+            <button class="tab-btn" onclick="mostrarTab('mayor', event)">📋 Mayor de Cuentas</button>
         </div>
 
         <!-- Pestaña 1: Libro Diario -->
@@ -585,6 +745,96 @@
         </div>
     </div>
 
+    <!-- MODAL: Plan de Cuentas -->
+    <div id="modal-plan-cuentas" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📋 Plan de Cuentas</h2>
+                <button class="close-btn" onclick="cerrarPlanCuentas()">&times;</button>
+            </div>
+            
+            <div style="margin-bottom: 1rem;">
+                <button class="btn-primary" onclick="agregarCuenta()">➕ Nueva Cuenta</button>
+                <button class="exportar-btn" onclick="exportarPlanCuentas()">📥 Exportar</button>
+            </div>
+            
+            <div style="overflow-x: auto; max-height: 500px;">
+                <table class="plan-cuentas-table">
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Nombre de la Cuenta</th>
+                            <th>Tipo</th>
+                            <th>Naturaleza</th>
+                            <th>¿Permite movimiento?</th>
+                            <th>Acciones</th>
+                        </thead>
+                    <tbody id="plan-cuentas-body">
+                        <tr><td colspan="6" style="text-align: center;">Cargando...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: Editar/Crear Cuenta -->
+    <div id="modal-editar-cuenta" class="modal" style="display: none;">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h2 id="modal-cuenta-title">✏️ Editar Cuenta</h2>
+                <button class="close-btn" onclick="cerrarEditarCuenta()">&times;</button>
+            </div>
+            
+            <form id="form-cuenta">
+                <input type="hidden" id="cuenta-id">
+                
+                <div class="form-group">
+                    <label>Código de la cuenta *</label>
+                    <input type="text" id="cuenta-codigo" required placeholder="Ej: 110505">
+                    <small>Formato numérico de 6 dígitos</small>
+                </div>
+                
+                <div class="form-group">
+                    <label>Nombre de la cuenta *</label>
+                    <input type="text" id="cuenta-nombre" required placeholder="Ej: CAJA GENERAL">
+                </div>
+                
+                <div class="form-group">
+                    <label>Tipo de cuenta *</label>
+                    <select id="cuenta-tipo" required>
+                        <option value="ACTIVO">ACTIVO</option>
+                        <option value="PASIVO">PASIVO</option>
+                        <option value="PATRIMONIO">PATRIMONIO</option>
+                        <option value="INGRESO">INGRESO</option>
+                        <option value="GASTO">GASTO</option>
+                        <option value="COSTO">COSTO</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Naturaleza *</label>
+                    <select id="cuenta-naturaleza" required>
+                        <option value="DEUDORA">DEUDORA (Debe aumentar con débitos)</option>
+                        <option value="ACREEDORA">ACREEDORA (Debe aumentar con créditos)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="cuenta-permite-movimiento" checked>
+                        ¿Permite movimientos contables?
+                    </label>
+                    <small>Desactivar para cuentas que solo sean de agrupación</small>
+                </div>
+                
+                <div class="form-buttons">
+                    <button type="submit" class="submit-btn">💾 Guardar Cuenta</button>
+                    <button type="button" onclick="cerrarEditarCuenta()" class="cancel-btn">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script src="../js/supabase-config.js"></script>
     <script>
         // ============================================
@@ -598,13 +848,14 @@
         fechaFin.setHours(23, 59, 59, 999);
 
         let movimientos = [];
-        let saldosCuentas = {};
+        let planCuentas = [];
 
         // ============================================
         // INICIALIZACIÓN
         // ============================================
         document.addEventListener('DOMContentLoaded', async () => {
             await verificarSesion();
+            await cargarPlanCuentasGlobal();
             cargarFechas();
             await cargarMovimientos();
         });
@@ -619,6 +870,74 @@
         function cargarFechas() {
             document.getElementById('fecha-inicio').value = fechaInicio.toISOString().split('T')[0];
             document.getElementById('fecha-fin').value = fechaFin.toISOString().split('T')[0];
+        }
+
+        // ============================================
+        // CARGAR PLAN DE CUENTAS GLOBAL
+        // ============================================
+        async function cargarPlanCuentasGlobal() {
+            try {
+                const token = JSON.parse(localStorage.getItem('admin_token'));
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/plan_cuentas?order=codigo.asc`, {
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${token.access_token}`
+                    }
+                });
+                planCuentas = await response.json();
+                
+                if (planCuentas.length === 0) {
+                    await crearPlanCuentasDefault();
+                    const response2 = await fetch(`${SUPABASE_URL}/rest/v1/plan_cuentas?order=codigo.asc`, {
+                        headers: {
+                            'apikey': SUPABASE_KEY,
+                            'Authorization': `Bearer ${token.access_token}`
+                        }
+                    });
+                    planCuentas = await response2.json();
+                }
+            } catch (error) {
+                console.error('Error cargando plan de cuentas:', error);
+            }
+        }
+
+        async function crearPlanCuentasDefault() {
+            const cuentasDefault = [
+                { codigo: '110505', nombre: 'CAJA GENERAL', tipo: 'ACTIVO', naturaleza: 'DEUDORA', permite_movimiento: true },
+                { codigo: '111005', nombre: 'BANCOS', tipo: 'ACTIVO', naturaleza: 'DEUDORA', permite_movimiento: true },
+                { codigo: '143505', nombre: 'MERCANCIAS NO FABRICADAS', tipo: 'ACTIVO', naturaleza: 'DEUDORA', permite_movimiento: true },
+                { codigo: '152005', nombre: 'MAQUINARIA Y EQUIPO', tipo: 'ACTIVO', naturaleza: 'DEUDORA', permite_movimiento: true },
+                { codigo: '220505', nombre: 'PROVEEDORES NACIONALES', tipo: 'PASIVO', naturaleza: 'ACREEDORA', permite_movimiento: true },
+                { codigo: '250810', nombre: 'IVA GENERADO', tipo: 'PASIVO', naturaleza: 'ACREEDORA', permite_movimiento: true },
+                { codigo: '236705', nombre: 'RETEICA', tipo: 'PASIVO', naturaleza: 'ACREEDORA', permite_movimiento: true },
+                { codigo: '310505', nombre: 'CAPITAL SOCIAL', tipo: 'PATRIMONIO', naturaleza: 'ACREEDORA', permite_movimiento: true },
+                { codigo: '320505', nombre: 'UTILIDADES ACUMULADAS', tipo: 'PATRIMONIO', naturaleza: 'ACREEDORA', permite_movimiento: true },
+                { codigo: '413505', nombre: 'COMERCIO AL POR MAYOR Y MENOR', tipo: 'INGRESO', naturaleza: 'ACREEDORA', permite_movimiento: true },
+                { codigo: '620501', nombre: 'COMPRAS', tipo: 'COSTO', naturaleza: 'DEUDORA', permite_movimiento: true },
+                { codigo: '510506', nombre: 'SUELDOS', tipo: 'GASTO', naturaleza: 'DEUDORA', permite_movimiento: true },
+                { codigo: '511005', nombre: 'ALQUILERES', tipo: 'GASTO', naturaleza: 'DEUDORA', permite_movimiento: true },
+                { codigo: '511010', nombre: 'SERVICIOS PÚBLICOS', tipo: 'GASTO', naturaleza: 'DEUDORA', permite_movimiento: true },
+                { codigo: '513505', nombre: 'PUBLICIDAD', tipo: 'GASTO', naturaleza: 'DEUDORA', permite_movimiento: true },
+                { codigo: '519595', nombre: 'OTROS GASTOS', tipo: 'GASTO', naturaleza: 'DEUDORA', permite_movimiento: true }
+            ];
+            
+            const token = JSON.parse(localStorage.getItem('admin_token'));
+            
+            for (const cuenta of cuentasDefault) {
+                await fetch(`${SUPABASE_URL}/rest/v1/plan_cuentas`, {
+                    method: 'POST',
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${token.access_token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(cuenta)
+                });
+            }
+        }
+        function getNombreCuenta(codigo) {
+            const cuenta = planCuentas.find(c => c.codigo === codigo);
+            return cuenta ? cuenta.nombre : codigo;
         }
 
         // ============================================
@@ -657,14 +976,14 @@
                     
                     movimientos.push({
                         clase: 1, nro: contador, fecha: venta.fecha,
-                        codigo: '110505', nombre: 'CAJA GENERAL',
+                        codigo: '110505', nombre: getNombreCuenta('110505'),
                         detalle: `Venta #${venta.id} - ${venta.productos || 'Productos varios'}`,
                         debito: total, credito: 0
                     });
                     
                     movimientos.push({
                         clase: 4, nro: contador, fecha: venta.fecha,
-                        codigo: '413505', nombre: 'COMERCIO AL POR MAYOR Y MENOR',
+                        codigo: '413505', nombre: getNombreCuenta('413505'),
                         detalle: `Venta #${venta.id}`,
                         debito: 0, credito: base
                     });
@@ -672,7 +991,7 @@
                     if (iva > 0) {
                         movimientos.push({
                             clase: 2, nro: contador, fecha: venta.fecha,
-                            codigo: '250810', nombre: 'IVA GENERADO',
+                            codigo: '250810', nombre: getNombreCuenta('250810'),
                             detalle: `IVA 19% sobre venta #${venta.id}`,
                             debito: 0, credito: iva
                         });
@@ -686,14 +1005,14 @@
                     
                     movimientos.push({
                         clase: 6, nro: contador, fecha: compra.fecha,
-                        codigo: '620501', nombre: 'COMPRAS',
+                        codigo: '620501', nombre: getNombreCuenta('620501'),
                         detalle: `Compra #${compra.id} - ${compra.producto || 'Productos varios'}`,
                         debito: total, credito: 0
                     });
                     
                     movimientos.push({
                         clase: 1, nro: contador, fecha: compra.fecha,
-                        codigo: '143505', nombre: 'MERCANCIAS NO FABRICADAS',
+                        codigo: '143505', nombre: getNombreCuenta('143505'),
                         detalle: `Compra #${compra.id}`,
                         debito: total, credito: 0
                     });
@@ -701,14 +1020,14 @@
                     if (compra.estado === 'Pagada') {
                         movimientos.push({
                             clase: 1, nro: contador, fecha: compra.fecha,
-                            codigo: '110505', nombre: 'CAJA GENERAL',
+                            codigo: '110505', nombre: getNombreCuenta('110505'),
                             detalle: `Pago compra #${compra.id}`,
                             debito: 0, credito: total
                         });
                     } else {
                         movimientos.push({
                             clase: 2, nro: contador, fecha: compra.fecha,
-                            codigo: '220505', nombre: 'PROVEEDORES NACIONALES',
+                            codigo: '220505', nombre: getNombreCuenta('220505'),
                             detalle: `Compra a crédito #${compra.id}`,
                             debito: 0, credito: total
                         });
@@ -720,37 +1039,32 @@
                 for (const gasto of gastos) {
                     const monto = gasto.monto || 0;
                     let codigoGasto = '519595';
-                    let nombreGasto = 'OTROS GASTOS';
                     
                     switch(gasto.categoria) {
                         case 'Alquiler':
                             codigoGasto = '511005';
-                            nombreGasto = 'ALQUILERES';
                             break;
                         case 'Servicios':
                             codigoGasto = '511010';
-                            nombreGasto = 'SERVICIOS PÚBLICOS';
                             break;
                         case 'Sueldos':
                             codigoGasto = '510506';
-                            nombreGasto = 'SUELDOS';
                             break;
                         case 'Marketing':
                             codigoGasto = '513505';
-                            nombreGasto = 'PUBLICIDAD';
                             break;
                     }
                     
                     movimientos.push({
                         clase: 5, nro: contador, fecha: gasto.fecha,
-                        codigo: codigoGasto, nombre: nombreGasto,
+                        codigo: codigoGasto, nombre: getNombreCuenta(codigoGasto),
                         detalle: gasto.concepto,
                         debito: monto, credito: 0
                     });
                     
                     movimientos.push({
                         clase: 1, nro: contador, fecha: gasto.fecha,
-                        codigo: '110505', nombre: 'CAJA GENERAL',
+                        codigo: '110505', nombre: getNombreCuenta('110505'),
                         detalle: `Pago: ${gasto.concepto}`,
                         debito: 0, credito: monto
                     });
@@ -763,7 +1077,6 @@
                 mostrarLibroDiario();
                 calcularResumen();
                 
-                // Cargar datos para otras pestañas
                 cargarEstadoResultados();
                 cargarBalanceGeneral();
                 cargarListaCuentasMayor();
@@ -846,7 +1159,7 @@
             document.getElementById('saldo-inventario').textContent = `$${saldoInventario.toLocaleString()}`;
         }
 
-        function cambiarPeriodo(periodo) {
+        function cambiarPeriodo(periodo, event) {
             const hoy = new Date();
             
             switch(periodo) {
@@ -865,7 +1178,7 @@
             }
             
             document.querySelectorAll('.periodo-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+            if (event && event.target) event.target.classList.add('active');
             
             cargarFechas();
             cargarMovimientos();
@@ -892,37 +1205,15 @@
             const url = URL.createObjectURL(blob);
             link.setAttribute('href', url);
             link.setAttribute('download', `libro_diario_${fechaInicio.toISOString().split('T')[0]}_a_${fechaFin.toISOString().split('T')[0]}.csv`);
-            link.style.visibility = 'hidden';
-            document.body.appendChild(link);
             link.click();
-            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
         }
 
         // ============================================
         // ESTADOS FINANCIEROS
         // ============================================
-        let cuentasActivos = [
-            { codigo: '110505', nombre: 'CAJA GENERAL', saldo: 0 },
-            { codigo: '111005', nombre: 'BANCOS', saldo: 0 },
-                        { codigo: '143505', nombre: 'MERCANCIAS NO FABRICADAS', saldo: 0 },
-            { codigo: '152005', nombre: 'MAQUINARIA Y EQUIPO', saldo: 0 }
-        ];
         
-        let cuentasPasivos = [
-            { codigo: '220505', nombre: 'PROVEEDORES NACIONALES', saldo: 0 },
-            { codigo: '250810', nombre: 'IVA GENERADO', saldo: 0 },
-            { codigo: '236705', nombre: 'RETEICA', saldo: 0 }
-        ];
-        
-        let cuentasPatrimonio = [
-            { codigo: '310505', nombre: 'CAPITAL SOCIAL', saldo: 0 },
-            { codigo: '320505', nombre: 'UTILIDADES ACUMULADAS', saldo: 0 }
-        ];
-        
-        // ============================================
-        // FUNCIONES PARA PESTAÑAS
-        // ============================================
-        function mostrarTab(tabId) {
+        function mostrarTab(tabId, event) {
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.classList.remove('active');
             });
@@ -932,7 +1223,7 @@
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
-            event.target.classList.add('active');
+            if (event && event.target) event.target.classList.add('active');
             
             if (tabId === 'resultados') {
                 cargarEstadoResultados();
@@ -943,9 +1234,6 @@
             }
         }
         
-        // ============================================
-        // ESTADO DE RESULTADOS (PyG)
-        // ============================================
         function cargarEstadoResultados() {
             const ingresos = movimientos
                 .filter(m => m.codigo === '413505')
@@ -967,15 +1255,19 @@
             const utilidadNeta = utilidadOperacional;
             
             document.getElementById('row-ingresos').innerHTML = `
-                <tr><td>Ventas totales</td>
-                <td class="valor">$${ingresos.toLocaleString()}</td>
-                <td></td>
+                <tr>
+                    <td>Ventas totales</td>
+                    <td class="valor">$${ingresos.toLocaleString()}</td>
+                    <td></td>
+                </tr>
             `;
             
             document.getElementById('row-costo').innerHTML = `
-                <tr><td>Costo de ventas</td>
-                <td class="valor">$${costoVentas.toLocaleString()}</td>
-                <td></td>
+                <tr>
+                    <td>Costo de ventas</td>
+                    <td class="valor">$${costoVentas.toLocaleString()}</td>
+                    <td></td>
+                </tr>
             `;
             
             document.getElementById('utilidad-bruta').innerHTML = `$${utilidadBruta.toLocaleString()}`;
@@ -997,10 +1289,11 @@
             document.getElementById('utilidad-neta').className = `valor ${utilidadNeta >= 0 ? 'valor-positivo' : 'valor-negativo'}`;
         }
         
-        // ============================================
-        // BALANCE GENERAL
-        // ============================================
         function cargarBalanceGeneral() {
+            const cuentasActivos = planCuentas.filter(c => c.tipo === 'ACTIVO');
+            const cuentasPasivos = planCuentas.filter(c => c.tipo === 'PASIVO');
+            const cuentasPatrimonio = planCuentas.filter(c => c.tipo === 'PATRIMONIO');
+            
             let activosHTML = '';
             let totalActivos = 0;
             
@@ -1008,7 +1301,6 @@
                 const debito = movimientos.filter(m => m.codigo === cuenta.codigo).reduce((sum, m) => sum + m.debito, 0);
                 const credito = movimientos.filter(m => m.codigo === cuenta.codigo).reduce((sum, m) => sum + m.credito, 0);
                 const saldo = debito - credito;
-                cuenta.saldo = saldo;
                 totalActivos += saldo;
                 activosHTML += `<tr><td>${cuenta.nombre}</td><td class="valor">$${saldo.toLocaleString()}</td></tr>`;
             }
@@ -1023,7 +1315,6 @@
                 const debito = movimientos.filter(m => m.codigo === cuenta.codigo).reduce((sum, m) => sum + m.debito, 0);
                 const credito = movimientos.filter(m => m.codigo === cuenta.codigo).reduce((sum, m) => sum + m.credito, 0);
                 const saldo = credito - debito;
-                cuenta.saldo = saldo;
                 totalPasivos += saldo;
                 pasivosHTML += `<tr><td>${cuenta.nombre}</td><td class="valor">$${saldo.toLocaleString()}</td></tr>`;
             }
@@ -1032,7 +1323,10 @@
             document.getElementById('total-pasivos').innerHTML = `$${totalPasivos.toLocaleString()}`;
             
             const ingresos = movimientos.filter(m => m.codigo === '413505').reduce((sum, m) => sum + m.credito, 0);
-            const gastos = movimientos.filter(m => m.codigo >= '510000' && m.codigo <= '599999').reduce((sum, m) => sum + m.debito, 0);
+            const gastos = movimientos.filter(m => {
+                const cuenta = planCuentas.find(c => c.codigo === m.codigo);
+                return cuenta && (cuenta.tipo === 'GASTO' || cuenta.tipo === 'COSTO');
+            }).reduce((sum, m) => sum + m.debito, 0);
             const utilidad = ingresos - gastos;
             
             let patrimonioTotal = 0;
@@ -1042,7 +1336,6 @@
                 const debito = movimientos.filter(m => m.codigo === cuenta.codigo).reduce((sum, m) => sum + m.debito, 0);
                 const credito = movimientos.filter(m => m.codigo === cuenta.codigo).reduce((sum, m) => sum + m.credito, 0);
                 const saldo = credito - debito;
-                cuenta.saldo = saldo;
                 patrimonioTotal += saldo;
                 patrimonioHTML += `<tr><td>${cuenta.nombre}</td><td class="valor">$${saldo.toLocaleString()}</td></tr>`;
             }
@@ -1062,16 +1355,11 @@
         function cargarListaCuentasMayor() {
             const select = document.getElementById('select-cuenta-mayor');
             
-            const cuentasUnicas = {};
-            for (const m of movimientos) {
-                if (!cuentasUnicas[m.codigo]) {
-                    cuentasUnicas[m.codigo] = { codigo: m.codigo, nombre: m.nombre };
-                }
-            }
-            
             select.innerHTML = '<option value="">Seleccionar cuenta...</option>';
-            for (const key in cuentasUnicas) {
-                select.innerHTML += `<option value="${cuentasUnicas[key].codigo}">${cuentasUnicas[key].codigo} - ${cuentasUnicas[key].nombre}</option>`;
+            for (const cuenta of planCuentas) {
+                if (cuenta.permite_movimiento) {
+                    select.innerHTML += `<option value="${cuenta.codigo}">${cuenta.codigo} - ${cuenta.nombre}</option>`;
+                }
             }
         }
         
@@ -1085,7 +1373,7 @@
             }
             
             const movimientosCuenta = movimientos.filter(m => m.codigo === codigo);
-            const nombreCuenta = movimientosCuenta[0]?.nombre || 'Cuenta';
+            const nombreCuenta = getNombreCuenta(codigo);
             
             let saldo = 0;
             let totalDebitos = 0;
@@ -1123,6 +1411,9 @@
                 `;
             }
             
+            const naturaleza = planCuentas.find(c => c.codigo === codigo)?.naturaleza || 'DEUDORA';
+            const saldoEsDebito = (naturaleza === 'DEUDORA' && saldo >= 0) || (naturaleza === 'ACREEDORA' && saldo <= 0);
+            
             movimientosHTML += `
                     </tbody>
                     <tfoot>
@@ -1133,7 +1424,7 @@
                         </tr>
                         <tr class="saldo-final">
                             <td colspan="2"><strong>SALDO FINAL</strong></td>
-                            <td colspan="2" class="${saldo >= 0 ? 'debito' : 'credito'}"><strong>$${Math.abs(saldo).toLocaleString()} ${saldo >= 0 ? 'Débito' : 'Crédito'}</strong></td>
+                            <td colspan="2" class="${saldoEsDebito ? 'debito' : 'credito'}"><strong>$${Math.abs(saldo).toLocaleString()} ${saldoEsDebito ? 'Débito' : 'Crédito'}</strong></td>
                         </tr>
                     </tfoot>
                 </table>
@@ -1153,7 +1444,7 @@
                                 <div class="t-valor">Total: $${totalCreditos.toLocaleString()}</div>
                             </div>
                         </div>
-                        <div class="t-card-header">Saldo: $${Math.abs(saldo).toLocaleString()} ${saldo >= 0 ? 'Débito' : 'Crédito'}</div>
+                        <div class="t-card-header">Saldo: $${Math.abs(saldo).toLocaleString()} ${saldoEsDebito ? 'Débito' : 'Crédito'}</div>
                     </div>
                 </div>
             `;
@@ -1161,7 +1452,6 @@
             contenido.innerHTML = movimientosHTML;
         }
         
-        // Funciones de exportación adicionales
         function exportarResultados() {
             let csvContent = "Concepto,Valor\n";
             const ingresos = movimientos.filter(m => m.codigo === '413505').reduce((sum, m) => sum + m.credito, 0);
@@ -1184,18 +1474,27 @@
         function exportarBalance() {
             let csvContent = "Cuenta,Saldo\n";
             
+            const cuentasActivos = planCuentas.filter(c => c.tipo === 'ACTIVO');
             for (const cuenta of cuentasActivos) {
-                const saldo = cuenta.saldo;
+                const debito = movimientos.filter(m => m.codigo === cuenta.codigo).reduce((sum, m) => sum + m.debito, 0);
+                const credito = movimientos.filter(m => m.codigo === cuenta.codigo).reduce((sum, m) => sum + m.credito, 0);
+                const saldo = debito - credito;
                 csvContent += `"${cuenta.nombre}",${saldo}\n`;
             }
             
+            const cuentasPasivos = planCuentas.filter(c => c.tipo === 'PASIVO');
             for (const cuenta of cuentasPasivos) {
-                const saldo = cuenta.saldo;
+                const debito = movimientos.filter(m => m.codigo === cuenta.codigo).reduce((sum, m) => sum + m.debito, 0);
+                const credito = movimientos.filter(m => m.codigo === cuenta.codigo).reduce((sum, m) => sum + m.credito, 0);
+                const saldo = credito - debito;
                 csvContent += `"${cuenta.nombre}",${saldo}\n`;
             }
             
             const ingresos = movimientos.filter(m => m.codigo === '413505').reduce((sum, m) => sum + m.credito, 0);
-            const gastos = movimientos.filter(m => m.codigo >= '510000' && m.codigo <= '599999').reduce((sum, m) => sum + m.debito, 0);
+            const gastos = movimientos.filter(m => {
+                const cuenta = planCuentas.find(c => c.codigo === m.codigo);
+                return cuenta && (cuenta.tipo === 'GASTO' || cuenta.tipo === 'COSTO');
+            }).reduce((sum, m) => sum + m.debito, 0);
             const utilidad = ingresos - gastos;
             csvContent += `"Utilidad del período",${utilidad}\n`;
             
@@ -1211,12 +1510,12 @@
         function exportarMayor() {
             const codigo = document.getElementById('select-cuenta-mayor').value;
             if (!codigo) {
-                alert('Selecciona una cuenta primero');
+                mostrarAlerta('Selecciona una cuenta primero', 'error');
                 return;
             }
             
             const movimientosCuenta = movimientos.filter(m => m.codigo === codigo);
-            const nombreCuenta = movimientosCuenta[0]?.nombre || 'Cuenta';
+            const nombreCuenta = getNombreCuenta(codigo);
             
             let csvContent = "Fecha,Detalle,Débito,Crédito\n";
             
@@ -1234,6 +1533,245 @@
             link.click();
             URL.revokeObjectURL(url);
         }
+        
+        // ============================================
+        // PLAN DE CUENTAS - CRUD COMPLETO
+        // ============================================
+        
+        async function abrirPlanCuentas() {
+            document.getElementById('modal-plan-cuentas').style.display = 'flex';
+            await cargarPlanCuentas();
+        }
+        
+        function cerrarPlanCuentas() {
+            document.getElementById('modal-plan-cuentas').style.display = 'none';
+        }
+        
+        function cerrarEditarCuenta() {
+            document.getElementById('modal-editar-cuenta').style.display = 'none';
+            document.getElementById('form-cuenta').reset();
+            document.getElementById('cuenta-id').value = '';
+        }
+        
+        async function cargarPlanCuentas() {
+            try {
+                const token = JSON.parse(localStorage.getItem('admin_token'));
+                
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/plan_cuentas?order=codigo.asc`, {
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${token.access_token}`
+                    }
+                });
+                
+                const cuentas = await response.json();
+                const tbody = document.getElementById('plan-cuentas-body');
+                
+                if (cuentas.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No hay cuentas registradas</td></tr>';
+                    return;
+                }
+                
+                function getTipoColor(tipo) {
+                    const colores = {
+                        'ACTIVO': '#27ae60',
+                        'PASIVO': '#e74c3c',
+                        'PATRIMONIO': '#3498db',
+                        'INGRESO': '#2ecc71',
+                        'GASTO': '#e67e22',
+                        'COSTO': '#9b59b6'
+                    };
+                    return colores[tipo] || '#95a5a6';
+                }
+                
+                tbody.innerHTML = cuentas.map(cuenta => `
+                    <tr>
+                        <td><strong>${cuenta.codigo}</strong></td>
+                        <td>${cuenta.nombre}</td>
+                        <td><span style="background: ${getTipoColor(cuenta.tipo)}; color: white; padding: 0.2rem 0.5rem; border-radius: 20px;">${cuenta.tipo}</span></td>
+                        <td>${cuenta.naturaleza}</td>
+                        <td>${cuenta.permite_movimiento ? '✅ Sí' : '❌ No'}</td>
+                        <td>
+                            <button class="edit-btn" onclick="editarCuenta(${cuenta.id})">✏️ Editar</button>
+                            <button class="delete-btn" onclick="eliminarCuenta(${cuenta.id}, '${cuenta.codigo}')">🗑️ Eliminar</button>
+                        </td>
+                    </tr>
+                `).join('');
+                
+            } catch (error) {
+                console.error('Error cargando plan de cuentas:', error);
+            }
+        }
+        
+        function agregarCuenta() {
+            document.getElementById('modal-cuenta-title').textContent = '➕ Nueva Cuenta';
+            document.getElementById('form-cuenta').reset();
+            document.getElementById('cuenta-id').value = '';
+            document.getElementById('cuenta-permite-movimiento').checked = true;
+            document.getElementById('modal-editar-cuenta').style.display = 'flex';
+        }
+        
+        async function editarCuenta(id) {
+            try {
+                const token = JSON.parse(localStorage.getItem('admin_token'));
+                
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/plan_cuentas?id=eq.${id}`, {
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${token.access_token}`
+                    }
+                });
+                
+                const cuentas = await response.json();
+                const cuenta = cuentas[0];
+                
+                document.getElementById('modal-cuenta-title').textContent = `✏️ Editar: ${cuenta.codigo} - ${cuenta.nombre}`;
+                document.getElementById('cuenta-id').value = cuenta.id;
+                document.getElementById('cuenta-codigo').value = cuenta.codigo;
+                document.getElementById('cuenta-nombre').value = cuenta.nombre;
+                document.getElementById('cuenta-tipo').value = cuenta.tipo;
+                document.getElementById('cuenta-naturaleza').value = cuenta.naturaleza;
+                document.getElementById('cuenta-permite-movimiento').checked = cuenta.permite_movimiento;
+                
+                document.getElementById('modal-editar-cuenta').style.display = 'flex';
+                
+            } catch (error) {
+                console.error('Error:', error);
+                mostrarAlerta('Error al cargar la cuenta', 'error');
+            }
+        }
+        
+        // Guardar cuenta (crear o actualizar)
+        document.getElementById('form-cuenta')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            try {
+                const token = JSON.parse(localStorage.getItem('admin_token'));
+                const id = document.getElementById('cuenta-id').value;
+                
+                const cuentaData = {
+                    codigo: document.getElementById('cuenta-codigo').value,
+                    nombre: document.getElementById('cuenta-nombre').value.toUpperCase(),
+                    tipo: document.getElementById('cuenta-tipo').value,
+                    naturaleza: document.getElementById('cuenta-naturaleza').value,
+                    permite_movimiento: document.getElementById('cuenta-permite-movimiento').checked
+                };
+                
+                let url = `${SUPABASE_URL}/rest/v1/plan_cuentas`;
+                let method = 'POST';
+                
+                if (id) {
+                    url += `?id=eq.${id}`;
+                    method = 'PATCH';
+                }
+                
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${token.access_token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(cuentaData)
+                });
+                
+                if (response.ok) {
+                    mostrarAlerta(id ? '✅ Cuenta actualizada' : '✅ Cuenta creada', 'success');
+                    cerrarEditarCuenta();
+                    await cargarPlanCuentas();
+                    await cargarPlanCuentasGlobal();
+                    await cargarMovimientos();
+                } else {
+                    const error = await response.json();
+                    mostrarAlerta('Error: ' + (error.message || 'No se pudo guardar'), 'error');
+                }
+                
+            } catch (error) {
+                console.error('Error:', error);
+                mostrarAlerta('Error de conexión', 'error');
+            }
+        });
+        
+        async function eliminarCuenta(id, codigo) {
+            // Verificar si la cuenta tiene movimientos
+            const tieneMovimientos = movimientos.some(m => m.codigo === codigo);
+            
+            if (tieneMovimientos) {
+                mostrarAlerta(`No se puede eliminar la cuenta ${codigo} porque tiene movimientos asociados`, 'error');
+                return;
+            }
+            
+            if (!confirm(`¿Eliminar la cuenta ${codigo}?`)) return;
+            
+            try {
+                const token = JSON.parse(localStorage.getItem('admin_token'));
+                
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/plan_cuentas?id=eq.${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${token.access_token}`
+                    }
+                });
+                
+                if (response.ok) {
+                    mostrarAlerta('✅ Cuenta eliminada', 'success');
+                    await cargarPlanCuentas();
+                    await cargarPlanCuentasGlobal();
+                } else {
+                    const error = await response.json();
+                    mostrarAlerta('Error: ' + (error.message || 'No se puede eliminar'), 'error');
+                }
+                
+            } catch (error) {
+                console.error('Error:', error);
+                mostrarAlerta('Error de conexión', 'error');
+            }
+        }
+        
+        function exportarPlanCuentas() {
+            let csvContent = "Código,Nombre,Tipo,Naturaleza,Permite movimiento\n";
+            
+            const rows = document.querySelectorAll('#plan-cuentas-body tr');
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                if (cells.length >= 5) {
+                    csvContent += `"${cells[0].innerText}","${cells[1].innerText}","${cells[2].innerText}","${cells[3].innerText}","${cells[4].innerText}"\n`;
+                }
+            });
+            
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', `plan_cuentas_${new Date().toISOString().split('T')[0]}.csv`);
+            link.click();
+            URL.revokeObjectURL(url);
+        }
+        
+        // ============================================
+        // FUNCIONES UTILITARIAS
+        // ============================================
+        
+        function mostrarAlerta(mensaje, tipo) {
+            const alerta = document.createElement('div');
+            alerta.textContent = mensaje;
+            alerta.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                padding: 1rem 2rem;
+                background: ${tipo === 'success' ? '#27ae60' : '#ff4757'};
+                color: white;
+                border-radius: 10px;
+                z-index: 10000;
+                animation: slideIn 0.3s ease;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            `;
+            document.body.appendChild(alerta);
+            setTimeout(() => alerta.remove(), 3000);
+        }
     </script>
 </body>
-</html>
+</html>        function getNombreCuenta(codigo) {
+            const
