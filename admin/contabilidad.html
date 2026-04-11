@@ -1105,17 +1105,20 @@
                 const fecha = new Date(m.fecha);
                 const fechaStr = `${fecha.getDate()}/${fecha.getMonth() + 1}/${fecha.getFullYear()}`;
                 
+                // Determinar el ID de la transacción original según la clase
+                let transaccionId = m.nro; // Esto es aproximado, idealmente guardar el ID real
+                
                 return `
                     <tr>
                         <td>${m.clase}</td>
-                        <td>${m.nro}</td>
+                        <td>${m.nro}</td
                         <td>${fechaStr}</td>
-                        <td>${m.codigo}</td>
-                        <td>${m.nombre}</td>
-                        <td>${m.detalle}</td>
-                        <td class="debito">${m.debito > 0 ? `$${m.debito.toLocaleString()}` : '-'}</td>
-                        <td class="credito">${m.credito > 0 ? `$${m.credito.toLocaleString()}` : '-'}</td>
-                    </tr>
+                        <td>${m.codigo}</td
+                        <td>${m.nombre}</td
+                        <td>${m.detalle}</td
+                        <td class="debito">${m.debito > 0 ? `$${m.debito.toLocaleString()}` : '-'}</td
+                        <td class="credito">${m.credito > 0 ? `$${m.credito.toLocaleString()}` : '-'}</td
+                    </tr
                 `;
             }).join('');
             
@@ -1771,7 +1774,341 @@
             document.body.appendChild(alerta);
             setTimeout(() => alerta.remove(), 3000);
         }
+        <!-- MODAL: Editar Transacción -->
+<div id="modal-editar-transaccion" class="modal" style="display: none;">
+    <div class="modal-content" style="max-width: 600px;">
+        <div class="modal-header">
+            <h2 id="modal-transaccion-title">✏️ Editar Transacción</h2>
+            <button class="close-btn" onclick="cerrarEditarTransaccion()">&times;</button>
+        </div>
+        
+        <form id="form-editar-transaccion">
+            <input type="hidden" id="transaccion-id">
+            <input type="hidden" id="transaccion-tipo">
+            
+            <div class="form-group">
+                <label>📅 Fecha</label>
+                <input type="date" id="transaccion-fecha" required>
+            </div>
+            
+            <div class="form-group" id="grupo-proveedor" style="display: none;">
+                <label>🏢 Proveedor</label>
+                <select id="transaccion-proveedor" required>
+                    <option value="">Seleccionar proveedor...</option>
+                </select>
+            </div>
+            
+            <div class="form-group" id="grupo-producto" style="display: none;">
+                <label>📦 Producto/Servicio</label>
+                <input type="text" id="transaccion-producto" required>
+            </div>
+            
+            <div class="form-group" id="grupo-cantidad" style="display: none;">
+                <label>🔢 Cantidad</label>
+                <input type="number" id="transaccion-cantidad" step="1" min="1" required>
+            </div>
+            
+            <div class="form-group" id="grupo-precio" style="display: none;">
+                <label>💰 Precio unitario</label>
+                <input type="number" id="transaccion-precio" step="1000" min="0" required>
+            </div>
+            
+            <div class="form-group" id="grupo-monto" style="display: none;">
+                <label>💵 Monto total</label>
+                <input type="number" id="transaccion-monto" step="1000" min="0" required>
+            </div>
+            
+            <div class="form-group" id="grupo-concepto" style="display: none;">
+                <label>📝 Concepto</label>
+                <input type="text" id="transaccion-concepto" required>
+            </div>
+            
+            <div class="form-group" id="grupo-categoria" style="display: none;">
+                <label>🏷️ Categoría</label>
+                <select id="transaccion-categoria">
+                    <option value="Alquiler">Alquiler</option>
+                    <option value="Servicios">Servicios</option>
+                    <option value="Sueldos">Sueldos</option>
+                    <option value="Marketing">Marketing</option>
+                    <option value="Otros">Otros</option>
+                </select>
+            </div>
+            
+            <div class="form-group" id="grupo-estado" style="display: none;">
+                <label>📊 Estado</label>
+                <select id="transaccion-estado">
+                    <option value="Pendiente">Pendiente</option>
+                    <option value="Pagada">Pagada</option>
+                    <option value="Recibida">Recibida</option>
+                </select>
+            </div>
+            
+            <div class="form-buttons">
+                <button type="submit" class="submit-btn">💾 Guardar Cambios</button>
+                <button type="button" onclick="cerrarEditarTransaccion()" class="cancel-btn">Cancelar</button>
+            </div>
+        </form>
+        
+        <div id="transaccion-eliminar" style="margin-top: 1rem; text-align: center; border-top: 1px solid #ffe4e9; padding-top: 1rem;">
+            <button type="button" class="delete-btn" onclick="eliminarTransaccion()" style="background: #ff4757; padding: 0.5rem 1rem;">
+                🗑️ Eliminar esta transacción
+            </button>
+        </div>
+    </div>
+</div>
+        /* Botones de acción en el libro diario */
+.action-buttons {
+    display: flex;
+    gap: 0.3rem;
+    justify-content: center;
+}
+
+.edit-transaccion-btn {
+    background: #ffb6c1;
+    color: white;
+    border: none;
+    padding: 0.2rem 0.5rem;
+    border-radius: 15px;
+    cursor: pointer;
+    font-size: 0.7rem;
+}
+
+.edit-transaccion-btn:hover {
+    background: #ff9a9e;
+}
+        // ============================================
+// EDITAR TRANSACCIONES (VENTAS, COMPRAS, GASTOS)
+// ============================================
+
+let transaccionActual = null;
+
+async function editarTransaccion(clase, id, fecha) {
+    try {
+        const token = JSON.parse(localStorage.getItem('admin_token'));
+        transaccionActual = { clase, id, fecha };
+        
+        // Determinar qué tipo de transacción es según la clase
+        let tipo = '';
+        if (clase === 1 || clase === 4) {
+            tipo = 'venta';
+        } else if (clase === 2 || clase === 6) {
+            tipo = 'compra';
+        } else if (clase === 5) {
+            tipo = 'gasto';
+        }
+        
+        document.getElementById('modal-transaccion-title').textContent = `✏️ Editar ${tipo.toUpperCase()}`;
+        document.getElementById('transaccion-tipo').value = tipo;
+        document.getElementById('transaccion-id').value = id;
+        document.getElementById('transaccion-fecha').value = fecha.split('T')[0];
+        
+        // Ocultar todos los grupos primero
+        document.getElementById('grupo-proveedor').style.display = 'none';
+        document.getElementById('grupo-producto').style.display = 'none';
+        document.getElementById('grupo-cantidad').style.display = 'none';
+        document.getElementById('grupo-precio').style.display = 'none';
+        document.getElementById('grupo-monto').style.display = 'none';
+        document.getElementById('grupo-concepto').style.display = 'none';
+        document.getElementById('grupo-categoria').style.display = 'none';
+        document.getElementById('grupo-estado').style.display = 'none';
+        
+        // Cargar datos según el tipo
+        if (tipo === 'venta') {
+            const response = await fetch(`${SUPABASE_URL}/rest/v1/ventas?id=eq.${id}`, {
+                headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}` }
+            });
+            const data = await response.json();
+            const venta = data[0];
+            
+            document.getElementById('grupo-producto').style.display = 'block';
+            document.getElementById('grupo-cantidad').style.display = 'block';
+            document.getElementById('grupo-precio').style.display = 'block';
+            document.getElementById('grupo-estado').style.display = 'block';
+            
+            document.getElementById('transaccion-producto').value = venta.productos || '';
+            document.getElementById('transaccion-cantidad').value = venta.cantidad || 1;
+            document.getElementById('transaccion-precio').value = (venta.total / (venta.cantidad || 1)) || 0;
+            document.getElementById('transaccion-estado').value = venta.estado || 'Pagada';
+            
+        } else if (tipo === 'compra') {
+            // Cargar proveedores para el select
+            const proveedoresRes = await fetch(`${SUPABASE_URL}/rest/v1/proveedores`, {
+                headers: { 'apikey': SUPABASE_KEY }
+            });
+            const proveedores = await proveedoresRes.json();
+            
+            const proveedorSelect = document.getElementById('transaccion-proveedor');
+            proveedorSelect.innerHTML = '<option value="">Seleccionar proveedor</option>';
+            proveedores.forEach(p => {
+                proveedorSelect.innerHTML += `<option value="${p.id}">${p.nombre}</option>`;
+            });
+            
+            const response = await fetch(`${SUPABASE_URL}/rest/v1/compras?id=eq.${id}`, {
+                headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}` }
+            });
+            const data = await response.json();
+            const compra = data[0];
+            
+            document.getElementById('grupo-proveedor').style.display = 'block';
+            document.getElementById('grupo-producto').style.display = 'block';
+            document.getElementById('grupo-cantidad').style.display = 'block';
+            document.getElementById('grupo-precio').style.display = 'block';
+            document.getElementById('grupo-estado').style.display = 'block';
+            
+            document.getElementById('transaccion-proveedor').value = compra.proveedor_id || '';
+            document.getElementById('transaccion-producto').value = compra.producto || '';
+            document.getElementById('transaccion-cantidad').value = compra.cantidad || 1;
+            document.getElementById('transaccion-precio').value = compra.precio_unitario || 0;
+            document.getElementById('transaccion-estado').value = compra.estado || 'Pendiente';
+            
+        } else if (tipo === 'gasto') {
+            const response = await fetch(`${SUPABASE_URL}/rest/v1/gastos?id=eq.${id}`, {
+                headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}` }
+            });
+            const data = await response.json();
+            const gasto = data[0];
+            
+            document.getElementById('grupo-concepto').style.display = 'block';
+            document.getElementById('grupo-monto').style.display = 'block';
+            document.getElementById('grupo-categoria').style.display = 'block';
+            
+            document.getElementById('transaccion-concepto').value = gasto.concepto || '';
+            document.getElementById('transaccion-monto').value = gasto.monto || 0;
+            document.getElementById('transaccion-categoria').value = gasto.categoria || 'Otros';
+        }
+        
+        document.getElementById('modal-editar-transaccion').style.display = 'flex';
+        
+    } catch (error) {
+        console.error('Error al cargar transacción:', error);
+        mostrarAlerta('Error al cargar los datos', 'error');
+    }
+}
+
+function cerrarEditarTransaccion() {
+    document.getElementById('modal-editar-transaccion').style.display = 'none';
+    document.getElementById('form-editar-transaccion').reset();
+    transaccionActual = null;
+}
+
+// Guardar cambios de la transacción
+document.getElementById('form-editar-transaccion')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    try {
+        const token = JSON.parse(localStorage.getItem('admin_token'));
+        const tipo = document.getElementById('transaccion-tipo').value;
+        const id = document.getElementById('transaccion-id').value;
+        const fecha = document.getElementById('transaccion-fecha').value;
+        
+        let url = '';
+        let data = {};
+        
+        if (tipo === 'venta') {
+            const cantidad = parseInt(document.getElementById('transaccion-cantidad').value);
+            const precio = parseFloat(document.getElementById('transaccion-precio').value);
+            const total = cantidad * precio;
+            
+            data = {
+                fecha: fecha,
+                productos: document.getElementById('transaccion-producto').value,
+                cantidad: cantidad,
+                total: total,
+                estado: document.getElementById('transaccion-estado').value
+            };
+            url = `${SUPABASE_URL}/rest/v1/ventas?id=eq.${id}`;
+            
+        } else if (tipo === 'compra') {
+            const cantidad = parseInt(document.getElementById('transaccion-cantidad').value);
+            const precio = parseFloat(document.getElementById('transaccion-precio').value);
+            const total = cantidad * precio;
+            
+            data = {
+                fecha: fecha,
+                proveedor_id: parseInt(document.getElementById('transaccion-proveedor').value),
+                producto: document.getElementById('transaccion-producto').value,
+                cantidad: cantidad,
+                precio_unitario: precio,
+                total: total,
+                estado: document.getElementById('transaccion-estado').value
+            };
+            url = `${SUPABASE_URL}/rest/v1/compras?id=eq.${id}`;
+            
+        } else if (tipo === 'gasto') {
+            data = {
+                fecha: fecha,
+                concepto: document.getElementById('transaccion-concepto').value,
+                monto: parseFloat(document.getElementById('transaccion-monto').value),
+                categoria: document.getElementById('transaccion-categoria').value,
+                metodo_pago: 'Efectivo'
+            };
+            url = `${SUPABASE_URL}/rest/v1/gastos?id=eq.${id}`;
+        }
+        
+        const response = await fetch(url, {
+            method: 'PATCH',
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${token.access_token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+        
+        if (response.ok) {
+            mostrarAlerta('✅ Transacción actualizada correctamente', 'success');
+            cerrarEditarTransaccion();
+            await cargarMovimientos(); // Recargar todo
+        } else {
+            const error = await response.json();
+            mostrarAlerta('Error: ' + (error.message || 'No se pudo actualizar'), 'error');
+        }
+        
+    } catch (error) {
+        console.error('Error:', error);
+        mostrarAlerta('Error de conexión', 'error');
+    }
+});
+
+async function eliminarTransaccion() {
+    if (!confirm('⚠️ ¿Estás SEGURA de eliminar esta transacción? Esta acción NO se puede deshacer.')) return;
+    
+    try {
+        const token = JSON.parse(localStorage.getItem('admin_token'));
+        const tipo = document.getElementById('transaccion-tipo').value;
+        const id = document.getElementById('transaccion-id').value;
+        
+        let url = '';
+        if (tipo === 'venta') {
+            url = `${SUPABASE_URL}/rest/v1/ventas?id=eq.${id}`;
+        } else if (tipo === 'compra') {
+            url = `${SUPABASE_URL}/rest/v1/compras?id=eq.${id}`;
+        } else if (tipo === 'gasto') {
+            url = `${SUPABASE_URL}/rest/v1/gastos?id=eq.${id}`;
+        }
+        
+        const response = await fetch(url, {
+            method: 'DELETE',
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${token.access_token}`
+            }
+        });
+        
+        if (response.ok) {
+            mostrarAlerta('✅ Transacción eliminada', 'success');
+            cerrarEditarTransaccion();
+            await cargarMovimientos();
+        } else {
+            mostrarAlerta('Error al eliminar', 'error');
+        }
+        
+    } catch (error) {
+        console.error('Error:', error);
+        mostrarAlerta('Error de conexión', 'error');
+    }
+}
     </script>
+    
 </body>
-</html>        function getNombreCuenta(codigo) {
-            const
+</html>
