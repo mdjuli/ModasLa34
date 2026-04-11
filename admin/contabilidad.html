@@ -19,7 +19,6 @@
             min-height: 100vh;
         }
 
-        /* Header */
         .contabilidad-header {
             background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
             color: white;
@@ -28,6 +27,8 @@
             justify-content: space-between;
             align-items: center;
             box-shadow: 0 4px 15px rgba(255, 154, 158, 0.3);
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
         .contabilidad-header h1 {
@@ -37,7 +38,12 @@
             gap: 10px;
         }
 
-        .volver-btn {
+        .header-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .volver-btn, .plan-cuentas-btn {
             background: rgba(255,255,255,0.2);
             color: white;
             text-decoration: none;
@@ -45,20 +51,20 @@
             border-radius: 50px;
             font-weight: 600;
             transition: all 0.3s;
+            border: none;
+            cursor: pointer;
         }
 
-        .volver-btn:hover {
+        .volver-btn:hover, .plan-cuentas-btn:hover {
             background: rgba(255,255,255,0.3);
         }
 
-        /* Contenedor principal */
         .contabilidad-container {
             padding: 2rem;
             max-width: 1400px;
             margin: 0 auto;
         }
 
-        /* Selector de período */
         .periodo-selector {
             background: white;
             border-radius: 20px;
@@ -108,7 +114,6 @@
             cursor: pointer;
         }
 
-        /* Tarjetas de resumen */
         .resumen-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -138,7 +143,6 @@
         .resumen-card .positivo { color: #27ae60; }
         .resumen-card .negativo { color: #ff4757; }
 
-        /* Tabla de libro diario */
         .libro-diario {
             background: white;
             border-radius: 20px;
@@ -213,7 +217,22 @@
             background: #ff9a9e;
         }
 
-        /* Pestañas */
+        .edit-movimiento-btn {
+            background: #ffb6c1;
+            color: white;
+            border: none;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: all 0.3s;
+        }
+
+        .edit-movimiento-btn:hover {
+            background: #ff9a9e;
+            transform: scale(1.05);
+        }
+
         .tabs-container {
             display: flex;
             gap: 0.5rem;
@@ -235,11 +254,7 @@
             transition: all 0.3s;
         }
 
-        .tab-btn:hover {
-            background: #fff0f3;
-        }
-
-        .tab-btn.active {
+        .tab-btn:hover, .tab-btn.active {
             background: #ffb6c1;
             color: white;
         }
@@ -252,7 +267,6 @@
             display: block;
         }
 
-        /* Estado de Resultados */
         .estado-resultados, .balance-general, .mayor-cuentas {
             background: white;
             border-radius: 20px;
@@ -278,23 +292,10 @@
             font-size: 0.9rem;
         }
 
-        .estado-table th {
-            background: #fff0f3;
-            color: #ff6b6b;
-            padding: 0.8rem;
-            text-align: left;
-            border-bottom: 2px solid #ffb6c1;
-        }
-
-        .estado-table td {
+        .estado-table th, .estado-table td {
             padding: 0.8rem;
             border-bottom: 1px solid #ffe4e9;
-        }
-
-        .estado-table tr.total-row {
-            background: #fff0f3;
-            font-weight: bold;
-            border-top: 2px solid #ffb6c1;
+            text-align: left;
         }
 
         .estado-table .valor {
@@ -302,15 +303,10 @@
             font-weight: bold;
         }
 
-        .valor-positivo {
-            color: #27ae60;
-        }
+        .valor-positivo { color: #27ae60; }
+        .valor-negativo { color: #ff4757; }
+        .total-row { background: #fff0f3; font-weight: bold; }
 
-        .valor-negativo {
-            color: #ff4757;
-        }
-
-        /* Mayor de cuentas */
         .cuenta-selector {
             margin-bottom: 1.5rem;
             display: flex;
@@ -331,29 +327,17 @@
         .mayor-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 0.9rem;
         }
 
-        .mayor-table th {
-            background: #fff0f3;
-            color: #ff6b6b;
-            padding: 0.8rem;
-            text-align: center;
-            border-bottom: 2px solid #ffb6c1;
-        }
-
-        .mayor-table td {
+        .mayor-table th, .mayor-table td {
             padding: 0.8rem;
             border-bottom: 1px solid #ffe4e9;
             text-align: center;
         }
 
-        .mayor-table .debito {
-            color: #27ae60;
-        }
-
-        .mayor-table .credito {
-            color: #ff4757;
+        .mayor-table th {
+            background: #fff0f3;
+            color: #ff6b6b;
         }
 
         .saldo-final {
@@ -361,7 +345,6 @@
             font-weight: bold;
         }
 
-        /* T-account */
         .t-account {
             display: flex;
             justify-content: center;
@@ -396,14 +379,8 @@
             text-align: center;
         }
 
-        .t-debe {
-            border-right: 1px solid #ffe4e9;
-        }
-
-        .t-debe h4, .t-haber h4 {
-            color: #ff6b6b;
-            margin-bottom: 0.5rem;
-        }
+        .t-debe { border-right: 1px solid #ffe4e9; }
+        .t-debe h4, .t-haber h4 { color: #ff6b6b; margin-bottom: 0.5rem; }
 
         .t-valor {
             font-size: 1.2rem;
@@ -432,7 +409,7 @@
             border-radius: 20px;
             padding: 2rem;
             max-width: 90%;
-            width: 1200px;
+            width: 600px;
             max-height: 90%;
             overflow-y: auto;
         }
@@ -505,33 +482,14 @@
             cursor: pointer;
         }
         
-        .btn-primary {
-            background: #ff9a9e;
+        .delete-transaccion-btn {
+            background: #ff4757;
             color: white;
             border: none;
             padding: 0.5rem 1rem;
             border-radius: 50px;
             cursor: pointer;
-            margin-right: 0.5rem;
-        }
-        
-        .edit-btn {
-            background: #ffb6c1;
-            color: white;
-            border: none;
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            cursor: pointer;
-            margin-right: 0.3rem;
-        }
-        
-        .delete-btn {
-            background: #ff4757;
-            color: white;
-            border: none;
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            cursor: pointer;
+            margin-top: 1rem;
         }
         
         .plan-cuentas-table {
@@ -539,8 +497,7 @@
             border-collapse: collapse;
         }
         
-        .plan-cuentas-table th,
-        .plan-cuentas-table td {
+        .plan-cuentas-table th, .plan-cuentas-table td {
             padding: 0.8rem;
             text-align: left;
             border-bottom: 1px solid #ffe4e9;
@@ -550,53 +507,45 @@
             background: #fff0f3;
             color: #ff6b6b;
         }
+        
+        .edit-btn, .delete-btn {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-right: 0.3rem;
+            border: none;
+        }
+        
+        .edit-btn { background: #ffb6c1; color: white; }
+        .delete-btn { background: #ff4757; color: white; }
+        .btn-primary { background: #ff9a9e; color: white; border: none; padding: 0.5rem 1rem; border-radius: 50px; cursor: pointer; margin-right: 0.5rem; }
 
         @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
 
         @media (max-width: 768px) {
-            .libro-table {
-                font-size: 0.7rem;
-            }
-            .libro-table th, .libro-table td {
-                padding: 0.4rem;
-            }
-            .modal-content {
-                width: 95%;
-                padding: 1rem;
-            }
+            .libro-table { font-size: 0.7rem; }
+            .libro-table th, .libro-table td { padding: 0.4rem; }
+            .modal-content { width: 95%; padding: 1rem; }
         }
     </style>
 </head>
 <body>
     <header class="contabilidad-header">
-        <h1>
-            📊 CONTABILIDAD
-            <span>🌸 Modas La 34</span>
-        </h1>
-        <div style="display: flex; gap: 1rem;">
-            <button class="exportar-btn" onclick="abrirPlanCuentas()" style="background: #ff9a9e;">
-                📋 Plan de Cuentas
-            </button>
+        <h1>📊 CONTABILIDAD <span>🌸 Modas La 34</span></h1>
+        <div class="header-buttons">
+            <button class="plan-cuentas-btn" onclick="abrirPlanCuentas()">📋 Plan de Cuentas</button>
             <a href="dashboard.html" class="volver-btn">← Volver al Dashboard</a>
         </div>
     </header>
 
     <div class="contabilidad-container">
-        <!-- Selector de período -->
         <div class="periodo-selector">
             <button class="periodo-btn active" onclick="cambiarPeriodo('mes', event)">Este Mes</button>
             <button class="periodo-btn" onclick="cambiarPeriodo('trimestre', event)">Último Trimestre</button>
             <button class="periodo-btn" onclick="cambiarPeriodo('año', event)">Este Año</button>
-            
             <div class="periodo-personalizado">
                 <input type="date" id="fecha-inicio">
                 <input type="date" id="fecha-fin">
@@ -604,35 +553,15 @@
             </div>
         </div>
 
-        <!-- Tarjetas de resumen -->
         <div class="resumen-grid">
-            <div class="resumen-card">
-                <h4>💰 Total Ingresos</h4>
-                <div class="valor positivo" id="total-ingresos">$0</div>
-            </div>
-            <div class="resumen-card">
-                <h4>💸 Total Egresos</h4>
-                <div class="valor negativo" id="total-egresos">$0</div>
-            </div>
-            <div class="resumen-card">
-                <h4>📊 Utilidad del Período</h4>
-                <div class="valor" id="utilidad">$0</div>
-            </div>
-            <div class="resumen-card">
-                <h4>🏦 Saldo en Caja</h4>
-                <div class="valor positivo" id="saldo-caja">$0</div>
-            </div>
-            <div class="resumen-card">
-                <h4>🏛️ Saldo en Bancos</h4>
-                <div class="valor positivo" id="saldo-bancos">$0</div>
-            </div>
-            <div class="resumen-card">
-                <h4>📦 Inventario</h4>
-                <div class="valor" id="saldo-inventario">$0</div>
-            </div>
+            <div class="resumen-card"><h4>💰 Total Ingresos</h4><div class="valor positivo" id="total-ingresos">$0</div></div>
+            <div class="resumen-card"><h4>💸 Total Egresos</h4><div class="valor negativo" id="total-egresos">$0</div></div>
+            <div class="resumen-card"><h4>📊 Utilidad del Período</h4><div class="valor" id="utilidad">$0</div></div>
+            <div class="resumen-card"><h4>🏦 Saldo en Caja</h4><div class="valor positivo" id="saldo-caja">$0</div></div>
+            <div class="resumen-card"><h4>🏛️ Saldo en Bancos</h4><div class="valor positivo" id="saldo-bancos">$0</div></div>
+            <div class="resumen-card"><h4>📦 Inventario</h4><div class="valor" id="saldo-inventario">$0</div></div>
         </div>
 
-        <!-- Pestañas de navegación -->
         <div class="tabs-container">
             <button class="tab-btn active" onclick="mostrarTab('libro', event)">📒 Libro Diario</button>
             <button class="tab-btn" onclick="mostrarTab('resultados', event)">📊 Estado de Resultados</button>
@@ -640,138 +569,109 @@
             <button class="tab-btn" onclick="mostrarTab('mayor', event)">📋 Mayor de Cuentas</button>
         </div>
 
-        <!-- Pestaña 1: Libro Diario -->
+        <!-- Pestaña Libro Diario -->
         <div id="tab-libro" class="tab-content active">
             <div class="libro-diario">
-                <h2>
-                    📒 LIBRO DIARIO CONTABLE
-                    <button class="exportar-btn" onclick="exportarExcel()">📥 Exportar a Excel</button>
-                </h2>
+                <h2>📒 LIBRO DIARIO CONTABLE <button class="exportar-btn" onclick="exportarExcel()">📥 Exportar a Excel</button></h2>
                 <table class="libro-table" id="tabla-libro-diario">
-                    <thead>
-                        <tr>
-                            <th>Clase</th>
-                            <th>Nro</th>
-                            <th>Fecha</th>
-                            <th>Código Cuenta</th>
-                            <th>Nombre Cuenta</th>
-                            <th>Detalle Transacción</th>
-                            <th>Débitos</th>
-                            <th>Créditos</th>
-                        </thead>
-                    <tbody id="libro-body">
-                        <tr><td colspan="8" style="text-align: center;">Cargando movimientos...<\/td>\(        \)     </tbody>
-                    <tfoot id="libro-footer" style="display: none;">
-                        <tr class="totales-row">
-                            <td colspan="6" style="text-align: right;"><strong>TOTALES:</strong>\(
-                            <td id="total-debitos" class="debito"><strong>$0</strong>\(
-                            <td id="total-creditos" class="credito"><strong>$0</strong>\(
-                        </tr>
-                    </tfoot>
+                    <thead><tr><th>Clase</th><th>ID</th><th>Fecha</th><th>Código</th><th>Cuenta</th><th>Detalle</th><th>Débito</th><th>Crédito</th><th>Acciones</th></tr></thead>
+                    <tbody id="libro-body"><tr><td colspan="9" style="text-align: center;">Cargando movimientos...</td></tr></tbody>
+                    <tfoot id="libro-footer" style="display: none;"><tr class="totales-row"><td colspan="6"><strong>TOTALES:</strong></td><td id="total-debitos" class="debito"><strong>$0</strong></td><td id="total-creditos" class="credito"><strong>$0</strong></td><td></td></tr></tfoot>
                 </table>
             </div>
         </div>
 
-        <!-- Pestaña 2: Estado de Resultados -->
+        <!-- Pestaña Estado de Resultados -->
         <div id="tab-resultados" class="tab-content">
             <div class="estado-resultados">
-                <h2>
-                    📊 ESTADO DE RESULTADOS (PyG)
-                    <button class="exportar-btn" onclick="exportarResultados()">📥 Exportar</button>
-                </h2>
-                <table class="estado-table" id="tabla-resultados">
-                    <tbody>
-                        <tr><td colspan="3" style="font-weight: bold; color: #ff6b6b;">INGRESOS OPERACIONALES</td></tr>
-                        <tr id="row-ingresos"></tr>
-                        <tr><td colspan="3" style="padding: 0.5rem;"></td></tr>
-                        <tr><td colspan="3" style="font-weight: bold; color: #ff6b6b;">COSTO DE VENTAS</td></tr>
-                        <tr id="row-costo"></tr>
-                        <tr class="total-row"><td colspan="2"><strong>UTILIDAD BRUTA</strong></td><td id="utilidad-bruta" class="valor"></td></tr>
-                        <tr><td colspan="3" style="padding: 0.5rem;"></td></tr>
-                        <tr><td colspan="3" style="font-weight: bold; color: #ff6b6b;">GASTOS OPERACIONALES</td></tr>
-                        <tr id="row-gastos"></tr>
-                        <tr class="total-row"><td colspan="2"><strong>UTILIDAD OPERACIONAL</strong></td><td id="utilidad-operacional" class="valor"></td></tr>
-                        <tr><td colspan="3" style="padding: 0.5rem;"></td></tr>
-                        <tr><td colspan="3" style="font-weight: bold; color: #ff6b6b;">GASTOS NO OPERACIONALES</td></tr>
-                        <tr id="row-gastos-no"></tr>
-                        <tr class="total-row"><td colspan="2"><strong>UTILIDAD NETA</strong></td><td id="utilidad-neta" class="valor"></td></tr>
-                    </tbody>
-                </table>
+                <h2>📊 ESTADO DE RESULTADOS <button class="exportar-btn" onclick="exportarResultados()">📥 Exportar</button></h2>
+                <table class="estado-table"><tbody>
+                    <tr><td colspan="2" style="font-weight: bold; color: #ff6b6b;">INGRESOS OPERACIONALES</td></tr>
+                    <tr id="row-ingresos"></tr>
+                    <tr><td colspan="2" style="padding: 0.5rem;"></td></tr>
+                    <tr><td colspan="2" style="font-weight: bold; color: #ff6b6b;">COSTO DE VENTAS</td></tr>
+                    <tr id="row-costo"></tr>
+                    <tr class="total-row"><td><strong>UTILIDAD BRUTA</strong></td><td id="utilidad-bruta" class="valor"></td></tr>
+                    <tr><td colspan="2" style="padding: 0.5rem;"></td></tr>
+                    <tr><td colspan="2" style="font-weight: bold; color: #ff6b6b;">GASTOS OPERACIONALES</td></tr>
+                    <tr id="row-gastos"></tr>
+                    <tr class="total-row"><td><strong>UTILIDAD OPERACIONAL</strong></td><td id="utilidad-operacional" class="valor"></td></tr>
+                    <tr><td colspan="2" style="padding: 0.5rem;"></td></tr>
+                    <tr><td colspan="2" style="font-weight: bold; color: #ff6b6b;">GASTOS NO OPERACIONALES</td></tr>
+                    <tr id="row-gastos-no"></tr>
+                    <tr class="total-row"><td><strong>UTILIDAD NETA</strong></td><td id="utilidad-neta" class="valor"></td></tr>
+                </tbody></table>
             </div>
         </div>
 
-        <!-- Pestaña 3: Balance General -->
+        <!-- Pestaña Balance General -->
         <div id="tab-balance" class="tab-content">
             <div class="balance-general">
-                <h2>
-                    ⚖️ BALANCE GENERAL
-                    <button class="exportar-btn" onclick="exportarBalance()">📥 Exportar</button>
-                </h2>
+                <h2>⚖️ BALANCE GENERAL <button class="exportar-btn" onclick="exportarBalance()">📥 Exportar</button></h2>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
-                    <div>
-                        <h3 style="color: #ff6b6b; margin-bottom: 1rem;">ACTIVOS</h3>
-                        <table class="estado-table" id="tabla-activos">
-                            <tbody></tbody>
-                        </table>
-                        <div class="total-row" style="margin-top: 1rem;"><strong>TOTAL ACTIVOS: </strong><span id="total-activos" style="float: right;">$0</span></div>
-                    </div>
-                    <div>
-                        <h3 style="color: #ff6b6b; margin-bottom: 1rem;">PASIVOS Y PATRIMONIO</h3>
-                        <table class="estado-table" id="tabla-pasivos">
-                            <tbody></tbody>
-                        </table>
-                        <div class="total-row" style="margin-top: 1rem;"><strong>TOTAL PASIVOS: </strong><span id="total-pasivos" style="float: right;">$0</span></div>
-                        <div class="total-row" style="margin-top: 1rem;"><strong>PATRIMONIO: </strong><span id="total-patrimonio" style="float: right;">$0</span></div>
-                        <div class="total-row" style="margin-top: 1rem; border-top: 2px solid #ffb6c1;"><strong>TOTAL PASIVO + PATRIMONIO: </strong><span id="total-pasivo-patrimonio" style="float: right;">$0</span></div>
-                    </div>
+                    <div><h3 style="color: #ff6b6b;">ACTIVOS</h3><table class="estado-table" id="tabla-activos"><tbody></tbody></table><div class="total-row" style="margin-top: 1rem;"><strong>TOTAL ACTIVOS: </strong><span id="total-activos" style="float: right;">$0</span></div></div>
+                    <div><h3 style="color: #ff6b6b;">PASIVOS Y PATRIMONIO</h3><table class="estado-table" id="tabla-pasivos"><tbody></tbody></table><div class="total-row" style="margin-top: 1rem;"><strong>TOTAL PASIVOS: </strong><span id="total-pasivos" style="float: right;">$0</span></div><div class="total-row" style="margin-top: 1rem;"><strong>PATRIMONIO: </strong><span id="total-patrimonio" style="float: right;">$0</span></div><div class="total-row" style="margin-top: 1rem; border-top: 2px solid #ffb6c1;"><strong>TOTAL PASIVO + PATRIMONIO: </strong><span id="total-pasivo-patrimonio" style="float: right;">$0</span></div></div>
                 </div>
             </div>
         </div>
 
-        <!-- Pestaña 4: Mayor de Cuentas -->
+        <!-- Pestaña Mayor de Cuentas -->
         <div id="tab-mayor" class="tab-content">
             <div class="mayor-cuentas">
                 <h2>📋 MAYOR DE CUENTAS</h2>
                 <div class="cuenta-selector">
-                    <select id="select-cuenta-mayor" onchange="cargarMayorCuenta()">
-                        <option value="">Seleccionar cuenta...</option>
-                    </select>
+                    <select id="select-cuenta-mayor" onchange="cargarMayorCuenta()"><option value="">Seleccionar cuenta...</option></select>
                     <button class="exportar-btn" onclick="exportarMayor()">📥 Exportar</button>
                 </div>
-                <div id="mayor-contenido">
-                    <p style="text-align: center; color: #a5a5a5;">Selecciona una cuenta para ver su movimiento</p>
+                <div id="mayor-contenido"><p style="text-align: center;">Selecciona una cuenta para ver su movimiento</p></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: Editar Transacción -->
+    <div id="modal-editar-transaccion" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-transaccion-title">✏️ Editar Transacción</h2>
+                <button class="close-btn" onclick="cerrarEditarTransaccion()">&times;</button>
+            </div>
+            <form id="form-editar-transaccion">
+                <input type="hidden" id="transaccion-id">
+                <input type="hidden" id="transaccion-tipo">
+                <div class="form-group"><label>📅 Fecha</label><input type="date" id="transaccion-fecha" required></div>
+                <div class="form-group" id="grupo-producto" style="display:none;"><label>📦 Producto/Servicio</label><input type="text" id="transaccion-producto" required></div>
+                <div class="form-group" id="grupo-cantidad" style="display:none;"><label>🔢 Cantidad</label><input type="number" id="transaccion-cantidad" step="1" min="1" required></div>
+                <div class="form-group" id="grupo-precio" style="display:none;"><label>💰 Precio unitario</label><input type="number" id="transaccion-precio" step="1000" min="0" required></div>
+                <div class="form-group" id="grupo-monto" style="display:none;"><label>💵 Monto total</label><input type="number" id="transaccion-monto" step="1000" min="0" required></div>
+                <div class="form-group" id="grupo-concepto" style="display:none;"><label>📝 Concepto</label><input type="text" id="transaccion-concepto" required></div>
+                <div class="form-group" id="grupo-categoria" style="display:none;"><label>🏷️ Categoría</label><select id="transaccion-categoria"><option value="Alquiler">Alquiler</option><option value="Servicios">Servicios</option><option value="Sueldos">Sueldos</option><option value="Marketing">Marketing</option><option value="Otros">Otros</option></select></div>
+                <div class="form-group" id="grupo-estado" style="display:none;"><label>📊 Estado</label><select id="transaccion-estado"><option value="Pendiente">Pendiente</option><option value="Pagada">Pagada</option><option value="Recibida">Recibida</option></select></div>
+                <div class="form-buttons">
+                    <button type="submit" class="submit-btn">💾 Guardar Cambios</button>
+                    <button type="button" onclick="cerrarEditarTransaccion()" class="cancel-btn">Cancelar</button>
                 </div>
+            </form>
+            <div style="margin-top: 1rem; text-align: center; border-top: 1px solid #ffe4e9; padding-top: 1rem;">
+                <button type="button" class="delete-transaccion-btn" onclick="eliminarTransaccion()">🗑️ Eliminar esta transacción</button>
             </div>
         </div>
     </div>
 
     <!-- MODAL: Plan de Cuentas -->
     <div id="modal-plan-cuentas" class="modal" style="display: none;">
-        <div class="modal-content">
+        <div class="modal-content" style="width: 1000px;">
             <div class="modal-header">
                 <h2>📋 Plan de Cuentas</h2>
                 <button class="close-btn" onclick="cerrarPlanCuentas()">&times;</button>
             </div>
-            
             <div style="margin-bottom: 1rem;">
                 <button class="btn-primary" onclick="agregarCuenta()">➕ Nueva Cuenta</button>
                 <button class="exportar-btn" onclick="exportarPlanCuentas()">📥 Exportar</button>
             </div>
-            
             <div style="overflow-x: auto; max-height: 500px;">
                 <table class="plan-cuentas-table">
-                    <thead>
-                        <tr>
-                            <th>Código</th>
-                            <th>Nombre de la Cuenta</th>
-                            <th>Tipo</th>
-                            <th>Naturaleza</th>
-                            <th>¿Permite movimiento?</th>
-                            <th>Acciones</th>
-                        </thead>
-                    <tbody id="plan-cuentas-body">
-                        <tr><td colspan="6" style="text-align: center;">Cargando...</td></tr>
-                    </tbody>
+                    <thead><tr><th>Código</th><th>Nombre</th><th>Tipo</th><th>Naturaleza</th><th>Permite movimiento</th><th>Acciones</th></tr></thead>
+                    <tbody id="plan-cuentas-body"><tr><td colspan="6">Cargando...</td></tr></tbody>
                 </table>
             </div>
         </div>
@@ -784,51 +684,15 @@
                 <h2 id="modal-cuenta-title">✏️ Editar Cuenta</h2>
                 <button class="close-btn" onclick="cerrarEditarCuenta()">&times;</button>
             </div>
-            
             <form id="form-cuenta">
                 <input type="hidden" id="cuenta-id">
-                
-                <div class="form-group">
-                    <label>Código de la cuenta *</label>
-                    <input type="text" id="cuenta-codigo" required placeholder="Ej: 110505">
-                    <small>Formato numérico de 6 dígitos</small>
-                </div>
-                
-                <div class="form-group">
-                    <label>Nombre de la cuenta *</label>
-                    <input type="text" id="cuenta-nombre" required placeholder="Ej: CAJA GENERAL">
-                </div>
-                
-                <div class="form-group">
-                    <label>Tipo de cuenta *</label>
-                    <select id="cuenta-tipo" required>
-                        <option value="ACTIVO">ACTIVO</option>
-                        <option value="PASIVO">PASIVO</option>
-                        <option value="PATRIMONIO">PATRIMONIO</option>
-                        <option value="INGRESO">INGRESO</option>
-                        <option value="GASTO">GASTO</option>
-                        <option value="COSTO">COSTO</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label>Naturaleza *</label>
-                    <select id="cuenta-naturaleza" required>
-                        <option value="DEUDORA">DEUDORA (Debe aumentar con débitos)</option>
-                        <option value="ACREEDORA">ACREEDORA (Debe aumentar con créditos)</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label>
-                        <input type="checkbox" id="cuenta-permite-movimiento" checked>
-                        ¿Permite movimientos contables?
-                    </label>
-                    <small>Desactivar para cuentas que solo sean de agrupación</small>
-                </div>
-                
+                <div class="form-group"><label>Código</label><input type="text" id="cuenta-codigo" required placeholder="Ej: 110505"></div>
+                <div class="form-group"><label>Nombre</label><input type="text" id="cuenta-nombre" required placeholder="Ej: CAJA GENERAL"></div>
+                <div class="form-group"><label>Tipo</label><select id="cuenta-tipo" required><option value="ACTIVO">ACTIVO</option><option value="PASIVO">PASIVO</option><option value="PATRIMONIO">PATRIMONIO</option><option value="INGRESO">INGRESO</option><option value="GASTO">GASTO</option><option value="COSTO">COSTO</option></select></div>
+                <div class="form-group"><label>Naturaleza</label><select id="cuenta-naturaleza" required><option value="DEUDORA">DEUDORA</option><option value="ACREEDORA">ACREEDORA</option></select></div>
+                <div class="form-group"><label><input type="checkbox" id="cuenta-permite-movimiento" checked> ¿Permite movimiento?</label></div>
                 <div class="form-buttons">
-                    <button type="submit" class="submit-btn">💾 Guardar Cuenta</button>
+                    <button type="submit" class="submit-btn">💾 Guardar</button>
                     <button type="button" onclick="cerrarEditarCuenta()" class="cancel-btn">Cancelar</button>
                 </div>
             </form>
@@ -840,15 +704,11 @@
         // ============================================
         // VARIABLES GLOBALES
         // ============================================
-        let fechaInicio = new Date();
-        fechaInicio.setDate(1);
-        fechaInicio.setHours(0, 0, 0, 0);
-        
-        let fechaFin = new Date();
-        fechaFin.setHours(23, 59, 59, 999);
-
+        let fechaInicio = new Date(); fechaInicio.setDate(1); fechaInicio.setHours(0,0,0,0);
+        let fechaFin = new Date(); fechaFin.setHours(23,59,59,999);
         let movimientos = [];
         let planCuentas = [];
+        let ventasData = [], comprasData = [], gastosData = [];
 
         // ============================================
         // INICIALIZACIÓN
@@ -862,9 +722,7 @@
 
         async function verificarSesion() {
             const tokenData = localStorage.getItem('admin_token');
-            if (!tokenData) {
-                window.location.href = 'login.html';
-            }
+            if (!tokenData) window.location.href = 'login.html';
         }
 
         function cargarFechas() {
@@ -873,32 +731,17 @@
         }
 
         // ============================================
-        // CARGAR PLAN DE CUENTAS GLOBAL
+        // PLAN DE CUENTAS
         // ============================================
         async function cargarPlanCuentasGlobal() {
             try {
                 const token = JSON.parse(localStorage.getItem('admin_token'));
                 const response = await fetch(`${SUPABASE_URL}/rest/v1/plan_cuentas?order=codigo.asc`, {
-                    headers: {
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${token.access_token}`
-                    }
+                    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}` }
                 });
                 planCuentas = await response.json();
-                
-                if (planCuentas.length === 0) {
-                    await crearPlanCuentasDefault();
-                    const response2 = await fetch(`${SUPABASE_URL}/rest/v1/plan_cuentas?order=codigo.asc`, {
-                        headers: {
-                            'apikey': SUPABASE_KEY,
-                            'Authorization': `Bearer ${token.access_token}`
-                        }
-                    });
-                    planCuentas = await response2.json();
-                }
-            } catch (error) {
-                console.error('Error cargando plan de cuentas:', error);
-            }
+                if (planCuentas.length === 0) await crearPlanCuentasDefault();
+            } catch (error) { console.error('Error:', error); }
         }
 
         async function crearPlanCuentasDefault() {
@@ -920,169 +763,95 @@
                 { codigo: '513505', nombre: 'PUBLICIDAD', tipo: 'GASTO', naturaleza: 'DEUDORA', permite_movimiento: true },
                 { codigo: '519595', nombre: 'OTROS GASTOS', tipo: 'GASTO', naturaleza: 'DEUDORA', permite_movimiento: true }
             ];
-            
             const token = JSON.parse(localStorage.getItem('admin_token'));
-            
             for (const cuenta of cuentasDefault) {
                 await fetch(`${SUPABASE_URL}/rest/v1/plan_cuentas`, {
-                    method: 'POST',
-                    headers: {
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${token.access_token}`,
-                        'Content-Type': 'application/json'
-                    },
+                    method: 'POST', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}`, 'Content-Type': 'application/json' },
                     body: JSON.stringify(cuenta)
                 });
             }
         }
+
         function getNombreCuenta(codigo) {
             const cuenta = planCuentas.find(c => c.codigo === codigo);
             return cuenta ? cuenta.nombre : codigo;
         }
 
         // ============================================
-        // CARGAR MOVIMIENTOS DESDE SUPABASE
+        // CARGAR MOVIMIENTOS
         // ============================================
         async function cargarMovimientos() {
             try {
-                console.log('Cargando movimientos contables...');
+                const token = JSON.parse(localStorage.getItem('admin_token'));
                 
-                const ventasRes = await fetch(
-                    `${SUPABASE_URL}/rest/v1/ventas?fecha=gte.${fechaInicio.toISOString()}&fecha=lte.${fechaFin.toISOString()}&order=fecha.asc`,
-                    { headers: { 'apikey': SUPABASE_KEY } }
-                );
-                const ventas = await ventasRes.json();
+                const ventasRes = await fetch(`${SUPABASE_URL}/rest/v1/ventas?fecha=gte.${fechaInicio.toISOString()}&fecha=lte.${fechaFin.toISOString()}&order=fecha.asc`, {
+                    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}` }
+                });
+                ventasData = await ventasRes.json();
                 
-                const comprasRes = await fetch(
-                    `${SUPABASE_URL}/rest/v1/compras?fecha=gte.${fechaInicio.toISOString()}&fecha=lte.${fechaFin.toISOString()}&order=fecha.asc`,
-                    { headers: { 'apikey': SUPABASE_KEY } }
-                );
-                const compras = await comprasRes.json();
+                const comprasRes = await fetch(`${SUPABASE_URL}/rest/v1/compras?fecha=gte.${fechaInicio.toISOString()}&fecha=lte.${fechaFin.toISOString()}&order=fecha.asc`, {
+                    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}` }
+                });
+                comprasData = await comprasRes.json();
                 
-                const gastosRes = await fetch(
-                    `${SUPABASE_URL}/rest/v1/gastos?fecha=gte.${fechaInicio.toISOString()}&fecha=lte.${fechaFin.toISOString()}&order=fecha.asc`,
-                    { headers: { 'apikey': SUPABASE_KEY } }
-                );
-                const gastos = await gastosRes.json();
+                const gastosRes = await fetch(`${SUPABASE_URL}/rest/v1/gastos?fecha=gte.${fechaInicio.toISOString()}&fecha=lte.${fechaFin.toISOString()}&order=fecha.asc`, {
+                    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}` }
+                });
+                gastosData = await gastosRes.json();
                 
                 movimientos = [];
-                let contador = 1;
                 
-                // MOVIMIENTOS POR VENTAS
-                for (const venta of ventas) {
+                // Ventas
+                for (const venta of ventasData) {
                     const total = venta.total || 0;
                     const iva = venta.iva || 0;
                     const base = total - iva;
+                    const fechaStr = venta.fecha;
                     
-                    movimientos.push({
-                        clase: 1, nro: contador, fecha: venta.fecha,
-                        codigo: '110505', nombre: getNombreCuenta('110505'),
-                        detalle: `Venta #${venta.id} - ${venta.productos || 'Productos varios'}`,
-                        debito: total, credito: 0
-                    });
-                    
-                    movimientos.push({
-                        clase: 4, nro: contador, fecha: venta.fecha,
-                        codigo: '413505', nombre: getNombreCuenta('413505'),
-                        detalle: `Venta #${venta.id}`,
-                        debito: 0, credito: base
-                    });
-                    
-                    if (iva > 0) {
-                        movimientos.push({
-                            clase: 2, nro: contador, fecha: venta.fecha,
-                            codigo: '250810', nombre: getNombreCuenta('250810'),
-                            detalle: `IVA 19% sobre venta #${venta.id}`,
-                            debito: 0, credito: iva
-                        });
-                    }
-                    contador++;
+                    movimientos.push({ tipo: 'venta', id: venta.id, clase: 1, fecha: fechaStr, codigo: '110505', nombre: getNombreCuenta('110505'), detalle: `Venta #${venta.id} - ${venta.productos || 'Venta'}`, debito: total, credito: 0 });
+                    movimientos.push({ tipo: 'venta', id: venta.id, clase: 4, fecha: fechaStr, codigo: '413505', nombre: getNombreCuenta('413505'), detalle: `Venta #${venta.id}`, debito: 0, credito: base });
+                    if (iva > 0) movimientos.push({ tipo: 'venta', id: venta.id, clase: 2, fecha: fechaStr, codigo: '250810', nombre: getNombreCuenta('250810'), detalle: `IVA 19% venta #${venta.id}`, debito: 0, credito: iva });
                 }
                 
-                // MOVIMIENTOS POR COMPRAS
-                for (const compra of compras) {
+                // Compras
+                for (const compra of comprasData) {
                     const total = compra.total || 0;
+                    const fechaStr = compra.fecha;
                     
-                    movimientos.push({
-                        clase: 6, nro: contador, fecha: compra.fecha,
-                        codigo: '620501', nombre: getNombreCuenta('620501'),
-                        detalle: `Compra #${compra.id} - ${compra.producto || 'Productos varios'}`,
-                        debito: total, credito: 0
-                    });
-                    
-                    movimientos.push({
-                        clase: 1, nro: contador, fecha: compra.fecha,
-                        codigo: '143505', nombre: getNombreCuenta('143505'),
-                        detalle: `Compra #${compra.id}`,
-                        debito: total, credito: 0
-                    });
-                    
+                    movimientos.push({ tipo: 'compra', id: compra.id, clase: 6, fecha: fechaStr, codigo: '620501', nombre: getNombreCuenta('620501'), detalle: `Compra #${compra.id} - ${compra.producto || 'Compra'}`, debito: total, credito: 0 });
+                    movimientos.push({ tipo: 'compra', id: compra.id, clase: 1, fecha: fechaStr, codigo: '143505', nombre: getNombreCuenta('143505'), detalle: `Compra #${compra.id}`, debito: total, credito: 0 });
                     if (compra.estado === 'Pagada') {
-                        movimientos.push({
-                            clase: 1, nro: contador, fecha: compra.fecha,
-                            codigo: '110505', nombre: getNombreCuenta('110505'),
-                            detalle: `Pago compra #${compra.id}`,
-                            debito: 0, credito: total
-                        });
+                        movimientos.push({ tipo: 'compra', id: compra.id, clase: 1, fecha: fechaStr, codigo: '110505', nombre: getNombreCuenta('110505'), detalle: `Pago compra #${compra.id}`, debito: 0, credito: total });
                     } else {
-                        movimientos.push({
-                            clase: 2, nro: contador, fecha: compra.fecha,
-                            codigo: '220505', nombre: getNombreCuenta('220505'),
-                            detalle: `Compra a crédito #${compra.id}`,
-                            debito: 0, credito: total
-                        });
+                        movimientos.push({ tipo: 'compra', id: compra.id, clase: 2, fecha: fechaStr, codigo: '220505', nombre: getNombreCuenta('220505'), detalle: `Compra a crédito #${compra.id}`, debito: 0, credito: total });
                     }
-                    contador++;
                 }
                 
-                // MOVIMIENTOS POR GASTOS
-                for (const gasto of gastos) {
+                // Gastos
+                for (const gasto of gastosData) {
                     const monto = gasto.monto || 0;
                     let codigoGasto = '519595';
-                    
                     switch(gasto.categoria) {
-                        case 'Alquiler':
-                            codigoGasto = '511005';
-                            break;
-                        case 'Servicios':
-                            codigoGasto = '511010';
-                            break;
-                        case 'Sueldos':
-                            codigoGasto = '510506';
-                            break;
-                        case 'Marketing':
-                            codigoGasto = '513505';
-                            break;
+                        case 'Alquiler': codigoGasto = '511005'; break;
+                        case 'Servicios': codigoGasto = '511010'; break;
+                        case 'Sueldos': codigoGasto = '510506'; break;
+                        case 'Marketing': codigoGasto = '513505'; break;
                     }
-                    
-                    movimientos.push({
-                        clase: 5, nro: contador, fecha: gasto.fecha,
-                        codigo: codigoGasto, nombre: getNombreCuenta(codigoGasto),
-                        detalle: gasto.concepto,
-                        debito: monto, credito: 0
-                    });
-                    
-                    movimientos.push({
-                        clase: 1, nro: contador, fecha: gasto.fecha,
-                        codigo: '110505', nombre: getNombreCuenta('110505'),
-                        detalle: `Pago: ${gasto.concepto}`,
-                        debito: 0, credito: monto
-                    });
-                    contador++;
+                    const fechaStr = gasto.fecha;
+                    movimientos.push({ tipo: 'gasto', id: gasto.id, clase: 5, fecha: fechaStr, codigo: codigoGasto, nombre: getNombreCuenta(codigoGasto), detalle: gasto.concepto, debito: monto, credito: 0 });
+                    movimientos.push({ tipo: 'gasto', id: gasto.id, clase: 1, fecha: fechaStr, codigo: '110505', nombre: getNombreCuenta('110505'), detalle: `Pago: ${gasto.concepto}`, debito: 0, credito: monto });
                 }
                 
                 movimientos.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
-                movimientos.forEach((m, idx) => { m.nro = idx + 1; });
-                
                 mostrarLibroDiario();
                 calcularResumen();
-                
                 cargarEstadoResultados();
                 cargarBalanceGeneral();
                 cargarListaCuentasMayor();
                 
             } catch (error) {
-                console.error('Error cargando movimientos:', error);
+                console.error('Error:', error);
+                mostrarAlerta('Error al cargar movimientos', 'error');
             }
         }
 
@@ -1091,34 +860,31 @@
             const footer = document.getElementById('libro-footer');
             
             if (movimientos.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8" style="text-align: center;">No hay movimientos en este período</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="9" style="text-align: center;">No hay movimientos en este período</td></tr>';
                 footer.style.display = 'none';
                 return;
             }
             
-            let totalDebitos = 0;
-            let totalCreditos = 0;
+            let totalDebitos = 0, totalCreditos = 0;
             
-            tbody.innerHTML = movimientos.map(m => {
+            tbody.innerHTML = movimientos.map((m, idx) => {
                 totalDebitos += m.debito;
                 totalCreditos += m.credito;
                 const fecha = new Date(m.fecha);
-                const fechaStr = `${fecha.getDate()}/${fecha.getMonth() + 1}/${fecha.getFullYear()}`;
-                
-                // Determinar el ID de la transacción original según la clase
-                let transaccionId = m.nro; // Esto es aproximado, idealmente guardar el ID real
+                const fechaStr = `${fecha.getDate()}/${fecha.getMonth()+1}/${fecha.getFullYear()}`;
                 
                 return `
                     <tr>
                         <td>${m.clase}</td>
-                        <td>${m.nro}</td
+                        <td>${m.id}</td>
                         <td>${fechaStr}</td>
-                        <td>${m.codigo}</td
-                        <td>${m.nombre}</td
-                        <td>${m.detalle}</td
-                        <td class="debito">${m.debito > 0 ? `$${m.debito.toLocaleString()}` : '-'}</td
-                        <td class="credito">${m.credito > 0 ? `$${m.credito.toLocaleString()}` : '-'}</td
-                    </tr
+                        <td>${m.codigo}</td>
+                        <td>${m.nombre}</td>
+                        <td>${m.detalle}</td>
+                        <td class="debito">${m.debito > 0 ? `$${m.debito.toLocaleString()}` : '-'}</td>
+                        <td class="credito">${m.credito > 0 ? `$${m.credito.toLocaleString()}` : '-'}</td>
+                        <td><button class="edit-movimiento-btn" onclick="editarTransaccion('${m.tipo}', ${m.id}, '${m.fecha}')">✏️ Editar</button></td>
+                    </tr>
                 `;
             }).join('');
             
@@ -1128,31 +894,15 @@
         }
 
         function calcularResumen() {
-            let ingresos = 0;
-            let egresos = 0;
-            let saldoCaja = 0;
-            let saldoBancos = 0;
-            let saldoInventario = 0;
-            
+            let ingresos = 0, egresos = 0, saldoCaja = 0, saldoBancos = 0, saldoInventario = 0;
             for (const m of movimientos) {
                 if (m.codigo === '413505') ingresos += m.credito;
                 if (m.codigo === '620501') egresos += m.debito;
-                if (m.codigo === '110505') {
-                    saldoCaja += m.debito;
-                    saldoCaja -= m.credito;
-                }
-                if (m.codigo === '111005') {
-                    saldoBancos += m.debito;
-                    saldoBancos -= m.credito;
-                }
-                if (m.codigo === '143505') {
-                    saldoInventario += m.debito;
-                    saldoInventario -= m.credito;
-                }
+                if (m.codigo === '110505') { saldoCaja += m.debito; saldoCaja -= m.credito; }
+                if (m.codigo === '111005') { saldoBancos += m.debito; saldoBancos -= m.credito; }
+                if (m.codigo === '143505') { saldoInventario += m.debito; saldoInventario -= m.credito; }
             }
-            
             const utilidad = ingresos - egresos;
-            
             document.getElementById('total-ingresos').textContent = `$${ingresos.toLocaleString()}`;
             document.getElementById('total-egresos').textContent = `$${egresos.toLocaleString()}`;
             document.getElementById('utilidad').textContent = `$${utilidad.toLocaleString()}`;
@@ -1164,25 +914,13 @@
 
         function cambiarPeriodo(periodo, event) {
             const hoy = new Date();
-            
             switch(periodo) {
-                case 'mes':
-                    fechaInicio = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
-                    fechaFin = new Date(hoy.getFullYear(), hoy.getMonth() + 1, 0, 23, 59, 59);
-                    break;
-                case 'trimestre':
-                    fechaInicio = new Date(hoy.getFullYear(), hoy.getMonth() - 2, 1);
-                    fechaFin = new Date(hoy.getFullYear(), hoy.getMonth() + 1, 0, 23, 59, 59);
-                    break;
-                case 'año':
-                    fechaInicio = new Date(hoy.getFullYear(), 0, 1);
-                    fechaFin = new Date(hoy.getFullYear(), 11, 31, 23, 59, 59);
-                    break;
+                case 'mes': fechaInicio = new Date(hoy.getFullYear(), hoy.getMonth(), 1); fechaFin = new Date(hoy.getFullYear(), hoy.getMonth()+1, 0, 23,59,59); break;
+                case 'trimestre': fechaInicio = new Date(hoy.getFullYear(), hoy.getMonth()-2, 1); fechaFin = new Date(hoy.getFullYear(), hoy.getMonth()+1, 0, 23,59,59); break;
+                case 'año': fechaInicio = new Date(hoy.getFullYear(), 0, 1); fechaFin = new Date(hoy.getFullYear(), 11, 31, 23,59,59); break;
             }
-            
             document.querySelectorAll('.periodo-btn').forEach(btn => btn.classList.remove('active'));
-            if (event && event.target) event.target.classList.add('active');
-            
+            if(event && event.target) event.target.classList.add('active');
             cargarFechas();
             cargarMovimientos();
         }
@@ -1190,420 +928,323 @@
         function cambiarPeriodoPersonalizado() {
             fechaInicio = new Date(document.getElementById('fecha-inicio').value);
             fechaFin = new Date(document.getElementById('fecha-fin').value);
-            fechaFin.setHours(23, 59, 59, 999);
+            fechaFin.setHours(23,59,59,999);
             cargarMovimientos();
         }
 
-        function exportarExcel() {
-            let csvContent = "Clase,Nro,Fecha,Código Cuenta,Nombre Cuenta,Detalle Transacción,Débitos,Créditos\n";
-            
-            movimientos.forEach(m => {
-                const fecha = new Date(m.fecha);
-                const fechaStr = `${fecha.getDate()}/${fecha.getMonth() + 1}/${fecha.getFullYear()}`;
-                csvContent += `"${m.clase}","${m.nro}","${fechaStr}","${m.codigo}","${m.nombre}","${m.detalle}",${m.debito},${m.credito}\n`;
-            });
-            
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            const url = URL.createObjectURL(blob);
-            link.setAttribute('href', url);
-            link.setAttribute('download', `libro_diario_${fechaInicio.toISOString().split('T')[0]}_a_${fechaFin.toISOString().split('T')[0]}.csv`);
-            link.click();
-            URL.revokeObjectURL(url);
+        // ============================================
+        // EDITAR TRANSACCIONES
+        // ============================================
+        async function editarTransaccion(tipo, id, fecha) {
+            try {
+                const token = JSON.parse(localStorage.getItem('admin_token'));
+                
+                document.getElementById('modal-transaccion-title').textContent = `✏️ Editar ${tipo.toUpperCase()}`;
+                document.getElementById('transaccion-tipo').value = tipo;
+                document.getElementById('transaccion-id').value = id;
+                document.getElementById('transaccion-fecha').value = fecha.split('T')[0];
+                
+                // Ocultar todos
+                document.getElementById('grupo-producto').style.display = 'none';
+                document.getElementById('grupo-cantidad').style.display = 'none';
+                document.getElementById('grupo-precio').style.display = 'none';
+                document.getElementById('grupo-monto').style.display = 'none';
+                document.getElementById('grupo-concepto').style.display = 'none';
+                document.getElementById('grupo-categoria').style.display = 'none';
+                document.getElementById('grupo-estado').style.display = 'none';
+                
+                if (tipo === 'venta') {
+                    const venta = ventasData.find(v => v.id == id);
+                    if (venta) {
+                        document.getElementById('grupo-producto').style.display = 'block';
+                        document.getElementById('grupo-cantidad').style.display = 'block';
+                        document.getElementById('grupo-precio').style.display = 'block';
+                        document.getElementById('grupo-estado').style.display = 'block';
+                        document.getElementById('transaccion-producto').value = venta.productos || '';
+                        document.getElementById('transaccion-cantidad').value = venta.cantidad || 1;
+                        document.getElementById('transaccion-precio').value = (venta.total / (venta.cantidad || 1)) || 0;
+                        document.getElementById('transaccion-estado').value = venta.estado || 'Pagada';
+                    }
+                } else if (tipo === 'compra') {
+                    const compra = comprasData.find(c => c.id == id);
+                    if (compra) {
+                        document.getElementById('grupo-producto').style.display = 'block';
+                        document.getElementById('grupo-cantidad').style.display = 'block';
+                        document.getElementById('grupo-precio').style.display = 'block';
+                        document.getElementById('grupo-estado').style.display = 'block';
+                        document.getElementById('transaccion-producto').value = compra.producto || '';
+                        document.getElementById('transaccion-cantidad').value = compra.cantidad || 1;
+                        document.getElementById('transaccion-precio').value = compra.precio_unitario || 0;
+                        document.getElementById('transaccion-estado').value = compra.estado || 'Pendiente';
+                    }
+                } else if (tipo === 'gasto') {
+                    const gasto = gastosData.find(g => g.id == id);
+                    if (gasto) {
+                        document.getElementById('grupo-concepto').style.display = 'block';
+                        document.getElementById('grupo-monto').style.display = 'block';
+                        document.getElementById('grupo-categoria').style.display = 'block';
+                        document.getElementById('transaccion-concepto').value = gasto.concepto || '';
+                        document.getElementById('transaccion-monto').value = gasto.monto || 0;
+                        document.getElementById('transaccion-categoria').value = gasto.categoria || 'Otros';
+                    }
+                }
+                
+                document.getElementById('modal-editar-transaccion').style.display = 'flex';
+            } catch (error) {
+                console.error('Error:', error);
+                mostrarAlerta('Error al cargar datos', 'error');
+            }
+        }
+
+        function cerrarEditarTransaccion() {
+            document.getElementById('modal-editar-transaccion').style.display = 'none';
+            document.getElementById('form-editar-transaccion').reset();
+        }
+
+        document.getElementById('form-editar-transaccion')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            try {
+                const token = JSON.parse(localStorage.getItem('admin_token'));
+                const tipo = document.getElementById('transaccion-tipo').value;
+                const id = document.getElementById('transaccion-id').value;
+                const fecha = document.getElementById('transaccion-fecha').value;
+                
+                let url = '', data = {};
+                
+                if (tipo === 'venta') {
+                    const cantidad = parseInt(document.getElementById('transaccion-cantidad').value);
+                    const precio = parseFloat(document.getElementById('transaccion-precio').value);
+                    data = { fecha, productos: document.getElementById('transaccion-producto').value, cantidad, total: cantidad * precio, estado: document.getElementById('transaccion-estado').value };
+                    url = `${SUPABASE_URL}/rest/v1/ventas?id=eq.${id}`;
+                } else if (tipo === 'compra') {
+                    const cantidad = parseInt(document.getElementById('transaccion-cantidad').value);
+                    const precio = parseFloat(document.getElementById('transaccion-precio').value);
+                    data = { fecha, producto: document.getElementById('transaccion-producto').value, cantidad, precio_unitario: precio, total: cantidad * precio, estado: document.getElementById('transaccion-estado').value };
+                    url = `${SUPABASE_URL}/rest/v1/compras?id=eq.${id}`;
+                } else if (tipo === 'gasto') {
+                    data = { fecha, concepto: document.getElementById('transaccion-concepto').value, monto: parseFloat(document.getElementById('transaccion-monto').value), categoria: document.getElementById('transaccion-categoria').value };
+                    url = `${SUPABASE_URL}/rest/v1/gastos?id=eq.${id}`;
+                }
+                
+                const response = await fetch(url, {
+                    method: 'PATCH', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                if (response.ok) {
+                    mostrarAlerta('✅ Transacción actualizada', 'success');
+                    cerrarEditarTransaccion();
+                    await cargarMovimientos();
+                } else {
+                    mostrarAlerta('Error al actualizar', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                mostrarAlerta('Error de conexión', 'error');
+            }
+        });
+
+        async function eliminarTransaccion() {
+            if (!confirm('⚠️ ¿Eliminar esta transacción? Esta acción NO se puede deshacer.')) return;
+            try {
+                const token = JSON.parse(localStorage.getItem('admin_token'));
+                const tipo = document.getElementById('transaccion-tipo').value;
+                const id = document.getElementById('transaccion-id').value;
+                
+                let url = '';
+                if (tipo === 'venta') url = `${SUPABASE_URL}/rest/v1/ventas?id=eq.${id}`;
+                else if (tipo === 'compra') url = `${SUPABASE_URL}/rest/v1/compras?id=eq.${id}`;
+                else if (tipo === 'gasto') url = `${SUPABASE_URL}/rest/v1/gastos?id=eq.${id}`;
+                
+                const response = await fetch(url, { method: 'DELETE', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}` } });
+                
+                if (response.ok) {
+                    mostrarAlerta('✅ Transacción eliminada', 'success');
+                    cerrarEditarTransaccion();
+                    await cargarMovimientos();
+                } else {
+                    mostrarAlerta('Error al eliminar', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                mostrarAlerta('Error de conexión', 'error');
+            }
         }
 
         // ============================================
-        // ESTADOS FINANCIEROS
+        // ESTADO DE RESULTADOS Y BALANCE
         // ============================================
-        
-        function mostrarTab(tabId, event) {
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
-            document.getElementById(`tab-${tabId}`).classList.add('active');
-            
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            if (event && event.target) event.target.classList.add('active');
-            
-            if (tabId === 'resultados') {
-                cargarEstadoResultados();
-            } else if (tabId === 'balance') {
-                cargarBalanceGeneral();
-            } else if (tabId === 'mayor') {
-                cargarListaCuentasMayor();
-            }
-        }
-        
         function cargarEstadoResultados() {
-            const ingresos = movimientos
-                .filter(m => m.codigo === '413505')
-                .reduce((sum, m) => sum + m.credito, 0);
-            
-            const costoVentas = movimientos
-                .filter(m => m.codigo === '620501')
-                .reduce((sum, m) => sum + m.debito, 0);
-            
-            const gastosAlquiler = movimientos.filter(m => m.codigo === '511005').reduce((sum, m) => sum + m.debito, 0);
-            const gastosServicios = movimientos.filter(m => m.codigo === '511010').reduce((sum, m) => sum + m.debito, 0);
-            const gastosSueldos = movimientos.filter(m => m.codigo === '510506').reduce((sum, m) => sum + m.debito, 0);
-            const gastosPublicidad = movimientos.filter(m => m.codigo === '513505').reduce((sum, m) => sum + m.debito, 0);
-            const gastosOtros = movimientos.filter(m => m.codigo === '519595').reduce((sum, m) => sum + m.debito, 0);
-            
-            const totalGastosOp = gastosAlquiler + gastosServicios + gastosSueldos + gastosPublicidad + gastosOtros;
+            const ingresos = movimientos.filter(m => m.codigo === '413505').reduce((s,m) => s + m.credito, 0);
+            const costoVentas = movimientos.filter(m => m.codigo === '620501').reduce((s,m) => s + m.debito, 0);
+            const gastosAlquiler = movimientos.filter(m => m.codigo === '511005').reduce((s,m) => s + m.debito, 0);
+            const gastosServicios = movimientos.filter(m => m.codigo === '511010').reduce((s,m) => s + m.debito, 0);
+            const gastosSueldos = movimientos.filter(m => m.codigo === '510506').reduce((s,m) => s + m.debito, 0);
+            const gastosPublicidad = movimientos.filter(m => m.codigo === '513505').reduce((s,m) => s + m.debito, 0);
+            const gastosOtros = movimientos.filter(m => m.codigo === '519595').reduce((s,m) => s + m.debito, 0);
+            const totalGastos = gastosAlquiler + gastosServicios + gastosSueldos + gastosPublicidad + gastosOtros;
             const utilidadBruta = ingresos - costoVentas;
-            const utilidadOperacional = utilidadBruta - totalGastosOp;
-            const utilidadNeta = utilidadOperacional;
+            const utilidadOperacional = utilidadBruta - totalGastos;
             
-            document.getElementById('row-ingresos').innerHTML = `
-                <tr>
-                    <td>Ventas totales</td>
-                    <td class="valor">$${ingresos.toLocaleString()}</td>
-                    <td></td>
-                </tr>
-            `;
-            
-            document.getElementById('row-costo').innerHTML = `
-                <tr>
-                    <td>Costo de ventas</td>
-                    <td class="valor">$${costoVentas.toLocaleString()}</td>
-                    <td></td>
-                </tr>
-            `;
-            
+            document.getElementById('row-ingresos').innerHTML = `<tr><td>Ventas totales</td><td class="valor">$${ingresos.toLocaleString()}</td></tr>`;
+            document.getElementById('row-costo').innerHTML = `<tr><td>Costo de ventas</td><td class="valor">$${costoVentas.toLocaleString()}</td></tr>`;
             document.getElementById('utilidad-bruta').innerHTML = `$${utilidadBruta.toLocaleString()}`;
             document.getElementById('utilidad-bruta').className = `valor ${utilidadBruta >= 0 ? 'valor-positivo' : 'valor-negativo'}`;
             
             let gastosHTML = '';
-            if (gastosAlquiler > 0) gastosHTML += `<tr><td>Alquileres</td><td class="valor">$${gastosAlquiler.toLocaleString()}</td><td></td></tr>`;
-            if (gastosServicios > 0) gastosHTML += `<tr><td>Servicios públicos</td><td class="valor">$${gastosServicios.toLocaleString()}</td><td></td></tr>`;
-            if (gastosSueldos > 0) gastosHTML += `<tr><td>Sueldos</td><td class="valor">$${gastosSueldos.toLocaleString()}</td><td></td></tr>`;
-            if (gastosPublicidad > 0) gastosHTML += `<tr><td>Publicidad</td><td class="valor">$${gastosPublicidad.toLocaleString()}</td><td></td></tr>`;
-            if (gastosOtros > 0) gastosHTML += `<tr><td>Otros gastos</td><td class="valor">$${gastosOtros.toLocaleString()}</td><td></td></tr>`;
-            gastosHTML += `<tr class="total-row"><td><strong>Total gastos operacionales</strong></td><td class="valor"><strong>$${totalGastosOp.toLocaleString()}</strong></td><td></td></tr>`;
-            
+            if(gastosAlquiler > 0) gastosHTML += `<tr><td>Alquileres</td><td class="valor">$${gastosAlquiler.toLocaleString()}</td></tr>`;
+            if(gastosServicios > 0) gastosHTML += `<tr><td>Servicios públicos</td><td class="valor">$${gastosServicios.toLocaleString()}</td></tr>`;
+            if(gastosSueldos > 0) gastosHTML += `<tr><td>Sueldos</td><td class="valor">$${gastosSueldos.toLocaleString()}</td></tr>`;
+            if(gastosPublicidad > 0) gastosHTML += `<tr><td>Publicidad</td><td class="valor">$${gastosPublicidad.toLocaleString()}</td></tr>`;
+            if(gastosOtros > 0) gastosHTML += `<tr><td>Otros gastos</td><td class="valor">$${gastosOtros.toLocaleString()}</td></tr>`;
+            gastosHTML += `<tr class="total-row"><td><strong>Total gastos</strong></td><td class="valor"><strong>$${totalGastos.toLocaleString()}</strong></td></tr>`;
             document.getElementById('row-gastos').innerHTML = gastosHTML;
             document.getElementById('utilidad-operacional').innerHTML = `$${utilidadOperacional.toLocaleString()}`;
             document.getElementById('utilidad-operacional').className = `valor ${utilidadOperacional >= 0 ? 'valor-positivo' : 'valor-negativo'}`;
-            document.getElementById('row-gastos-no').innerHTML = `<tr><td colspan="3">No hay gastos no operacionales</td></tr>`;
-            document.getElementById('utilidad-neta').innerHTML = `$${utilidadNeta.toLocaleString()}`;
-            document.getElementById('utilidad-neta').className = `valor ${utilidadNeta >= 0 ? 'valor-positivo' : 'valor-negativo'}`;
+            document.getElementById('row-gastos-no').innerHTML = `<tr><td colspan="2">No hay gastos no operacionales</td></tr>`;
+            document.getElementById('utilidad-neta').innerHTML = `$${utilidadOperacional.toLocaleString()}`;
+            document.getElementById('utilidad-neta').className = `valor ${utilidadOperacional >= 0 ? 'valor-positivo' : 'valor-negativo'}`;
         }
-        
+
         function cargarBalanceGeneral() {
-            const cuentasActivos = planCuentas.filter(c => c.tipo === 'ACTIVO');
-            const cuentasPasivos = planCuentas.filter(c => c.tipo === 'PASIVO');
-            const cuentasPatrimonio = planCuentas.filter(c => c.tipo === 'PATRIMONIO');
+            const activos = planCuentas.filter(c => c.tipo === 'ACTIVO');
+            const pasivos = planCuentas.filter(c => c.tipo === 'PASIVO');
+            const patrimonio = planCuentas.filter(c => c.tipo === 'PATRIMONIO');
             
-            let activosHTML = '';
-            let totalActivos = 0;
-            
-            for (const cuenta of cuentasActivos) {
-                const debito = movimientos.filter(m => m.codigo === cuenta.codigo).reduce((sum, m) => sum + m.debito, 0);
-                const credito = movimientos.filter(m => m.codigo === cuenta.codigo).reduce((sum, m) => sum + m.credito, 0);
+            let totalActivos = 0, activosHTML = '';
+            for(const cuenta of activos) {
+                const debito = movimientos.filter(m => m.codigo === cuenta.codigo).reduce((s,m) => s + m.debito, 0);
+                const credito = movimientos.filter(m => m.codigo === cuenta.codigo).reduce((s,m) => s + m.credito, 0);
                 const saldo = debito - credito;
                 totalActivos += saldo;
                 activosHTML += `<tr><td>${cuenta.nombre}</td><td class="valor">$${saldo.toLocaleString()}</td></tr>`;
             }
-            
             document.getElementById('tabla-activos').innerHTML = `<tbody>${activosHTML}</tbody>`;
             document.getElementById('total-activos').innerHTML = `$${totalActivos.toLocaleString()}`;
             
-            let pasivosHTML = '';
-            let totalPasivos = 0;
-            
-            for (const cuenta of cuentasPasivos) {
-                const debito = movimientos.filter(m => m.codigo === cuenta.codigo).reduce((sum, m) => sum + m.debito, 0);
-                const credito = movimientos.filter(m => m.codigo === cuenta.codigo).reduce((sum, m) => sum + m.credito, 0);
+            let totalPasivos = 0, pasivosHTML = '';
+            for(const cuenta of pasivos) {
+                const debito = movimientos.filter(m => m.codigo === cuenta.codigo).reduce((s,m) => s + m.debito, 0);
+                const credito = movimientos.filter(m => m.codigo === cuenta.codigo).reduce((s,m) => s + m.credito, 0);
                 const saldo = credito - debito;
                 totalPasivos += saldo;
                 pasivosHTML += `<tr><td>${cuenta.nombre}</td><td class="valor">$${saldo.toLocaleString()}</td></tr>`;
             }
             
-            document.getElementById('tabla-pasivos').innerHTML = `<tbody>${pasivosHTML}</tbody>`;
-            document.getElementById('total-pasivos').innerHTML = `$${totalPasivos.toLocaleString()}`;
-            
-            const ingresos = movimientos.filter(m => m.codigo === '413505').reduce((sum, m) => sum + m.credito, 0);
-            const gastos = movimientos.filter(m => {
-                const cuenta = planCuentas.find(c => c.codigo === m.codigo);
-                return cuenta && (cuenta.tipo === 'GASTO' || cuenta.tipo === 'COSTO');
-            }).reduce((sum, m) => sum + m.debito, 0);
+            const ingresos = movimientos.filter(m => m.codigo === '413505').reduce((s,m) => s + m.credito, 0);
+            const gastos = movimientos.filter(m => ['510506','511005','511010','513505','519595'].includes(m.codigo)).reduce((s,m) => s + m.debito, 0);
             const utilidad = ingresos - gastos;
             
-            let patrimonioTotal = 0;
-            let patrimonioHTML = '';
-            
-            for (const cuenta of cuentasPatrimonio) {
-                const debito = movimientos.filter(m => m.codigo === cuenta.codigo).reduce((sum, m) => sum + m.debito, 0);
-                const credito = movimientos.filter(m => m.codigo === cuenta.codigo).reduce((sum, m) => sum + m.credito, 0);
+            let totalPatrimonio = 0, patrimonioHTML = '';
+            for(const cuenta of patrimonio) {
+                const debito = movimientos.filter(m => m.codigo === cuenta.codigo).reduce((s,m) => s + m.debito, 0);
+                const credito = movimientos.filter(m => m.codigo === cuenta.codigo).reduce((s,m) => s + m.credito, 0);
                 const saldo = credito - debito;
-                patrimonioTotal += saldo;
+                totalPatrimonio += saldo;
                 patrimonioHTML += `<tr><td>${cuenta.nombre}</td><td class="valor">$${saldo.toLocaleString()}</td></tr>`;
             }
-            
             patrimonioHTML += `<tr><td>Utilidad del período</td><td class="valor">$${utilidad.toLocaleString()}</td></tr>`;
-            patrimonioTotal += utilidad;
+            totalPatrimonio += utilidad;
             
-            const pasivosTable = document.getElementById('tabla-pasivos');
-            pasivosTable.innerHTML += `<tr><td colspan="2" style="padding: 0.5rem;"></td></tr><tr><td style="font-weight: bold;">PATRIMONIO</td><td></td></tr>${patrimonioHTML}`;
-            document.getElementById('total-patrimonio').innerHTML = `$${patrimonioTotal.toLocaleString()}`;
-            document.getElementById('total-pasivo-patrimonio').innerHTML = `$${(totalPasivos + patrimonioTotal).toLocaleString()}`;
+            document.getElementById('tabla-pasivos').innerHTML = `<tbody>${pasivosHTML}</tbody>`;
+            document.getElementById('total-pasivos').innerHTML = `$${totalPasivos.toLocaleString()}`;
+            document.getElementById('total-patrimonio').innerHTML = `$${totalPatrimonio.toLocaleString()}`;
+            document.getElementById('total-pasivo-patrimonio').innerHTML = `$${(totalPasivos + totalPatrimonio).toLocaleString()}`;
         }
-        
+
         // ============================================
         // MAYOR DE CUENTAS
         // ============================================
         function cargarListaCuentasMayor() {
             const select = document.getElementById('select-cuenta-mayor');
-            
             select.innerHTML = '<option value="">Seleccionar cuenta...</option>';
-            for (const cuenta of planCuentas) {
-                if (cuenta.permite_movimiento) {
-                    select.innerHTML += `<option value="${cuenta.codigo}">${cuenta.codigo} - ${cuenta.nombre}</option>`;
-                }
+            for(const cuenta of planCuentas) {
+                if(cuenta.permite_movimiento) select.innerHTML += `<option value="${cuenta.codigo}">${cuenta.codigo} - ${cuenta.nombre}</option>`;
             }
         }
-        
+
         function cargarMayorCuenta() {
             const codigo = document.getElementById('select-cuenta-mayor').value;
             const contenido = document.getElementById('mayor-contenido');
-            
-            if (!codigo) {
-                contenido.innerHTML = '<p style="text-align: center; color: #a5a5a5;">Selecciona una cuenta para ver su movimiento</p>';
+            if(!codigo) {
+                contenido.innerHTML = '<p style="text-align: center;">Selecciona una cuenta para ver su movimiento</p>';
                 return;
             }
             
             const movimientosCuenta = movimientos.filter(m => m.codigo === codigo);
             const nombreCuenta = getNombreCuenta(codigo);
+            const cuenta = planCuentas.find(c => c.codigo === codigo);
             
-            let saldo = 0;
-            let totalDebitos = 0;
-            let totalCreditos = 0;
-            
-            for (const m of movimientosCuenta) {
-                saldo += m.debito;
-                saldo -= m.credito;
+            let totalDebitos = 0, totalCreditos = 0, saldo = 0;
+            for(const m of movimientosCuenta) {
                 totalDebitos += m.debito;
                 totalCreditos += m.credito;
+                saldo += m.debito - m.credito;
             }
+            
+            const saldoEsDebito = (cuenta?.naturaleza === 'DEUDORA' && saldo >= 0) || (cuenta?.naturaleza === 'ACREEDORA' && saldo <= 0);
             
             let movimientosHTML = `
                 <table class="mayor-table">
-                    <thead>
-                        <tr>
-                            <th>Fecha</th>
-                            <th>Detalle</th>
-                            <th>Débito</th>
-                            <th>Crédito</th>
-                        </thead>
+                    <thead><tr><th>Fecha</th><th>Detalle</th><th>Débito</th><th>Crédito</th></tr></thead>
                     <tbody>
-            `;
-            
-            for (const m of movimientosCuenta) {
-                const fecha = new Date(m.fecha);
-                const fechaStr = `${fecha.getDate()}/${fecha.getMonth() + 1}/${fecha.getFullYear()}`;
-                movimientosHTML += `
-                    <tr>
-                        <td>${fechaStr}</td>
-                        <td>${m.detalle}</td>
-                        <td class="debito">${m.debito > 0 ? `$${m.debito.toLocaleString()}` : '-'}</td>
-                        <td class="credito">${m.credito > 0 ? `$${m.credito.toLocaleString()}` : '-'}</td>
-                    </tr>
-                `;
-            }
-            
-            const naturaleza = planCuentas.find(c => c.codigo === codigo)?.naturaleza || 'DEUDORA';
-            const saldoEsDebito = (naturaleza === 'DEUDORA' && saldo >= 0) || (naturaleza === 'ACREEDORA' && saldo <= 0);
-            
-            movimientosHTML += `
+                        ${movimientosCuenta.map(m => {
+                            const fecha = new Date(m.fecha);
+                            const fechaStr = `${fecha.getDate()}/${fecha.getMonth()+1}/${fecha.getFullYear()}`;
+                            return `<tr><td>${fechaStr}</td><td>${m.detalle}</td><td class="debito">${m.debito > 0 ? `$${m.debito.toLocaleString()}` : '-'}</td><td class="credito">${m.credito > 0 ? `$${m.credito.toLocaleString()}` : '-'}</td></tr>`;
+                        }).join('')}
                     </tbody>
                     <tfoot>
-                        <tr class="saldo-final">
-                            <td colspan="2"><strong>TOTALES</strong></td>
-                            <td class="debito"><strong>$${totalDebitos.toLocaleString()}</strong></td>
-                            <td class="credito"><strong>$${totalCreditos.toLocaleString()}</strong></td>
-                        </tr>
-                        <tr class="saldo-final">
-                            <td colspan="2"><strong>SALDO FINAL</strong></td>
-                            <td colspan="2" class="${saldoEsDebito ? 'debito' : 'credito'}"><strong>$${Math.abs(saldo).toLocaleString()} ${saldoEsDebito ? 'Débito' : 'Crédito'}</strong></td>
-                        </tr>
+                        <tr class="saldo-final"><td colspan="2"><strong>TOTALES</strong></td><td class="debito"><strong>$${totalDebitos.toLocaleString()}</strong></td><td class="credito"><strong>$${totalCreditos.toLocaleString()}</strong></td></tr>
+                        <tr class="saldo-final"><td colspan="2"><strong>SALDO FINAL</strong></td><td colspan="2" class="${saldoEsDebito ? 'debito' : 'credito'}"><strong>$${Math.abs(saldo).toLocaleString()} ${saldoEsDebito ? 'Débito' : 'Crédito'}</strong></td></tr>
                     </tfoot>
                 </table>
-                
                 <div class="t-account">
                     <div class="t-card">
                         <div class="t-card-header">${nombreCuenta}</div>
                         <div class="t-card-body">
-                            <div class="t-debe">
-                                <h4>DEBE</h4>
-                                ${movimientosCuenta.filter(m => m.debito > 0).map(m => `<div>$${m.debito.toLocaleString()}</div>`).join('')}
-                                <div class="t-valor">Total: $${totalDebitos.toLocaleString()}</div>
-                            </div>
-                            <div class="t-haber">
-                                <h4>HABER</h4>
-                                ${movimientosCuenta.filter(m => m.credito > 0).map(m => `<div>$${m.credito.toLocaleString()}</div>`).join('')}
-                                <div class="t-valor">Total: $${totalCreditos.toLocaleString()}</div>
-                            </div>
+                            <div class="t-debe"><h4>DEBE</h4>${movimientosCuenta.filter(m => m.debito > 0).map(m => `<div>$${m.debito.toLocaleString()}</div>`).join('')}<div class="t-valor">Total: $${totalDebitos.toLocaleString()}</div></div>
+                            <div class="t-haber"><h4>HABER</h4>${movimientosCuenta.filter(m => m.credito > 0).map(m => `<div>$${m.credito.toLocaleString()}</div>`).join('')}<div class="t-valor">Total: $${totalCreditos.toLocaleString()}</div></div>
                         </div>
                         <div class="t-card-header">Saldo: $${Math.abs(saldo).toLocaleString()} ${saldoEsDebito ? 'Débito' : 'Crédito'}</div>
                     </div>
                 </div>
             `;
-            
             contenido.innerHTML = movimientosHTML;
         }
-        
-        function exportarResultados() {
-            let csvContent = "Concepto,Valor\n";
-            const ingresos = movimientos.filter(m => m.codigo === '413505').reduce((sum, m) => sum + m.credito, 0);
-            const costoVentas = movimientos.filter(m => m.codigo === '620501').reduce((sum, m) => sum + m.debito, 0);
-            const utilidadBruta = ingresos - costoVentas;
-            
-            csvContent += `"Ventas totales",${ingresos}\n`;
-            csvContent += `"Costo de ventas",${costoVentas}\n`;
-            csvContent += `"Utilidad Bruta",${utilidadBruta}\n`;
-            
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            const url = URL.createObjectURL(blob);
-            link.setAttribute('href', url);
-            link.setAttribute('download', `estado_resultados_${fechaInicio.toISOString().split('T')[0]}.csv`);
-            link.click();
-            URL.revokeObjectURL(url);
-        }
-        
-        function exportarBalance() {
-            let csvContent = "Cuenta,Saldo\n";
-            
-            const cuentasActivos = planCuentas.filter(c => c.tipo === 'ACTIVO');
-            for (const cuenta of cuentasActivos) {
-                const debito = movimientos.filter(m => m.codigo === cuenta.codigo).reduce((sum, m) => sum + m.debito, 0);
-                const credito = movimientos.filter(m => m.codigo === cuenta.codigo).reduce((sum, m) => sum + m.credito, 0);
-                const saldo = debito - credito;
-                csvContent += `"${cuenta.nombre}",${saldo}\n`;
-            }
-            
-            const cuentasPasivos = planCuentas.filter(c => c.tipo === 'PASIVO');
-            for (const cuenta of cuentasPasivos) {
-                const debito = movimientos.filter(m => m.codigo === cuenta.codigo).reduce((sum, m) => sum + m.debito, 0);
-                const credito = movimientos.filter(m => m.codigo === cuenta.codigo).reduce((sum, m) => sum + m.credito, 0);
-                const saldo = credito - debito;
-                csvContent += `"${cuenta.nombre}",${saldo}\n`;
-            }
-            
-            const ingresos = movimientos.filter(m => m.codigo === '413505').reduce((sum, m) => sum + m.credito, 0);
-            const gastos = movimientos.filter(m => {
-                const cuenta = planCuentas.find(c => c.codigo === m.codigo);
-                return cuenta && (cuenta.tipo === 'GASTO' || cuenta.tipo === 'COSTO');
-            }).reduce((sum, m) => sum + m.debito, 0);
-            const utilidad = ingresos - gastos;
-            csvContent += `"Utilidad del período",${utilidad}\n`;
-            
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            const url = URL.createObjectURL(blob);
-            link.setAttribute('href', url);
-            link.setAttribute('download', `balance_general_${fechaInicio.toISOString().split('T')[0]}.csv`);
-            link.click();
-            URL.revokeObjectURL(url);
-        }
-        
-        function exportarMayor() {
-            const codigo = document.getElementById('select-cuenta-mayor').value;
-            if (!codigo) {
-                mostrarAlerta('Selecciona una cuenta primero', 'error');
-                return;
-            }
-            
-            const movimientosCuenta = movimientos.filter(m => m.codigo === codigo);
-            const nombreCuenta = getNombreCuenta(codigo);
-            
-            let csvContent = "Fecha,Detalle,Débito,Crédito\n";
-            
-            for (const m of movimientosCuenta) {
-                const fecha = new Date(m.fecha);
-                const fechaStr = `${fecha.getDate()}/${fecha.getMonth() + 1}/${fecha.getFullYear()}`;
-                csvContent += `"${fechaStr}","${m.detalle}",${m.debito},${m.credito}\n`;
-            }
-            
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            const url = URL.createObjectURL(blob);
-            link.setAttribute('href', url);
-            link.setAttribute('download', `mayor_${codigo}_${fechaInicio.toISOString().split('T')[0]}.csv`);
-            link.click();
-            URL.revokeObjectURL(url);
-        }
-        
+
         // ============================================
-        // PLAN DE CUENTAS - CRUD COMPLETO
+        // PLAN DE CUENTAS - CRUD
         // ============================================
-        
         async function abrirPlanCuentas() {
             document.getElementById('modal-plan-cuentas').style.display = 'flex';
             await cargarPlanCuentas();
         }
         
-        function cerrarPlanCuentas() {
-            document.getElementById('modal-plan-cuentas').style.display = 'none';
-        }
-        
-        function cerrarEditarCuenta() {
-            document.getElementById('modal-editar-cuenta').style.display = 'none';
-            document.getElementById('form-cuenta').reset();
-            document.getElementById('cuenta-id').value = '';
-        }
+        function cerrarPlanCuentas() { document.getElementById('modal-plan-cuentas').style.display = 'none'; }
+        function cerrarEditarCuenta() { document.getElementById('modal-editar-cuenta').style.display = 'none'; document.getElementById('form-cuenta').reset(); document.getElementById('cuenta-id').value = ''; }
         
         async function cargarPlanCuentas() {
             try {
                 const token = JSON.parse(localStorage.getItem('admin_token'));
-                
                 const response = await fetch(`${SUPABASE_URL}/rest/v1/plan_cuentas?order=codigo.asc`, {
-                    headers: {
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${token.access_token}`
-                    }
+                    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}` }
                 });
-                
                 const cuentas = await response.json();
                 const tbody = document.getElementById('plan-cuentas-body');
+                if(cuentas.length === 0) { tbody.innerHTML = '<tr><td colspan="6">No hay cuentas</td></tr>'; return; }
                 
-                if (cuentas.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No hay cuentas registradas</td></tr>';
-                    return;
-                }
+                const getTipoColor = (tipo) => ({ 'ACTIVO':'#27ae60', 'PASIVO':'#e74c3c', 'PATRIMONIO':'#3498db', 'INGRESO':'#2ecc71', 'GASTO':'#e67e22', 'COSTO':'#9b59b6' }[tipo] || '#95a5a6');
                 
-                function getTipoColor(tipo) {
-                    const colores = {
-                        'ACTIVO': '#27ae60',
-                        'PASIVO': '#e74c3c',
-                        'PATRIMONIO': '#3498db',
-                        'INGRESO': '#2ecc71',
-                        'GASTO': '#e67e22',
-                        'COSTO': '#9b59b6'
-                    };
-                    return colores[tipo] || '#95a5a6';
-                }
-                
-                tbody.innerHTML = cuentas.map(cuenta => `
+                tbody.innerHTML = cuentas.map(c => `
                     <tr>
-                        <td><strong>${cuenta.codigo}</strong></td>
-                        <td>${cuenta.nombre}</td>
-                        <td><span style="background: ${getTipoColor(cuenta.tipo)}; color: white; padding: 0.2rem 0.5rem; border-radius: 20px;">${cuenta.tipo}</span></td>
-                        <td>${cuenta.naturaleza}</td>
-                        <td>${cuenta.permite_movimiento ? '✅ Sí' : '❌ No'}</td>
-                        <td>
-                            <button class="edit-btn" onclick="editarCuenta(${cuenta.id})">✏️ Editar</button>
-                            <button class="delete-btn" onclick="eliminarCuenta(${cuenta.id}, '${cuenta.codigo}')">🗑️ Eliminar</button>
-                        </td>
+                        <td><strong>${c.codigo}</strong></td><td>${c.nombre}</td>
+                        <td><span style="background:${getTipoColor(c.tipo)}; color:white; padding:0.2rem 0.5rem; border-radius:20px;">${c.tipo}</span></td>
+                        <td>${c.naturaleza}</td><td>${c.permite_movimiento ? '✅ Sí' : '❌ No'}</td>
+                        <td><button class="edit-btn" onclick="editarCuenta(${c.id})">✏️</button><button class="delete-btn" onclick="eliminarCuenta(${c.id}, '${c.codigo}')">🗑️</button></td>
                     </tr>
                 `).join('');
-                
-            } catch (error) {
-                console.error('Error cargando plan de cuentas:', error);
-            }
+            } catch(error) { console.error('Error:', error); }
         }
         
         function agregarCuenta() {
@@ -1617,41 +1258,26 @@
         async function editarCuenta(id) {
             try {
                 const token = JSON.parse(localStorage.getItem('admin_token'));
-                
                 const response = await fetch(`${SUPABASE_URL}/rest/v1/plan_cuentas?id=eq.${id}`, {
-                    headers: {
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${token.access_token}`
-                    }
+                    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}` }
                 });
-                
-                const cuentas = await response.json();
-                const cuenta = cuentas[0];
-                
-                document.getElementById('modal-cuenta-title').textContent = `✏️ Editar: ${cuenta.codigo} - ${cuenta.nombre}`;
+                const cuenta = (await response.json())[0];
+                document.getElementById('modal-cuenta-title').textContent = `✏️ Editar: ${cuenta.codigo}`;
                 document.getElementById('cuenta-id').value = cuenta.id;
                 document.getElementById('cuenta-codigo').value = cuenta.codigo;
                 document.getElementById('cuenta-nombre').value = cuenta.nombre;
                 document.getElementById('cuenta-tipo').value = cuenta.tipo;
                 document.getElementById('cuenta-naturaleza').value = cuenta.naturaleza;
                 document.getElementById('cuenta-permite-movimiento').checked = cuenta.permite_movimiento;
-                
                 document.getElementById('modal-editar-cuenta').style.display = 'flex';
-                
-            } catch (error) {
-                console.error('Error:', error);
-                mostrarAlerta('Error al cargar la cuenta', 'error');
-            }
+            } catch(error) { console.error('Error:', error); mostrarAlerta('Error al cargar cuenta', 'error'); }
         }
         
-        // Guardar cuenta (crear o actualizar)
         document.getElementById('form-cuenta')?.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
             try {
                 const token = JSON.parse(localStorage.getItem('admin_token'));
                 const id = document.getElementById('cuenta-id').value;
-                
                 const cuentaData = {
                     codigo: document.getElementById('cuenta-codigo').value,
                     nombre: document.getElementById('cuenta-nombre').value.toUpperCase(),
@@ -1659,456 +1285,131 @@
                     naturaleza: document.getElementById('cuenta-naturaleza').value,
                     permite_movimiento: document.getElementById('cuenta-permite-movimiento').checked
                 };
-                
                 let url = `${SUPABASE_URL}/rest/v1/plan_cuentas`;
                 let method = 'POST';
-                
-                if (id) {
-                    url += `?id=eq.${id}`;
-                    method = 'PATCH';
-                }
-                
-                const response = await fetch(url, {
-                    method: method,
-                    headers: {
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${token.access_token}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(cuentaData)
-                });
-                
-                if (response.ok) {
+                if(id) { url += `?id=eq.${id}`; method = 'PATCH'; }
+                const response = await fetch(url, { method, headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}`, 'Content-Type': 'application/json' }, body: JSON.stringify(cuentaData) });
+                if(response.ok) {
                     mostrarAlerta(id ? '✅ Cuenta actualizada' : '✅ Cuenta creada', 'success');
                     cerrarEditarCuenta();
-                    await cargarPlanCuentas();
                     await cargarPlanCuentasGlobal();
                     await cargarMovimientos();
-                } else {
-                    const error = await response.json();
-                    mostrarAlerta('Error: ' + (error.message || 'No se pudo guardar'), 'error');
-                }
-                
-            } catch (error) {
-                console.error('Error:', error);
-                mostrarAlerta('Error de conexión', 'error');
-            }
+                } else { mostrarAlerta('Error al guardar', 'error'); }
+            } catch(error) { console.error('Error:', error); mostrarAlerta('Error de conexión', 'error'); }
         });
         
         async function eliminarCuenta(id, codigo) {
-            // Verificar si la cuenta tiene movimientos
-            const tieneMovimientos = movimientos.some(m => m.codigo === codigo);
-            
-            if (tieneMovimientos) {
-                mostrarAlerta(`No se puede eliminar la cuenta ${codigo} porque tiene movimientos asociados`, 'error');
+            if(movimientos.some(m => m.codigo === codigo)) {
+                mostrarAlerta(`No se puede eliminar ${codigo} porque tiene movimientos`, 'error');
                 return;
             }
-            
-            if (!confirm(`¿Eliminar la cuenta ${codigo}?`)) return;
-            
+            if(!confirm(`¿Eliminar cuenta ${codigo}?`)) return;
             try {
                 const token = JSON.parse(localStorage.getItem('admin_token'));
-                
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/plan_cuentas?id=eq.${id}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${token.access_token}`
-                    }
-                });
-                
-                if (response.ok) {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/plan_cuentas?id=eq.${id}`, { method: 'DELETE', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}` } });
+                if(response.ok) {
                     mostrarAlerta('✅ Cuenta eliminada', 'success');
-                    await cargarPlanCuentas();
                     await cargarPlanCuentasGlobal();
-                } else {
-                    const error = await response.json();
-                    mostrarAlerta('Error: ' + (error.message || 'No se puede eliminar'), 'error');
-                }
-                
-            } catch (error) {
-                console.error('Error:', error);
-                mostrarAlerta('Error de conexión', 'error');
+                    await cargarMovimientos();
+                } else { mostrarAlerta('Error al eliminar', 'error'); }
+            } catch(error) { console.error('Error:', error); mostrarAlerta('Error de conexión', 'error'); }
+        }
+
+        // ============================================
+        // EXPORTACIONES
+        // ============================================
+        function exportarExcel() {
+            let csv = "Clase,ID,Fecha,Código,Cuenta,Detalle,Débito,Crédito\n";
+            movimientos.forEach(m => {
+                const fecha = new Date(m.fecha);
+                const fechaStr = `${fecha.getDate()}/${fecha.getMonth()+1}/${fecha.getFullYear()}`;
+                csv += `${m.clase},${m.id},${fechaStr},${m.codigo},${m.nombre},${m.detalle},${m.debito},${m.credito}\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `libro_diario_${fechaInicio.toISOString().split('T')[0]}.csv`;
+            link.click();
+            URL.revokeObjectURL(link.href);
+        }
+        
+        function exportarResultados() {
+            const ingresos = movimientos.filter(m => m.codigo === '413505').reduce((s,m) => s + m.credito, 0);
+            const costo = movimientos.filter(m => m.codigo === '620501').reduce((s,m) => s + m.debito, 0);
+            let csv = `Concepto,Valor\nVentas totales,${ingresos}\nCosto de ventas,${costo}\nUtilidad Bruta,${ingresos - costo}`;
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `estado_resultados_${fechaInicio.toISOString().split('T')[0]}.csv`;
+            link.click();
+            URL.revokeObjectURL(link.href);
+        }
+        
+        function exportarBalance() {
+            let csv = "Cuenta,Saldo\n";
+            const activos = planCuentas.filter(c => c.tipo === 'ACTIVO');
+            for(const c of activos) {
+                const saldo = movimientos.filter(m => m.codigo === c.codigo).reduce((s,m) => s + m.debito - m.credito, 0);
+                csv += `${c.nombre},${saldo}\n`;
             }
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `balance_general_${fechaInicio.toISOString().split('T')[0]}.csv`;
+            link.click();
+            URL.revokeObjectURL(link.href);
+        }
+        
+        function exportarMayor() {
+            const codigo = document.getElementById('select-cuenta-mayor').value;
+            if(!codigo) { mostrarAlerta('Selecciona una cuenta', 'error'); return; }
+            const movs = movimientos.filter(m => m.codigo === codigo);
+            let csv = "Fecha,Detalle,Débito,Crédito\n";
+            movs.forEach(m => {
+                const fecha = new Date(m.fecha);
+                const fechaStr = `${fecha.getDate()}/${fecha.getMonth()+1}/${fecha.getFullYear()}`;
+                csv += `${fechaStr},${m.detalle},${m.debito},${m.credito}\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `mayor_${codigo}_${fechaInicio.toISOString().split('T')[0]}.csv`;
+            link.click();
+            URL.revokeObjectURL(link.href);
         }
         
         function exportarPlanCuentas() {
-            let csvContent = "Código,Nombre,Tipo,Naturaleza,Permite movimiento\n";
-            
+            let csv = "Código,Nombre,Tipo,Naturaleza,Permite movimiento\n";
             const rows = document.querySelectorAll('#plan-cuentas-body tr');
             rows.forEach(row => {
                 const cells = row.querySelectorAll('td');
-                if (cells.length >= 5) {
-                    csvContent += `"${cells[0].innerText}","${cells[1].innerText}","${cells[2].innerText}","${cells[3].innerText}","${cells[4].innerText}"\n`;
-                }
+                if(cells.length >= 5) csv += `${cells[0].innerText},${cells[1].innerText},${cells[2].innerText},${cells[3].innerText},${cells[4].innerText}\n`;
             });
-            
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const blob = new Blob([csv], { type: 'text/csv' });
             const link = document.createElement('a');
-            const url = URL.createObjectURL(blob);
-            link.setAttribute('href', url);
-            link.setAttribute('download', `plan_cuentas_${new Date().toISOString().split('T')[0]}.csv`);
+            link.href = URL.createObjectURL(blob);
+            link.download = `plan_cuentas_${new Date().toISOString().split('T')[0]}.csv`;
             link.click();
-            URL.revokeObjectURL(url);
+            URL.revokeObjectURL(link.href);
         }
         
-        // ============================================
-        // FUNCIONES UTILITARIAS
-        // ============================================
+        function mostrarTab(tabId, event) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.getElementById(`tab-${tabId}`).classList.add('active');
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            if(event && event.target) event.target.classList.add('active');
+            if(tabId === 'resultados') cargarEstadoResultados();
+            else if(tabId === 'balance') cargarBalanceGeneral();
+            else if(tabId === 'mayor') cargarListaCuentasMayor();
+        }
         
         function mostrarAlerta(mensaje, tipo) {
             const alerta = document.createElement('div');
             alerta.textContent = mensaje;
-            alerta.style.cssText = `
-                position: fixed;
-                bottom: 20px;
-                right: 20px;
-                padding: 1rem 2rem;
-                background: ${tipo === 'success' ? '#27ae60' : '#ff4757'};
-                color: white;
-                border-radius: 10px;
-                z-index: 10000;
-                animation: slideIn 0.3s ease;
-                box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            `;
+            alerta.style.cssText = `position:fixed; bottom:20px; right:20px; padding:1rem 2rem; background:${tipo === 'success' ? '#27ae60' : '#ff4757'}; color:white; border-radius:10px; z-index:10000; animation:slideIn 0.3s ease;`;
             document.body.appendChild(alerta);
             setTimeout(() => alerta.remove(), 3000);
         }
-        <!-- MODAL: Editar Transacción -->
-<div id="modal-editar-transaccion" class="modal" style="display: none;">
-    <div class="modal-content" style="max-width: 600px;">
-        <div class="modal-header">
-            <h2 id="modal-transaccion-title">✏️ Editar Transacción</h2>
-            <button class="close-btn" onclick="cerrarEditarTransaccion()">&times;</button>
-        </div>
-        
-        <form id="form-editar-transaccion">
-            <input type="hidden" id="transaccion-id">
-            <input type="hidden" id="transaccion-tipo">
-            
-            <div class="form-group">
-                <label>📅 Fecha</label>
-                <input type="date" id="transaccion-fecha" required>
-            </div>
-            
-            <div class="form-group" id="grupo-proveedor" style="display: none;">
-                <label>🏢 Proveedor</label>
-                <select id="transaccion-proveedor" required>
-                    <option value="">Seleccionar proveedor...</option>
-                </select>
-            </div>
-            
-            <div class="form-group" id="grupo-producto" style="display: none;">
-                <label>📦 Producto/Servicio</label>
-                <input type="text" id="transaccion-producto" required>
-            </div>
-            
-            <div class="form-group" id="grupo-cantidad" style="display: none;">
-                <label>🔢 Cantidad</label>
-                <input type="number" id="transaccion-cantidad" step="1" min="1" required>
-            </div>
-            
-            <div class="form-group" id="grupo-precio" style="display: none;">
-                <label>💰 Precio unitario</label>
-                <input type="number" id="transaccion-precio" step="1000" min="0" required>
-            </div>
-            
-            <div class="form-group" id="grupo-monto" style="display: none;">
-                <label>💵 Monto total</label>
-                <input type="number" id="transaccion-monto" step="1000" min="0" required>
-            </div>
-            
-            <div class="form-group" id="grupo-concepto" style="display: none;">
-                <label>📝 Concepto</label>
-                <input type="text" id="transaccion-concepto" required>
-            </div>
-            
-            <div class="form-group" id="grupo-categoria" style="display: none;">
-                <label>🏷️ Categoría</label>
-                <select id="transaccion-categoria">
-                    <option value="Alquiler">Alquiler</option>
-                    <option value="Servicios">Servicios</option>
-                    <option value="Sueldos">Sueldos</option>
-                    <option value="Marketing">Marketing</option>
-                    <option value="Otros">Otros</option>
-                </select>
-            </div>
-            
-            <div class="form-group" id="grupo-estado" style="display: none;">
-                <label>📊 Estado</label>
-                <select id="transaccion-estado">
-                    <option value="Pendiente">Pendiente</option>
-                    <option value="Pagada">Pagada</option>
-                    <option value="Recibida">Recibida</option>
-                </select>
-            </div>
-            
-            <div class="form-buttons">
-                <button type="submit" class="submit-btn">💾 Guardar Cambios</button>
-                <button type="button" onclick="cerrarEditarTransaccion()" class="cancel-btn">Cancelar</button>
-            </div>
-        </form>
-        
-        <div id="transaccion-eliminar" style="margin-top: 1rem; text-align: center; border-top: 1px solid #ffe4e9; padding-top: 1rem;">
-            <button type="button" class="delete-btn" onclick="eliminarTransaccion()" style="background: #ff4757; padding: 0.5rem 1rem;">
-                🗑️ Eliminar esta transacción
-            </button>
-        </div>
-    </div>
-</div>
-        /* Botones de acción en el libro diario */
-.action-buttons {
-    display: flex;
-    gap: 0.3rem;
-    justify-content: center;
-}
-
-.edit-transaccion-btn {
-    background: #ffb6c1;
-    color: white;
-    border: none;
-    padding: 0.2rem 0.5rem;
-    border-radius: 15px;
-    cursor: pointer;
-    font-size: 0.7rem;
-}
-
-.edit-transaccion-btn:hover {
-    background: #ff9a9e;
-}
-        // ============================================
-// EDITAR TRANSACCIONES (VENTAS, COMPRAS, GASTOS)
-// ============================================
-
-let transaccionActual = null;
-
-async function editarTransaccion(clase, id, fecha) {
-    try {
-        const token = JSON.parse(localStorage.getItem('admin_token'));
-        transaccionActual = { clase, id, fecha };
-        
-        // Determinar qué tipo de transacción es según la clase
-        let tipo = '';
-        if (clase === 1 || clase === 4) {
-            tipo = 'venta';
-        } else if (clase === 2 || clase === 6) {
-            tipo = 'compra';
-        } else if (clase === 5) {
-            tipo = 'gasto';
-        }
-        
-        document.getElementById('modal-transaccion-title').textContent = `✏️ Editar ${tipo.toUpperCase()}`;
-        document.getElementById('transaccion-tipo').value = tipo;
-        document.getElementById('transaccion-id').value = id;
-        document.getElementById('transaccion-fecha').value = fecha.split('T')[0];
-        
-        // Ocultar todos los grupos primero
-        document.getElementById('grupo-proveedor').style.display = 'none';
-        document.getElementById('grupo-producto').style.display = 'none';
-        document.getElementById('grupo-cantidad').style.display = 'none';
-        document.getElementById('grupo-precio').style.display = 'none';
-        document.getElementById('grupo-monto').style.display = 'none';
-        document.getElementById('grupo-concepto').style.display = 'none';
-        document.getElementById('grupo-categoria').style.display = 'none';
-        document.getElementById('grupo-estado').style.display = 'none';
-        
-        // Cargar datos según el tipo
-        if (tipo === 'venta') {
-            const response = await fetch(`${SUPABASE_URL}/rest/v1/ventas?id=eq.${id}`, {
-                headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}` }
-            });
-            const data = await response.json();
-            const venta = data[0];
-            
-            document.getElementById('grupo-producto').style.display = 'block';
-            document.getElementById('grupo-cantidad').style.display = 'block';
-            document.getElementById('grupo-precio').style.display = 'block';
-            document.getElementById('grupo-estado').style.display = 'block';
-            
-            document.getElementById('transaccion-producto').value = venta.productos || '';
-            document.getElementById('transaccion-cantidad').value = venta.cantidad || 1;
-            document.getElementById('transaccion-precio').value = (venta.total / (venta.cantidad || 1)) || 0;
-            document.getElementById('transaccion-estado').value = venta.estado || 'Pagada';
-            
-        } else if (tipo === 'compra') {
-            // Cargar proveedores para el select
-            const proveedoresRes = await fetch(`${SUPABASE_URL}/rest/v1/proveedores`, {
-                headers: { 'apikey': SUPABASE_KEY }
-            });
-            const proveedores = await proveedoresRes.json();
-            
-            const proveedorSelect = document.getElementById('transaccion-proveedor');
-            proveedorSelect.innerHTML = '<option value="">Seleccionar proveedor</option>';
-            proveedores.forEach(p => {
-                proveedorSelect.innerHTML += `<option value="${p.id}">${p.nombre}</option>`;
-            });
-            
-            const response = await fetch(`${SUPABASE_URL}/rest/v1/compras?id=eq.${id}`, {
-                headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}` }
-            });
-            const data = await response.json();
-            const compra = data[0];
-            
-            document.getElementById('grupo-proveedor').style.display = 'block';
-            document.getElementById('grupo-producto').style.display = 'block';
-            document.getElementById('grupo-cantidad').style.display = 'block';
-            document.getElementById('grupo-precio').style.display = 'block';
-            document.getElementById('grupo-estado').style.display = 'block';
-            
-            document.getElementById('transaccion-proveedor').value = compra.proveedor_id || '';
-            document.getElementById('transaccion-producto').value = compra.producto || '';
-            document.getElementById('transaccion-cantidad').value = compra.cantidad || 1;
-            document.getElementById('transaccion-precio').value = compra.precio_unitario || 0;
-            document.getElementById('transaccion-estado').value = compra.estado || 'Pendiente';
-            
-        } else if (tipo === 'gasto') {
-            const response = await fetch(`${SUPABASE_URL}/rest/v1/gastos?id=eq.${id}`, {
-                headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}` }
-            });
-            const data = await response.json();
-            const gasto = data[0];
-            
-            document.getElementById('grupo-concepto').style.display = 'block';
-            document.getElementById('grupo-monto').style.display = 'block';
-            document.getElementById('grupo-categoria').style.display = 'block';
-            
-            document.getElementById('transaccion-concepto').value = gasto.concepto || '';
-            document.getElementById('transaccion-monto').value = gasto.monto || 0;
-            document.getElementById('transaccion-categoria').value = gasto.categoria || 'Otros';
-        }
-        
-        document.getElementById('modal-editar-transaccion').style.display = 'flex';
-        
-    } catch (error) {
-        console.error('Error al cargar transacción:', error);
-        mostrarAlerta('Error al cargar los datos', 'error');
-    }
-}
-
-function cerrarEditarTransaccion() {
-    document.getElementById('modal-editar-transaccion').style.display = 'none';
-    document.getElementById('form-editar-transaccion').reset();
-    transaccionActual = null;
-}
-
-// Guardar cambios de la transacción
-document.getElementById('form-editar-transaccion')?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    try {
-        const token = JSON.parse(localStorage.getItem('admin_token'));
-        const tipo = document.getElementById('transaccion-tipo').value;
-        const id = document.getElementById('transaccion-id').value;
-        const fecha = document.getElementById('transaccion-fecha').value;
-        
-        let url = '';
-        let data = {};
-        
-        if (tipo === 'venta') {
-            const cantidad = parseInt(document.getElementById('transaccion-cantidad').value);
-            const precio = parseFloat(document.getElementById('transaccion-precio').value);
-            const total = cantidad * precio;
-            
-            data = {
-                fecha: fecha,
-                productos: document.getElementById('transaccion-producto').value,
-                cantidad: cantidad,
-                total: total,
-                estado: document.getElementById('transaccion-estado').value
-            };
-            url = `${SUPABASE_URL}/rest/v1/ventas?id=eq.${id}`;
-            
-        } else if (tipo === 'compra') {
-            const cantidad = parseInt(document.getElementById('transaccion-cantidad').value);
-            const precio = parseFloat(document.getElementById('transaccion-precio').value);
-            const total = cantidad * precio;
-            
-            data = {
-                fecha: fecha,
-                proveedor_id: parseInt(document.getElementById('transaccion-proveedor').value),
-                producto: document.getElementById('transaccion-producto').value,
-                cantidad: cantidad,
-                precio_unitario: precio,
-                total: total,
-                estado: document.getElementById('transaccion-estado').value
-            };
-            url = `${SUPABASE_URL}/rest/v1/compras?id=eq.${id}`;
-            
-        } else if (tipo === 'gasto') {
-            data = {
-                fecha: fecha,
-                concepto: document.getElementById('transaccion-concepto').value,
-                monto: parseFloat(document.getElementById('transaccion-monto').value),
-                categoria: document.getElementById('transaccion-categoria').value,
-                metodo_pago: 'Efectivo'
-            };
-            url = `${SUPABASE_URL}/rest/v1/gastos?id=eq.${id}`;
-        }
-        
-        const response = await fetch(url, {
-            method: 'PATCH',
-            headers: {
-                'apikey': SUPABASE_KEY,
-                'Authorization': `Bearer ${token.access_token}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        });
-        
-        if (response.ok) {
-            mostrarAlerta('✅ Transacción actualizada correctamente', 'success');
-            cerrarEditarTransaccion();
-            await cargarMovimientos(); // Recargar todo
-        } else {
-            const error = await response.json();
-            mostrarAlerta('Error: ' + (error.message || 'No se pudo actualizar'), 'error');
-        }
-        
-    } catch (error) {
-        console.error('Error:', error);
-        mostrarAlerta('Error de conexión', 'error');
-    }
-});
-
-async function eliminarTransaccion() {
-    if (!confirm('⚠️ ¿Estás SEGURA de eliminar esta transacción? Esta acción NO se puede deshacer.')) return;
-    
-    try {
-        const token = JSON.parse(localStorage.getItem('admin_token'));
-        const tipo = document.getElementById('transaccion-tipo').value;
-        const id = document.getElementById('transaccion-id').value;
-        
-        let url = '';
-        if (tipo === 'venta') {
-            url = `${SUPABASE_URL}/rest/v1/ventas?id=eq.${id}`;
-        } else if (tipo === 'compra') {
-            url = `${SUPABASE_URL}/rest/v1/compras?id=eq.${id}`;
-        } else if (tipo === 'gasto') {
-            url = `${SUPABASE_URL}/rest/v1/gastos?id=eq.${id}`;
-        }
-        
-        const response = await fetch(url, {
-            method: 'DELETE',
-            headers: {
-                'apikey': SUPABASE_KEY,
-                'Authorization': `Bearer ${token.access_token}`
-            }
-        });
-        
-        if (response.ok) {
-            mostrarAlerta('✅ Transacción eliminada', 'success');
-            cerrarEditarTransaccion();
-            await cargarMovimientos();
-        } else {
-            mostrarAlerta('Error al eliminar', 'error');
-        }
-        
-    } catch (error) {
-        console.error('Error:', error);
-        mostrarAlerta('Error de conexión', 'error');
-    }
-}
     </script>
-    
 </body>
 </html>
