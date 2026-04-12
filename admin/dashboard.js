@@ -965,75 +965,70 @@ async function eliminarProveedor(id) {
 
 async function cargarCompras() {
     try {
-        console.log('Cargando compras...');
+        let url = `${SUPABASE_URL}/rest/v1/compras?select=*,proveedores(nombre)&order=fecha.desc`;
         
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/compras?select=*,proveedores(nombre)&order=fecha.desc`, {
+        // Aplicar filtros de fecha
+        if (fechaInicioCompras) {
+            url += `&fecha=gte.${fechaInicioCompras.toISOString().split('T')[0]}`;
+        }
+        if (fechaFinCompras) {
+            url += `&fecha=lte.${fechaFinCompras.toISOString().split('T')[0]}`;
+        }
+        
+        const response = await fetch(url, {
             headers: { 'apikey': SUPABASE_KEY }
         });
         
-        if (!response.ok) {
-            throw new Error('Error al cargar compras');
-        }
+        if (!response.ok) throw new Error('Error al cargar compras');
         
         const compras = await response.json();
-        console.log('Compras cargadas:', compras);
-        
         const tbody = document.querySelector('#tabla-compras tbody');
+        
         if (!tbody) return;
         
         if (compras.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="8" style="text-align: center;">No hay compras registradas</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">No hay compras en este período</td></tr>';
+            document.getElementById('stats-compras-mes').textContent = '$0';
+            document.getElementById('stats-compras-pendientes').textContent = '0';
             return;
         }
         
-        const fechaInicio = new Date();
-        fechaInicio.setDate(1);
-        fechaInicio.setHours(0, 0, 0, 0);
-        
-        const comprasMes = compras.filter(c => {
-            const fechaCompra = new Date(c.fecha + 'T12:00:00');
-            return fechaCompra >= fechaInicio;
-        });
-        
-        const totalMes = comprasMes.reduce((sum, c) => sum + (c.total || 0), 0);
-        document.getElementById('stats-compras-mes').textContent = `$${totalMes.toLocaleString()}`;
-        
+        // Calcular totales
+        const totalMes = compras.reduce((sum, c) => sum + (c.total || 0), 0);
         const pendientes = compras.filter(c => c.estado === 'Pendiente').length;
+        
+        document.getElementById('stats-compras-mes').textContent = `$${totalMes.toLocaleString()}`;
         document.getElementById('stats-compras-pendientes').textContent = pendientes;
         
         tbody.innerHTML = compras.map(compra => {
-            const fechaCompra = new Date(compra.fecha + 'T12:00:00');
-            const fechaFormateada = fechaCompra.toLocaleDateString('es-CO', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit'
-            });
+            const fecha = new Date(compra.fecha);
+            const fechaFormateada = fecha.toLocaleDateString('es-CO');
             
             return `
-            <tr>
-                <td>${fechaFormateada}</td>
-                <td>${compra.proveedores?.nombre || 'N/A'}</td>
-                <td>${compra.producto || 'Varios'}</td>
-                <td>${compra.cantidad || '-'}</td>
-                <td>$${(compra.total || 0).toLocaleString()}</td>
-                <td>
-                    <span class="estado-badge ${compra.estado === 'Pagada' ? 'estado-pagada' : compra.estado === 'Recibida' ? 'estado-recibida' : 'estado-pendiente'}">
-                        ${compra.estado || 'Pendiente'}
-                    </span>
-                </td>
-                <td>${compra.puc || '620501'}</td>
-                <td>
-                    <button class="action-btn" onclick="editarCompra(${compra.id})" title="Editar">✏️</button>
-                    <button class="action-btn delete-btn" onclick="eliminarCompra(${compra.id})" title="Eliminar">🗑️</button>
-                </td>
-            </tr>
-        `}).join('');
+                <tr>
+                    <td>${fechaFormateada}</td>
+                    <td>${compra.proveedores?.nombre || 'N/A'}</td>
+                    <td>${compra.producto || '-'}</td>
+                    <td>${compra.cantidad || '-'}</td>
+                    <td>$${(compra.total || 0).toLocaleString()}</td>
+                    <td>
+                        <span class="estado-badge ${compra.estado === 'Pagada' ? 'estado-pagada' : compra.estado === 'Recibida' ? 'estado-recibida' : 'estado-pendiente'}">
+                            ${compra.estado || 'Pendiente'}
+                        </span>
+                    </td>
+                    <td>
+                        <button class="action-btn" onclick="editarCompra(${compra.id})" title="Editar">✏️</button>
+                        <button class="action-btn delete-btn" onclick="eliminarCompra(${compra.id})" title="Eliminar">🗑️</button>
+                    </td>
+                </tr>
+            `;
+        }).join('');
         
     } catch (error) {
         console.error('Error cargando compras:', error);
         const tbody = document.querySelector('#tabla-compras tbody');
         if (tbody) {
-            tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: #ff4757;">Error al cargar compras</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #ff4757;">Error al cargar compras</td></tr>';
         }
     }
 }
@@ -1322,48 +1317,54 @@ async function actualizarStockPorCompra(varianteId, cantidad) {
 
 async function cargarGastos() {
     try {
-        console.log('Cargando gastos...');
+        let url = `${SUPABASE_URL}/rest/v1/gastos?order=fecha.desc`;
         
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/gastos?order=fecha.desc`, {
+        // Aplicar filtros de fecha
+        if (fechaInicioGastos) {
+            url += `&fecha=gte.${fechaInicioGastos.toISOString().split('T')[0]}`;
+        }
+        if (fechaFinGastos) {
+            url += `&fecha=lte.${fechaFinGastos.toISOString().split('T')[0]}`;
+        }
+        
+        const response = await fetch(url, {
             headers: { 'apikey': SUPABASE_KEY }
         });
         
-        if (!response.ok) {
-            throw new Error('Error al cargar gastos');
-        }
+        if (!response.ok) throw new Error('Error al cargar gastos');
         
         const gastos = await response.json();
-        console.log('Gastos cargados:', gastos);
-        
         const tbody = document.querySelector('#tabla-gastos tbody');
+        
         if (!tbody) return;
         
         if (gastos.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No hay gastos registrados</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No hay gastos en este período</td></tr>';
+            document.getElementById('stats-gastos-mes').textContent = '$0';
             return;
         }
         
-        const fechaInicio = new Date();
-        fechaInicio.setDate(1);
-        fechaInicio.setHours(0, 0, 0, 0);
-        
-        const gastosMes = gastos.filter(g => new Date(g.fecha) >= fechaInicio);
-        const totalMes = gastosMes.reduce((sum, g) => sum + (g.monto || 0), 0);
+        const totalMes = gastos.reduce((sum, g) => sum + (g.monto || 0), 0);
         document.getElementById('stats-gastos-mes').textContent = `$${totalMes.toLocaleString()}`;
         
-        tbody.innerHTML = gastos.map(gasto => `
-            <tr>
-                <td>${new Date(gasto.fecha).toLocaleDateString()}</td>
-                <td>${gasto.concepto}</td>
-                <td>${gasto.categoria}</td>
-                <td>$${(gasto.monto || 0).toLocaleString()}</td>
-                <td>${gasto.metodo_pago || 'Efectivo'}</td>
-                <td>
-                    <button class="action-btn" onclick="editarGasto(${gasto.id})" title="Editar">✏️</button>
-                    <button class="action-btn delete-btn" onclick="eliminarGasto(${gasto.id})" title="Eliminar">🗑️</button>
-                </td>
-            </tr>
-        `).join('');
+        tbody.innerHTML = gastos.map(gasto => {
+            const fecha = new Date(gasto.fecha);
+            const fechaFormateada = fecha.toLocaleDateString('es-CO');
+            
+            return `
+                <tr>
+                    <td>${fechaFormateada}</td>
+                    <td>${gasto.concepto}</td>
+                    <td>${gasto.categoria}</td>
+                    <td>$${(gasto.monto || 0).toLocaleString()}</td>
+                    <td>${gasto.metodo_pago || 'Efectivo'}</td>
+                    <td>
+                        <button class="action-btn" onclick="editarGasto(${gasto.id})" title="Editar">✏️</button>
+                        <button class="action-btn delete-btn" onclick="eliminarGasto(${gasto.id})" title="Eliminar">🗑️</button>
+                    </td>
+                </tr>
+            `;
+        }).join('');
         
     } catch (error) {
         console.error('Error cargando gastos:', error);
@@ -1895,27 +1896,35 @@ async function cargarInventario() {
 
 async function cargarVentas() {
     try {
-        console.log('Cargando ventas...');
+        let url = `${SUPABASE_URL}/rest/v1/ventas?select=*&order=fecha.desc`;
         
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/ventas?select=*&order=fecha.desc`, {
+        // Aplicar filtros de fecha
+        if (fechaInicioVentas) {
+            url += `&fecha=gte.${fechaInicioVentas.toISOString()}`;
+        }
+        if (fechaFinVentas) {
+            url += `&fecha=lte.${fechaFinVentas.toISOString()}`;
+        }
+        
+        const response = await fetch(url, {
             headers: { 'apikey': SUPABASE_KEY }
         });
         
-        if (!response.ok) {
-            throw new Error('Error al cargar ventas');
-        }
+        if (!response.ok) throw new Error('Error al cargar ventas');
         
         const ventas = await response.json();
-        console.log('Ventas cargadas:', ventas);
-        
         const tbody = document.querySelector('#tabla-ventas tbody');
+        
         if (!tbody) return;
         
         if (ventas.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No hay ventas registradas</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No hay ventas en este período</td></tr>';
+            document.getElementById('stats-ventas-hoy').textContent = '$0';
+            document.getElementById('stats-ventas-mes').textContent = '$0';
             return;
         }
         
+        // Ventas de hoy
         const hoy = new Date();
         hoy.setHours(0, 0, 0, 0);
         
@@ -1923,30 +1932,38 @@ async function cargarVentas() {
         const totalHoy = ventasHoy.reduce((sum, v) => sum + (v.total || 0), 0);
         document.getElementById('stats-ventas-hoy').textContent = `$${totalHoy.toLocaleString()}`;
         
-        const fechaInicio = new Date();
-        fechaInicio.setDate(1);
-        fechaInicio.setHours(0, 0, 0, 0);
-        
-        const ventasMes = ventas.filter(v => new Date(v.fecha) >= fechaInicio);
+        // Ventas del mes (si no hay filtro, calculamos mes actual)
+        let ventasMes = ventas;
+        if (!fechaInicioVentas && !fechaFinVentas) {
+            const fechaInicioMes = new Date();
+            fechaInicioMes.setDate(1);
+            fechaInicioMes.setHours(0, 0, 0, 0);
+            ventasMes = ventas.filter(v => new Date(v.fecha) >= fechaInicioMes);
+        }
         const totalMes = ventasMes.reduce((sum, v) => sum + (v.total || 0), 0);
         document.getElementById('stats-ventas-mes').textContent = `$${totalMes.toLocaleString()}`;
         
-        tbody.innerHTML = ventas.map(venta => `
-            <tr>
-                <td>${new Date(venta.fecha).toLocaleString()}</td>
-                <td>${venta.productos || 'Venta'}</td>
-                <td>$${(venta.total || 0).toLocaleString()}</td>
-                <td>
-                    <span style="background: #ffe4e9; padding: 0.2rem 0.8rem; border-radius: 50px;">
-                        ${venta.metodo_pago || 'Efectivo'}
-                    </span>
-                </td>
-                <td>${venta.vendedor || '-'}</td>
-                <td>
-                    <button class="action-btn" onclick="verFactura(${venta.id})" title="Ver factura">🧾</button>
-                </td>
-            </tr>
-        `).join('');
+        tbody.innerHTML = ventas.map(venta => {
+            const fecha = new Date(venta.fecha);
+            const fechaFormateada = fecha.toLocaleDateString('es-CO') + ' ' + fecha.toLocaleTimeString();
+            
+            return `
+                <tr>
+                    <td>${fechaFormateada}</td>
+                    <td>${venta.productos || 'Venta'}</td>
+                    <td>$${(venta.total || 0).toLocaleString()}</td>
+                    <td>
+                        <span style="background: #ffe4e9; padding: 0.2rem 0.8rem; border-radius: 50px;">
+                            ${venta.metodo_pago || 'Efectivo'}
+                        </span>
+                    </td>
+                    <td>${venta.vendedor || '-'}</td>
+                    <td>
+                        <button class="action-btn" onclick="verFactura(${venta.id})" title="Ver factura">🧾</button>
+                    </td>
+                </tr>
+            `;
+        }).join('');
         
     } catch (error) {
         console.error('Error cargando ventas:', error);
@@ -2030,4 +2047,89 @@ function mostrarAlerta(mensaje, tipo) {
     setTimeout(() => {
         alerta.style.display = 'none';
     }, 3000);
+}
+
+// ============================================
+// VARIABLES GLOBALES DE FILTROS
+// ============================================
+let fechaInicioCompras = null;
+let fechaFinCompras = null;
+let fechaInicioGastos = null;
+let fechaFinGastos = null;
+let fechaInicioVentas = null;
+let fechaFinVentas = null;
+
+// ============================================
+// FUNCIONES DE FILTRO PARA COMPRAS
+// ============================================
+function aplicarFiltroCompras() {
+    const inicio = document.getElementById('compras-fecha-inicio').value;
+    const fin = document.getElementById('compras-fecha-fin').value;
+    
+    fechaInicioCompras = inicio ? new Date(inicio) : null;
+    fechaFinCompras = fin ? new Date(fin) : null;
+    
+    if (fechaFinCompras) {
+        fechaFinCompras.setHours(23, 59, 59, 999);
+    }
+    
+    cargarCompras();
+}
+
+function limpiarFiltroCompras() {
+    document.getElementById('compras-fecha-inicio').value = '';
+    document.getElementById('compras-fecha-fin').value = '';
+    fechaInicioCompras = null;
+    fechaFinCompras = null;
+    cargarCompras();
+}
+
+// ============================================
+// FUNCIONES DE FILTRO PARA GASTOS
+// ============================================
+function aplicarFiltroGastos() {
+    const inicio = document.getElementById('gastos-fecha-inicio').value;
+    const fin = document.getElementById('gastos-fecha-fin').value;
+    
+    fechaInicioGastos = inicio ? new Date(inicio) : null;
+    fechaFinGastos = fin ? new Date(fin) : null;
+    
+    if (fechaFinGastos) {
+        fechaFinGastos.setHours(23, 59, 59, 999);
+    }
+    
+    cargarGastos();
+}
+
+function limpiarFiltroGastos() {
+    document.getElementById('gastos-fecha-inicio').value = '';
+    document.getElementById('gastos-fecha-fin').value = '';
+    fechaInicioGastos = null;
+    fechaFinGastos = null;
+    cargarGastos();
+}
+
+// ============================================
+// FUNCIONES DE FILTRO PARA VENTAS
+// ============================================
+function aplicarFiltroVentas() {
+    const inicio = document.getElementById('ventas-fecha-inicio').value;
+    const fin = document.getElementById('ventas-fecha-fin').value;
+    
+    fechaInicioVentas = inicio ? new Date(inicio) : null;
+    fechaFinVentas = fin ? new Date(fin) : null;
+    
+    if (fechaFinVentas) {
+        fechaFinVentas.setHours(23, 59, 59, 999);
+    }
+    
+    cargarVentas();
+}
+
+function limpiarFiltroVentas() {
+    document.getElementById('ventas-fecha-inicio').value = '';
+    document.getElementById('ventas-fecha-fin').value = '';
+    fechaInicioVentas = null;
+    fechaFinVentas = null;
+    cargarVentas();
 }
