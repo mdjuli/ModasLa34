@@ -266,6 +266,20 @@
             margin-top: 3rem;
         }
 
+        /* Enlace de administrador oculto (sutil) */
+        .admin-link {
+            display: inline-block;
+            margin-top: 0.5rem;
+            font-size: 0.7rem;
+            color: #c4b8ac;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .admin-link:hover {
+            color: #b87c4e;
+        }
+
         /* ===== MODAL INDIE ===== */
         .modal {
             display: none;
@@ -443,8 +457,7 @@
                 </div>
             </div>
             
-            <a href="#ofertas">✨ Ofertas</a>
-            <a href="admin/login.html">🔑 Administrador</a>
+            <a href="#">🌿 Novedades</a>
         </nav>
     </header>
     
@@ -465,6 +478,7 @@
     
     <footer>
         <p>© 2026 Modas La 34 — Diseño atemporal para almas libres</p>
+        <a href="admin/login.html" class="admin-link">🔑 Acceso administrador</a>
     </footer>
 
     <!-- MODAL -->
