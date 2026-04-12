@@ -1,22 +1,439 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modas la 34</title>
-    <link rel="stylesheet" href="css/estilo-comun.css">
+    <title>Modas La 34 | Tienda indie</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #faf7f2;
+            color: #2c2b28;
+            line-height: 1.5;
+        }
+
+        /* Tipografía indie */
+        h1, h2, h3 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 500;
+            letter-spacing: -0.02em;
+        }
+
+        /* HEADER estilo indie/boutique */
+        header {
+            background: #ffffff;
+            padding: 2rem 2rem 1rem 2rem;
+            border-bottom: 1px solid #e8e0d5;
+            position: relative;
+        }
+
+        header h1 {
+            font-size: 2rem;
+            font-weight: 500;
+            color: #4a3728;
+            text-align: center;
+            letter-spacing: 2px;
+            margin-bottom: 1.5rem;
+        }
+
+        /* NAVEGACIÓN INDIE */
+        nav {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        nav a, .dropbtn {
+            color: #4a3728;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        nav a:hover, .dropbtn:hover {
+            color: #b87c4e;
+        }
+
+        /* Dropdown indie */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background: #ffffff;
+            min-width: 200px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.05);
+            z-index: 1;
+            top: 100%;
+            left: 0;
+            margin-top: 0.5rem;
+            border: 1px solid #e8e0d5;
+        }
+
+        .dropdown-content a {
+            color: #4a3728;
+            padding: 0.8rem 1.2rem;
+            text-decoration: none;
+            display: block;
+            font-size: 0.8rem;
+            text-transform: none;
+        }
+
+        .dropdown-content a:hover {
+            background: #faf7f2;
+            color: #b87c4e;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        /* MAIN */
+        main {
+            max-width: 1400px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+        }
+
+        main h2 {
+            font-size: 2rem;
+            color: #4a3728;
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+
+        main > p {
+            text-align: center;
+            color: #8b7a6b;
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+
+        /* BUSCADOR */
+        .buscador-container {
+            max-width: 400px;
+            margin: 0 auto 3rem auto;
+        }
+
+        .buscador-input {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            border: 1px solid #e8e0d5;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            background: #ffffff;
+            transition: all 0.3s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .buscador-input:focus {
+            outline: none;
+            border-color: #b87c4e;
+            box-shadow: 0 0 0 3px rgba(184, 124, 78, 0.1);
+        }
+
+        /* GRID DE PRODUCTOS (estilo indie) */
+        .grid-productos {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .producto-card {
+            background: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.3s;
+            border: 1px solid #f0ebe4;
+            cursor: pointer;
+        }
+
+        .producto-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.05);
+            border-color: #e0d5ca;
+        }
+
+        .producto-imagen {
+            width: 100%;
+            height: 320px;
+            object-fit: cover;
+            background: #f5f0ea;
+        }
+
+        .producto-sin-imagen {
+            width: 100%;
+            height: 320px;
+            background: #f5f0ea;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+        }
+
+        .producto-info {
+            padding: 1.5rem;
+        }
+
+        .producto-titulo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #4a3728;
+            margin-bottom: 0.5rem;
+        }
+
+        .producto-detalle {
+            font-size: 0.8rem;
+            color: #8b7a6b;
+            margin: 0.5rem 0;
+        }
+
+        .producto-colores {
+            display: flex;
+            gap: 6px;
+            margin: 10px 0;
+        }
+
+        .color-circulo {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 1px solid #e8e0d5;
+            transition: transform 0.2s;
+        }
+
+        .color-circulo:hover {
+            transform: scale(1.1);
+        }
+
+        .producto-precio {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #b87c4e;
+            margin: 0.8rem 0;
+        }
+
+        .producto-btn {
+            width: 100%;
+            padding: 0.8rem;
+            background: none;
+            border: 1px solid #d4c9bd;
+            border-radius: 50px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #4a3728;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .producto-btn:hover {
+            background: #b87c4e;
+            border-color: #b87c4e;
+            color: white;
+        }
+
+        /* FOOTER */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: #8b7a6b;
+            font-size: 0.8rem;
+            border-top: 1px solid #e8e0d5;
+            margin-top: 3rem;
+        }
+
+        /* ===== MODAL INDIE ===== */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-contenido {
+            background: #ffffff;
+            margin: 5% auto;
+            padding: 2rem;
+            width: 90%;
+            max-width: 900px;
+            border-radius: 12px;
+            position: relative;
+            border: 1px solid #e8e0d5;
+        }
+
+        .modal-cerrar {
+            position: absolute;
+            right: 1.5rem;
+            top: 1rem;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: #8b7a6b;
+            transition: color 0.3s;
+        }
+
+        .modal-cerrar:hover {
+            color: #b87c4e;
+        }
+
+        .modal-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .modal-imagen img {
+            width: 100%;
+            border-radius: 8px;
+        }
+
+        .modal-imagen-placeholder {
+            width: 100%;
+            aspect-ratio: 1;
+            background: #f5f0ea;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+            border-radius: 8px;
+        }
+
+        .modal-info h2 {
+            color: #4a3728;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .modal-codigo {
+            font-family: monospace;
+            background: #f5f0ea;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            display: inline-block;
+            font-size: 0.8rem;
+            color: #8b7a6b;
+            margin-bottom: 1rem;
+        }
+
+        .modal-detalle {
+            margin: 1.5rem 0;
+        }
+
+        .modal-detalle p {
+            margin: 0.8rem 0;
+            color: #4a3728;
+        }
+
+        .modal-precio {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #b87c4e;
+            margin: 1.5rem 0;
+        }
+
+        .modal-stock {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-left: 0.5rem;
+        }
+
+        .stock-disponible { background: #e8f0e8; color: #5a7a5a; }
+        .stock-bajo { background: #fdf0e0; color: #b87c4e; }
+        .stock-agotado { background: #f5e8e8; color: #b55a5a; }
+
+        .modal-botones {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 50px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-consultar {
+            background: #b87c4e;
+            color: white;
+        }
+
+        .btn-consultar:hover {
+            background: #9a663f;
+        }
+
+        .btn-cerrar {
+            background: #f5f0ea;
+            color: #4a3728;
+        }
+
+        .btn-cerrar:hover {
+            background: #e8e0d5;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .modal-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .grid-productos {
+                gap: 1rem;
+            }
+            
+            nav {
+                gap: 1rem;
+            }
+            
+            header h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
 </head>
 <body>
     <header>
         <h1>Modas La 34</h1>
         
         <nav>
-            <!-- Menú desplegable de Inicio -->
             <div class="dropdown">
-                <a href="#" class="dropbtn">Inicio ▼</a>
+                <a href="#" class="dropbtn">Colección ▼</a>
                 <div class="dropdown-content">
-                    <a href="#" onclick="filtrarPorCategoria('todos')">🔥 Todos los productos</a>
+                    <a href="#" onclick="filtrarPorCategoria('todos')">✨ Todos los productos</a>
                     <a href="#" onclick="filtrarPorCategoria('vestidos')">👗 Vestidos</a>
                     <a href="#" onclick="filtrarPorCategoria('blusas')">👚 Blusas</a>
                     <a href="#" onclick="filtrarPorCategoria('pantalones')">👖 Pantalones</a>
@@ -26,35 +443,35 @@
                 </div>
             </div>
             
-            <a href="#ofertas">🔥 Ofertas</a>
-            <a href="admin/login.html">👑 Administrador</a>
+            <a href="#ofertas">✨ Ofertas</a>
+            <a href="admin/login.html">🔑 Administrador</a>
         </nav>
     </header>
     
     <main>
-        <h2>Bienvenidos a nuestra tienda</h2>
-        <p>Estamos construyendo nuestro catálogo en línea. ¡Pronto tendremos novedades!</p>
+        <h2>Prendas con esencia</h2>
+        <p>Hechas para quienes buscan autenticidad y estilo atemporal</p>
         
         <div class="grid-productos" id="catalogo-productos">
-            <!-- Aquí irán los productos cuando conectemos Supabase -->
-            <div class="producto-placeholder">
-                <h3>Producto de ejemplo</h3>
-                <p>$25.000</p>
+            <div class="producto-card">
+                <div class="producto-sin-imagen">🌿</div>
+                <div class="producto-info">
+                    <h3 class="producto-titulo">Cargando...</h3>
+                    <p class="producto-precio">$0</p>
+                </div>
             </div>
         </div>
     </main>
     
     <footer>
-        <p>© 2026 Modas La 34 - Todos los derechos reservados</p>
+        <p>© 2026 Modas La 34 — Diseño atemporal para almas libres</p>
     </footer>
 
-    <!-- MODAL DE DETALLE DEL PRODUCTO (AGREGADO AQUÍ) -->
+    <!-- MODAL -->
     <div id="modal-producto" class="modal" style="display: none;">
         <div class="modal-contenido">
             <span class="modal-cerrar" onclick="cerrarModal()">&times;</span>
-            <div id="modal-contenido-producto">
-                <!-- El contenido se carga dinámicamente -->
-            </div>
+            <div id="modal-contenido-producto"></div>
         </div>
     </div>
     
@@ -62,26 +479,28 @@
     <script src="js/catalogo.js"></script>
 
     <script>
-    // Para móviles: cerrar menú al hacer clic fuera
+    // Cerrar menú móvil
     document.addEventListener('click', function(event) {
         const dropdown = document.querySelector('.dropdown');
-        if (!dropdown.contains(event.target)) {
+        if (dropdown && !dropdown.contains(event.target)) {
             const dropdownContent = document.querySelector('.dropdown-content');
-            if (dropdownContent.style.display === 'block') {
+            if (dropdownContent && dropdownContent.style.display === 'block') {
                 dropdownContent.style.display = 'none';
             }
         }
     });
     
-    // Mostrar menú al hacer clic en el botón (para móviles)
-    document.querySelector('.dropbtn').addEventListener('click', function(e) {
-        if (window.innerWidth <= 768) {
-            e.preventDefault();
-            const dropdownContent = document.querySelector('.dropdown-content');
-            dropdownContent.style.display = dropdownContent.style.display === 'block' ? 'none' : 'block';
-        }
-    });
+    // Menú móvil
+    const dropbtn = document.querySelector('.dropbtn');
+    if (dropbtn) {
+        dropbtn.addEventListener('click', function(e) {
+            if (window.innerWidth <= 768) {
+                e.preventDefault();
+                const dropdownContent = document.querySelector('.dropdown-content');
+                dropdownContent.style.display = dropdownContent.style.display === 'block' ? 'none' : 'block';
+            }
+        });
+    }
     </script>
-    
 </body>
 </html>
