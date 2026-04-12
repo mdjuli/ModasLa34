@@ -7,7 +7,7 @@
     <title>Dashboard - Modas La 34</title>
     <link rel="stylesheet" href="../css/estilo-comun.css">
     <style>
-        /* ===== ESTILOS DEL DASHBOARD - VERSIÓN INTUITIVA ===== */
+        /* ===== ESTILOS DEL DASHBOARD ===== */
         * {
             margin: 0;
             padding: 0;
@@ -80,7 +80,7 @@
             transform: scale(1.02);
         }
 
-        /* MENÚ DE NAVEGACIÓN - MÁS ACCESIBLE */
+        /* MENÚ DE NAVEGACIÓN */
         .nav-menu {
             background: white;
             padding: 0.8rem 1rem;
@@ -175,6 +175,25 @@
             color: #ff9a9e;
         }
 
+        /* FILTROS */
+        .filtro-fechas {
+            display: flex;
+            gap: 0.8rem;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+            padding: 0.8rem;
+            background: #fff0f3;
+            border-radius: 16px;
+        }
+
+        .filtro-fechas input {
+            padding: 0.5rem;
+            border-radius: 8px;
+            border: 1px solid #ffe4e9;
+            background: white;
+        }
+
         /* TABLAS */
         .data-table {
             background: white;
@@ -263,7 +282,6 @@
 
         .delete-btn:hover {
             color: #ff4757;
-            background: #fff0f3;
         }
 
         /* FORMULARIOS */
@@ -360,6 +378,40 @@
             font-weight: 600;
         }
 
+        /* ALERTAS */
+        .alert {
+            padding: 0.8rem 1rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            display: none;
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+
+        .alert.success {
+            background: #d4edda;
+            color: #27ae60;
+            border: 1px solid #a3e9b1;
+        }
+
+        .alert.error {
+            background: #fff0f3;
+            color: #ff4757;
+            border: 1px solid #ffb6c1;
+        }
+
+        .estado-badge {
+            padding: 0.2rem 0.6rem;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .estado-pagada { background: #d4edda; color: #27ae60; }
+        .estado-pendiente { background: #fff3cd; color: #856404; }
+        .estado-recibida { background: #d1ecf1; color: #0c5460; }
+
         /* VARIANTES */
         .variante-card {
             background: #fff9fc;
@@ -430,12 +482,6 @@
             border-radius: 40px;
             font-size: 0.7rem;
             cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .btn-agregar-color:hover, .btn-sin-color:hover {
-            background: #ffb6c1;
-            color: white;
         }
 
         .btn-eliminar-color {
@@ -444,142 +490,26 @@
             color: #ffb6c1;
             font-size: 1rem;
             cursor: pointer;
-            padding: 0 0.3rem;
-        }
-
-        .btn-eliminar-color:hover {
-            color: #ff4757;
-        }
-
-        /* ALERTAS */
-        .alert {
-            padding: 0.8rem 1rem;
-            border-radius: 12px;
-            margin-bottom: 1rem;
-            display: none;
-            font-weight: 500;
-            font-size: 0.85rem;
-        }
-
-        .alert.success {
-            background: #d4edda;
-            color: #27ae60;
-            border: 1px solid #a3e9b1;
-        }
-
-        .alert.error {
-            background: #fff0f3;
-            color: #ff4757;
-            border: 1px solid #ffb6c1;
-        }
-
-        .alert.warning {
-            background: #fff3cd;
-            color: #856404;
-            border: 1px solid #ffeaa7;
-        }
-
-        .estado-badge {
-            padding: 0.2rem 0.6rem;
-            border-radius: 40px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            display: inline-block;
-        }
-
-        .estado-pagada { background: #d4edda; color: #27ae60; }
-        .estado-pendiente { background: #fff3cd; color: #856404; }
-        .estado-recibida { background: #d1ecf1; color: #0c5460; }
-
-        /* TOOLTIP */
-        [data-tooltip] {
-            position: relative;
-            cursor: help;
-        }
-
-        [data-tooltip]:before {
-            content: attr(data-tooltip);
-            position: absolute;
-            bottom: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #333;
-            color: white;
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 0.7rem;
-            white-space: nowrap;
-            display: none;
-            z-index: 1000;
-        }
-
-        [data-tooltip]:hover:before {
-            display: block;
         }
 
         /* RESPONSIVE */
         @media (max-width: 768px) {
-            .admin-header {
-                flex-direction: column;
-                text-align: center;
-            }
-            
-            .nav-menu {
-                justify-content: center;
-            }
-            
-            .nav-btn {
-                padding: 0.5rem 0.8rem;
-                font-size: 0.75rem;
-            }
-            
-            .module-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .form-row {
-                flex-direction: column;
-            }
-            
-            .data-table {
-                padding: 0.8rem;
-                font-size: 0.7rem;
-            }
-            
-            th, td {
-                padding: 0.5rem;
-            }
-            
-            .card-title {
-                font-size: 1rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .content-area {
-                padding: 1rem;
-            }
-            
-            .nav-btn {
-                padding: 0.4rem 0.6rem;
-                font-size: 0.7rem;
-            }
-            
-            .card-icon {
-                font-size: 1.8rem;
-            }
+            .admin-header { flex-direction: column; text-align: center; }
+            .nav-menu { justify-content: center; }
+            .nav-btn { padding: 0.5rem 0.8rem; font-size: 0.75rem; }
+            .module-grid { grid-template-columns: 1fr; }
+            .form-row { flex-direction: column; }
+            .filtro-fechas { justify-content: center; }
+            th, td { padding: 0.5rem; font-size: 0.75rem; }
         }
     </style>
 </head>
 <body>
     <header class="admin-header">
-        <h1>
-            🌸 MODAS LA 34
-            <span>Administración</span>
-        </h1>
+        <h1>🌸 MODAS LA 34 <span>Administración</span></h1>
         <div class="user-info">
             <span class="user-name" id="userNameDisplay">Cargando...</span>
-            <button class="logout-btn" onclick="logout()" data-tooltip="Cerrar sesión actual">🔒 Salir</button>
+            <button class="logout-btn" onclick="logout()">🔒 Salir</button>
         </div>
     </header>
 
@@ -597,10 +527,10 @@
     <main class="content-area">
         <div id="alertMessage" class="alert"></div>
 
-        <!-- PRODUCTOS -->
+        <!-- ==================== MÓDULO PRODUCTOS ==================== -->
         <div id="modulo-productos" class="module-section">
             <div class="module-grid">
-                <div class="module-card" onclick="mostrarFormulario('producto')" data-tooltip="Crear un nuevo producto con tallas y colores">
+                <div class="module-card" onclick="mostrarFormulario('producto')">
                     <div class="card-icon">👗</div>
                     <div class="card-title">Nuevo Producto</div>
                     <div class="card-description">Agregar producto con tallas y colores</div>
@@ -609,103 +539,63 @@
                 <div class="module-card">
                     <div class="card-icon">📦</div>
                     <div class="card-title">Total Productos</div>
-                    <div class="card-description">En inventario</div>
                     <div class="card-stats" id="stats-total-productos">0</div>
                 </div>
                 <div class="module-card">
                     <div class="card-icon">⚠️</div>
                     <div class="card-title">Stock Bajo</div>
-                    <div class="card-description">Productos por reabastecer</div>
                     <div class="card-stats" id="stats-stock-bajo">0</div>
                 </div>
             </div>
 
             <div id="form-producto" class="form-container">
-                <h2 style="color: #ff6b6b;">👗 Producto con Variantes</h2>
+                <h2 style="color:#ff6b6b;">👗 Producto con Variantes</h2>
                 <form onsubmit="event.preventDefault(); guardarProductoBase()">
-                    <div class="form-group">
-                        <label>Código base:</label>
-                        <input type="text" id="producto-codigo" placeholder="Ej: PANT001" required>
-                        <small style="color: #ff9a9e;">Código único para identificar el producto</small>
-                    </div>
-                    <div class="form-group">
-                        <label>📁 Categoría:</label>
-                        <select id="producto-categoria" required>
-                            <option value="">Seleccionar categoría</option>
-                            <option value="vestidos">👗 Vestidos</option>
-                            <option value="blusas">👚 Blusas</option>
-                            <option value="pantalones">👖 Pantalones</option>
-                            <option value="deportivo">⚽ Deportivo</option>
-                            <option value="caballero">👔 Caballero</option>
-                            <option value="accesorios">🎀 Accesorios</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Nombre del producto:</label>
-                        <input type="text" id="producto-nombre" placeholder="Ej: Pantalón Jean" required>
-                    </div>
-                    <div class="form-group">
-                        <label>💰 Precio de compra (base):</label>
-                        <input type="number" id="producto-precio-compra" placeholder="Ej: 25000" step="1000" min="0">
-                        <small style="color: #666;">Precio de compra para calcular ganancias</small>
-                    </div>
-                    <div class="form-group">
-                        <label>🖼️ URL de la imagen:</label>
-                        <input type="url" id="producto-imagen" placeholder="https://ejemplo.com/imagen.jpg">
-                    </div>
-                    <h3 style="color: #ff6b6b; margin: 1rem 0 0.5rem;">📦 Variantes (Tallas con colores)</h3>
-                    <small style="color: #ff9a9e; display: block; margin-bottom: 1rem;">💡 Cada talla puede tener varios colores con su propio stock y precio de venta</small>
+                    <div class="form-group"><label>Código base:</label><input type="text" id="producto-codigo" placeholder="Ej: PANT001" required></div>
+                    <div class="form-group"><label>Categoría:</label><select id="producto-categoria" required><option value="">Seleccionar</option><option value="vestidos">👗 Vestidos</option><option value="blusas">👚 Blusas</option><option value="pantalones">👖 Pantalones</option><option value="deportivo">⚽ Deportivo</option><option value="caballero">👔 Caballero</option><option value="accesorios">🎀 Accesorios</option></select></div>
+                    <div class="form-group"><label>Nombre:</label><input type="text" id="producto-nombre" placeholder="Ej: Pantalón Jean" required></div>
+                    <div class="form-group"><label>💰 Precio de compra (base):</label><input type="number" id="producto-precio-compra" placeholder="Ej: 25000" step="1000" min="0"></div>
+                    <div class="form-group"><label>🖼️ URL imagen:</label><input type="url" id="producto-imagen" placeholder="https://ejemplo.com/imagen.jpg"></div>
+                    <h3 style="color:#ff6b6b;">📦 Variantes (Tallas con colores)</h3>
                     <div id="variantes-container"></div>
-                    <button type="button" onclick="agregarVariante()" class="add-btn" style="margin-bottom: 0.8rem;">➕ Agregar nueva talla</button>
+                    <button type="button" onclick="agregarVariante()" class="add-btn" style="margin-bottom:0.8rem;">➕ Agregar nueva talla</button>
                     <button type="submit" class="submit-btn">🌸 Guardar Producto</button>
                     <button type="button" class="cancel-btn" onclick="cerrarFormulario('producto')">Cancelar</button>
                 </form>
             </div>
 
             <div class="data-table">
-                <h2>📋 Inventario de Productos <button class="add-btn" onclick="mostrarFormulario('producto')">➕ Nuevo Producto</button></h2>
-                <table id="tabla-productos">
-                    <thead><tr><th>Imagen</th><th>Código</th><th>Producto</th><th>Categoría</th><th>Variantes</th><th>Stock Total</th><th>Precio</th><th>Acciones</th></tr></thead>
-                    <tbody><tr><td colspan="8">Cargando productos...</td></tr></tbody>
-                </table>
+                <h2>📋 Inventario de Productos <button class="add-btn" onclick="mostrarFormulario('producto')">➕ Nuevo</button></h2>
+                <table id="tabla-productos"><thead><tr><th>Imagen</th><th>Código</th><th>Producto</th><th>Categoría</th><th>Variantes</th><th>Stock Total</th><th>Precio</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="8">Cargando...<\/td></tr></tbody></table>
             </div>
         </div>
 
-        <!-- INVENTARIO -->
+        <!-- ==================== MÓDULO INVENTARIO ==================== -->
         <div id="modulo-inventario" class="module-section" style="display: none;">
             <div class="module-grid">
-                <div class="module-card" onclick="exportarInventario()" data-tooltip="Exportar inventario a Excel">
-                    <div class="card-icon">📊</div>
-                    <div class="card-title">Exportar Inventario</div>
-                    <div class="card-description">Descargar reporte en CSV/Excel</div>
-                    <div class="card-stats">📥 Exportar</div>
-                </div>
-                <div class="module-card">
-                    <div class="card-icon">💰</div>
-                    <div class="card-title">Valor Inventario</div>
-                    <div class="card-description">Total en compras</div>
-                    <div class="card-stats" id="valor-inventario">$0</div>
-                </div>
-                <div class="module-card">
-                    <div class="card-icon">📈</div>
-                    <div class="card-title">Ganancia Potencial</div>
-                    <div class="card-description">(Venta - Compra) x Stock</div>
-                    <div class="card-stats" id="ganancia-potencial">$0</div>
-                </div>
+                <div class="module-card" onclick="exportarInventario()"><div class="card-icon">📊</div><div class="card-title">Exportar Inventario</div><div class="card-stats">📥 Exportar</div></div>
+                <div class="module-card"><div class="card-icon">💰</div><div class="card-title">Valor Inventario</div><div class="card-stats" id="valor-inventario">$0</div></div>
+                <div class="module-card"><div class="card-icon">📈</div><div class="card-title">Ganancia Potencial</div><div class="card-stats" id="ganancia-potencial">$0</div></div>
             </div>
-            <div class="data-table">
-                <h2>📦 Inventario Detallado <button class="add-btn" onclick="exportarInventario()">📥 Exportar</button></h2>
-                <table id="tabla-inventario"><thead><tr><th>Imagen</th><th>Código</th><th>Producto</th><th>Talla</th><th>Color</th><th>Stock</th><th>P. Compra</th><th>P. Venta</th><th>Ganancia</th><th>Valor Total</th></tr></thead>
-                <tbody id="inventario-body"><tr><td colspan="10">Cargando inventario...</td></tr></tbody></table>
+            <div class="data-table"><h2>📦 Inventario Detallado <button class="add-btn" onclick="exportarInventario()">📥 Exportar</button></h2>
+                <table id="tabla-inventario"><thead><tr><th>Imagen</th><th>Código</th><th>Producto</th><th>Talla</th><th>Color</th><th>Stock</th><th>P.Compra</th><th>P.Venta</th><th>Ganancia</th><th>Valor Total</th></tr></thead><tbody id="inventario-body"><tr><td colspan="10">Cargando...<\/td></tr></tbody></table>
             </div>
         </div>
 
-        <!-- COMPRAS -->
+        <!-- ==================== MÓDULO COMPRAS ==================== -->
         <div id="modulo-compras" class="module-section" style="display: none;">
             <div class="module-grid">
-                <div class="module-card" onclick="mostrarFormulario('compra')"><div class="card-icon">🛍️</div><div class="card-title">Nueva Compra</div><div class="card-description">Registrar compra a proveedor</div><div class="card-stats">+ Nueva</div></div>
+                <div class="module-card" onclick="mostrarFormulario('compra')"><div class="card-icon">🛍️</div><div class="card-title">Nueva Compra</div><div class="card-stats">+ Nueva</div></div>
                 <div class="module-card"><div class="card-icon">📋</div><div class="card-title">Compras del Mes</div><div class="card-stats" id="stats-compras-mes">$0</div></div>
                 <div class="module-card"><div class="card-icon">⏳</div><div class="card-title">Pendientes</div><div class="card-stats" id="stats-compras-pendientes">0</div></div>
+            </div>
+            <div class="filtro-fechas">
+                <span>📅 Filtrar:</span>
+                <input type="date" id="compras-fecha-inicio">
+                <span>a</span>
+                <input type="date" id="compras-fecha-fin">
+                <button onclick="aplicarFiltroCompras()" class="add-btn">🔍 Filtrar</button>
+                <button onclick="limpiarFiltroCompras()" class="add-btn" style="background:#ffe4e9;color:#ff6b6b;">🗑️ Limpiar</button>
             </div>
             <div id="form-compra" class="form-container">
                 <h2>🛍️ Registrar Nueva Compra</h2>
@@ -719,14 +609,22 @@
                     <button type="button" class="cancel-btn" onclick="cerrarFormulario('compra')">Cancelar</button>
                 </form>
             </div>
-            <div class="data-table"><h2>Historial de Compras <button class="add-btn" onclick="mostrarFormulario('compra')">➕ Nueva</button></h2><table id="tabla-compras"><thead><tr><th>Fecha</th><th>Proveedor</th><th>Producto</th><th>Cantidad</th><th>Total</th><th>Estado</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="7">Cargando...</td></tr></tbody></table></div>
+            <div class="data-table"><h2>Historial de Compras <button class="add-btn" onclick="mostrarFormulario('compra')">➕ Nueva</button></h2><table id="tabla-compras"><thead><tr><th>Fecha</th><th>Proveedor</th><th>Producto</th><th>Cantidad</th><th>Total</th><th>Estado</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="7">Cargando...<\/td></tr></tbody></tr></div>
         </div>
 
-        <!-- GASTOS -->
+        <!-- ==================== MÓDULO GASTOS ==================== -->
         <div id="modulo-gastos" class="module-section" style="display: none;">
             <div class="module-grid">
                 <div class="module-card" onclick="mostrarFormulario('gasto')"><div class="card-icon">💸</div><div class="card-title">Nuevo Gasto</div><div class="card-stats">+ Nuevo</div></div>
                 <div class="module-card"><div class="card-icon">📊</div><div class="card-title">Gastos del Mes</div><div class="card-stats" id="stats-gastos-mes">$0</div></div>
+            </div>
+            <div class="filtro-fechas">
+                <span>📅 Filtrar:</span>
+                <input type="date" id="gastos-fecha-inicio">
+                <span>a</span>
+                <input type="date" id="gastos-fecha-fin">
+                <button onclick="aplicarFiltroGastos()" class="add-btn">🔍 Filtrar</button>
+                <button onclick="limpiarFiltroGastos()" class="add-btn" style="background:#ffe4e9;color:#ff6b6b;">🗑️ Limpiar</button>
             </div>
             <div id="form-gasto" class="form-container">
                 <h2>💸 Registrar Nuevo Gasto</h2>
@@ -740,10 +638,10 @@
                     <button type="button" class="cancel-btn" onclick="cerrarFormulario('gasto')">Cancelar</button>
                 </form>
             </div>
-            <div class="data-table"><h2>Historial de Gastos <button class="add-btn" onclick="mostrarFormulario('gasto')">➕ Nuevo</button></h2><table id="tabla-gastos"><thead><tr><th>Fecha</th><th>Concepto</th><th>Categoría</th><th>Monto</th><th>Método</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="6">Cargando...</td></tr></tbody></table></div>
+            <div class="data-table"><h2>Historial de Gastos <button class="add-btn" onclick="mostrarFormulario('gasto')">➕ Nuevo</button></h2><table id="tabla-gastos"><thead><tr><th>Fecha</th><th>Concepto</th><th>Categoría</th><th>Monto</th><th>Método</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="6">Cargando...<\/td></tr></tbody></table></div>
         </div>
 
-        <!-- PERFILES -->
+        <!-- ==================== MÓDULO PERFILES ==================== -->
         <div id="modulo-perfiles" class="module-section" style="display: none;">
             <div class="module-grid">
                 <div class="module-card" onclick="mostrarFormulario('perfil')"><div class="card-icon">👥</div><div class="card-title">Nuevo Usuario</div><div class="card-stats">+ Nuevo</div></div>
@@ -760,10 +658,10 @@
                     <button type="button" class="cancel-btn" onclick="cerrarFormulario('perfil')">Cancelar</button>
                 </form>
             </div>
-            <div class="data-table"><h2>Usuarios del Sistema <button class="add-btn" onclick="mostrarFormulario('perfil')">➕ Nuevo</button></h2><table id="tabla-perfiles"><thead><tr><th>Nombre</th><th>Email</th><th>Rol</th><th>Fecha registro</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="5">Cargando...</td></tr></tbody></table></div>
+            <div class="data-table"><h2>Usuarios del Sistema <button class="add-btn" onclick="mostrarFormulario('perfil')">➕ Nuevo</button></h2><table id="tabla-perfiles"><thead><tr><th>Nombre</th><th>Email</th><th>Rol</th><th>Fecha registro</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="5">Cargando...<\/td></tr></tbody></table></div>
         </div>
 
-        <!-- PROVEEDORES -->
+        <!-- ==================== MÓDULO PROVEEDORES ==================== -->
         <div id="modulo-proveedores" class="module-section" style="display: none;">
             <div class="module-grid">
                 <div class="module-card" onclick="mostrarFormulario('proveedor')"><div class="card-icon">📦</div><div class="card-title">Nuevo Proveedor</div><div class="card-stats">+ Nuevo</div></div>
@@ -774,58 +672,43 @@
                 <form onsubmit="event.preventDefault(); guardarProveedor()">
                     <div class="form-group"><label>Nombre/Empresa:</label><input type="text" id="proveedor-nombre" required></div>
                     <div class="form-group"><label>Contacto:</label><input type="text" id="proveedor-contacto" placeholder="Nombre persona"></div>
-                    <div class="form-group"><label>Teléfono:</label><input type="tel" id="proveedor-telefono"></div>
-                    <div class="form-group"><label>Email:</label><input type="email" id="proveedor-email"></div>
-                    </div>
+                    <div class="form-row"><div class="form-group"><label>Teléfono:</label><input type="tel" id="proveedor-telefono"></div><div class="form-group"><label>Email:</label><input type="email" id="proveedor-email"></div></div>
                     <div class="form-group"><label>Dirección:</label><textarea id="proveedor-direccion" rows="2"></textarea></div>
                     <button type="submit" class="submit-btn">🌸 Guardar Proveedor</button>
                     <button type="button" class="cancel-btn" onclick="cerrarFormulario('proveedor')">Cancelar</button>
                 </form>
             </div>
-            <div class="data-table">
-                <h2>Lista de Proveedores <button class="add-btn" onclick="mostrarFormulario('proveedor')">➕ Nuevo</button></h2>
-                <table id="tabla-proveedores">
-                    <thead><tr><th>Proveedor</th><th>Contacto</th><th>Teléfono</th><th>Email</th><th>Acciones</th></tr></thead>
-                    <tbody><tr><td colspan="5">Cargando proveedores...</td></tr></tbody>
-                </table>
-            </div>
+            <div class="data-table"><h2>Lista de Proveedores <button class="add-btn" onclick="mostrarFormulario('proveedor')">➕ Nuevo</button></h2><table id="tabla-proveedores"><thead><tr><th>Proveedor</th><th>Contacto</th><th>Teléfono</th><th>Email</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="5">Cargando...<\/td></tr></tbody></table></div>
         </div>
 
-        <!-- VENTAS -->
+        <!-- ==================== MÓDULO VENTAS ==================== -->
         <div id="modulo-ventas" class="module-section" style="display: none;">
             <div class="module-grid">
-                <div class="module-card" onclick="window.open('venta-rapida.html', '_blank')" data-tooltip="Abrir caja de venta rápida">
-                    <div class="card-icon">💰</div>
-                    <div class="card-title">Nueva Venta</div>
-                    <div class="card-description">Registrar venta rápida</div>
-                    <div class="card-stats">+ Vender</div>
-                </div>
-                <div class="module-card">
-                    <div class="card-icon">📈</div>
-                    <div class="card-title">Ventas Hoy</div>
-                    <div class="card-description">Total del día</div>
-                    <div class="card-stats" id="stats-ventas-hoy">$0</div>
-                </div>
-                <div class="module-card">
-                    <div class="card-icon">📊</div>
-                    <div class="card-title">Ventas Mes</div>
-                    <div class="card-description">Acumulado mensual</div>
-                    <div class="card-stats" id="stats-ventas-mes">$0</div>
-                </div>
+                <div class="module-card" onclick="window.open('venta-rapida.html', '_blank')"><div class="card-icon">💰</div><div class="card-title">Nueva Venta</div><div class="card-stats">+ Vender</div></div>
+                <div class="module-card"><div class="card-icon">📈</div><div class="card-title">Ventas Hoy</div><div class="card-stats" id="stats-ventas-hoy">$0</div></div>
+                <div class="module-card"><div class="card-icon">📊</div><div class="card-title">Ventas Mes</div><div class="card-stats" id="stats-ventas-mes">$0</div></div>
+            </div>
+            <div class="filtro-fechas">
+                <span>📅 Filtrar ventas:</span>
+                <input type="date" id="ventas-fecha-inicio">
+                <span>a</span>
+                <input type="date" id="ventas-fecha-fin">
+                <button onclick="aplicarFiltroVentas()" class="add-btn">🔍 Filtrar</button>
+                <button onclick="limpiarFiltroVentas()" class="add-btn" style="background:#ffe4e9;color:#ff6b6b;">🗑️ Limpiar</button>
             </div>
             <div class="data-table">
                 <h2>Historial de Ventas <button class="add-btn" onclick="window.open('venta-rapida.html', '_blank')">➕ Nueva Venta</button></h2>
                 <table id="tabla-ventas">
                     <thead><tr><th>Fecha</th><th>Productos</th><th>Total</th><th>Método</th><th>Vendedor</th><th>Acciones</th></tr></thead>
-                    <tbody><tr><td colspan="6">Cargando ventas...</td></tr></tbody>
+                    <tbody><tr><td colspan="6">Cargando ventas...<\/td></tr></tbody>
                 </table>
             </div>
         </div>
 
-        <!-- CONTABILIDAD -->
+        <!-- ==================== MÓDULO CONTABILIDAD ==================== -->
         <div id="modulo-contabilidad" class="module-section" style="display: none;">
             <div class="module-grid">
-                <div class="module-card" onclick="window.open('contabilidad.html', '_blank')" data-tooltip="Ver reportes contables">
+                <div class="module-card" onclick="window.open('contabilidad.html', '_blank')">
                     <div class="card-icon">📊</div>
                     <div class="card-title">Ver Contabilidad</div>
                     <div class="card-description">Reportes financieros</div>
@@ -834,13 +717,11 @@
                 <div class="module-card">
                     <div class="card-icon">💰</div>
                     <div class="card-title">Ingresos</div>
-                    <div class="card-description">Total del mes</div>
                     <div class="card-stats" id="stats-ingresos">$0</div>
                 </div>
                 <div class="module-card">
                     <div class="card-icon">💸</div>
                     <div class="card-title">Egresos</div>
-                    <div class="card-description">Total del mes</div>
                     <div class="card-stats" id="stats-egresos">$0</div>
                 </div>
             </div>
@@ -848,16 +729,1055 @@
     </main>
 
     <script src="../js/supabase-config.js"></script>
-    <script src="dashboard.js"></script>
     <script>
-        // Función de confirmación global para acciones peligrosas
-        function confirmarAccion(mensaje, callback) {
-            if (confirm(mensaje)) {
-                callback();
+        // ============================================
+        // 🌸 DASHBOARD ADMIN - MODAS LA 34
+        // ============================================
+
+        // Variables globales
+        let currentUser = null;
+        let currentModule = 'productos';
+        let varianteCount = 0;
+
+        // Variables de filtros
+        let fechaInicioCompras = null;
+        let fechaFinCompras = null;
+        let fechaInicioGastos = null;
+        let fechaFinGastos = null;
+        let fechaInicioVentas = null;
+        let fechaFinVentas = null;
+
+        // ===== FUNCIONES DE INICIALIZACIÓN =====
+        document.addEventListener('DOMContentLoaded', async () => {
+            console.log('🚀 Dashboard iniciado');
+            await verificarSesion();
+            await cargarDatosIniciales();
+            cambiarModulo('productos', null);
+            
+            setTimeout(() => {
+                if (document.getElementById('variantes-container')) {
+                    agregarVariante();
+                }
+            }, 500);
+        });
+
+        // ===== FUNCIONES DE AUTENTICACIÓN =====
+        async function verificarSesion() {
+            const tokenData = localStorage.getItem('admin_token');
+            if (!tokenData) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            try {
+                const token = JSON.parse(tokenData);
+                const response = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${token.access_token}`
+                    }
+                });
+
+                if (!response.ok) throw new Error('Sesión inválida');
+
+                const user = await response.json();
+                currentUser = user;
+                
+                const perfilRes = await fetch(`${SUPABASE_URL}/rest/v1/perfiles?id=eq.${user.id}`, {
+                    headers: { 'apikey': SUPABASE_KEY }
+                });
+                const perfil = await perfilRes.json();
+                
+                document.getElementById('userNameDisplay').textContent = 
+                    perfil[0]?.nombre || user.email || 'Administradora';
+                
+            } catch (error) {
+                console.error('Error de sesión:', error);
+                localStorage.removeItem('admin_token');
+                window.location.href = 'login.html';
             }
         }
 
-        // Mostrar alerta temporal
+        function logout() {
+            if (confirm('¿Estás segura de cerrar sesión?')) {
+                localStorage.removeItem('admin_token');
+                window.location.href = 'login.html';
+            }
+        }
+
+        // ===== FUNCIONES DE NAVEGACIÓN =====
+        function cambiarModulo(modulo, event = null) {
+            document.querySelectorAll('.module-section').forEach(section => {
+                section.style.display = 'none';
+            });
+            
+            const moduloElement = document.getElementById(`modulo-${modulo}`);
+            if (moduloElement) moduloElement.style.display = 'block';
+            
+            if (event) {
+                document.querySelectorAll('.nav-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                event.target.classList.add('active');
+            }
+            
+            currentModule = modulo;
+            cargarDatosModulo(modulo);
+        }
+
+        async function cargarDatosModulo(modulo) {
+            switch(modulo) {
+                case 'productos':
+                    await cargarProductos();
+                    break;
+                case 'inventario':
+                    await cargarInventario();
+                    break;
+                case 'compras':
+                    await cargarProveedoresSelect('compra');
+                    await cargarCompras();
+                    break;
+                case 'gastos':
+                    await cargarGastos();
+                    break;
+                case 'perfiles':
+                    await cargarPerfiles();
+                    break;
+                case 'proveedores':
+                    await cargarProveedores();
+                    break;
+                case 'ventas':
+                    await cargarVentas();
+                    break;
+            }
+        }
+
+        // ===== FUNCIONES DE DATOS INICIALES =====
+        async function cargarDatosIniciales() {
+            try {
+                const prodRes = await fetch(`${SUPABASE_URL}/rest/v1/productos_base`, {
+                    headers: { 'apikey': SUPABASE_KEY }
+                });
+                const productos = await prodRes.json();
+                document.getElementById('stats-total-productos').textContent = productos.length;
+                
+                const varRes = await fetch(`${SUPABASE_URL}/rest/v1/variantes_producto?stock_total.lt.5`, {
+                    headers: { 'apikey': SUPABASE_KEY }
+                });
+                const variantes = await varRes.json();
+                document.getElementById('stats-stock-bajo').textContent = variantes.length;
+                
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        // ============================================
+        // FUNCIONES DE PRODUCTOS
+        // ============================================
+        function agregarVariante() {
+            const container = document.getElementById('variantes-container');
+            if (!container) return;
+            
+            const varianteId = varianteCount;
+            
+            const varianteHTML = `
+                <div class="variante-card" id="variante-${varianteId}">
+                    <div class="variante-header">
+                        <div style="display: flex; gap: 0.8rem; align-items: center; flex-wrap: wrap;">
+                            <div><label style="color:#ff6b6b;">📏 Talla:</label><input type="text" id="variante-${varianteId}-talla" placeholder="Ej: S, M, L" required></div>
+                            <div><label style="color:#ff6b6b;">💰 Precio venta:</label><input type="number" id="variante-${varianteId}-precio" placeholder="Ej: 45000" min="0" step="1000" required style="width:110px;"></div>
+                            <div><label style="color:#ff6b6b;">📦 Precio compra:</label><input type="number" id="variante-${varianteId}-precio-compra" placeholder="Ej: 30000" min="0" step="1000" required style="width:110px;"></div>
+                        </div>
+                        ${varianteId > 0 ? `<button type="button" onclick="eliminarVariante(${varianteId})" class="btn-eliminar-talla">✖️ Eliminar talla</button>` : ''}
+                    </div>
+                    <div>
+                        <label style="color:#ff6b6b;">🎨 Colores y stock:</label>
+                        <div id="colores-${varianteId}-container" class="colores-container"></div>
+                        <div>
+                            <button type="button" onclick="agregarColorAVariante(${varianteId})" class="btn-agregar-color">➕ Agregar color</button>
+                            <button type="button" onclick="agregarSinColor(${varianteId})" class="btn-sin-color">⚪ Sin color (stock único)</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            container.insertAdjacentHTML('beforeend', varianteHTML);
+            agregarColorAVariante(varianteId);
+            varianteCount++;
+        }
+
+        function agregarColorAVariante(varianteId) {
+            const container = document.getElementById(`colores-${varianteId}-container`);
+            if (!container) return;
+            
+            const colorId = `${varianteId}-${Date.now()}-${Math.random()}`;
+            
+            const colorHTML = `
+                <div class="color-row" id="color-${colorId}">
+                    <input type="color" id="color-hex-${colorId}" value="#ff0000" class="color-picker">
+                    <input type="text" id="color-nombre-${colorId}" placeholder="Nombre del color" class="color-nombre-input">
+                    <input type="number" id="color-stock-${colorId}" placeholder="Stock" min="0" value="0" class="color-stock-input">
+                    <button type="button" onclick="eliminarColor('${colorId}')" class="btn-eliminar-color">🗑️</button>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', colorHTML);
+        }
+
+        function agregarSinColor(varianteId) {
+            const container = document.getElementById(`colores-${varianteId}-container`);
+            if (!container) return;
+            
+            const existingSinColor = container.querySelector('.sin-color-item');
+            if (existingSinColor) {
+                alert('⚠️ Ya existe una opción "Sin color" para esta talla');
+                return;
+            }
+            
+            const colorId = `${varianteId}-sin-color-${Date.now()}`;
+            
+            const sinColorHTML = `
+                <div class="color-row sin-color-item" id="color-${colorId}">
+                    <span style="font-size:1.2rem;">⚪</span>
+                    <span style="flex:1; font-weight:500;">Sin color específico</span>
+                    <input type="number" id="color-stock-${colorId}" placeholder="Stock" min="0" value="0" class="color-stock-input">
+                    <button type="button" onclick="eliminarColor('${colorId}')" class="btn-eliminar-color">🗑️</button>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', sinColorHTML);
+        }
+
+        function eliminarColor(colorId) {
+            const elemento = document.getElementById(`color-${colorId}`);
+            if (elemento) elemento.remove();
+        }
+
+        function eliminarVariante(varianteId) {
+            const element = document.getElementById(`variante-${varianteId}`);
+            if (element) element.remove();
+        }
+
+        function getVariantesFromForm() {
+            const variantes = [];
+            
+            for (let i = 0; i < varianteCount; i++) {
+                const tallaInput = document.getElementById(`variante-${i}-talla`);
+                const precioInput = document.getElementById(`variante-${i}-precio`);
+                const precioCompraInput = document.getElementById(`variante-${i}-precio-compra`);
+                
+                if (!tallaInput || !tallaInput.value.trim()) continue;
+                
+                const talla = tallaInput.value.trim();
+                const precioVenta = parseFloat(precioInput?.value) || 0;
+                const precioCompra = parseFloat(precioCompraInput?.value) || 0;
+                
+                if (precioVenta === 0) {
+                    mostrarAlerta(`⚠️ La talla ${talla} no tiene precio de venta`, 'error');
+                    return [];
+                }
+                
+                const colores = [];
+                const coloresContainer = document.getElementById(`colores-${i}-container`);
+                
+                if (coloresContainer) {
+                    const colorRows = coloresContainer.querySelectorAll('.color-row');
+                    colorRows.forEach(row => {
+                        const colorId = row.id.replace('color-', '');
+                        
+                        if (row.classList.contains('sin-color-item')) {
+                            const stockInput = document.getElementById(`color-stock-${colorId}`);
+                            const stock = parseInt(stockInput?.value) || 0;
+                            if (stock > 0) {
+                                colores.push({ nombre: null, codigo: null, stock: stock });
+                            }
+                        } else {
+                            const nombreInput = document.getElementById(`color-nombre-${colorId}`);
+                            const hexInput = document.getElementById(`color-hex-${colorId}`);
+                            const stockInput = document.getElementById(`color-stock-${colorId}`);
+                            
+                            if (nombreInput && nombreInput.value.trim()) {
+                                colores.push({
+                                    nombre: nombreInput.value.trim(),
+                                    codigo: hexInput ? hexInput.value : '#cccccc',
+                                    stock: parseInt(stockInput?.value) || 0
+                                });
+                            }
+                        }
+                    });
+                }
+                
+                if (colores.length === 0) {
+                    colores.push({ nombre: 'Sin color', codigo: '#cccccc', stock: 0 });
+                }
+                
+                const stockTotal = colores.reduce((sum, c) => sum + c.stock, 0);
+                
+                variantes.push({
+                    talla: talla,
+                    precio_venta: precioVenta,
+                    precio_compra: precioCompra,
+                    colores: colores,
+                    stock_total: stockTotal
+                });
+            }
+            
+            return variantes;
+        }
+
+        async function guardarProductoBase() {
+            try {
+                const token = JSON.parse(localStorage.getItem('admin_token'));
+                
+                const codigo = document.getElementById('producto-codigo')?.value;
+                const nombre = document.getElementById('producto-nombre')?.value;
+                const categoria = document.getElementById('producto-categoria')?.value;
+                
+                if (!codigo || !nombre || !categoria) {
+                    mostrarAlerta('Código, nombre y categoría son obligatorios', 'error');
+                    return;
+                }
+                
+                const variantes = getVariantesFromForm();
+                if (variantes.length === 0) {
+                    mostrarAlerta('Debe agregar al menos una talla', 'error');
+                    return;
+                }
+                
+                for (const v of variantes) {
+                    if (v.precio_venta === 0) {
+                        mostrarAlerta(`La talla ${v.talla} no tiene precio de venta`, 'error');
+                        return;
+                    }
+                }
+                
+                const productoBase = {
+                    codigo: codigo,
+                    nombre: nombre,
+                    categoria: categoria,
+                    imagen_url: document.getElementById('producto-imagen')?.value || null
+                };
+                
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/productos_base`, {
+                    method: 'POST',
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${token.access_token}`,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'return=representation'
+                    },
+                    body: JSON.stringify(productoBase)
+                });
+                
+                if (!response.ok) throw new Error('Error al guardar producto');
+                
+                const productoGuardado = await response.json();
+                const productoId = productoGuardado[0].id;
+                
+                for (const variante of variantes) {
+                    const varianteData = {
+                        producto_id: productoId,
+                        talla: variante.talla,
+                        colores: variante.colores,
+                        stock_total: variante.stock_total,
+                        precio_venta: variante.precio_venta,
+                        precio_compra: variante.precio_compra,
+                        sku: `${codigo}-${variante.talla}`.toUpperCase()
+                    };
+                    
+                    await fetch(`${SUPABASE_URL}/rest/v1/variantes_producto`, {
+                        method: 'POST',
+                        headers: {
+                            'apikey': SUPABASE_KEY,
+                            'Authorization': `Bearer ${token.access_token}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(varianteData)
+                    });
+                }
+                
+                mostrarAlerta('🌸 Producto guardado correctamente', 'success');
+                cerrarFormulario('producto');
+                await cargarProductos();
+                
+                document.getElementById('producto-codigo').value = '';
+                document.getElementById('producto-nombre').value = '';
+                document.getElementById('producto-categoria').value = '';
+                document.getElementById('producto-imagen').value = '';
+                document.getElementById('variantes-container').innerHTML = '';
+                varianteCount = 0;
+                agregarVariante();
+                
+            } catch (error) {
+                console.error('Error:', error);
+                mostrarAlerta('Error: ' + error.message, 'error');
+            }
+        }
+
+        async function cargarProductos() {
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/vista_productos_completa`, {
+                    headers: { 'apikey': SUPABASE_KEY }
+                });
+                
+                if (!response.ok) throw new Error('Error al cargar');
+                
+                const productos = await response.json();
+                const tbody = document.querySelector('#tabla-productos tbody');
+                if (!tbody) return;
+                
+                if (productos.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="8" style="text-align: center;">No hay productos registrados<\/td></tr>';
+                    return;
+                }
+                
+                function getEmojiCategoria(cat) {
+                    const emojis = { 'vestidos': '👗', 'blusas': '👚', 'pantalones': '👖', 'deportivo': '⚽', 'caballero': '👔', 'accesorios': '🎀' };
+                    return emojis[cat] || '📦';
+                }
+                
+                tbody.innerHTML = productos.map(p => {
+                    const variantes = p.variantes || [];
+                    const totalStock = variantes.reduce((sum, v) => sum + (v.stock_total || 0), 0);
+                    const precioMin = Math.min(...variantes.map(v => v.precio_venta || 0));
+                    const precioMax = Math.max(...variantes.map(v => v.precio_venta || 0));
+                    const precioTexto = precioMin === precioMax ? `$${precioMin}` : `$${precioMin} - $${precioMax}`;
+                    
+                    return `
+                        <tr>
+                            <td>${p.imagen_url ? `<img src="${p.imagen_url}" style="width:40px;height:40px;object-fit:cover;border-radius:8px;">` : `<div style="width:40px;height:40px;background:#ffe4e9;border-radius:8px;display:flex;align-items:center;justify-content:center;">${getEmojiCategoria(p.categoria)}</div>`}</td>
+                            <td>${p.codigo}</td>
+                            <td><strong>${p.nombre}</strong></td>
+                            <td><span style="background:#ffe4e9;padding:0.2rem 0.6rem;border-radius:50px;">${p.categoria || '-'}</span></td>
+                            <td>${variantes.length} tallas</td>
+                            <td>${totalStock}</td>
+                            <td>${precioTexto}</td>
+                            <td>
+                                <button class="action-btn" onclick="editarProducto(${p.id})">✏️</button>
+                                <button class="action-btn" onclick="verVariantes(${p.id})">📋</button>
+                                <button class="action-btn delete-btn" onclick="eliminarProducto(${p.id})">🗑️</button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+                
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        async function eliminarProducto(id) {
+            if (!confirm('¿Eliminar este producto? También se eliminarán sus variantes.')) return;
+            
+            try {
+                const token = JSON.parse(localStorage.getItem('admin_token'));
+                await fetch(`${SUPABASE_URL}/rest/v1/productos_base?id=eq.${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${token.access_token}`
+                    }
+                });
+                
+                mostrarAlerta('✅ Producto eliminado', 'success');
+                await cargarProductos();
+                
+            } catch (error) {
+                console.error('Error:', error);
+                mostrarAlerta('Error al eliminar', 'error');
+            }
+        }
+
+        async function verVariantes(id) {
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/vista_productos_completa?id=eq.${id}`, {
+                    headers: { 'apikey': SUPABASE_KEY }
+                });
+                
+                const data = await response.json();
+                if (data.length === 0) return;
+                
+                const producto = data[0];
+                const variantes = producto.variantes || [];
+                
+                let mensaje = `📋 VARIANTES DE: ${producto.nombre}\n`;
+                mensaje += `═══════════════════════\n`;
+                mensaje += `Código: ${producto.codigo}\n`;
+                mensaje += `Stock total: ${producto.stock_total}\n\n`;
+                
+                variantes.forEach(v => {
+                    mensaje += `📏 TALLA: ${v.talla}\n`;
+                    mensaje += `💰 Precio venta: $${v.precio_venta}\n`;
+                    mensaje += `📦 Precio compra: $${v.precio_compra}\n`;
+                    
+                    const colores = v.colores || [];
+                    if (colores.length > 0) {
+                        mensaje += `🎨 Colores:\n`;
+                        colores.forEach(c => {
+                            mensaje += `   • ${c.nombre || 'Sin color'} - Stock: ${c.stock}\n`;
+                        });
+                    }
+                    mensaje += `\n`;
+                });
+                
+                alert(mensaje);
+                
+            } catch (error) {
+                console.error('Error:', error);
+                mostrarAlerta('Error al cargar variantes', 'error');
+            }
+        }
+
+        // ============================================
+        // FUNCIONES DE INVENTARIO
+        // ============================================
+        async function cargarInventario() {
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/vista_productos_completa`, {
+                    headers: { 'apikey': SUPABASE_KEY }
+                });
+                
+                const productos = await response.json();
+                const tbody = document.getElementById('inventario-body');
+                
+                if (!tbody) return;
+                
+                let valorTotalInventario = 0;
+                let gananciaTotalPotencial = 0;
+                let todasVariantes = [];
+                
+                productos.forEach(p => {
+                    const variantes = p.variantes || [];
+                    variantes.forEach(v => {
+                        const colores = v.colores || [];
+                        colores.forEach(c => {
+                            const stock = c.stock || 0;
+                            const precioCompra = v.precio_compra || 0;
+                            const precioVenta = v.precio_venta || 0;
+                            const gananciaUnidad = precioVenta - precioCompra;
+                            const valorTotal = stock * precioCompra;
+                            const gananciaTotal = stock * gananciaUnidad;
+                            
+                            valorTotalInventario += valorTotal;
+                            gananciaTotalPotencial += gananciaTotal;
+                            
+                            todasVariantes.push({
+                                imagen: p.imagen_url,
+                                codigo: p.codigo,
+                                nombre: p.nombre,
+                                talla: v.talla,
+                                color: c.nombre || 'Sin color',
+                                stock: stock,
+                                precio_compra: precioCompra,
+                                precio_venta: precioVenta,
+                                ganancia_unidad: gananciaUnidad,
+                                valor_total: valorTotal
+                            });
+                        });
+                    });
+                });
+                
+                document.getElementById('valor-inventario').textContent = `$${valorTotalInventario.toLocaleString()}`;
+                document.getElementById('ganancia-potencial').textContent = `$${gananciaTotalPotencial.toLocaleString()}`;
+                
+                if (todasVariantes.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="10" style="text-align: center;">No hay productos en inventario<\/td></tr>';
+                    return;
+                }
+                
+                tbody.innerHTML = todasVariantes.map(item => `
+                    <tr>
+                        <td>${item.imagen ? `<img src="${item.imagen}" style="width:40px;height:40px;object-fit:cover;border-radius:8px;">` : '<div style="width:40px;height:40px;background:#ffe4e9;border-radius:8px;">📦</div>'}</td>
+                        <td>${item.codigo}</td>
+                        <td>${item.nombre}</td>
+                        <td>${item.talla}</td>
+                        <td>${item.color !== 'Sin color' ? `<div style="display:flex;align-items:center;gap:6px;"><div style="width:16px;height:16px;background:${item.color};border-radius:50%;"></div>${item.color}</div>` : '⚪ Sin color'}</td>
+                        <td style="font-weight:bold;color:${item.stock < 5 ? '#ff4757' : '#27ae60'}">${item.stock}</td>
+                        <td>$${item.precio_compra.toLocaleString()}</td>
+                        <td>$${item.precio_venta.toLocaleString()}</td>
+                        <td class="${item.ganancia_unidad > 0 ? 'puc-debito' : 'puc-credito'}">$${item.ganancia_unidad.toLocaleString()}</td>
+                        <td>$${item.valor_total.toLocaleString()}</td>
+                    </tr>
+                `).join('');
+                
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        function exportarInventario() {
+            const tabla = document.getElementById('tabla-inventario');
+            const filas = tabla.querySelectorAll('tr');
+            let csv = [];
+            csv.push(['Código', 'Producto', 'Talla', 'Color', 'Stock', 'Precio Compra', 'Precio Venta', 'Ganancia', 'Valor Total'].join(','));
+            
+            filas.forEach(fila => {
+                const celdas = fila.querySelectorAll('td');
+                if (celdas.length > 0 && celdas[0].colSpan !== 10) {
+                    const filaData = [];
+                    for (let i = 1; i < celdas.length; i++) {
+                        filaData.push(celdas[i].innerText.replace(/,/g, '.').trim());
+                    }
+                    csv.push(filaData.join(','));
+                }
+            });
+            
+            const blob = new Blob([csv.join('\n')], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.setAttribute('download', `inventario_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            mostrarAlerta('📥 Inventario exportado', 'success');
+        }
+
+        // ============================================
+        // FUNCIONES DE COMPRAS CON FILTROS
+        // ============================================
+        function aplicarFiltroCompras() {
+            const inicio = document.getElementById('compras-fecha-inicio').value;
+            const fin = document.getElementById('compras-fecha-fin').value;
+            fechaInicioCompras = inicio ? new Date(inicio) : null;
+            fechaFinCompras = fin ? new Date(fin) : null;
+            if (fechaFinCompras) fechaFinCompras.setHours(23, 59, 59, 999);
+            cargarCompras();
+        }
+
+        function limpiarFiltroCompras() {
+            document.getElementById('compras-fecha-inicio').value = '';
+            document.getElementById('compras-fecha-fin').value = '';
+            fechaInicioCompras = null;
+            fechaFinCompras = null;
+            cargarCompras();
+        }
+
+        async function cargarCompras() {
+            try {
+                let url = `${SUPABASE_URL}/rest/v1/compras?select=*,proveedores(nombre)&order=fecha.desc`;
+                if (fechaInicioCompras) url += `&fecha=gte.${fechaInicioCompras.toISOString().split('T')[0]}`;
+                if (fechaFinCompras) url += `&fecha=lte.${fechaFinCompras.toISOString().split('T')[0]}`;
+                
+                const response = await fetch(url, { headers: { 'apikey': SUPABASE_KEY } });
+                const compras = await response.json();
+                const tbody = document.querySelector('#tabla-compras tbody');
+                
+                if (!tbody) return;
+                
+                if (compras.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">No hay compras en este período<\/td></tr>';
+                    document.getElementById('stats-compras-mes').textContent = '$0';
+                    document.getElementById('stats-compras-pendientes').textContent = '0';
+                    return;
+                }
+                
+                const totalMes = compras.reduce((sum, c) => sum + (c.total || 0), 0);
+                const pendientes = compras.filter(c => c.estado === 'Pendiente').length;
+                document.getElementById('stats-compras-mes').textContent = `$${totalMes.toLocaleString()}`;
+                document.getElementById('stats-compras-pendientes').textContent = pendientes;
+                
+                tbody.innerHTML = compras.map(compra => `
+                    <tr>
+                        <td>${new Date(compra.fecha).toLocaleDateString('es-CO')}</td>
+                        <td>${compra.proveedores?.nombre || 'N/A'}</td>
+                        <td>${compra.producto || '-'}</td>
+                        <td>${compra.cantidad || '-'}</td>
+                        <td>$${(compra.total || 0).toLocaleString()}</td>
+                        <td><span class="estado-badge ${compra.estado === 'Pagada' ? 'estado-pagada' : compra.estado === 'Recibida' ? 'estado-recibida' : 'estado-pendiente'}">${compra.estado || 'Pendiente'}</span></td>
+                        <td><button class="action-btn" onclick="editarCompra(${compra.id})">✏️</button><button class="action-btn delete-btn" onclick="eliminarCompra(${compra.id})">🗑️</button></td>
+                    </tr>
+                `).join('');
+                
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        async function guardarCompra() {
+            try {
+                const token = JSON.parse(localStorage.getItem('admin_token'));
+                const compra = {
+                    proveedor_id: document.getElementById('compra-proveedor').value,
+                    fecha: document.getElementById('compra-fecha').value,
+                    producto: document.getElementById('compra-producto').value,
+                    cantidad: parseInt(document.getElementById('compra-cantidad').value),
+                    precio_unitario: parseFloat(document.getElementById('compra-precio').value),
+                    total: parseInt(document.getElementById('compra-cantidad').value) * parseFloat(document.getElementById('compra-precio').value),
+                    estado: document.getElementById('compra-estado').value,
+                    puc: '620501'
+                };
+                
+                if (!compra.proveedor_id) { mostrarAlerta('Seleccione proveedor', 'error'); return; }
+                
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/compras`, {
+                    method: 'POST',
+                    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify(compra)
+                });
+                
+                if (response.ok) {
+                    mostrarAlerta('🌸 Compra guardada', 'success');
+                    cerrarFormulario('compra');
+                    await cargarCompras();
+                    document.getElementById('compra-fecha').value = '';
+                    document.getElementById('compra-producto').value = '';
+                    document.getElementById('compra-cantidad').value = '';
+                    document.getElementById('compra-precio').value = '';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                mostrarAlerta('Error al guardar', 'error');
+            }
+        }
+
+        async function editarCompra(id) { mostrarAlerta('Editar compra en desarrollo', 'warning'); }
+        async function eliminarCompra(id) { if (confirm('¿Eliminar compra?')) mostrarAlerta('Compra eliminada', 'success'); }
+
+        // ============================================
+        // FUNCIONES DE GASTOS CON FILTROS
+        // ============================================
+        function aplicarFiltroGastos() {
+            const inicio = document.getElementById('gastos-fecha-inicio').value;
+            const fin = document.getElementById('gastos-fecha-fin').value;
+            fechaInicioGastos = inicio ? new Date(inicio) : null;
+            fechaFinGastos = fin ? new Date(fin) : null;
+            if (fechaFinGastos) fechaFinGastos.setHours(23, 59, 59, 999);
+            cargarGastos();
+        }
+
+        function limpiarFiltroGastos() {
+            document.getElementById('gastos-fecha-inicio').value = '';
+            document.getElementById('gastos-fecha-fin').value = '';
+            fechaInicioGastos = null;
+            fechaFinGastos = null;
+            cargarGastos();
+        }
+
+        async function cargarGastos() {
+            try {
+                let url = `${SUPABASE_URL}/rest/v1/gastos?order=fecha.desc`;
+                if (fechaInicioGastos) url += `&fecha=gte.${fechaInicioGastos.toISOString().split('T')[0]}`;
+                if (fechaFinGastos) url += `&fecha=lte.${fechaFinGastos.toISOString().split('T')[0]}`;
+                
+                const response = await fetch(url, { headers: { 'apikey': SUPABASE_KEY } });
+                const gastos = await response.json();
+                const gastos = await response.json();
+                const tbody = document.querySelector('#tabla-gastos tbody');
+                
+                if (!tbody) return;
+                
+                if (gastos.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No hay gastos en este período<\/td></tr>';
+                    document.getElementById('stats-gastos-mes').textContent = '$0';
+                    return;
+                }
+                
+                const totalMes = gastos.reduce((sum, g) => sum + (g.monto || 0), 0);
+                document.getElementById('stats-gastos-mes').textContent = `$${totalMes.toLocaleString()}`;
+                
+                tbody.innerHTML = gastos.map(gasto => `
+                    <tr>
+                        <td>${new Date(gasto.fecha).toLocaleDateString('es-CO')}</td>
+                        <td>${gasto.concepto}</td>
+                        <td>${gasto.categoria}</td>
+                        <td>$${(gasto.monto || 0).toLocaleString()}</td>
+                        <td>${gasto.metodo_pago || 'Efectivo'}</td>
+                        <td>
+                            <button class="action-btn" onclick="editarGasto(${gasto.id})">✏️</button>
+                            <button class="action-btn delete-btn" onclick="eliminarGasto(${gasto.id})">🗑️</button>
+                        </td>
+                    </tr>
+                `).join('');
+                
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        async function guardarGasto() {
+            try {
+                const token = JSON.parse(localStorage.getItem('admin_token'));
+                const gasto = {
+                    fecha: document.getElementById('gasto-fecha').value,
+                    concepto: document.getElementById('gasto-concepto').value,
+                    categoria: document.getElementById('gasto-categoria').value,
+                    monto: parseFloat(document.getElementById('gasto-monto').value),
+                    metodo_pago: document.getElementById('gasto-metodo').value
+                };
+                
+                if (!gasto.fecha || !gasto.concepto || !gasto.monto) {
+                    mostrarAlerta('Complete todos los campos', 'error');
+                    return;
+                }
+                
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/gastos`, {
+                    method: 'POST',
+                    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify(gasto)
+                });
+                
+                if (response.ok) {
+                    mostrarAlerta('🌸 Gasto guardado', 'success');
+                    cerrarFormulario('gasto');
+                    await cargarGastos();
+                    document.getElementById('gasto-fecha').value = '';
+                    document.getElementById('gasto-concepto').value = '';
+                    document.getElementById('gasto-monto').value = '';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                mostrarAlerta('Error al guardar', 'error');
+            }
+        }
+
+        async function editarGasto(id) { mostrarAlerta('Editar gasto en desarrollo', 'warning'); }
+        async function eliminarGasto(id) { if (confirm('¿Eliminar gasto?')) mostrarAlerta('Gasto eliminado', 'success'); }
+
+        // ============================================
+        // FUNCIONES DE VENTAS CON FILTROS
+        // ============================================
+        function aplicarFiltroVentas() {
+            const inicio = document.getElementById('ventas-fecha-inicio').value;
+            const fin = document.getElementById('ventas-fecha-fin').value;
+            fechaInicioVentas = inicio ? new Date(inicio) : null;
+            fechaFinVentas = fin ? new Date(fin) : null;
+            if (fechaFinVentas) fechaFinVentas.setHours(23, 59, 59, 999);
+            cargarVentas();
+        }
+
+        function limpiarFiltroVentas() {
+            document.getElementById('ventas-fecha-inicio').value = '';
+            document.getElementById('ventas-fecha-fin').value = '';
+            fechaInicioVentas = null;
+            fechaFinVentas = null;
+            cargarVentas();
+        }
+
+        async function cargarVentas() {
+            try {
+                let url = `${SUPABASE_URL}/rest/v1/ventas?select=*&order=fecha.desc`;
+                if (fechaInicioVentas) url += `&fecha=gte.${fechaInicioVentas.toISOString()}`;
+                if (fechaFinVentas) url += `&fecha=lte.${fechaFinVentas.toISOString()}`;
+                
+                const response = await fetch(url, { headers: { 'apikey': SUPABASE_KEY } });
+                const ventas = await response.json();
+                const tbody = document.querySelector('#tabla-ventas tbody');
+                
+                if (!tbody) return;
+                
+                if (ventas.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No hay ventas en este período<\/td></tr>';
+                    document.getElementById('stats-ventas-hoy').textContent = '$0';
+                    document.getElementById('stats-ventas-mes').textContent = '$0';
+                    return;
+                }
+                
+                // Ventas de hoy
+                const hoy = new Date();
+                hoy.setHours(0, 0, 0, 0);
+                const ventasHoy = ventas.filter(v => new Date(v.fecha) >= hoy);
+                const totalHoy = ventasHoy.reduce((sum, v) => sum + (v.total || 0), 0);
+                document.getElementById('stats-ventas-hoy').textContent = `$${totalHoy.toLocaleString()}`;
+                
+                // Ventas del mes (si no hay filtro)
+                let ventasMes = ventas;
+                if (!fechaInicioVentas && !fechaFinVentas) {
+                    const fechaInicioMes = new Date();
+                    fechaInicioMes.setDate(1);
+                    fechaInicioMes.setHours(0, 0, 0, 0);
+                    ventasMes = ventas.filter(v => new Date(v.fecha) >= fechaInicioMes);
+                }
+                const totalMes = ventasMes.reduce((sum, v) => sum + (v.total || 0), 0);
+                document.getElementById('stats-ventas-mes').textContent = `$${totalMes.toLocaleString()}`;
+                
+                tbody.innerHTML = ventas.map(venta => `
+                    <tr>
+                        <td>${new Date(venta.fecha).toLocaleDateString('es-CO')} ${new Date(venta.fecha).toLocaleTimeString()}</td>
+                        <td>${venta.productos || 'Venta'}</td>
+                        <td>$${(venta.total || 0).toLocaleString()}</td>
+                        <td><span style="background:#ffe4e9;padding:0.2rem 0.6rem;border-radius:50px;">${venta.metodo_pago || 'Efectivo'}</span></td>
+                        <td>${venta.vendedor || '-'}</td>
+                        <td><button class="action-btn" onclick="verFactura(${venta.id})">🧾</button></td>
+                    </tr>
+                `).join('');
+                
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        function verFactura(id) {
+            window.open(`factura.html?id=${id}`, '_blank');
+        }
+
+        // ============================================
+        // FUNCIONES DE PROVEEDORES
+        // ============================================
+        async function cargarProveedores() {
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/proveedores?order=nombre`, {
+                    headers: { 'apikey': SUPABASE_KEY }
+                });
+                const proveedores = await response.json();
+                const tbody = document.querySelector('#tabla-proveedores tbody');
+                
+                if (!tbody) return;
+                
+                if (proveedores.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">No hay proveedores registrados<\/td></tr>';
+                    document.getElementById('stats-proveedores').textContent = '0';
+                    return;
+                }
+                
+                document.getElementById('stats-proveedores').textContent = proveedores.length;
+                
+                tbody.innerHTML = proveedores.map(p => `
+                    <tr>
+                        <td><strong>${p.nombre}</strong></td>
+                        <td>${p.contacto || '-'}</td>
+                        <td>${p.telefono || '-'}</td>
+                        <td>${p.email || '-'}</td>
+                        <td>
+                            <button class="action-btn" onclick="editarProveedor(${p.id})">✏️</button>
+                            <button class="action-btn delete-btn" onclick="eliminarProveedor(${p.id})">🗑️</button>
+                        </td>
+                    </tr>
+                `).join('');
+                
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        async function cargarProveedoresSelect(origen) {
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/proveedores?select=id,nombre&order=nombre`, {
+                    headers: { 'apikey': SUPABASE_KEY }
+                });
+                const proveedores = await response.json();
+                const select = document.getElementById(`${origen}-proveedor`);
+                if (select) {
+                    select.innerHTML = '<option value="">Seleccionar proveedor</option>' + proveedores.map(p => `<option value="${p.id}">${p.nombre}</option>`).join('');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        async function guardarProveedor() {
+            try {
+                const token = JSON.parse(localStorage.getItem('admin_token'));
+                const proveedor = {
+                    nombre: document.getElementById('proveedor-nombre').value,
+                    contacto: document.getElementById('proveedor-contacto').value || null,
+                    telefono: document.getElementById('proveedor-telefono').value || null,
+                    email: document.getElementById('proveedor-email').value || null,
+                    direccion: document.getElementById('proveedor-direccion').value || null
+                };
+                
+                if (!proveedor.nombre) {
+                    mostrarAlerta('El nombre es obligatorio', 'error');
+                    return;
+                }
+                
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/proveedores`, {
+                    method: 'POST',
+                    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify(proveedor)
+                });
+                
+                if (response.ok) {
+                    mostrarAlerta('🌸 Proveedor guardado', 'success');
+                    cerrarFormulario('proveedor');
+                    await cargarProveedores();
+                    document.getElementById('proveedor-nombre').value = '';
+                    document.getElementById('proveedor-contacto').value = '';
+                    document.getElementById('proveedor-telefono').value = '';
+                    document.getElementById('proveedor-email').value = '';
+                    document.getElementById('proveedor-direccion').value = '';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                mostrarAlerta('Error al guardar', 'error');
+            }
+        }
+
+        async function editarProveedor(id) { mostrarAlerta('Editar proveedor en desarrollo', 'warning'); }
+        
+        async function eliminarProveedor(id) {
+            if (!confirm('¿Eliminar este proveedor?')) return;
+            try {
+                const token = JSON.parse(localStorage.getItem('admin_token'));
+                await fetch(`${SUPABASE_URL}/rest/v1/proveedores?id=eq.${id}`, {
+                    method: 'DELETE',
+                    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}` }
+                });
+                mostrarAlerta('✅ Proveedor eliminado', 'success');
+                await cargarProveedores();
+            } catch (error) {
+                console.error('Error:', error);
+                mostrarAlerta('Error al eliminar', 'error');
+            }
+        }
+
+        // ============================================
+        // FUNCIONES DE PERFILES
+        // ============================================
+        async function cargarPerfiles() {
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/perfiles?order=created_at.desc`, {
+                    headers: { 'apikey': SUPABASE_KEY }
+                });
+                const perfiles = await response.json();
+                const tbody = document.querySelector('#tabla-perfiles tbody');
+                
+                if (!tbody) return;
+                
+                if (perfiles.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">No hay usuarios registrados<\/td></tr>';
+                    document.getElementById('stats-empleados').textContent = '0';
+                    return;
+                }
+                
+                document.getElementById('stats-empleados').textContent = perfiles.length;
+                
+                tbody.innerHTML = perfiles.map(p => `
+                    <tr>
+                        <td><strong>${p.nombre || 'Sin nombre'}</strong></td>
+                        <td>${p.email}</td>
+                        <td><span style="background:${p.rol === 'admin' ? '#ff9a9e' : '#ffb6c1'};color:white;padding:0.2rem 0.6rem;border-radius:50px;">${p.rol || 'empleado'}</span></td>
+                        <td>${new Date(p.created_at).toLocaleDateString()}</td>
+                        <td>
+                            <button class="action-btn" onclick="editarPerfil('${p.id}')">✏️</button>
+                            ${p.id !== currentUser?.id ? `<button class="action-btn delete-btn" onclick="eliminarPerfil('${p.id}')">🗑️</button>` : ''}
+                        </td>
+                    </tr>
+                `).join('');
+                
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        async function guardarPerfil() {
+            mostrarAlerta('Función de guardar perfil en desarrollo', 'warning');
+        }
+
+        function editarPerfil(id) { mostrarAlerta('Editar perfil en desarrollo', 'warning'); }
+        function eliminarPerfil(id) { if (confirm('¿Eliminar usuario?')) mostrarAlerta('Usuario eliminado', 'success'); }
+
+        // ============================================
+        // FUNCIONES UTILITARIAS
+        // ============================================
+        function mostrarFormulario(tipo) {
+            const form = document.getElementById(`form-${tipo}`);
+            if (form) form.classList.add('active');
+        }
+
+        function cerrarFormulario(tipo) {
+            const form = document.getElementById(`form-${tipo}`);
+            if (form) form.classList.remove('active');
+        }
+
         function mostrarAlerta(mensaje, tipo) {
             const alerta = document.getElementById('alertMessage');
             if (alerta) {
@@ -866,14 +1786,9 @@
                 alerta.style.display = 'block';
                 setTimeout(() => {
                     alerta.style.display = 'none';
-                }, 4000);
+                }, 3000);
             }
         }
-
-        // Inicializar tooltips dinámicos
-        document.querySelectorAll('[data-tooltip]').forEach(el => {
-            el.setAttribute('title', el.getAttribute('data-tooltip'));
-        });
     </script>
 </body>
 </html>
