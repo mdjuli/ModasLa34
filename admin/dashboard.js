@@ -4,20 +4,12 @@
 
 // Variables globales
 let currentUser = null;
-let currentModule = 'productos';
+let currentModule = 'compras';
 let varianteCount = 0;
-
-// Variables de filtros
-let fechaInicioCompras = null;
-let fechaFinCompras = null;
-let fechaInicioGastos = null;
-let fechaFinGastos = null;
-let fechaInicioVentas = null;
-let fechaFinVentas = null;
 
 // ===== FUNCIONES DE INICIALIZACIÓN =====
 document.addEventListener('DOMContentLoaded', async () => {
-    console.log('🚀 Dashboard iniciado');
+    console.log('Dashboard iniciado');
     await verificarSesion();
     await cargarDatosIniciales();
     cambiarModulo('productos', null);
@@ -79,8 +71,7 @@ function cambiarModulo(modulo, event = null) {
         section.style.display = 'none';
     });
     
-    const moduloElement = document.getElementById(`modulo-${modulo}`);
-    if (moduloElement) moduloElement.style.display = 'block';
+    document.getElementById(`modulo-${modulo}`).style.display = 'block';
     
     if (event) {
         document.querySelectorAll('.nav-btn').forEach(btn => {
@@ -90,7 +81,10 @@ function cambiarModulo(modulo, event = null) {
     }
     
     currentModule = modulo;
-    cargarDatosModulo(modulo);
+    
+    if (modulo !== 'ventas' && modulo !== 'contabilidad') {
+        cargarDatosModulo(modulo);
+    }
 }
 
 async function cargarDatosModulo(modulo) {
@@ -102,8 +96,8 @@ async function cargarDatosModulo(modulo) {
             await cargarInventario();
             break;
         case 'compras':
-            await cargarProveedoresSelect('compra');
             await cargarCompras();
+            await cargarProveedoresSelect('compra');
             break;
         case 'gastos':
             await cargarGastos();
@@ -118,7 +112,6 @@ async function cargarDatosModulo(modulo) {
             await cargarVentas();
             break;
         case 'contabilidad':
-            // No cargar datos
             break;
     }
 }
@@ -141,60 +134,6 @@ async function cargarDatosIniciales() {
     } catch (error) {
         console.error('Error:', error);
     }
-}
-
-// ============================================
-// FUNCIONES DE FILTROS
-// ============================================
-function aplicarFiltroCompras() {
-    const inicio = document.getElementById('compras-fecha-inicio').value;
-    const fin = document.getElementById('compras-fecha-fin').value;
-    fechaInicioCompras = inicio ? new Date(inicio) : null;
-    fechaFinCompras = fin ? new Date(fin) : null;
-    if (fechaFinCompras) fechaFinCompras.setHours(23, 59, 59, 999);
-    cargarCompras();
-}
-
-function limpiarFiltroCompras() {
-    document.getElementById('compras-fecha-inicio').value = '';
-    document.getElementById('compras-fecha-fin').value = '';
-    fechaInicioCompras = null;
-    fechaFinCompras = null;
-    cargarCompras();
-}
-
-function aplicarFiltroGastos() {
-    const inicio = document.getElementById('gastos-fecha-inicio').value;
-    const fin = document.getElementById('gastos-fecha-fin').value;
-    fechaInicioGastos = inicio ? new Date(inicio) : null;
-    fechaFinGastos = fin ? new Date(fin) : null;
-    if (fechaFinGastos) fechaFinGastos.setHours(23, 59, 59, 999);
-    cargarGastos();
-}
-
-function limpiarFiltroGastos() {
-    document.getElementById('gastos-fecha-inicio').value = '';
-    document.getElementById('gastos-fecha-fin').value = '';
-    fechaInicioGastos = null;
-    fechaFinGastos = null;
-    cargarGastos();
-}
-
-function aplicarFiltroVentas() {
-    const inicio = document.getElementById('ventas-fecha-inicio').value;
-    const fin = document.getElementById('ventas-fecha-fin').value;
-    fechaInicioVentas = inicio ? new Date(inicio) : null;
-    fechaFinVentas = fin ? new Date(fin) : null;
-    if (fechaFinVentas) fechaFinVentas.setHours(23, 59, 59, 999);
-    cargarVentas();
-}
-
-function limpiarFiltroVentas() {
-    document.getElementById('ventas-fecha-inicio').value = '';
-    document.getElementById('ventas-fecha-fin').value = '';
-    fechaInicioVentas = null;
-    fechaFinVentas = null;
-    cargarVentas();
 }
 
 // ============================================
@@ -295,7 +234,7 @@ function agregarSinColor(varianteId) {
         <div class="color-row sin-color-item" id="color-${colorId}">
             <span style="font-size: 1.5rem;">⚪</span>
             <span style="flex: 1; font-weight: 500;">Sin color específico</span>
-            <input type="number" id="color-stock-${colorId}" placeholder="Stock" min="0" value="0" class="color-stock-input" style="width: 80px;">
+            <input type="number" id="color-stock-${colorId}" placeholder="Stock" min="0" value="0" class="color-stock-input">
             <button type="button" onclick="eliminarColor('${colorId}')" class="btn-eliminar-color">🗑️</button>
         </div>
     `;
@@ -317,6 +256,7 @@ function eliminarVariante(varianteId) {
     }
 }
 
+// ===== FUNCIÓN ACTUALIZADA CON PRECIO_COMPRA =====
 function getVariantesFromForm() {
     const variantes = [];
     const precioCompraGlobal = document.getElementById('producto-precio-compra')?.value || 0;
@@ -408,6 +348,7 @@ function getVariantesFromForm() {
     return variantes;
 }
 
+// ===== FUNCIÓN ACTUALIZADA CON PRECIO_COMPRA =====
 async function guardarProductoBase() {
     try {
         const token = JSON.parse(localStorage.getItem('admin_token'));
@@ -601,7 +542,7 @@ async function cargarProductos() {
         if (!tbody) return;
         
         if (productos.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="8" style="text-align: center;">No hay productos registrados<\/td></tr>';
+            tbody.innerHTML = '<tr><td colspan="8" style="text-align: center;">No hay productos registrados</td></tr>';
             return;
         }
         
@@ -629,7 +570,7 @@ async function cargarProductos() {
                     <td><strong>${p.nombre}</strong></td>
                     <td><span style="background:#ffe4e9;padding:0.2rem 0.8rem;border-radius:50px;">${p.categoria || '-'}</span></td>
                     <td>${variantes.length} tallas</td>
-                    <td style="font-weight:bold;color:${totalStock < 5 ? '#ff4757' : '#27ae60'}">${totalStock}</td>
+                    <td>${totalStock}</td>
                     <td>${precioTexto}</td>
                     <td>
                         <button class="action-btn" onclick="editarProducto(${p.id})">✏️</button>
@@ -645,6 +586,76 @@ async function cargarProductos() {
     }
 }
 
+async function verVariantes(id) {
+    try {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/vista_productos_completa?id=eq.${id}`, {
+            headers: { 'apikey': SUPABASE_KEY }
+        });
+        
+        const data = await response.json();
+        if (data.length === 0) return;
+        
+        const producto = data[0];
+        const variantes = producto.variantes || [];
+        
+        let mensaje = `📋 VARIANTES DE: ${producto.nombre}\n`;
+        mensaje += `═══════════════════════\n`;
+        mensaje += `Código: ${producto.codigo}\n`;
+        mensaje += `Categoría: ${producto.categoria}\n`;
+        mensaje += `Stock total: ${producto.stock_total}\n\n`;
+        
+        variantes.forEach(v => {
+            mensaje += `📏 TALLA: ${v.talla}\n`;
+            mensaje += `💰 Precio venta: $${v.precio_venta}\n`;
+            mensaje += `💰 Precio compra: $${v.precio_compra || 0}\n`;
+            
+            const colores = v.colores || [];
+            if (colores.length > 0) {
+                mensaje += `🎨 Colores:\n`;
+                colores.forEach(c => {
+                    const nombre = c.nombre || 'Sin color';
+                    const stock = c.stock || 0;
+                    const codigo = c.codigo || '';
+                    mensaje += `   • ${nombre} (${codigo}) - Stock: ${stock}\n`;
+                });
+            } else {
+                mensaje += `   • Sin color específico\n`;
+            }
+            mensaje += `\n`;
+        });
+        
+        alert(mensaje);
+        
+    } catch (error) {
+        console.error('Error:', error);
+        mostrarAlerta('Error al cargar variantes', 'error');
+    }
+}
+
+async function eliminarProducto(id) {
+    if (!confirm('¿Eliminar este producto? También se eliminarán todas sus variantes.')) return;
+    
+    try {
+        const token = JSON.parse(localStorage.getItem('admin_token'));
+        
+        await fetch(`${SUPABASE_URL}/rest/v1/productos_base?id=eq.${id}`, {
+            method: 'DELETE',
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${token.access_token}`
+            }
+        });
+        
+        mostrarAlerta('✅ Producto eliminado', 'success');
+        await cargarProductos();
+        
+    } catch (error) {
+        console.error('Error:', error);
+        mostrarAlerta('Error al eliminar', 'error');
+    }
+}
+
+// ===== FUNCIÓN ACTUALIZADA CON PRECIO_COMPRA =====
 async function editarProducto(id) {
     try {
         console.log('Editando producto:', id);
@@ -675,6 +686,7 @@ async function editarProducto(id) {
         document.getElementById('producto-categoria').value = producto.categoria || '';
         document.getElementById('producto-imagen').value = producto.imagen_url || '';
         
+        // Cargar precio de compra
         if (variantes.length > 0 && variantes[0].precio_compra) {
             document.getElementById('producto-precio-compra').value = variantes[0].precio_compra;
         } else {
@@ -785,75 +797,6 @@ async function editarProducto(id) {
     }
 }
 
-async function verVariantes(id) {
-    try {
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/vista_productos_completa?id=eq.${id}`, {
-            headers: { 'apikey': SUPABASE_KEY }
-        });
-        
-        const data = await response.json();
-        if (data.length === 0) return;
-        
-        const producto = data[0];
-        const variantes = producto.variantes || [];
-        
-        let mensaje = `📋 VARIANTES DE: ${producto.nombre}\n`;
-        mensaje += `═══════════════════════\n`;
-        mensaje += `Código: ${producto.codigo}\n`;
-        mensaje += `Categoría: ${producto.categoria}\n`;
-        mensaje += `Stock total: ${producto.stock_total}\n\n`;
-        
-        variantes.forEach(v => {
-            mensaje += `📏 TALLA: ${v.talla}\n`;
-            mensaje += `💰 Precio venta: $${v.precio_venta}\n`;
-            mensaje += `💰 Precio compra: $${v.precio_compra || 0}\n`;
-            
-            const colores = v.colores || [];
-            if (colores.length > 0) {
-                mensaje += `🎨 Colores:\n`;
-                colores.forEach(c => {
-                    const nombre = c.nombre || 'Sin color';
-                    const stock = c.stock || 0;
-                    const codigo = c.codigo || '';
-                    mensaje += `   • ${nombre} (${codigo}) - Stock: ${stock}\n`;
-                });
-            } else {
-                mensaje += `   • Sin color específico\n`;
-            }
-            mensaje += `\n`;
-        });
-        
-        alert(mensaje);
-        
-    } catch (error) {
-        console.error('Error:', error);
-        mostrarAlerta('Error al cargar variantes', 'error');
-    }
-}
-
-async function eliminarProducto(id) {
-    if (!confirm('¿Eliminar este producto? También se eliminarán todas sus variantes.')) return;
-    
-    try {
-        const token = JSON.parse(localStorage.getItem('admin_token'));
-        
-        await fetch(`${SUPABASE_URL}/rest/v1/productos_base?id=eq.${id}`, {
-            method: 'DELETE',
-            headers: {
-                'apikey': SUPABASE_KEY,
-                'Authorization': `Bearer ${token.access_token}`
-            }
-        });
-        
-        mostrarAlerta('✅ Producto eliminado', 'success');
-        await cargarProductos();
-        
-    } catch (error) {
-        console.error('Error:', error);
-        mostrarAlerta('Error al eliminar', 'error');
-    }
-}
-
 // ============================================
 // FUNCIONES DE PROVEEDORES
 // ============================================
@@ -868,7 +811,7 @@ async function cargarProveedores() {
         const tbody = document.querySelector('#tabla-proveedores tbody');
         
         if (proveedores.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">No hay proveedores registrados<\/td></tr>';
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">No hay proveedores registrados</td></tr>';
             return;
         }
         
@@ -1022,40 +965,34 @@ async function eliminarProveedor(id) {
 
 async function cargarCompras() {
     try {
-        let url = `${SUPABASE_URL}/rest/v1/compras?select=*,proveedores(nombre)&order=fecha.desc`;
+        console.log('Cargando compras...');
         
-        if (fechaInicioCompras) {
-            url += `&fecha=gte.${fechaInicioCompras.toISOString().split('T')[0]}`;
-        }
-        if (fechaFinCompras) {
-            url += `&fecha=lte.${fechaFinCompras.toISOString().split('T')[0]}`;
-        }
-        
-        const response = await fetch(url, {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/compras?select=*,proveedores(nombre)&order=fecha.desc`, {
             headers: { 'apikey': SUPABASE_KEY }
         });
         
-        if (!response.ok) throw new Error('Error al cargar compras');
+        if (!response.ok) {
+            throw new Error('Error al cargar compras');
+        }
         
         const compras = await response.json();
-        const tbody = document.querySelector('#tabla-compras tbody');
+        console.log('Compras cargadas:', compras);
         
+        const tbody = document.querySelector('#tabla-compras tbody');
         if (!tbody) return;
         
         if (compras.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="8" style="text-align: center;">No hay compras en este período<\/td></tr>';
-            document.getElementById('stats-compras-mes').textContent = '$0';
-            document.getElementById('stats-compras-pendientes').textContent = '0';
+            tbody.innerHTML = '<tr><td colspan="8" style="text-align: center;">No hay compras registradas</td></tr>';
             return;
         }
         
-        const fechaInicioMes = new Date();
-        fechaInicioMes.setDate(1);
-        fechaInicioMes.setHours(0, 0, 0, 0);
+        const fechaInicio = new Date();
+        fechaInicio.setDate(1);
+        fechaInicio.setHours(0, 0, 0, 0);
         
         const comprasMes = compras.filter(c => {
             const fechaCompra = new Date(c.fecha + 'T12:00:00');
-            return fechaCompra >= fechaInicioMes;
+            return fechaCompra >= fechaInicio;
         });
         
         const totalMes = comprasMes.reduce((sum, c) => sum + (c.total || 0), 0);
@@ -1066,7 +1003,11 @@ async function cargarCompras() {
         
         tbody.innerHTML = compras.map(compra => {
             const fechaCompra = new Date(compra.fecha + 'T12:00:00');
-            const fechaFormateada = fechaCompra.toLocaleDateString('es-CO');
+            const fechaFormateada = fechaCompra.toLocaleDateString('es-CO', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            });
             
             return `
             <tr>
@@ -1092,7 +1033,7 @@ async function cargarCompras() {
         console.error('Error cargando compras:', error);
         const tbody = document.querySelector('#tabla-compras tbody');
         if (tbody) {
-            tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: #ff4757;">Error al cargar compras<\/td></tr>';
+            tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: #ff4757;">Error al cargar compras</td></tr>';
         }
     }
 }
@@ -1143,6 +1084,8 @@ async function guardarCompra() {
             puc: '620501'
         };
         
+        console.log('Guardando compra:', compra);
+        
         const editId = document.getElementById('form-compra').dataset.editId;
         let url = `${SUPABASE_URL}/rest/v1/compras`;
         let method = 'POST';
@@ -1157,7 +1100,8 @@ async function guardarCompra() {
             headers: {
                 'apikey': SUPABASE_KEY,
                 'Authorization': `Bearer ${token.access_token}`,
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Prefer': 'return=representation'
             },
             body: JSON.stringify(compra)
         });
@@ -1181,6 +1125,7 @@ async function guardarCompra() {
             }
         } else {
             const error = await response.json();
+            console.error('Error respuesta:', error);
             mostrarAlerta('Error: ' + (error.message || 'No se pudo guardar'), 'error');
         }
     } catch (error) {
@@ -1191,6 +1136,8 @@ async function guardarCompra() {
 
 async function editarCompra(id) {
     try {
+        console.log('Editando compra:', id);
+        
         const response = await fetch(`${SUPABASE_URL}/rest/v1/compras?id=eq.${id}`, {
             headers: { 'apikey': SUPABASE_KEY }
         });
@@ -1201,6 +1148,7 @@ async function editarCompra(id) {
         if (compras.length === 0) throw new Error('Compra no encontrada');
         
         const compra = compras[0];
+        console.log('Compra cargada:', compra);
         
         mostrarFormulario('compra');
         
@@ -1277,49 +1225,135 @@ async function eliminarCompra(id) {
     }
 }
 
+async function cargarProductosSelect() {
+    try {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/productos_base?select=id,codigo,nombre&order=nombre`, {
+            headers: { 'apikey': SUPABASE_KEY }
+        });
+        
+        const productos = await response.json();
+        const select = document.getElementById('compra-producto-select');
+        
+        if (!select) return;
+        
+        select.innerHTML = '<option value="">Seleccionar producto existente (opcional)</option>' +
+            productos.map(p => `<option value="${p.id}">${p.codigo} - ${p.nombre}</option>`).join('');
+            
+    } catch (error) {
+        console.error('Error cargando productos:', error);
+    }
+}
+
+async function cargarVariantesProducto() {
+    const productoId = document.getElementById('compra-producto-select').value;
+    const varianteContainer = document.getElementById('compra-variante-container');
+    const varianteSelect = document.getElementById('compra-variante-select');
+    const manualContainer = document.getElementById('compra-manual-container');
+    
+    if (!productoId) {
+        varianteContainer.style.display = 'none';
+        manualContainer.style.display = 'block';
+        return;
+    }
+    
+    try {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/variantes_producto?producto_id=eq.${productoId}`, {
+            headers: { 'apikey': SUPABASE_KEY }
+        });
+        
+        const variantes = await response.json();
+        
+        if (variantes.length > 0) {
+            varianteSelect.innerHTML = '<option value="">Seleccionar variante</option>' +
+                variantes.map(v => {
+                    const colorMuestra = v.color_codigo ? 
+                        `<span style="display:inline-block; width:12px; height:12px; background:${v.color_codigo}; border-radius:50%;"></span>` : '';
+                    return `<option value="${v.id}" data-talla="${v.talla}" data-color-nombre="${v.color_nombre || ''}" data-color-codigo="${v.color_codigo || ''}">
+                        Talla: ${v.talla} | Color: ${v.color_nombre || 'N/A'} ${colorMuestra}
+                    </option>`;
+                }).join('');
+            
+            varianteContainer.style.display = 'block';
+            manualContainer.style.display = 'none';
+        } else {
+            varianteContainer.style.display = 'none';
+            manualContainer.style.display = 'block';
+        }
+        
+    } catch (error) {
+        console.error('Error cargando variantes:', error);
+    }
+}
+
+async function actualizarStockPorCompra(varianteId, cantidad) {
+    try {
+        const token = JSON.parse(localStorage.getItem('admin_token'));
+        
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/variantes_producto?id=eq.${varianteId}`, {
+            headers: { 'apikey': SUPABASE_KEY }
+        });
+        
+        const variantes = await response.json();
+        if (variantes.length === 0) return;
+        
+        const stockActual = variantes[0].stock || 0;
+        const nuevoStock = stockActual + cantidad;
+        
+        await fetch(`${SUPABASE_URL}/rest/v1/variantes_producto?id=eq.${varianteId}`, {
+            method: 'PATCH',
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${token.access_token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ stock: nuevoStock })
+        });
+        
+        console.log(`Stock actualizado: ${stockActual} → ${nuevoStock}`);
+        
+    } catch (error) {
+        console.error('Error actualizando stock:', error);
+    }
+}
+
 // ============================================
 // FUNCIONES DE GASTOS
 // ============================================
 
 async function cargarGastos() {
     try {
-        let url = `${SUPABASE_URL}/rest/v1/gastos?order=fecha.desc`;
+        console.log('Cargando gastos...');
         
-        if (fechaInicioGastos) {
-            url += `&fecha=gte.${fechaInicioGastos.toISOString().split('T')[0]}`;
-        }
-        if (fechaFinGastos) {
-            url += `&fecha=lte.${fechaFinGastos.toISOString().split('T')[0]}`;
-        }
-        
-        const response = await fetch(url, {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/gastos?order=fecha.desc`, {
             headers: { 'apikey': SUPABASE_KEY }
         });
         
-        if (!response.ok) throw new Error('Error al cargar gastos');
+        if (!response.ok) {
+            throw new Error('Error al cargar gastos');
+        }
         
         const gastos = await response.json();
-        const tbody = document.querySelector('#tabla-gastos tbody');
+        console.log('Gastos cargados:', gastos);
         
+        const tbody = document.querySelector('#tabla-gastos tbody');
         if (!tbody) return;
         
         if (gastos.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No hay gastos en este período<\/td></tr>';
-            document.getElementById('stats-gastos-mes').textContent = '$0';
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No hay gastos registrados</td></tr>';
             return;
         }
         
-        const fechaInicioMes = new Date();
-        fechaInicioMes.setDate(1);
-        fechaInicioMes.setHours(0, 0, 0, 0);
+        const fechaInicio = new Date();
+        fechaInicio.setDate(1);
+        fechaInicio.setHours(0, 0, 0, 0);
         
-        const gastosMes = gastos.filter(g => new Date(g.fecha) >= fechaInicioMes);
+        const gastosMes = gastos.filter(g => new Date(g.fecha) >= fechaInicio);
         const totalMes = gastosMes.reduce((sum, g) => sum + (g.monto || 0), 0);
         document.getElementById('stats-gastos-mes').textContent = `$${totalMes.toLocaleString()}`;
         
         tbody.innerHTML = gastos.map(gasto => `
             <tr>
-                <td>${new Date(gasto.fecha).toLocaleDateString('es-CO')}</td>
+                <td>${new Date(gasto.fecha).toLocaleDateString()}</td>
                 <td>${gasto.concepto}</td>
                 <td>${gasto.categoria}</td>
                 <td>$${(gasto.monto || 0).toLocaleString()}</td>
@@ -1335,7 +1369,7 @@ async function cargarGastos() {
         console.error('Error cargando gastos:', error);
         const tbody = document.querySelector('#tabla-gastos tbody');
         if (tbody) {
-            tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #ff4757;">Error al cargar gastos<\/td></tr>';
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #ff4757;">Error al cargar gastos</td></tr>';
         }
     }
 }
@@ -1349,7 +1383,8 @@ async function guardarGasto() {
             concepto: document.getElementById('gasto-concepto').value,
             categoria: document.getElementById('gasto-categoria').value,
             monto: parseFloat(document.getElementById('gasto-monto').value),
-            metodo_pago: document.getElementById('gasto-metodo').value
+            metodo_pago: document.getElementById('gasto-metodo').value,
+            puc: obtenerPUCGasto(document.getElementById('gasto-categoria').value)
         };
         
         if (!gasto.fecha || !gasto.concepto || !gasto.categoria || !gasto.monto) {
@@ -1402,8 +1437,22 @@ async function guardarGasto() {
     }
 }
 
+function obtenerPUCGasto(categoria) {
+    const pucMap = {
+        'Alquiler': '511005',
+        'Servicios': '511010',
+        'Sueldos': '510506',
+        'Marketing': '513505',
+        'Mantenimiento': '513505',
+        'Otros': '519595'
+    };
+    return pucMap[categoria] || '519595';
+}
+
 async function editarGasto(id) {
     try {
+        console.log('Editando gasto:', id);
+        
         const response = await fetch(`${SUPABASE_URL}/rest/v1/gastos?id=eq.${id}`, {
             headers: { 'apikey': SUPABASE_KEY }
         });
@@ -1478,7 +1527,7 @@ async function cargarPerfiles() {
         const tbody = document.querySelector('#tabla-perfiles tbody');
         
         if (perfiles.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">No hay usuarios registrados<\/td></tr>';
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">No hay usuarios registrados</td></tr>';
             return;
         }
         
@@ -1511,6 +1560,8 @@ async function cargarPerfiles() {
 
 async function editarPerfil(id) {
     try {
+        console.log('Editando perfil:', id);
+        
         const response = await fetch(`${SUPABASE_URL}/rest/v1/perfiles?id=eq.${id}`, {
             headers: { 'apikey': SUPABASE_KEY }
         });
@@ -1684,7 +1735,7 @@ async function eliminarPerfil(id) {
 }
 
 // ============================================
-// FUNCIONES DE INVENTARIO
+// FUNCIONES PARA INVENTARIO
 // ============================================
 
 async function cargarInventario() {
@@ -1704,12 +1755,19 @@ async function cargarInventario() {
         let gananciaTotalPotencial = 0;
         
         if (productos.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="10" style="text-align: center;">No hay productos en inventario<\/td></tr>';
+            tbody.innerHTML = '<tr><td colspan="10" style="text-align: center;">No hay productos en inventario</td></tr>';
             return;
         }
         
         function getEmojiCategoria(cat) {
-            const emojis = { 'vestidos': '👗', 'blusas': '👚', 'pantalones': '👖', 'deportivo': '⚽', 'caballero': '👔', 'accesorios': '🎀' };
+            const emojis = {
+                'vestidos': '👗',
+                'blusas': '👚',
+                'pantalones': '👖',
+                'deportivo': '⚽',
+                'caballero': '👔',
+                'accesorios': '🎀'
+            };
             return emojis[cat] || '📦';
         }
         
@@ -1804,7 +1862,7 @@ async function cargarInventario() {
                             `<img src="${p.imagen_url}" style="width:60px;height:60px;object-fit:cover;border-radius:10px;">` : 
                             `<div style="width:60px;height:60px;background:#ffe4e9;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:2rem;">${getEmojiCategoria(p.categoria)}</div>`
                         }
-                     </td>
+                    </td>
                     <td style="vertical-align: top;"><strong>${p.codigo}</strong></td>
                     <td style="vertical-align: top;"><strong>${p.nombre}</strong></td>
                     <td style="vertical-align: top;">${p.categoria || '-'}</td>
@@ -1826,36 +1884,9 @@ async function cargarInventario() {
         console.error('Error cargando inventario:', error);
         const tbody = document.getElementById('inventario-body');
         if (tbody) {
-            tbody.innerHTML = '<td><td colspan="10" style="text-align: center; color: #ff4757;">Error al cargar inventario</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="10" style="text-align: center; color: #ff4757;">Error al cargar inventario</td></tr>';
         }
     }
-}
-
-function exportarInventario() {
-    const tabla = document.getElementById('tabla-inventario');
-    const filas = tabla.querySelectorAll('tr');
-    let csv = [];
-    csv.push(['Código', 'Producto', 'Talla', 'Color', 'Stock', 'Precio Compra', 'Precio Venta', 'Ganancia', 'Valor Total'].join(','));
-    
-    filas.forEach(fila => {
-        const celdas = fila.querySelectorAll('td');
-        if (celdas.length > 0 && celdas[0].colSpan !== 10) {
-            const filaData = [];
-            for (let i = 1; i < celdas.length; i++) {
-                filaData.push(celdas[i].innerText.replace(/,/g, '.').trim());
-            }
-            csv.push(filaData.join(','));
-        }
-    });
-    
-    const blob = new Blob([csv.join('\n')], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.setAttribute('download', `inventario_${new Date().toISOString().split('T')[0]}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    mostrarAlerta('📥 Inventario exportado correctamente', 'success');
 }
 
 // ============================================
@@ -1864,30 +1895,24 @@ function exportarInventario() {
 
 async function cargarVentas() {
     try {
-        let url = `${SUPABASE_URL}/rest/v1/ventas?select=*&order=fecha.desc`;
+        console.log('Cargando ventas...');
         
-        if (fechaInicioVentas) {
-            url += `&fecha=gte.${fechaInicioVentas.toISOString()}`;
-        }
-        if (fechaFinVentas) {
-            url += `&fecha=lte.${fechaFinVentas.toISOString()}`;
-        }
-        
-        const response = await fetch(url, {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/ventas?select=*&order=fecha.desc`, {
             headers: { 'apikey': SUPABASE_KEY }
         });
         
-        if (!response.ok) throw new Error('Error al cargar ventas');
+        if (!response.ok) {
+            throw new Error('Error al cargar ventas');
+        }
         
         const ventas = await response.json();
-        const tbody = document.querySelector('#tabla-ventas tbody');
+        console.log('Ventas cargadas:', ventas);
         
+        const tbody = document.querySelector('#tabla-ventas tbody');
         if (!tbody) return;
         
         if (ventas.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No hay ventas en este período</td></tr>';
-            document.getElementById('stats-ventas-hoy').textContent = '$0';
-            document.getElementById('stats-ventas-mes').textContent = '$0';
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No hay ventas registradas</td></tr>';
             return;
         }
         
@@ -1898,14 +1923,11 @@ async function cargarVentas() {
         const totalHoy = ventasHoy.reduce((sum, v) => sum + (v.total || 0), 0);
         document.getElementById('stats-ventas-hoy').textContent = `$${totalHoy.toLocaleString()}`;
         
-        const fechaInicioMes = new Date();
-        fechaInicioMes.setDate(1);
-        fechaInicioMes.setHours(0, 0, 0, 0);
+        const fechaInicio = new Date();
+        fechaInicio.setDate(1);
+        fechaInicio.setHours(0, 0, 0, 0);
         
-        let ventasMes = ventas;
-        if (!fechaInicioVentas && !fechaFinVentas) {
-            ventasMes = ventas.filter(v => new Date(v.fecha) >= fechaInicioMes);
-        }
+        const ventasMes = ventas.filter(v => new Date(v.fecha) >= fechaInicio);
         const totalMes = ventasMes.reduce((sum, v) => sum + (v.total || 0), 0);
         document.getElementById('stats-ventas-mes').textContent = `$${totalMes.toLocaleString()}`;
         
@@ -1930,7 +1952,7 @@ async function cargarVentas() {
         console.error('Error cargando ventas:', error);
         const tbody = document.querySelector('#tabla-ventas tbody');
         if (tbody) {
-            tbody.innerHTML = '<td><td colspan="6" style="text-align: center; color: #ff4757;">Error al cargar ventas</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #ff4757;">Error al cargar ventas</td></tr>';
         }
     }
 }
