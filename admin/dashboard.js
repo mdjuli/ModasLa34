@@ -2031,3 +2031,47 @@ function mostrarAlerta(mensaje, tipo) {
         alerta.style.display = 'none';
     }, 3000);
 }
+
+// ============================================
+// FUNCIONES DE FILTROS (Agregar esto)
+// ============================================
+
+function aplicarFiltroCompras() {
+    const inicio = document.getElementById('compras-fecha-inicio').value;
+    const fin = document.getElementById('compras-fecha-fin').value;
+    console.log('Filtrar compras:', inicio, fin);
+    mostrarAlerta('Filtrando compras...', 'success');
+    // Aquí irá la lógica real después
+}
+
+function limpiarFiltroCompras() {
+    document.getElementById('compras-fecha-inicio').value = '';
+    document.getElementById('compras-fecha-fin').value = '';
+    mostrarAlerta('Filtro de compras limpiado', 'success');
+}
+
+function aplicarFiltroGastos() {
+    const inicio = document.getElementById('gastos-fecha-inicio').value;
+    const fin = document.getElementById('gastos-fecha-fin').value;
+    console.log('Filtrar gastos:', inicio, fin);
+    mostrarAlerta('Filtrando gastos...', 'success');
+}
+
+function limpiarFiltroGastos() {
+    document.getElementById('gastos-fecha-inicio').value = '';
+    document.getElementById('gastos-fecha-fin').value = '';
+    mostrarAlerta('Filtro de gastos limpiado', 'success');
+}
+
+function aplicarFiltroVentas() {
+    const inicio = document.getElementById('ventas-fecha-inicio').value;
+    const fin = document.getElementById('ventas-fecha-fin').value;
+    console.log('Filtrar ventas:', inicio, fin);
+    mostrarAlerta('Filtrando ventas...', 'success');
+}
+
+function limpiarFiltroVentas() {
+    document.getElementById('ventas-fecha-inicio').value = '';
+    document.getElementById('ventas-fecha-fin').value = '';
+    mostrarAlerta('Filtro de ventas limpiado', 'success');
+}
