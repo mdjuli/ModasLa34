@@ -7,12 +7,534 @@
     <title>Dashboard - Modas La 34</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="../css/estilo-comun.css">
     <style>
-        /* Todos tus estilos CSS aquí */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: #f8f6f4; color: #1a1a1a; }
-        /* ... resto de estilos ... */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f5f7fb;
+            color: #1a1a1a;
+            min-height: 100vh;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            background: white;
+            padding: 0.8rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e9ecef;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            background: rgba(255,255,255,0.95);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .menu-btn {
+            background: none;
+            border: none;
+            font-size: 1.3rem;
+            cursor: pointer;
+            color: #666;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .menu-btn:hover {
+            background: #f0f0f0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-icon {
+            font-size: 1.5rem;
+        }
+
+        .logo-text {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #333;
+        }
+
+        .logo-badge {
+            background: #f0f0f0;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: #666;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            background: #f5f5f5;
+            padding: 0.4rem 1rem;
+            border-radius: 40px;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #e8b4b8, #d4a5a9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        .user-name {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .logout-btn {
+            background: none;
+            border: none;
+            color: #999;
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .logout-btn:hover {
+            background: #f0f0f0;
+            color: #e74c3c;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            position: fixed;
+            top: 60px;
+            left: 0;
+            bottom: 0;
+            width: 260px;
+            background: white;
+            border-right: 1px solid #e9ecef;
+            transform: translateX(-100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 90;
+            overflow-y: auto;
+        }
+
+        .sidebar.open {
+            transform: translateX(0);
+        }
+
+        .sidebar-nav {
+            padding: 1.5rem 1rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0.75rem 1rem;
+            color: #555;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border-radius: 12px;
+            transition: all 0.2s;
+            cursor: pointer;
+            width: 100%;
+            background: none;
+            border: none;
+            margin-bottom: 0.2rem;
+        }
+
+        .nav-item i {
+            width: 22px;
+            font-size: 1.1rem;
+            color: #999;
+        }
+
+        .nav-item:hover {
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        .nav-item.active {
+            background: #fdf0f0;
+            color: #d4a5a9;
+        }
+
+        .nav-item.active i {
+            color: #d4a5a9;
+        }
+
+        .sidebar-overlay {
+            position: fixed;
+            top: 60px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(2px);
+            z-index: 85;
+            display: none;
+        }
+
+        .sidebar-overlay.active {
+            display: block;
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
+            margin-top: 60px;
+            padding: 1.5rem;
+            transition: margin-left 0.3s;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* ===== TARJETAS ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 20px;
+            padding: 1.2rem;
+            border: 1px solid #e9ecef;
+            transition: all 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.8rem;
+        }
+
+        .stat-title {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-icon {
+            font-size: 1.4rem;
+            color: #d4a5a9;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .stat-sub {
+            font-size: 0.7rem;
+            color: #aaa;
+            margin-top: 0.5rem;
+        }
+
+        /* ===== FILTROS ===== */
+        .filters-bar {
+            background: white;
+            border-radius: 16px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #e9ecef;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .filters-bar label {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #666;
+        }
+
+        .filters-bar input {
+            padding: 0.5rem 0.8rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            background: white;
+        }
+
+        .filter-btn {
+            background: #f5f5f5;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover {
+            background: #e8e8e8;
+        }
+
+        /* ===== TABLAS ===== */
+        .data-card {
+            background: white;
+            border-radius: 20px;
+            border: 1px solid #e9ecef;
+            overflow: hidden;
+            margin-top: 1rem;
+        }
+
+        .data-header {
+            padding: 1rem 1.2rem;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .data-header h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .add-btn {
+            background: #d4a5a9;
+            color: white;
+            border: none;
+            padding: 0.5rem 1.2rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .add-btn:hover {
+            background: #c49498;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+
+        th {
+            text-align: left;
+            padding: 1rem 1.2rem;
+            background: #fafafa;
+            font-weight: 600;
+            color: #555;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        td {
+            padding: 1rem 1.2rem;
+            border-bottom: 1px solid #f0f0f0;
+            color: #444;
+        }
+
+        tr:hover {
+            background: #fef8f8;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            font-size: 1rem;
+            cursor: pointer;
+            margin: 0 0.2rem;
+            color: #aaa;
+            transition: all 0.2s;
+        }
+
+        .action-btn:hover {
+            color: #d4a5a9;
+        }
+
+        .delete-btn:hover {
+            color: #e74c3c;
+        }
+
+        /* ===== FORMULARIOS ===== */
+        .form-modal {
+            background: white;
+            border-radius: 24px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #e9ecef;
+            display: none;
+        }
+
+        .form-modal.active {
+            display: block;
+            animation: fadeIn 0.2s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.4rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.7rem 1rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #d4a5a9;
+            box-shadow: 0 0 0 3px rgba(212, 165, 169, 0.1);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .submit-btn {
+            background: #d4a5a9;
+            color: white;
+            border: none;
+            padding: 0.8rem;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            width: 100%;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .submit-btn:hover {
+            background: #c49498;
+        }
+
+        .cancel-btn {
+            background: #f5f5f5;
+            color: #666;
+            border: none;
+            padding: 0.7rem;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            width: 100%;
+            margin-top: 0.5rem;
+            cursor: pointer;
+        }
+
+        .variante-card {
+            background: #fafafa;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Alertas */
+        .alert {
+            padding: 0.8rem 1rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            display: none;
+            font-size: 0.85rem;
+        }
+
+        .alert.success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #c8e6c9;
+        }
+
+        .alert.error {
+            background: #ffebee;
+            color: #c62828;
+            border: 1px solid #ffcdd2;
+        }
+
+        /* Badges */
+        .badge {
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .badge-pagada { background: #e8f5e9; color: #2e7d32; }
+        .badge-pendiente { background: #fff3e0; color: #ef6c00; }
+        .badge-recibida { background: #e3f2fd; color: #1565c0; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .stats-grid { grid-template-columns: 1fr; }
+            .filters-bar { flex-direction: column; align-items: stretch; }
+            .data-header { flex-direction: column; align-items: flex-start; }
+            th, td { padding: 0.8rem; }
+            .logo-text { display: none; }
+        }
     </style>
 </head>
 <body>
@@ -82,40 +604,15 @@
                 <div class="stat-card"><div class="stat-header"><span class="stat-title">Ganancia Potencial</span><i class="fas fa-chart-line stat-icon"></i></div><div class="stat-value" id="ganancia-potencial">$0</div></div>
                 <div class="stat-card" onclick="exportarInventario()" style="cursor:pointer"><div class="stat-header"><span class="stat-title">Exportar</span><i class="fas fa-download stat-icon"></i></div><div class="stat-value">📥</div></div>
             </div>
-            <div class="data-card">
-                <div class="data-header"><h2>Inventario Detallado</h2><button class="add-btn" onclick="exportarInventario()">Exportar</button></div>
-                <table id="tabla-inventario"><thead><tr><th>Producto</th><th>Talla</th><th>Color</th><th>Stock</th><th>P.Compra</th><th>P.Venta</th></tr></thead><tbody><tr><td colspan="6">Cargando...<\/td></tr></tbody></table>
-            </div>
+            <div class="data-card"><div class="data-header"><h2>Inventario Detallado</h2><button class="add-btn" onclick="exportarInventario()">Exportar</button></div><table id="tabla-inventario"><thead><tr><th>Producto</th><th>Talla</th><th>Color</th><th>Stock</th><th>P.Compra</th><th>P.Venta</th></tr></thead><tbody><tr><td colspan="6">Cargando...<\/td></tr></tbody></table></div>
         </div>
 
         <!-- COMPRAS -->
         <div id="modulo-compras" class="module-section" style="display: none;">
-            <div class="stats-grid">
-                <div class="stat-card"><div class="stat-header"><span class="stat-title">Compras del Mes</span><i class="fas fa-calendar stat-icon"></i></div><div class="stat-value" id="stats-compras-mes">$0</div></div>
-                <div class="stat-card"><div class="stat-header"><span class="stat-title">Pendientes</span><i class="fas fa-clock stat-icon"></i></div><div class="stat-value" id="stats-compras-pendientes">0</div></div>
-            </div>
-            <div class="filters-bar">
-                <label>Filtrar:</label>
-                <input type="date" id="compras-fecha-inicio"><span>a</span><input type="date" id="compras-fecha-fin">
-                <button onclick="aplicarFiltroCompras()" class="filter-btn">Filtrar</button>
-                <button onclick="limpiarFiltroCompras()" class="filter-btn">Limpiar</button>
-            </div>
-            <div class="data-card">
-                <div class="data-header"><h2>Historial de Compras</h2><button class="add-btn" onclick="mostrarFormulario('compra')">+ Nueva</button></div>
-                <table id="tabla-compras"><thead><tr><th>Fecha</th><th>Proveedor</th><th>Producto</th><th>Total</th><th>Estado</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="6">Cargando...<\/td></tr></tbody></table>
-            </div>
-            <div id="form-compra" class="form-modal">
-                <h3>🛍️ Nueva Compra</h3>
-                <form onsubmit="event.preventDefault(); guardarCompra()">
-                    <div class="form-group"><label>Proveedor</label><select id="compra-proveedor" required><option value="">Seleccionar</option></select></div>
-                    <div class="form-group"><label>Fecha</label><input type="date" id="compra-fecha" required></div>
-                    <div class="form-group"><label>Producto</label><input type="text" id="compra-producto" required></div>
-                    <div class="form-row"><div class="form-group"><label>Cantidad</label><input type="number" id="compra-cantidad" min="1" required></div><div class="form-group"><label>Precio</label><input type="number" id="compra-precio" min="0" required></div></div>
-                    <div class="form-group"><label>Estado</label><select id="compra-estado"><option value="Pendiente">Pendiente</option><option value="Recibida">Recibida</option><option value="Pagada">Pagada</option></select></div>
-                    <button type="submit" class="submit-btn">Guardar</button>
-                    <button type="button" class="cancel-btn" onclick="cerrarFormulario('compra')">Cancelar</button>
-                </form>
-            </div>
+            <div class="stats-grid"><div class="stat-card"><div class="stat-header"><span class="stat-title">Compras del Mes</span><i class="fas fa-calendar stat-icon"></i></div><div class="stat-value" id="stats-compras-mes">$0</div></div><div class="stat-card"><div class="stat-header"><span class="stat-title">Pendientes</span><i class="fas fa-clock stat-icon"></i></div><div class="stat-value" id="stats-compras-pendientes">0</div></div></div>
+            <div class="filters-bar"><label>Filtrar:</label><input type="date" id="compras-fecha-inicio"><span>a</span><input type="date" id="compras-fecha-fin"><button onclick="aplicarFiltroCompras()" class="filter-btn">Filtrar</button><button onclick="limpiarFiltroCompras()" class="filter-btn">Limpiar</button></div>
+            <div class="data-card"><div class="data-header"><h2>Historial de Compras</h2><button class="add-btn" onclick="mostrarFormulario('compra')">+ Nueva</button></div><table id="tabla-compras"><thead><tr><th>Fecha</th><th>Proveedor</th><th>Producto</th><th>Total</th><th>Estado</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="6">Cargando...<\/td></tr></tbody></table></div>
+            <div id="form-compra" class="form-modal"><h3>🛍️ Nueva Compra</h3><form onsubmit="event.preventDefault(); guardarCompra()"><div class="form-group"><label>Proveedor</label><select id="compra-proveedor" required><option value="">Seleccionar</option></select></div><div class="form-group"><label>Fecha</label><input type="date" id="compra-fecha" required></div><div class="form-group"><label>Producto</label><input type="text" id="compra-producto" required></div><div class="form-row"><div class="form-group"><label>Cantidad</label><input type="number" id="compra-cantidad" min="1" required></div><div class="form-group"><label>Precio</label><input type="number" id="compra-precio" min="0" required></div></div><div class="form-group"><label>Estado</label><select id="compra-estado"><option value="Pendiente">Pendiente</option><option value="Recibida">Recibida</option><option value="Pagada">Pagada</option></select></div><button type="submit" class="submit-btn">Guardar</button><button type="button" class="cancel-btn" onclick="cerrarFormulario('compra')">Cancelar</button></form></div>
         </div>
 
         <!-- GASTOS -->
@@ -151,7 +648,6 @@
         </div>
     </main>
 
-    <!-- SOLO LOS SCRIPTS, SIN FUNCIONES DENTRO -->
     <script src="../js/supabase-config.js"></script>
     <script src="dashboard.js"></script>
 </body>
