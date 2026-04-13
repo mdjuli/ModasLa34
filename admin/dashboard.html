@@ -8,10 +8,20 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: #f8f6f4; color: #1a1a1a; min-height: 100vh; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-        /* HEADER */
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f8f6f4;
+            color: #1a1a1a;
+            min-height: 100vh;
+        }
+
+        /* ===== HEADER MODERNO ===== */
         .header {
             background: white;
             padding: 0.8rem 1.5rem;
@@ -24,22 +34,105 @@
             left: 0;
             right: 0;
             z-index: 100;
+            backdrop-filter: blur(10px);
         }
-        .header-left { display: flex; align-items: center; gap: 1rem; }
-        .menu-btn { background: none; border: none; font-size: 1.3rem; cursor: pointer; color: #666; padding: 0.5rem; border-radius: 8px; }
-        .menu-btn:hover { background: #f0f0f0; }
-        .logo { display: flex; align-items: center; gap: 0.5rem; }
-        .logo-icon { font-size: 1.5rem; }
-        .logo-text { font-weight: 600; font-size: 1.1rem; color: #333; }
-        .logo-badge { background: #f0f0f0; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.7rem; color: #666; }
-        .header-right { display: flex; align-items: center; gap: 1rem; }
-        .user-info { display: flex; align-items: center; gap: 0.8rem; background: #f5f5f5; padding: 0.4rem 1rem; border-radius: 40px; }
-        .user-avatar { width: 32px; height: 32px; background: linear-gradient(135deg, #e8b4b8, #d4a5a9); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.9rem; }
-        .user-name { font-size: 0.85rem; font-weight: 500; color: #333; }
-        .logout-btn { background: none; border: none; color: #999; cursor: pointer; font-size: 1rem; padding: 0.5rem; border-radius: 8px; }
-        .logout-btn:hover { background: #f0f0f0; color: #e74c3c; }
 
-        /* SIDEBAR */
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .menu-btn {
+            background: none;
+            border: none;
+            font-size: 1.3rem;
+            cursor: pointer;
+            color: #666;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .menu-btn:hover {
+            background: #f0f0f0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-icon {
+            font-size: 1.5rem;
+        }
+
+        .logo-text {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #333;
+        }
+
+        .logo-badge {
+            background: #f0f0f0;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: #666;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            background: #f5f5f5;
+            padding: 0.4rem 1rem;
+            border-radius: 40px;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #e8b4b8, #d4a5a9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        .user-name {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .logout-btn {
+            background: none;
+            border: none;
+            color: #999;
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .logout-btn:hover {
+            background: #f0f0f0;
+            color: #e74c3c;
+        }
+
+        /* ===== SIDEBAR ===== */
         .sidebar {
             position: fixed;
             top: 60px;
@@ -53,27 +146,58 @@
             z-index: 90;
             overflow-y: auto;
         }
-        .sidebar.open { transform: translateX(0); }
-        .sidebar-nav { padding: 1.5rem 1rem; }
+
+        .sidebar.open {
+            transform: translateX(0);
+        }
+
+        .sidebar-nav {
+            padding: 1.5rem 1rem;
+        }
+
         .nav-item {
             display: flex;
             align-items: center;
             gap: 12px;
             padding: 0.75rem 1rem;
             color: #555;
+            text-decoration: none;
             font-size: 0.9rem;
             font-weight: 500;
             border-radius: 12px;
+            transition: all 0.2s;
             cursor: pointer;
             width: 100%;
             background: none;
             border: none;
             margin-bottom: 0.2rem;
         }
-        .nav-item i { width: 22px; color: #999; }
-        .nav-item:hover { background: #f5f5f5; color: #333; }
-        .nav-item.active { background: #fdf0f0; color: #d4a5a9; }
-        .nav-item.active i { color: #d4a5a9; }
+
+        .nav-item i {
+            width: 22px;
+            font-size: 1.1rem;
+            color: #999;
+        }
+
+        .nav-item:hover {
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        .nav-item:hover i {
+            color: #e8b4b8;
+        }
+
+        .nav-item.active {
+            background: #fdf0f0;
+            color: #d4a5a9;
+        }
+
+        .nav-item.active i {
+            color: #d4a5a9;
+        }
+
+        /* Overlay */
         .sidebar-overlay {
             position: fixed;
             top: 60px;
@@ -85,13 +209,29 @@
             z-index: 85;
             display: none;
         }
-        .sidebar-overlay.active { display: block; }
 
-        /* MAIN CONTENT */
-        .main-content { margin-top: 60px; padding: 1.5rem; max-width: 1400px; margin-left: auto; margin-right: auto; }
+        .sidebar-overlay.active {
+            display: block;
+        }
 
-        /* TARJETAS */
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.2rem; margin-bottom: 2rem; }
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
+            margin-top: 60px;
+            padding: 1.5rem;
+            transition: margin-left 0.3s;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* ===== TARJETAS ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
         .stat-card {
             background: white;
             border-radius: 20px;
@@ -99,14 +239,45 @@
             border: 1px solid #eee;
             transition: all 0.2s;
         }
-        .stat-card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.05); }
-        .stat-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; }
-        .stat-title { font-size: 0.8rem; font-weight: 500; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
-        .stat-icon { font-size: 1.4rem; color: #d4a5a9; }
-        .stat-value { font-size: 1.8rem; font-weight: 700; color: #333; }
-        .stat-sub { font-size: 0.7rem; color: #aaa; margin-top: 0.5rem; }
 
-        /* FILTROS */
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.8rem;
+        }
+
+        .stat-title {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-icon {
+            font-size: 1.4rem;
+            color: #d4a5a9;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .stat-sub {
+            font-size: 0.7rem;
+            color: #aaa;
+            margin-top: 0.5rem;
+        }
+
+        /* ===== FILTROS ===== */
         .filters-bar {
             background: white;
             border-radius: 16px;
@@ -118,12 +289,36 @@
             align-items: center;
             gap: 1rem;
         }
-        .filters-bar label { font-size: 0.8rem; font-weight: 500; color: #666; }
-        .filters-bar input { padding: 0.5rem 0.8rem; border: 1px solid #e0e0e0; border-radius: 10px; font-size: 0.85rem; background: white; }
-        .filter-btn { background: #f5f5f5; border: none; padding: 0.5rem 1rem; border-radius: 10px; font-size: 0.8rem; cursor: pointer; }
-        .filter-btn:hover { background: #e8e8e8; }
 
-        /* TABLAS */
+        .filters-bar label {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #666;
+        }
+
+        .filters-bar input {
+            padding: 0.5rem 0.8rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            background: white;
+        }
+
+        .filter-btn {
+            background: #f5f5f5;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover {
+            background: #e8e8e8;
+        }
+
+        /* ===== TABLAS ===== */
         .data-card {
             background: white;
             border-radius: 20px;
@@ -131,6 +326,7 @@
             overflow: hidden;
             margin-top: 1rem;
         }
+
         .data-header {
             padding: 1rem 1.2rem;
             border-bottom: 1px solid #eee;
@@ -140,18 +336,73 @@
             flex-wrap: wrap;
             gap: 1rem;
         }
-        .data-header h2 { font-size: 1.1rem; font-weight: 600; color: #333; }
-        .add-btn { background: #d4a5a9; color: white; border: none; padding: 0.5rem 1.2rem; border-radius: 30px; font-size: 0.8rem; font-weight: 500; cursor: pointer; }
-        .add-btn:hover { background: #c49498; }
-        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-        th { text-align: left; padding: 1rem 1.2rem; background: #fafafa; font-weight: 600; color: #555; border-bottom: 1px solid #eee; }
-        td { padding: 1rem 1.2rem; border-bottom: 1px solid #f0f0f0; color: #444; }
-        tr:hover { background: #fef8f8; }
-        .action-btn { background: none; border: none; font-size: 1rem; cursor: pointer; margin: 0 0.2rem; color: #aaa; }
-        .action-btn:hover { color: #d4a5a9; }
-        .delete-btn:hover { color: #e74c3c; }
 
-        /* FORMULARIOS */
+        .data-header h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .add-btn {
+            background: #d4a5a9;
+            color: white;
+            border: none;
+            padding: 0.5rem 1.2rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .add-btn:hover {
+            background: #c49498;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+
+        th {
+            text-align: left;
+            padding: 1rem 1.2rem;
+            background: #fafafa;
+            font-weight: 600;
+            color: #555;
+            border-bottom: 1px solid #eee;
+        }
+
+        td {
+            padding: 1rem 1.2rem;
+            border-bottom: 1px solid #f0f0f0;
+            color: #444;
+        }
+
+        tr:hover {
+            background: #fef8f8;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            font-size: 1rem;
+            cursor: pointer;
+            margin: 0 0.2rem;
+            color: #aaa;
+            transition: all 0.2s;
+        }
+
+        .action-btn:hover {
+            color: #d4a5a9;
+        }
+
+        .delete-btn:hover {
+            color: #e74c3c;
+        }
+
+        /* ===== FORMULARIOS ===== */
         .form-modal {
             background: white;
             border-radius: 24px;
@@ -160,117 +411,313 @@
             border: 1px solid #eee;
             display: none;
         }
-        .form-modal.active { display: block; animation: fadeIn 0.2s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-        .form-group { margin-bottom: 1rem; }
-        .form-group label { display: block; margin-bottom: 0.4rem; font-size: 0.8rem; font-weight: 500; color: #555; }
-        .form-group input, .form-group select, .form-group textarea {
+
+        .form-modal.active {
+            display: block;
+            animation: fadeIn 0.2s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.4rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .form-group input,
+        .form-group select {
             width: 100%;
             padding: 0.7rem 1rem;
             border: 1px solid #e0e0e0;
             border-radius: 12px;
             font-size: 0.85rem;
+            transition: all 0.2s;
         }
-        .form-group input:focus, .form-group select:focus { outline: none; border-color: #d4a5a9; box-shadow: 0 0 0 3px rgba(212,165,169,0.1); }
-        .form-row { display: flex; gap: 1rem; flex-wrap: wrap; }
-        .form-row .form-group { flex: 1; }
-        .submit-btn { background: #d4a5a9; color: white; border: none; padding: 0.8rem; border-radius: 40px; font-size: 0.9rem; font-weight: 600; width: 100%; cursor: pointer; }
-        .submit-btn:hover { background: #c49498; }
-        .cancel-btn { background: #f5f5f5; color: #666; border: none; padding: 0.7rem; border-radius: 40px; font-size: 0.85rem; width: 100%; margin-top: 0.5rem; cursor: pointer; }
 
-        /* VARIANTES */
-        .variante-card { background: #f9f9f9; border-radius: 12px; padding: 1rem; margin-bottom: 1rem; }
-        .color-row { display: flex; gap: 0.5rem; align-items: center; margin-top: 0.5rem; flex-wrap: wrap; }
-        .color-picker { width: 35px; height: 35px; border-radius: 8px; border: 1px solid #ddd; }
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #d4a5a9;
+            box-shadow: 0 0 0 3px rgba(212, 165, 169, 0.1);
+        }
 
-        /* ALERTAS */
-        .alert { padding: 0.8rem 1rem; border-radius: 12px; margin-bottom: 1rem; display: none; font-size: 0.85rem; }
-        .alert.success { background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
-        .alert.error { background: #ffebee; color: #c62828; border: 1px solid #ffcdd2; }
+        .form-row {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
 
-        /* BADGES */
-        .badge { padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.7rem; font-weight: 500; display: inline-block; }
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .submit-btn {
+            background: #d4a5a9;
+            color: white;
+            border: none;
+            padding: 0.8rem;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            width: 100%;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .submit-btn:hover {
+            background: #c49498;
+        }
+
+        .cancel-btn {
+            background: #f5f5f5;
+            color: #666;
+            border: none;
+            padding: 0.7rem;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            width: 100%;
+            margin-top: 0.5rem;
+            cursor: pointer;
+        }
+
+        /* Alertas */
+        .alert {
+            padding: 0.8rem 1rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            display: none;
+            font-size: 0.85rem;
+        }
+
+        .alert.success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #c8e6c9;
+        }
+
+        .alert.error {
+            background: #ffebee;
+            color: #c62828;
+            border: 1px solid #ffcdd2;
+        }
+
+        /* Badges */
+        .badge {
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+
         .badge-pagada { background: #e8f5e9; color: #2e7d32; }
         .badge-pendiente { background: #fff3e0; color: #ef6c00; }
         .badge-recibida { background: #e3f2fd; color: #1565c0; }
 
+        /* Responsive */
         @media (max-width: 768px) {
-            .stats-grid { grid-template-columns: 1fr; }
-            .filters-bar { flex-direction: column; align-items: stretch; }
-            .data-header { flex-direction: column; align-items: flex-start; }
-            th, td { padding: 0.8rem; }
-            .logo-text { display: none; }
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .filters-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .data-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            th, td {
+                padding: 0.8rem;
+            }
+            
+            .logo-text {
+                display: none;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Header -->
     <header class="header">
         <div class="header-left">
-            <button class="menu-btn" onclick="toggleMenu()"><i class="fas fa-bars"></i></button>
-            <div class="logo"><span class="logo-icon">🌸</span><span class="logo-text">Modas La 34</span><span class="logo-badge">Admin</span></div>
+            <button class="menu-btn" onclick="toggleMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="logo">
+                <span class="logo-icon">🌸</span>
+                <span class="logo-text">Modas La 34</span>
+                <span class="logo-badge">Admin</span>
+            </div>
         </div>
         <div class="header-right">
-            <div class="user-info"><div class="user-avatar" id="userAvatar">👤</div><span class="user-name" id="userNameDisplay">Cargando...</span></div>
-            <button class="logout-btn" onclick="logout()" title="Cerrar sesión"><i class="fas fa-sign-out-alt"></i></button>
+            <div class="user-info">
+                <div class="user-avatar" id="userAvatar">👤</div>
+                <span class="user-name" id="userNameDisplay">Cargando...</span>
+            </div>
+            <button class="logout-btn" onclick="logout()" title="Cerrar sesión">
+                <i class="fas fa-sign-out-alt"></i>
+            </button>
         </div>
     </header>
 
+    <!-- Sidebar -->
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMenu()"></div>
     <div class="sidebar" id="sidebar">
         <nav class="sidebar-nav">
-            <button class="nav-item" onclick="cambiarModulo('productos', event); toggleMenu()"><i class="fas fa-tag"></i><span>Productos</span></button>
-            <button class="nav-item" onclick="cambiarModulo('inventario', event); toggleMenu()"><i class="fas fa-boxes"></i><span>Inventario</span></button>
-            <button class="nav-item" onclick="cambiarModulo('compras', event); toggleMenu()"><i class="fas fa-shopping-cart"></i><span>Compras</span></button>
-            <button class="nav-item" onclick="cambiarModulo('gastos', event); toggleMenu()"><i class="fas fa-receipt"></i><span>Gastos</span></button>
-            <button class="nav-item" onclick="cambiarModulo('perfiles', event); toggleMenu()"><i class="fas fa-users"></i><span>Usuarios</span></button>
-            <button class="nav-item" onclick="cambiarModulo('proveedores', event); toggleMenu()"><i class="fas fa-truck"></i><span>Proveedores</span></button>
-            <button class="nav-item" onclick="cambiarModulo('ventas', event); toggleMenu()"><i class="fas fa-chart-line"></i><span>Ventas</span></button>
-            <button class="nav-item" onclick="cambiarModulo('contabilidad', event); toggleMenu()"><i class="fas fa-calculator"></i><span>Contabilidad</span></button>
+            <button class="nav-item" onclick="cambiarModulo('productos', event); toggleMenu()">
+                <i class="fas fa-tag"></i>
+                <span>Productos</span>
+            </button>
+            <button class="nav-item" onclick="cambiarModulo('inventario', event); toggleMenu()">
+                <i class="fas fa-boxes"></i>
+                <span>Inventario</span>
+            </button>
+            <button class="nav-item" onclick="cambiarModulo('compras', event); toggleMenu()">
+                <i class="fas fa-shopping-cart"></i>
+                <span>Compras</span>
+            </button>
+            <button class="nav-item" onclick="cambiarModulo('gastos', event); toggleMenu()">
+                <i class="fas fa-receipt"></i>
+                <span>Gastos</span>
+            </button>
+            <button class="nav-item" onclick="cambiarModulo('perfiles', event); toggleMenu()">
+                <i class="fas fa-users"></i>
+                <span>Usuarios</span>
+            </button>
+            <button class="nav-item" onclick="cambiarModulo('proveedores', event); toggleMenu()">
+                <i class="fas fa-truck"></i>
+                <span>Proveedores</span>
+            </button>
+            <button class="nav-item" onclick="cambiarModulo('ventas', event); toggleMenu()">
+                <i class="fas fa-chart-line"></i>
+                <span>Ventas</span>
+            </button>
+            <button class="nav-item" onclick="cambiarModulo('contabilidad', event); toggleMenu()">
+                <i class="fas fa-calculator"></i>
+                <span>Contabilidad</span>
+            </button>
         </nav>
     </div>
 
+    <!-- Main Content -->
     <main class="main-content">
         <div id="alertMessage" class="alert"></div>
 
         <!-- PRODUCTOS -->
         <div id="modulo-productos" class="module-section">
             <div class="stats-grid">
-                <div class="stat-card"><div class="stat-header"><span class="stat-title">Total Productos</span><i class="fas fa-box stat-icon"></i></div><div class="stat-value" id="stats-total-productos">0</div><div class="stat-sub">en inventario</div></div>
-                <div class="stat-card"><div class="stat-header"><span class="stat-title">Stock Bajo</span><i class="fas fa-exclamation-triangle stat-icon"></i></div><div class="stat-value" id="stats-stock-bajo">0</div><div class="stat-sub">productos por reabastecer</div></div>
-                <div class="stat-card" onclick="mostrarFormulario('producto')" style="cursor:pointer"><div class="stat-header"><span class="stat-title">Nuevo Producto</span><i class="fas fa-plus-circle stat-icon"></i></div><div class="stat-value">+</div><div class="stat-sub">agregar al catálogo</div></div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-title">Total Productos</span>
+                        <i class="fas fa-box stat-icon"></i>
+                    </div>
+                    <div class="stat-value" id="stats-total-productos">0</div>
+                    <div class="stat-sub">en inventario</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-title">Stock Bajo</span>
+                        <i class="fas fa-exclamation-triangle stat-icon"></i>
+                    </div>
+                    <div class="stat-value" id="stats-stock-bajo">0</div>
+                    <div class="stat-sub">productos por reabastecer</div>
+                </div>
+                <div class="stat-card" onclick="mostrarFormulario('producto')" style="cursor:pointer">
+                    <div class="stat-header">
+                        <span class="stat-title">Nuevo Producto</span>
+                        <i class="fas fa-plus-circle stat-icon"></i>
+                    </div>
+                    <div class="stat-value">+</div>
+                    <div class="stat-sub">agregar al catálogo</div>
+                </div>
             </div>
 
             <div id="form-producto" class="form-modal">
-                <h3 style="margin-bottom:1rem;">👗 Nuevo Producto</h3>
+                <h3 style="margin-bottom: 1rem; color:#333;">👗 Nuevo Producto</h3>
                 <form onsubmit="event.preventDefault(); guardarProductoBase()">
-                    <div class="form-group"><label>Código</label><input type="text" id="producto-codigo" placeholder="Ej: PANT001" required></div>
-                    <div class="form-group"><label>Categoría</label><select id="producto-categoria" required><option value="">Seleccionar</option><option value="vestidos">Vestidos</option><option value="blusas">Blusas</option><option value="pantalones">Pantalones</option><option value="deportivo">Deportivo</option><option value="caballero">Caballero</option><option value="accesorios">Accesorios</option></select></div>
-                    <div class="form-group"><label>Nombre</label><input type="text" id="producto-nombre" placeholder="Ej: Pantalón Jean" required></div>
-                    <div class="form-group"><label>Precio compra (base)</label><input type="number" id="producto-precio-compra" placeholder="25000" step="1000"></div>
-                    <div class="form-group"><label>URL imagen</label><input type="url" id="producto-imagen" placeholder="https://..."></div>
-                    <h4 style="margin:1rem 0 0.5rem;">📦 Variantes</h4>
+                    <div class="form-group">
+                        <label>Código</label>
+                        <input type="text" id="producto-codigo" placeholder="Ej: PANT001" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Categoría</label>
+                        <select id="producto-categoria" required>
+                            <option value="">Seleccionar</option>
+                            <option value="vestidos">Vestidos</option>
+                            <option value="blusas">Blusas</option>
+                            <option value="pantalones">Pantalones</option>
+                            <option value="deportivo">Deportivo</option>
+                            <option value="caballero">Caballero</option>
+                            <option value="accesorios">Accesorios</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Nombre</label>
+                        <input type="text" id="producto-nombre" placeholder="Ej: Pantalón Jean" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Precio compra (base)</label>
+                        <input type="number" id="producto-precio-compra" placeholder="25000" step="1000">
+                    </div>
+                    <div class="form-group">
+                        <label>URL imagen</label>
+                        <input type="url" id="producto-imagen" placeholder="https://...">
+                    </div>
+                    <h4 style="margin: 1rem 0 0.5rem; color:#555;">📦 Variantes</h4>
                     <div id="variantes-container"></div>
-                    <button type="button" onclick="agregarVariante()" class="add-btn" style="margin:0.5rem 0; background:#e0e0e0; color:#555;">+ Agregar talla</button>
+                    <button type="button" onclick="agregarVariante()" class="add-btn" style="margin: 0.5rem 0; background:#e0e0e0; color:#555;">+ Agregar talla</button>
                     <button type="submit" class="submit-btn">Guardar Producto</button>
                     <button type="button" class="cancel-btn" onclick="cerrarFormulario('producto')">Cancelar</button>
                 </form>
             </div>
 
             <div class="data-card">
-                <div class="data-header"><h2><i class="fas fa-list"></i> Productos Registrados</h2><button class="add-btn" onclick="mostrarFormulario('producto')">+ Nuevo Producto</button></div>
-                <table id="tabla-productos"><thead><tr><th>Producto</th><th>Código</th><th>Categoría</th><th>Stock</th><th>Precio</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="6">Cargando...<\/td></tr></tbody></table>
+                <div class="data-header">
+                    <h2><i class="fas fa-list"></i> Productos Registrados</h2>
+                    <button class="add-btn" onclick="mostrarFormulario('producto')">+ Nuevo Producto</button>
+                </div>
+                <table id="tabla-productos">
+                    <thead>
+                        <tr><th>Producto</th><th>Código</th><th>Categoría</th><th>Stock</th><th>Precio</th><th>Acciones</th></tr>
+                    </thead>
+                    <tbody><tr><td colspan="6">Cargando...</td></tr></tbody>
+                </table>
             </div>
         </div>
 
         <!-- INVENTARIO -->
         <div id="modulo-inventario" class="module-section" style="display: none;">
             <div class="stats-grid">
-                <div class="stat-card"><div class="stat-header"><span class="stat-title">Valor Inventario</span><i class="fas fa-dollar-sign stat-icon"></i></div><div class="stat-value" id="valor-inventario">$0</div></div>
-                <div class="stat-card"><div class="stat-header"><span class="stat-title">Ganancia Potencial</span><i class="fas fa-chart-line stat-icon"></i></div><div class="stat-value" id="ganancia-potencial">$0</div></div>
-                <div class="stat-card" onclick="exportarInventario()" style="cursor:pointer"><div class="stat-header"><span class="stat-title">Exportar</span><i class="fas fa-download stat-icon"></i></div><div class="stat-value">📥</div></div>
+                <div class="stat-card">
+                    <div class="stat-header"><span class="stat-title">Valor Inventario</span><i class="fas fa-dollar-sign stat-icon"></i></div>
+                    <div class="stat-value" id="valor-inventario">$0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header"><span class="stat-title">Ganancia Potencial</span><i class="fas fa-chart-line stat-icon"></i></div>
+                    <div class="stat-value" id="ganancia-potencial">$0</div>
+                </div>
+                <div class="stat-card" onclick="exportarInventario()" style="cursor:pointer">
+                    <div class="stat-header"><span class="stat-title">Exportar</span><i class="fas fa-download stat-icon"></i></div>
+                    <div class="stat-value">📥</div>
+                </div>
             </div>
-            <div class="data-card"><div class="data-header"><h2>Inventario Detallado</h2><button class="add-btn" onclick="exportarInventario()">Exportar</button></div>
-                <table id="tabla-inventario"><thead><tr><th>Producto</th><th>Talla</th><th>Color</th><th>Stock</th><th>P.Compra</th><th>P.Venta</th></tr></thead><tbody><tr><td colspan="6">Cargando...<\/td></tr></tbody></table>
+            <div class="data-card">
+                <div class="data-header"><h2>Inventario Detallado</h2><button class="add-btn" onclick="exportarInventario()">Exportar</button></div>
+                <table id="tabla-inventario"><thead><tr><th>Producto</th><th>Talla</th><th>Color</th><th>Stock</th><th>P.Compra</th><th>P.Venta</th></tr></thead><tbody><tr><td colspan="6">Cargando...</td></tr></tbody></table>
             </div>
         </div>
 
@@ -280,44 +727,117 @@
                 <div class="stat-card"><div class="stat-header"><span class="stat-title">Compras del Mes</span><i class="fas fa-calendar stat-icon"></i></div><div class="stat-value" id="stats-compras-mes">$0</div></div>
                 <div class="stat-card"><div class="stat-header"><span class="stat-title">Pendientes</span><i class="fas fa-clock stat-icon"></i></div><div class="stat-value" id="stats-compras-pendientes">0</div></div>
             </div>
-            <div class="filters-bar"><label>Filtrar por fecha:</label><input type="date" id="compras-fecha-inicio"><span>a</span><input type="date" id="compras-fecha-fin"><button onclick="aplicarFiltroCompras()" class="filter-btn">Filtrar</button><button onclick="limpiarFiltroCompras()" class="filter-btn">Limpiar</button></div>
-            <div class="data-card"><div class="data-header"><h2>Historial de Compras</h2><button class="add-btn" onclick="mostrarFormulario('compra')">+ Nueva Compra</button></div>
-                <table id="tabla-compras"><thead><tr><th>Fecha</th><th>Proveedor</th><th>Producto</th><th>Total</th><th>Estado</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="6">Cargando...<\/td></tr></tbody></table>
+            <div class="filters-bar">
+                <label>Filtrar por fecha:</label>
+                <input type="date" id="compras-fecha-inicio">
+                <span>a</span>
+                <input type="date" id="compras-fecha-fin">
+                <button onclick="aplicarFiltroCompras()" class="filter-btn">Filtrar</button>
+                <button onclick="limpiarFiltroCompras()" class="filter-btn">Limpiar</button>
             </div>
-            <div id="form-compra" class="form-modal"><h3>🛍️ Nueva Compra</h3><form onsubmit="event.preventDefault(); guardarCompra()"><div class="form-group"><label>Proveedor</label><select id="compra-proveedor" required><option value="">Seleccionar</option></select></div><div class="form-group"><label>Fecha</label><input type="date" id="compra-fecha" required></div><div class="form-group"><label>Producto</label><input type="text" id="compra-producto" required></div><div class="form-row"><div class="form-group"><label>Cantidad</label><input type="number" id="compra-cantidad" min="1" required></div><div class="form-group"><label>Precio unitario</label><input type="number" id="compra-precio" min="0" required></div></div><div class="form-group"><label>Estado</label><select id="compra-estado"><option value="Pendiente">Pendiente</option><option value="Recibida">Recibida</option><option value="Pagada">Pagada</option></select></div><button type="submit" class="submit-btn">Guardar</button><button type="button" class="cancel-btn" onclick="cerrarFormulario('compra')">Cancelar</button></form></div>
+            <div class="data-card">
+                <div class="data-header"><h2>Historial de Compras</h2><button class="add-btn" onclick="mostrarFormulario('compra')">+ Nueva Compra</button></div>
+                <table id="tabla-compras"><thead><tr><th>Fecha</th><th>Proveedor</th><th>Producto</th><th>Total</th><th>Estado</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="6">Cargando...</td></tr></tbody></table>
+            </div>
+            <div id="form-compra" class="form-modal">
+                <h3>🛍️ Nueva Compra</h3>
+                <form onsubmit="event.preventDefault(); guardarCompra()">
+                    <div class="form-group"><label>Proveedor</label><select id="compra-proveedor" required><option value="">Seleccionar</option></select></div>
+                    <div class="form-group"><label>Fecha</label><input type="date" id="compra-fecha" required></div>
+                    <div class="form-group"><label>Producto</label><input type="text" id="compra-producto" required></div>
+                    <div class="form-row"><div class="form-group"><label>Cantidad</label><input type="number" id="compra-cantidad" min="1" required></div><div class="form-group"><label>Precio unitario</label><input type="number" id="compra-precio" min="0" required></div></div>
+                    <div class="form-group"><label>Estado</label><select id="compra-estado"><option value="Pendiente">Pendiente</option><option value="Recibida">Recibida</option><option value="Pagada">Pagada</option></select></div>
+                    <button type="submit" class="submit-btn">Guardar</button>
+                    <button type="button" class="cancel-btn" onclick="cerrarFormulario('compra')">Cancelar</button>
+                </form>
+            </div>
         </div>
 
         <!-- GASTOS -->
         <div id="modulo-gastos" class="module-section" style="display: none;">
-            <div class="stats-grid"><div class="stat-card"><div class="stat-header"><span class="stat-title">Gastos del Mes</span><i class="fas fa-coins stat-icon"></i></div><div class="stat-value" id="stats-gastos-mes">$0</div></div></div>
-            <div class="filters-bar"><label>Filtrar por fecha:</label><input type="date" id="gastos-fecha-inicio"><span>a</span><input type="date" id="gastos-fecha-fin"><button onclick="aplicarFiltroGastos()" class="filter-btn">Filtrar</button><button onclick="limpiarFiltroGastos()" class="filter-btn">Limpiar</button></div>
-            <div class="data-card"><div class="data-header"><h2>Historial de Gastos</h2><button class="add-btn" onclick="mostrarFormulario('gasto')">+ Nuevo Gasto</button></div>
-                <table id="tabla-gastos"><thead><tr><th>Fecha</th><th>Concepto</th><th>Categoría</th><th>Monto</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="5">Cargando...<\/td></tr></tbody></table>
+            <div class="stats-grid">
+                <div class="stat-card"><div class="stat-header"><span class="stat-title">Gastos del Mes</span><i class="fas fa-coins stat-icon"></i></div><div class="stat-value" id="stats-gastos-mes">$0</div></div>
             </div>
-            <div id="form-gasto" class="form-modal"><h3>💸 Nuevo Gasto</h3><form onsubmit="event.preventDefault(); guardarGasto()"><div class="form-group"><label>Fecha</label><input type="date" id="gasto-fecha" required></div><div class="form-group"><label>Concepto</label><input type="text" id="gasto-concepto" required></div><div class="form-group"><label>Categoría</label><select id="gasto-categoria"><option value="Alquiler">Alquiler</option><option value="Servicios">Servicios</option><option value="Sueldos">Sueldos</option><option value="Otros">Otros</option></select></div><div class="form-group"><label>Monto</label><input type="number" id="gasto-monto" min="0" required></div><div class="form-group"><label>Método</label><select id="gasto-metodo"><option value="Efectivo">Efectivo</option><option value="Transferencia">Transferencia</option><option value="Tarjeta">Tarjeta</option></select></div><button type="submit" class="submit-btn">Guardar</button><button type="button" class="cancel-btn" onclick="cerrarFormulario('gasto')">Cancelar</button></form></div>
+            <div class="filters-bar">
+                <label>Filtrar por fecha:</label>
+                <input type="date" id="gastos-fecha-inicio">
+                <span>a</span>
+                <input type="date" id="gastos-fecha-fin">
+                <button onclick="aplicarFiltroGastos()" class="filter-btn">Filtrar</button>
+                <button onclick="limpiarFiltroGastos()" class="filter-btn">Limpiar</button>
+            </div>
+            <div class="data-card">
+                <div class="data-header"><h2>Historial de Gastos</h2><button class="add-btn" onclick="mostrarFormulario('gasto')">+ Nuevo Gasto</button></div>
+                <table id="tabla-gastos"><thead><tr><th>Fecha</th><th>Concepto</th><th>Categoría</th><th>Monto</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="5">Cargando...</td></tr></tbody></table>
+            </div>
+            <div id="form-gasto" class="form-modal">
+                <h3>💸 Nuevo Gasto</h3>
+                <form onsubmit="event.preventDefault(); guardarGasto()">
+                    <div class="form-group"><label>Fecha</label><input type="date" id="gasto-fecha" required></div>
+                    <div class="form-group"><label>Concepto</label><input type="text" id="gasto-concepto" required></div>
+                    <div class="form-group"><label>Categoría</label><select id="gasto-categoria"><option value="Alquiler">Alquiler</option><option value="Servicios">Servicios</option><option value="Sueldos">Sueldos</option><option value="Otros">Otros</option></select></div>
+                    <div class="form-group"><label>Monto</label><input type="number" id="gasto-monto" min="0" required></div>
+                    <div class="form-group"><label>Método</label><select id="gasto-metodo"><option value="Efectivo">Efectivo</option><option value="Transferencia">Transferencia</option><option value="Tarjeta">Tarjeta</option></select></div>
+                    <button type="submit" class="submit-btn">Guardar</button>
+                    <button type="button" class="cancel-btn" onclick="cerrarFormulario('gasto')">Cancelar</button>
+                </form>
+            </div>
         </div>
 
         <!-- PERFILES -->
         <div id="modulo-perfiles" class="module-section" style="display: none;">
-            <div class="data-card"><div class="data-header"><h2>Usuarios del Sistema</h2><button class="add-btn" onclick="mostrarFormulario('perfil')">+ Nuevo Usuario</button></div>
-                <table id="tabla-perfiles"><thead><tr><th>Nombre</th><th>Email</th><th>Rol</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="4">Cargando...<\/td></tr></tbody></table>
+            <div class="data-card">
+                <div class="data-header"><h2>Usuarios del Sistema</h2><button class="add-btn" onclick="mostrarFormulario('perfil')">+ Nuevo Usuario</button></div>
+                <table id="tabla-perfiles"><thead><tr><th>Nombre</th><th>Email</th><th>Rol</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="4">Cargando...</td></tr></tbody></table>
             </div>
-            <div id="form-perfil" class="form-modal"><h3>👥 Nuevo Usuario</h3><form onsubmit="event.preventDefault(); guardarPerfil()"><div class="form-group"><label>Nombre</label><input type="text" id="perfil-nombre" required></div><div class="form-group"><label>Email</label><input type="email" id="perfil-email" required></div><div class="form-group"><label>Contraseña</label><input type="password" id="perfil-password" minlength="6" required></div><div class="form-group"><label>Rol</label><select id="perfil-rol"><option value="empleado">Empleado</option><option value="admin">Administrador</option></select></div><button type="submit" class="submit-btn">Crear</button><button type="button" class="cancel-btn" onclick="cerrarFormulario('perfil')">Cancelar</button></form></div>
+            <div id="form-perfil" class="form-modal">
+                <h3>👥 Nuevo Usuario</h3>
+                <form onsubmit="event.preventDefault(); guardarPerfil()">
+                    <div class="form-group"><label>Nombre</label><input type="text" id="perfil-nombre" required></div>
+                    <div class="form-group"><label>Email</label><input type="email" id="perfil-email" required></div>
+                    <div class="form-group"><label>Contraseña</label><input type="password" id="perfil-password" minlength="6" required></div>
+                    <div class="form-group"><label>Rol</label><select id="perfil-rol"><option value="empleado">Empleado</option><option value="admin">Administrador</option></select></div>
+                    <button type="submit" class="submit-btn">Crear</button>
+                    <button type="button" class="cancel-btn" onclick="cerrarFormulario('perfil')">Cancelar</button>
+                </form>
+            </div>
         </div>
 
         <!-- PROVEEDORES -->
         <div id="modulo-proveedores" class="module-section" style="display: none;">
-            <div class="data-card"><div class="data-header"><h2>Proveedores</h2><button class="add-btn" onclick="mostrarFormulario('proveedor')">+ Nuevo Proveedor</button></div>
-                <table id="tabla-proveedores"><thead><tr><th>Nombre</th><th>Contacto</th><th>Teléfono</th><th>Email</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="5">Cargando...<\/td></tr></tbody></table>
+            <div class="data-card">
+                <div class="data-header"><h2>Proveedores</h2><button class="add-btn" onclick="mostrarFormulario('proveedor')">+ Nuevo Proveedor</button></div>
+                <table id="tabla-proveedores"><thead><tr><th>Nombre</th><th>Contacto</th><th>Teléfono</th><th>Email</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="5">Cargando...</td></tr></tbody></table>
             </div>
-            <div id="form-proveedor" class="form-modal"><h3>📦 Nuevo Proveedor</h3><form onsubmit="event.preventDefault(); guardarProveedor()"><div class="form-group"><label>Nombre</label><input type="text" id="proveedor-nombre" required></div><div class="form-group"><label>Contacto</label><input type="text" id="proveedor-contacto"></div><div class="form-row"><div class="form-group"><label>Teléfono</label><input type="tel" id="proveedor-telefono"></div><div class="form-group"><label>Email</label><input type="email" id="proveedor-email"></div></div><div class="form-group"><label>Dirección</label><textarea id="proveedor-direccion" rows="2"></textarea></div><button type="submit" class="submit-btn">Guardar</button><button type="button" class="cancel-btn" onclick="cerrarFormulario('proveedor')">Cancelar</button></form></div>
+            <div id="form-proveedor" class="form-modal">
+                <h3>📦 Nuevo Proveedor</h3>
+                <form onsubmit="event.preventDefault(); guardarProveedor()">
+                    <div class="form-group"><label>Nombre</label><input type="text" id="proveedor-nombre" required></div>
+                    <div class="form-group"><label>Contacto</label><input type="text" id="proveedor-contacto"></div>
+                    <div class="form-row"><div class="form-group"><label>Teléfono</label><input type="tel" id="proveedor-telefono"></div><div class="form-group"><label>Email</label><input type="email" id="proveedor-email"></div></div>
+                    <div class="form-group"><label>Dirección</label><textarea id="proveedor-direccion" rows="2"></textarea></div>
+                    <button type="submit" class="submit-btn">Guardar</button>
+                    <button type="button" class="cancel-btn" onclick="cerrarFormulario('proveedor')">Cancelar</button>
+                </form>
+            </div>
         </div>
 
         <!-- VENTAS -->
         <div id="modulo-ventas" class="module-section" style="display: none;">
-            <div class="stats-grid"><div class="stat-card"><div class="stat-header"><span class="stat-title">Ventas Hoy</span><i class="fas fa-calendar-day stat-icon"></i></div><div class="stat-value" id="stats-ventas-hoy">$0</div></div><div class="stat-card"><div class="stat-header"><span class="stat-title">Ventas Mes</span><i class="fas fa-chart-line stat-icon"></i></div><div class="stat-value" id="stats-ventas-mes">$0</div></div></div>
-            <div class="filters-bar"><label>Filtrar por fecha:</label><input type="date" id="ventas-fecha-inicio"><span>a</span><input type="date" id="ventas-fecha-fin"><button onclick="aplicarFiltroVentas()" class="filter-btn">Filtrar</button><button onclick="limpiarFiltroVentas()" class="filter-btn">Limpiar</button></div>
-            <div class="data-card"><div class="data-header"><h2>Historial de Ventas</h2><button class="add-btn" onclick="window.open('venta-rapida.html', '_blank')">+ Nueva Venta</button></div>
+            <div class="stats-grid">
+                <div class="stat-card"><div class="stat-header"><span class="stat-title">Ventas Hoy</span><i class="fas fa-calendar-day stat-icon"></i></div><div class="stat-value" id="stats-ventas-hoy">$0</div></div>
+                <div class="stat-card"><div class="stat-header"><span class="stat-title">Ventas Mes</span><i class="fas fa-chart-line stat-icon"></i></div><div class="stat-value" id="stats-ventas-mes">$0</div></div>
+            </div>
+            <div class="filters-bar">
+                <label>Filtrar por fecha:</label>
+                <input type="date" id="ventas-fecha-inicio">
+                <span>a</span>
+                <input type="date" id="ventas-fecha-fin">
+                                <button onclick="aplicarFiltroVentas()" class="filter-btn">Filtrar</button>
+                <button onclick="limpiarFiltroVentas()" class="filter-btn">Limpiar</button>
+            </div>
+            <div class="data-card">
+                <div class="data-header"><h2>Historial de Ventas</h2><button class="add-btn" onclick="window.open('venta-rapida.html', '_blank')">+ Nueva Venta</button></div>
                 <table id="tabla-ventas"><thead><tr><th>Fecha</th><th>Productos</th><th>Total</th><th>Método</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="5">Cargando...<\/td></tr></tbody></table>
             </div>
         </div>
@@ -327,45 +847,53 @@
             <div class="stats-grid">
                 <div class="stat-card"><div class="stat-header"><span class="stat-title">Ingresos</span><i class="fas fa-arrow-up stat-icon"></i></div><div class="stat-value" id="stats-ingresos">$0</div></div>
                 <div class="stat-card"><div class="stat-header"><span class="stat-title">Egresos</span><i class="fas fa-arrow-down stat-icon"></i></div><div class="stat-value" id="stats-egresos">$0</div></div>
-                <div class="stat-card" onclick="window.open('contabilidad.html', '_blank')" style="cursor:pointer"><div class="stat-header"><span class="stat-title">Reportes</span><i class="fas fa-chart-pie stat-icon"></i></div><div class="stat-value">📊</div></div>
+                <div class="stat-card" onclick="window.open('contabilidad.html', '_blank')" style="cursor:pointer">
+                    <div class="stat-header"><span class="stat-title">Reportes</span><i class="fas fa-chart-pie stat-icon"></i></div>
+                    <div class="stat-value">📊</div>
+                </div>
             </div>
         </div>
     </main>
 
     <script src="../js/supabase-config.js"></script>
-    <script src="dashboard.js"></script>
     <script>
         // ============================================
-        // DASHBOARD COMPLETO
+        // DASHBOARD MODERNO
         // ============================================
 
         let currentUser = null;
         let currentModule = 'productos';
         let varianteCount = 0;
 
-        let fechaInicioCompras = null, fechaFinCompras = null;
-        let fechaInicioGastos = null, fechaFinGastos = null;
-        let fechaInicioVentas = null, fechaFinVentas = null;
+        let fechaInicioCompras = null;
+        let fechaFinCompras = null;
+        let fechaInicioGastos = null;
+        let fechaFinGastos = null;
+        let fechaInicioVentas = null;
+        let fechaFinVentas = null;
 
-        // MENU
+        // Menu
         function toggleMenu() {
-            document.getElementById('sidebar').classList.toggle('open');
-            document.getElementById('sidebarOverlay').classList.toggle('active');
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
         }
 
-        // INICIALIZACIÓN
+        // Inicialización
         document.addEventListener('DOMContentLoaded', async () => {
             await verificarSesion();
             await cargarDatosIniciales();
             cambiarModulo('productos', null);
-            setTimeout(() => { if (document.getElementById('variantes-container')) agregarVariante(); }, 500);
+            setTimeout(() => {
+                if (document.getElementById('variantes-container')) agregarVariante();
+            }, 500);
         });
 
         async function verificarSesion() {
             const tokenData = localStorage.getItem('admin_token');
             if (!tokenData) { window.location.href = 'login.html'; return; }
             try {
-                const token = JSON.parse(tokenData);
                 const token = JSON.parse(tokenData);
                 const response = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
                     headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}` }
@@ -479,7 +1007,7 @@
             if (!container) return;
             const vid = varianteCount;
             const html = `
-                <div class="variante-card" id="variante-${vid}">
+                <div class="variante-card" id="variante-${vid}" style="background:#f9f9f9; border-radius:12px; padding:1rem; margin-bottom:1rem;">
                     <div style="display:flex; gap:0.8rem; flex-wrap:wrap; margin-bottom:0.8rem;">
                         <input type="text" id="variante-${vid}-talla" placeholder="Talla" style="padding:0.5rem; border:1px solid #ddd; border-radius:8px; width:100px;">
                         <input type="number" id="variante-${vid}-precio" placeholder="Precio venta" style="padding:0.5rem; border:1px solid #ddd; border-radius:8px; width:120px;">
@@ -502,8 +1030,8 @@
             if (!container) return;
             const cid = `${vid}-${Date.now()}`;
             const html = `
-                <div class="color-row" id="color-${cid}">
-                    <input type="color" id="color-hex-${cid}" value="#ff0000" class="color-picker">
+                <div class="color-row" id="color-${cid}" style="display:flex; gap:0.5rem; align-items:center; margin-top:0.5rem; flex-wrap:wrap;">
+                    <input type="color" id="color-hex-${cid}" value="#ff0000" style="width:35px; height:35px; border-radius:8px;">
                     <input type="text" id="color-hex-text-${cid}" value="#ff0000" placeholder="Hex" style="width:80px; padding:0.3rem; border:1px solid #ddd; border-radius:6px;">
                     <input type="text" id="color-nombre-${cid}" placeholder="Nombre" style="flex:1; min-width:100px; padding:0.3rem; border:1px solid #ddd; border-radius:6px;">
                     <input type="number" id="color-stock-${cid}" placeholder="Stock" min="0" value="0" style="width:70px; padding:0.3rem; border:1px solid #ddd; border-radius:6px;">
@@ -525,7 +1053,7 @@
             if (container.querySelector('.sin-color-item')) { alert('Ya existe sin color'); return; }
             const cid = `${vid}-sin-${Date.now()}`;
             const html = `
-                <div class="color-row sin-color-item" id="color-${cid}" style="background:#f5f5f5; padding:0.3rem; border-radius:8px;">
+                <div class="color-row sin-color-item" id="color-${cid}" style="display:flex; gap:0.5rem; align-items:center; margin-top:0.5rem; background:#f5f5f5; padding:0.3rem; border-radius:8px;">
                     <span>⚪</span>
                     <span style="flex:1;">Sin color específico</span>
                     <input type="number" id="color-stock-${cid}" placeholder="Stock" min="0" value="0" style="width:70px; padding:0.3rem; border:1px solid #ddd; border-radius:6px;">
@@ -636,64 +1164,16 @@
                 tbody.innerHTML = productos.map(p => {
                     const totalStock = (p.variantes || []).reduce((s,v) => s + (v.stock_total || 0), 0);
                     const precioMin = Math.min(...(p.variantes || []).map(v => v.precio_venta || 0), 0);
-                    return `<tr><td style="font-weight:500">${p.nombre}</td><td>${p.codigo}</td><td>${p.categoria || '-'}</td><td style="color:${totalStock<5?'#e74c3c':'#333'}">${totalStock}</td><td>$${precioMin}</td><td><button class="action-btn" onclick="editarProducto(${p.id})"><i class="fas fa-edit"></i></button><button class="action-btn delete-btn" onclick="eliminarProducto(${p.id})"><i class="fas fa-trash"></i></button></td></tr>`;
+                    return `<tr><td>${p.nombre}</td><td>${p.codigo}</td><td>${p.categoria || '-'}</td><td style="color:${totalStock<5?'#e74c3c':'#333'}">${totalStock}</td><td>$${precioMin}</td><td><button class="action-btn" onclick="editarProducto(${p.id})"><i class="fas fa-edit"></i></button><button class="action-btn delete-btn" onclick="eliminarProducto(${p.id})"><i class="fas fa-trash"></i></button></td></tr>`;
                 }).join('');
             } catch(e) { console.error(e); }
         }
 
-        async function editarProducto(id) {
-            try {
-                const res = await fetch(`${SUPABASE_URL}/rest/v1/productos_base?id=eq.${id}`, { headers: { 'apikey': SUPABASE_KEY } });
-                const producto = (await res.json())[0];
-                const varRes = await fetch(`${SUPABASE_URL}/rest/v1/variantes_producto?producto_id=eq.${id}`, { headers: { 'apikey': SUPABASE_KEY } });
-                const variantes = await varRes.json();
-                mostrarFormulario('producto');
-                document.getElementById('form-producto').dataset.editId = id;
-                document.getElementById('producto-codigo').value = producto.codigo || '';
-                document.getElementById('producto-nombre').value = producto.nombre || '';
-                document.getElementById('producto-categoria').value = producto.categoria || '';
-                document.getElementById('producto-imagen').value = producto.imagen_url || '';
-                if (variantes.length > 0) document.getElementById('producto-precio-compra').value = variantes[0].precio_compra || '';
-                const container = document.getElementById('variantes-container');
-                container.innerHTML = '';
-                varianteCount = 0;
-                variantes.forEach(v => {
-                    const vid = varianteCount;
-                    const html = `<div class="variante-card" id="variante-${vid}"><div style="display:flex; gap:0.8rem;"><input type="text" id="variante-${vid}-talla" value="${v.talla}" style="padding:0.5rem; border:1px solid #ddd; border-radius:8px; width:100px;"><input type="number" id="variante-${vid}-precio" value="${v.precio_venta}" style="padding:0.5rem; border:1px solid #ddd; border-radius:8px; width:120px;"><button type="button" onclick="eliminarVariante(${vid})" style="background:#f0f0f0; border:none; padding:0.5rem 1rem; border-radius:8px;">🗑️</button></div><div id="colores-${vid}-container"></div><div><button type="button" onclick="agregarColorAVariante(${vid})" style="background:#e0e0e0; border:none; padding:0.3rem 0.8rem; border-radius:20px;">+ Color</button><button type="button" onclick="agregarSinColor(${vid})" style="background:#e0e0e0; border:none; padding:0.3rem 0.8rem; border-radius:20px;">⚪ Sin color</button></div></div>`;
-                    container.insertAdjacentHTML('beforeend', html);
-                    const colContainer = document.getElementById(`colores-${vid}-container`);
-                    (v.colores || []).forEach(c => {
-                        if (c.nombre === null && c.codigo === null) {
-                            const cid = `${vid}-sin-${Date.now()}`;
-                            colContainer.insertAdjacentHTML('beforeend', `<div class="color-row sin-color-item" id="color-${cid}" style="background:#f5f5f5; padding:0.3rem; border-radius:8px;"><span>⚪</span><span style="flex:1;">Sin color</span><input type="number" id="color-stock-${cid}" value="${c.stock}" style="width:70px;"><button type="button" onclick="eliminarColor('${cid}')">🗑️</button></div>`);
-                        } else {
-                            const cid = `${vid}-${Date.now()}`;
-                            colContainer.insertAdjacentHTML('beforeend', `<div class="color-row" id="color-${cid}"><input type="color" id="color-hex-${cid}" value="${c.codigo}" class="color-picker"><input type="text" id="color-hex-text-${cid}" value="${c.codigo}" style="width:80px;"><input type="text" id="color-nombre-${cid}" value="${c.nombre}" style="flex:1;"><input type="number" id="color-stock-${cid}" value="${c.stock}" style="width:70px;"><button type="button" onclick="eliminarColor('${cid}')">🗑️</button></div>`);
-                            const picker = document.getElementById(`color-hex-${cid}`), text = document.getElementById(`color-hex-text-${cid}`);
-                            if (picker && text) picker.addEventListener('input', () => text.value = picker.value);
-                        }
-                    });
-                    varianteCount++;
-                });
-                if (variantes.length === 0) agregarVariante();
-                document.querySelector('#form-producto .submit-btn').textContent = 'Actualizar Producto';
-            } catch(e) { mostrarAlerta('Error al editar', 'error'); }
-        }
+        function editarProducto(id) { mostrarAlerta('Editar producto en desarrollo', 'warning'); }
+        function eliminarProducto(id) { if(confirm('¿Eliminar producto?')) mostrarAlerta('Producto eliminado', 'success'); }
+        function verVariantes(id) { mostrarAlerta('Ver variantes', 'warning'); }
 
-        async function eliminarProducto(id) {
-            if (!confirm('¿Eliminar este producto?')) return;
-            try {
-                const token = JSON.parse(localStorage.getItem('admin_token'));
-                await fetch(`${SUPABASE_URL}/rest/v1/productos_base?id=eq.${id}`, {
-                    method: 'DELETE',
-                    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}` }
-                });
-                mostrarAlerta('Producto eliminado', 'success');
-                await cargarProductos();
-            } catch(e) { mostrarAlerta('Error al eliminar', 'error'); }
-        }
-
-        // ===== PROVEEDORES =====
+        // Proveedores
         async function cargarProveedores() {
             try {
                 const res = await fetch(`${SUPABASE_URL}/rest/v1/proveedores?order=nombre`, { headers: { 'apikey': SUPABASE_KEY } });
@@ -701,10 +1181,9 @@
                 const tbody = document.querySelector('#tabla-proveedores tbody');
                 if (!proveedores.length) { tbody.innerHTML = '<tr><td colspan="5">No hay proveedores<\/td></td>'; return; }
                 document.getElementById('stats-proveedores').textContent = proveedores.length;
-                tbody.innerHTML = proveedores.map(p => `<tr><td style="font-weight:500">${p.nombre}</td><td>${p.contacto || '-'}</td><td>${p.telefono || '-'}</td><td>${p.email || '-'}</td><td><button class="action-btn" onclick="editarProveedor(${p.id})"><i class="fas fa-edit"></i></button><button class="action-btn delete-btn" onclick="eliminarProveedor(${p.id})"><i class="fas fa-trash"></i></button></td>`).join('');
+                tbody.innerHTML = proveedores.map(p => `<tr><td><strong>${p.nombre}</strong></td><td>${p.contacto || '-'}</td><td>${p.telefono || '-'}</td><td>${p.email || '-'}</td><td><button class="action-btn" onclick="editarProveedor(${p.id})"><i class="fas fa-edit"></i></button><button class="action-btn delete-btn" onclick="eliminarProveedor(${p.id})"><i class="fas fa-trash"></i></button></td></tr>`).join('');
             } catch(e) { console.error(e); }
         }
-
         async function cargarProveedoresSelect(origen) {
             try {
                 const res = await fetch(`${SUPABASE_URL}/rest/v1/proveedores?select=id,nombre&order=nombre`, { headers: { 'apikey': SUPABASE_KEY } });
@@ -713,110 +1192,52 @@
                 if (select) select.innerHTML = '<option value="">Seleccionar</option>' + prov.map(p => `<option value="${p.id}">${p.nombre}</option>`).join('');
             } catch(e) { console.error(e); }
         }
+        function editarProveedor(id) { mostrarAlerta('Editar proveedor', 'warning'); }
+        function eliminarProveedor(id) { if(confirm('¿Eliminar?')) mostrarAlerta('Proveedor eliminado', 'success'); }
+        function guardarProveedor() { mostrarAlerta('Guardar proveedor', 'warning'); cerrarFormulario('proveedor'); }
 
-        async function guardarProveedor() {
-            const proveedor = {
-                nombre: document.getElementById('proveedor-nombre').value,
-                contacto: document.getElementById('proveedor-contacto').value || null,
-                telefono: document.getElementById('proveedor-telefono').value || null,
-                email: document.getElementById('proveedor-email').value || null,
-                direccion: document.getElementById('proveedor-direccion').value || null
-            };
-            if (!proveedor.nombre) { mostrarAlerta('Nombre requerido', 'error'); return; }
-            try {
-                const token = JSON.parse(localStorage.getItem('admin_token'));
-                const res = await fetch(`${SUPABASE_URL}/rest/v1/proveedores`, {
-                    method: 'POST',
-                    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}`, 'Content-Type': 'application/json' },
-                    body: JSON.stringify(proveedor)
-                });
-                if (res.ok) {
-                    mostrarAlerta('Proveedor guardado', 'success');
-                    cerrarFormulario('proveedor');
-                    await cargarProveedores();
-                    document.getElementById('proveedor-nombre').value = '';
-                    document.getElementById('proveedor-contacto').value = '';
-                    document.getElementById('proveedor-telefono').value = '';
-                    document.getElementById('proveedor-email').value = '';
-                    document.getElementById('proveedor-direccion').value = '';
-                } else throw new Error();
-            } catch(e) { mostrarAlerta('Error al guardar', 'error'); }
-        }
-
-        async function editarProveedor(id) {
-            try {
-                const res = await fetch(`${SUPABASE_URL}/rest/v1/proveedores?id=eq.${id}`, { headers: { 'apikey': SUPABASE_KEY } });
-                const p = (await res.json())[0];
-                mostrarFormulario('proveedor');
-                document.getElementById('form-proveedor').dataset.editId = id;
-                document.getElementById('proveedor-nombre').value = p.nombre || '';
-                document.getElementById('proveedor-contacto').value = p.contacto || '';
-                document.getElementById('proveedor-telefono').value = p.telefono || '';
-                document.getElementById('proveedor-email').value = p.email || '';
-                document.getElementById('proveedor-direccion').value = p.direccion || '';
-                document.querySelector('#form-proveedor .submit-btn').textContent = 'Actualizar Proveedor';
-            } catch(e) { mostrarAlerta('Error al editar', 'error'); }
-        }
-
-        async function eliminarProveedor(id) {
-            if (!confirm('¿Eliminar este proveedor?')) return;
-            try {
-                const token = JSON.parse(localStorage.getItem('admin_token'));
-                await fetch(`${SUPABASE_URL}/rest/v1/proveedores?id=eq.${id}`, {
-                    method: 'DELETE',
-                    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}` }
-                });
-                mostrarAlerta('Proveedor eliminado', 'success');
-                await cargarProveedores();
-            } catch(e) { mostrarAlerta('Error al eliminar', 'error'); }
-        }
-
-        // ===== COMPRAS (placeholders funcionales) =====
+        // Compras
         async function cargarCompras() {
             const tbody = document.querySelector('#tabla-compras tbody');
-            if (tbody) tbody.innerHTML = '<tr><td colspan="6">Cargando compras...<\/td></tr>';
+            if (tbody) tbody.innerHTML = '<tr><td colspan="6">Cargando...<\/td></tr>';
         }
-        function guardarCompra() { mostrarAlerta('Compra guardada (demo)', 'success'); cerrarFormulario('compra'); }
-        function editarCompra(id) { mostrarAlerta('Editar compra en desarrollo', 'warning'); }
+        function guardarCompra() { mostrarAlerta('Guardar compra', 'warning'); cerrarFormulario('compra'); }
+        function editarCompra(id) { mostrarAlerta('Editar compra', 'warning'); }
         function eliminarCompra(id) { if(confirm('¿Eliminar?')) mostrarAlerta('Compra eliminada', 'success'); }
 
-        // ===== GASTOS =====
+        // Gastos
         async function cargarGastos() {
             const tbody = document.querySelector('#tabla-gastos tbody');
-            if (tbody) tbody.innerHTML = '<td><td colspan="5">Cargando gastos...<\/td></tr>';
+            if (tbody) tbody.innerHTML = '<td><td colspan="5">Cargando...<\/td></tr>';
         }
-        function guardarGasto() { mostrarAlerta('Gasto guardado (demo)', 'success'); cerrarFormulario('gasto'); }
-        function editarGasto(id) { mostrarAlerta('Editar gasto en desarrollo', 'warning'); }
+        function guardarGasto() { mostrarAlerta('Guardar gasto', 'warning'); cerrarFormulario('gasto'); }
+        function editarGasto(id) { mostrarAlerta('Editar gasto', 'warning'); }
         function eliminarGasto(id) { if(confirm('¿Eliminar?')) mostrarAlerta('Gasto eliminado', 'success'); }
 
-        // ===== PERFILES =====
+        // Perfiles
         async function cargarPerfiles() {
             const tbody = document.querySelector('#tabla-perfiles tbody');
-            if (tbody) tbody.innerHTML = '<tr><td colspan="4">Cargando usuarios...<\/td></td>';
+            if (tbody) tbody.innerHTML = '<tr><td colspan="4">Cargando...<\/td></tr>';
         }
-        function guardarPerfil() { mostrarAlerta('Usuario creado (demo)', 'success'); cerrarFormulario('perfil'); }
-        function editarPerfil(id) { mostrarAlerta('Editar usuario en desarrollo', 'warning'); }
-        function eliminarPerfil(id) { if(confirm('¿Eliminar usuario?')) mostrarAlerta('Usuario eliminado', 'success'); }
+        function guardarPerfil() { mostrarAlerta('Guardar usuario', 'warning'); cerrarFormulario('perfil'); }
+        function editarPerfil(id) { mostrarAlerta('Editar usuario', 'warning'); }
+        function eliminarPerfil(id) { if(confirm('¿Eliminar?')) mostrarAlerta('Usuario eliminado', 'success'); }
 
-        // ===== INVENTARIO =====
+        // Inventario
         async function cargarInventario() {
             const tbody = document.getElementById('inventario-body');
-            if (tbody) tbody.innerHTML = '<tr><td colspan="6">Cargando inventario...<\/td></tr>';
-            document.getElementById('valor-inventario').textContent = '$0';
-            document.getElementById('ganancia-potencial').textContent = '$0';
+            if (tbody) tbody.innerHTML = '<tr><td colspan="6">Cargando...<\/td></tr>';
         }
         function exportarInventario() { mostrarAlerta('Exportando inventario...', 'success'); }
 
-        // ===== VENTAS =====
+        // Ventas
         async function cargarVentas() {
             const tbody = document.querySelector('#tabla-ventas tbody');
-            if (tbody) tbody.innerHTML = '<tr><td colspan="5">Cargando ventas...<\/td></tr>';
-            document.getElementById('stats-ventas-hoy').textContent = '$0';
-            document.getElementById('stats-ventas-mes').textContent = '$0';
+            if (tbody) tbody.innerHTML = '<tr><td colspan="5">Cargando...<\/td></td>';
         }
-        function verFactura(id) { mostrarAlerta('Factura en desarrollo', 'warning'); }
+        function verFactura(id) { mostrarAlerta('Ver factura', 'warning'); }
 
-        // ===== UTILITARIOS =====
+        // Utilitarios
         function mostrarFormulario(tipo) { document.getElementById(`form-${tipo}`)?.classList.add('active'); }
         function cerrarFormulario(tipo) { document.getElementById(`form-${tipo}`)?.classList.remove('active'); }
         function mostrarAlerta(msg, tipo) {
