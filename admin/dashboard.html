@@ -1370,25 +1370,27 @@
     function eliminarGasto(id) { if(confirm('¿Eliminar?')) mostrarAlerta('Gasto eliminado', 'success'); }
 
     // Perfiles
-    async function cargarPerfiles() {
-        try {
-            const res = await fetch(`${SUPABASE_URL}/rest/v1/perfiles?order=created_at.desc`, { headers: { 'apikey': SUPABASE_KEY } });
-            const perfiles = await res.json();
-            const tbody = document.querySelector('#tabla-perfiles tbody');
-            if (!perfiles.length) { tbody.innerHTML = '<td><td colspan="4">No hay usuarios<\/td></tr>'; return; }
-            document.getElementById('stats-empleados').textContent = perfiles.length;
-            tbody.innerHTML = perfiles.map(p => `<tr><td><strong>${p.nombre || 'Sin nombre'}</strong></td><td>${p.email}</td><td><span style="background:${p.rol === 'admin' ? '#d4a5a9' : '#e0e0e0'};padding:0.2rem 0.
-                                        <span style="background:${p.rol === 'admin' ? '#d4a5a9' : '#e0e0e0'};padding:0.2rem 0.8rem;border-radius:20px;">${p.rol || 'empleado'}</span>
-                         </td>
-                         <td>${new Date(p.created_at).toLocaleDateString()}</td>
-                         <td>
-                            <button class="action-btn" onclick="editarPerfil('${p.id}')"><i class="fas fa-edit"></i></button>
-                            ${p.id !== currentUser?.id ? `<button class="action-btn delete-btn" onclick="eliminarPerfil('${p.id}')"><i class="fas fa-trash"></i></button>` : ''}
-                         </td>
-                     </tr>
-                `}).join('');
-        } catch(e) { console.error(e); }
-    }
+async function cargarPerfiles() {
+    try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/perfiles?order=created_at.desc`, { headers: { 'apikey': SUPABASE_KEY } });
+        const perfiles = await res.json();
+        const tbody = document.querySelector('#tabla-perfiles tbody');
+        if (!perfiles.length) { tbody.innerHTML = '<tr><td colspan="4">No hay usuarios<\/td></tr>'; return; }
+        document.getElementById('stats-empleados').textContent = perfiles.length;
+        tbody.innerHTML = perfiles.map(p => `
+            <tr>
+                <td><strong>${p.nombre || 'Sin nombre'}</strong></td>
+                <td>${p.email}</td>
+                <td><span style="background:${p.rol === 'admin' ? '#d4a5a9' : '#e0e0e0'};padding:0.2rem 0.8rem;border-radius:20px;">${p.rol || 'empleado'}</span></td>
+                <td>${new Date(p.created_at).toLocaleDateString()}</td>
+                <td>
+                    <button class="action-btn" onclick="editarPerfil('${p.id}')"><i class="fas fa-edit"></i></button>
+                    ${p.id !== currentUser?.id ? `<button class="action-btn delete-btn" onclick="eliminarPerfil('${p.id}')"><i class="fas fa-trash"></i></button>` : ''}
+                </td>
+            </tr>
+        `).join('');
+    } catch(e) { console.error(e); }
+}
     function guardarPerfil() { mostrarAlerta('Guardar usuario', 'warning'); cerrarFormulario('perfil'); }
     function editarPerfil(id) { mostrarAlerta('Editar usuario', 'warning'); }
     function eliminarPerfil(id) { if(confirm('¿Eliminar usuario?')) mostrarAlerta('Usuario eliminado', 'success'); }
