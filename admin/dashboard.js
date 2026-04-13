@@ -860,48 +860,51 @@ async function cargarCompras() {
         if (!tbody) return;
         
         if (compras.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">No hay compras registradas<\/td></tr>';
-            document.getElementById('stats-compras-mes').textContent = '$0';
-            document.getElementById('stats-compras-pendientes').textContent = '0';
+            tbody.innerHTML = '<tr><td colspan="8" style="text-align: center;">No hay compras en este período<\/td></tr>';
+            const statsMes = document.getElementById('stats-compras-mes');
+            const statsPendientes = document.getElementById('stats-compras-pendientes');
+            if (statsMes) statsMes.textContent = '$0';
+            if (statsPendientes) statsPendientes.textContent = '0';
             return;
         }
         
-        // Calcular compras del mes
-        const hoy = new Date();
-        const inicioMes = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
-        inicioMes.setHours(0, 0, 0, 0);
+        const fechaInicioMes = new Date();
+        fechaInicioMes.setDate(1);
+        fechaInicioMes.setHours(0, 0, 0, 0);
         
         const comprasMes = compras.filter(c => {
-            const fechaCompra = new Date(c.fecha);
-            return fechaCompra >= inicioMes;
+            const fechaCompra = new Date(c.fecha + 'T12:00:00');
+            return fechaCompra >= fechaInicioMes;
         });
         
         const totalMes = comprasMes.reduce((sum, c) => sum + (c.total || 0), 0);
         const pendientes = compras.filter(c => c.estado === 'Pendiente').length;
         
-        document.getElementById('stats-compras-mes').textContent = `$${totalMes.toLocaleString()}`;
-        document.getElementById('stats-compras-pendientes').textContent = pendientes;
+        const statsMes = document.getElementById('stats-compras-mes');
+        const statsPendientes = document.getElementById('stats-compras-pendientes');
+        if (statsMes) statsMes.textContent = `$${totalMes.toLocaleString()}`;
+        if (statsPendientes) statsPendientes.textContent = pendientes;
         
         tbody.innerHTML = compras.map(compra => {
-            const fecha = new Date(compra.fecha);
-            const fechaFormateada = fecha.toLocaleDateString('es-CO');
-            
-            let estadoClass = '';
-            if (compra.estado === 'Pagada') estadoClass = 'badge-pagada';
-            else if (compra.estado === 'Recibida') estadoClass = 'badge-recibida';
-            else estadoClass = 'badge-pendiente';
+            const fechaCompra = new Date(compra.fecha + 'T12:00:00');
+            const fechaFormateada = fechaCompra.toLocaleDateString('es-CO');
             
             return `
                 <tr>
                     <td>${fechaFormateada}</td>
                     <td>${compra.proveedores?.nombre || 'N/A'}</td>
-                    <td>${compra.producto || '-'}</td>
+                    <td>${compra.producto || 'Varios'}</td>
                     <td>${compra.cantidad || '-'}</td>
                     <td>$${(compra.total || 0).toLocaleString()}</td>
-                    <td><span class="badge ${estadoClass}">${compra.estado || 'Pendiente'}</span></td>
                     <td>
-                        <button class="action-btn" onclick="editarCompra(${compra.id})" title="Editar"><i class="fas fa-edit"></i></button>
-                        <button class="action-btn delete-btn" onclick="eliminarCompra(${compra.id})" title="Eliminar"><i class="fas fa-trash"></i></button>
+                        <span class="estado-badge ${compra.estado === 'Pagada' ? 'estado-pagada' : compra.estado === 'Recibida' ? 'estado-recibida' : 'estado-pendiente'}">
+                            ${compra.estado || 'Pendiente'}
+                        </span>
+                    </td>
+                    <td>${compra.puc || '620501'}</td>
+                    <td>
+                        <button class="action-btn" onclick="editarCompra(${compra.id})">✏️</button>
+                        <button class="action-btn delete-btn" onclick="eliminarCompra(${compra.id})">🗑️</button>
                     </td>
                 </tr>
             `;
@@ -911,7 +914,7 @@ async function cargarCompras() {
         console.error('Error cargando compras:', error);
         const tbody = document.querySelector('#tabla-compras tbody');
         if (tbody) {
-            tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #e74c3c;">Error al cargar compras<\/td></tr>';
+            tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: #ff4757;">Error al cargar compras</td></tr>';
         }
     }
 }
@@ -920,14 +923,14 @@ async function guardarCompra() {
     try {
         const token = JSON.parse(localStorage.getItem('admin_token'));
         
-        const proveedorId = document.getElementById('compra-proveedor').value;
+        const proveedorId = document.getElementById('compra-proveedor')?.value;
         if (!proveedorId) {
             mostrarAlerta('Debe seleccionar un proveedor', 'error');
             return;
         }
         
-        const cantidad = parseInt(document.getElementById('compra-cantidad').value);
-        const precio = parseFloat(document.getElementById('compra-precio').value);
+        const cantidad = parseInt(document.getElementById('compra-cantidad')?.value);
+        const precio = parseFloat(document.getElementById('compra-precio')?.value);
         
         if (!cantidad || cantidad <= 0) {
             mostrarAlerta('Cantidad debe ser mayor a 0', 'error');
@@ -939,13 +942,13 @@ async function guardarCompra() {
             return;
         }
         
-        const fechaInput = document.getElementById('compra-fecha').value;
+        const fechaInput = document.getElementById('compra-fecha')?.value;
         if (!fechaInput) {
             mostrarAlerta('Debe seleccionar una fecha', 'error');
             return;
         }
         
-        const producto = document.getElementById('compra-producto').value;
+        const producto = document.getElementById('compra-producto')?.value;
         if (!producto) {
             mostrarAlerta('Debe especificar el producto', 'error');
             return;
@@ -958,12 +961,21 @@ async function guardarCompra() {
             cantidad: cantidad,
             precio_unitario: precio,
             total: cantidad * precio,
-            estado: document.getElementById('compra-estado').value,
+            estado: document.getElementById('compra-estado')?.value || 'Pendiente',
             puc: '620501'
         };
         
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/compras`, {
-            method: 'POST',
+        const editId = document.getElementById('form-compra')?.dataset.editId;
+        let url = `${SUPABASE_URL}/rest/v1/compras`;
+        let method = 'POST';
+        
+        if (editId) {
+            url += `?id=eq.${editId}`;
+            method = 'PATCH';
+        }
+        
+        const response = await fetch(url, {
+            method: method,
             headers: {
                 'apikey': SUPABASE_KEY,
                 'Authorization': `Bearer ${token.access_token}`,
@@ -973,23 +985,34 @@ async function guardarCompra() {
         });
         
         if (response.ok) {
-            mostrarAlerta('🌸 Compra guardada correctamente', 'success');
+            mostrarAlerta(editId ? '🌸 Compra actualizada correctamente' : '🌸 Compra guardada correctamente', 'success');
             cerrarFormulario('compra');
             await cargarCompras();
             
             // Limpiar formulario
-            document.getElementById('compra-proveedor').value = '';
-            document.getElementById('compra-fecha').value = '';
-            document.getElementById('compra-producto').value = '';
-            document.getElementById('compra-cantidad').value = '';
-            document.getElementById('compra-precio').value = '';
+            const compraProveedor = document.getElementById('compra-proveedor');
+            const compraFecha = document.getElementById('compra-fecha');
+            const compraProducto = document.getElementById('compra-producto');
+            const compraCantidad = document.getElementById('compra-cantidad');
+            const compraPrecio = document.getElementById('compra-precio');
+            
+            if (compraProveedor) compraProveedor.value = '';
+            if (compraFecha) compraFecha.value = '';
+            if (compraProducto) compraProducto.value = '';
+            if (compraCantidad) compraCantidad.value = '';
+            if (compraPrecio) compraPrecio.value = '';
+            
+            delete document.getElementById('form-compra')?.dataset.editId;
+            
+            const submitBtn = document.querySelector('#form-compra .submit-btn');
+            if (submitBtn) submitBtn.textContent = '🌸 Guardar Compra';
         } else {
             const error = await response.json();
             mostrarAlerta('Error: ' + (error.message || 'No se pudo guardar'), 'error');
         }
     } catch (error) {
         console.error('Error:', error);
-        mostrarAlerta('Error de conexión', 'error');
+        mostrarAlerta('Error de conexión: ' + error.message, 'error');
     }
 }
 
@@ -1008,29 +1031,44 @@ async function editarCompra(id) {
         
         mostrarFormulario('compra');
         
-        // Cargar proveedores en el select
         await cargarProveedoresSelect('compra');
         
-        // Esperar un momento para que se carguen los proveedores
-        setTimeout(() => {
-            const proveedorSelect = document.getElementById('compra-proveedor');
-            if (proveedorSelect && compra.proveedor_id) {
-                proveedorSelect.value = compra.proveedor_id;
-            }
-        }, 100);
+        await new Promise(resolve => setTimeout(resolve, 100));
         
-        document.getElementById('compra-fecha').value = compra.fecha.split('T')[0];
-        document.getElementById('compra-producto').value = compra.producto || '';
-        document.getElementById('compra-cantidad').value = compra.cantidad || '';
-        document.getElementById('compra-precio').value = compra.precio_unitario || '';
-        document.getElementById('compra-estado').value = compra.estado || 'Pendiente';
+        const proveedorSelect = document.getElementById('compra-proveedor');
+        if (proveedorSelect && compra.proveedor_id) {
+            proveedorSelect.value = compra.proveedor_id;
+        }
+        
+        const fechaInput = document.getElementById('compra-fecha');
+        if (fechaInput && compra.fecha) {
+            fechaInput.value = compra.fecha.split('T')[0];
+        }
+        
+        const productoInput = document.getElementById('compra-producto');
+        if (productoInput && compra.producto) {
+            productoInput.value = compra.producto;
+        }
+        
+        const cantidadInput = document.getElementById('compra-cantidad');
+        if (cantidadInput && compra.cantidad) {
+            cantidadInput.value = compra.cantidad;
+        }
+        
+        const precioInput = document.getElementById('compra-precio');
+        if (precioInput && compra.precio_unitario) {
+            precioInput.value = compra.precio_unitario;
+        }
+        
+        const estadoSelect = document.getElementById('compra-estado');
+        if (estadoSelect && compra.estado) {
+            estadoSelect.value = compra.estado;
+        }
         
         document.getElementById('form-compra').dataset.editId = id;
         
         const submitBtn = document.querySelector('#form-compra .submit-btn');
-        if (submitBtn) {
-            submitBtn.textContent = '🌸 Actualizar Compra';
-        }
+        if (submitBtn) submitBtn.textContent = '🌸 Actualizar Compra';
         
     } catch (error) {
         console.error('Error:', error);
@@ -1135,12 +1173,11 @@ async function guardarGasto() {
         const token = JSON.parse(localStorage.getItem('admin_token'));
         
         const gasto = {
-            fecha: document.getElementById('gasto-fecha').value,
-            concepto: document.getElementById('gasto-concepto').value,
-            categoria: document.getElementById('gasto-categoria').value,
-            monto: parseFloat(document.getElementById('gasto-monto').value),
-            metodo_pago: document.getElementById('gasto-metodo').value,
-            puc: obtenerPUCGasto(document.getElementById('gasto-categoria').value)
+            fecha: document.getElementById('gasto-fecha')?.value,
+            concepto: document.getElementById('gasto-concepto')?.value,
+            categoria: document.getElementById('gasto-categoria')?.value,
+            monto: parseFloat(document.getElementById('gasto-monto')?.value),
+            metodo_pago: document.getElementById('gasto-metodo')?.value
         };
         
         if (!gasto.fecha || !gasto.concepto || !gasto.categoria || !gasto.monto) {
@@ -1148,8 +1185,17 @@ async function guardarGasto() {
             return;
         }
         
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/gastos`, {
-            method: 'POST',
+        const editId = document.getElementById('form-gasto')?.dataset.editId;
+        let url = `${SUPABASE_URL}/rest/v1/gastos`;
+        let method = 'POST';
+        
+        if (editId) {
+            url += `?id=eq.${editId}`;
+            method = 'PATCH';
+        }
+        
+        const response = await fetch(url, {
+            method: method,
             headers: {
                 'apikey': SUPABASE_KEY,
                 'Authorization': `Bearer ${token.access_token}`,
@@ -1159,15 +1205,25 @@ async function guardarGasto() {
         });
         
         if (response.ok) {
-            mostrarAlerta('🌸 Gasto guardado correctamente', 'success');
+            mostrarAlerta(editId ? '🌸 Gasto actualizado correctamente' : '🌸 Gasto guardado correctamente', 'success');
             cerrarFormulario('gasto');
             await cargarGastos();
             
             // Limpiar formulario
-            document.getElementById('gasto-fecha').value = '';
-            document.getElementById('gasto-concepto').value = '';
-            document.getElementById('gasto-categoria').value = '';
-            document.getElementById('gasto-monto').value = '';
+            const gastoFecha = document.getElementById('gasto-fecha');
+            const gastoConcepto = document.getElementById('gasto-concepto');
+            const gastoCategoria = document.getElementById('gasto-categoria');
+            const gastoMonto = document.getElementById('gasto-monto');
+            
+            if (gastoFecha) gastoFecha.value = '';
+            if (gastoConcepto) gastoConcepto.value = '';
+            if (gastoCategoria) gastoCategoria.value = '';
+            if (gastoMonto) gastoMonto.value = '';
+            
+            delete document.getElementById('form-gasto')?.dataset.editId;
+            
+            const submitBtn = document.querySelector('#form-gasto .submit-btn');
+            if (submitBtn) submitBtn.textContent = '🌸 Guardar Gasto';
         } else {
             const error = await response.json();
             mostrarAlerta('Error: ' + (error.message || 'No se pudo guardar'), 'error');
@@ -1176,18 +1232,6 @@ async function guardarGasto() {
         console.error('Error:', error);
         mostrarAlerta('Error de conexión', 'error');
     }
-}
-
-function obtenerPUCGasto(categoria) {
-    const pucMap = {
-        'Alquiler': '511005',
-        'Servicios': '511010',
-        'Sueldos': '510506',
-        'Marketing': '513505',
-        'Mantenimiento': '513505',
-        'Otros': '519595'
-    };
-    return pucMap[categoria] || '519595';
 }
 
 async function editarGasto(id) {
@@ -1205,20 +1249,22 @@ async function editarGasto(id) {
         
         mostrarFormulario('gasto');
         
-        document.getElementById('gasto-fecha').value = gasto.fecha.split('T')[0];
-        document.getElementById('gasto-concepto').value = gasto.concepto || '';
-        document.getElementById('gasto-categoria').value = gasto.categoria || '';
-        document.getElementById('gasto-monto').value = gasto.monto || '';
-        if (gasto.metodo_pago) {
-            document.getElementById('gasto-metodo').value = gasto.metodo_pago;
-        }
+        const gastoFecha = document.getElementById('gasto-fecha');
+        const gastoConcepto = document.getElementById('gasto-concepto');
+        const gastoCategoria = document.getElementById('gasto-categoria');
+        const gastoMonto = document.getElementById('gasto-monto');
+        const gastoMetodo = document.getElementById('gasto-metodo');
+        
+        if (gastoFecha) gastoFecha.value = gasto.fecha.split('T')[0];
+        if (gastoConcepto) gastoConcepto.value = gasto.concepto || '';
+        if (gastoCategoria) gastoCategoria.value = gasto.categoria || '';
+        if (gastoMonto) gastoMonto.value = gasto.monto || '';
+        if (gastoMetodo && gasto.metodo_pago) gastoMetodo.value = gasto.metodo_pago;
         
         document.getElementById('form-gasto').dataset.editId = id;
         
         const submitBtn = document.querySelector('#form-gasto .submit-btn');
-        if (submitBtn) {
-            submitBtn.textContent = '🌸 Actualizar Gasto';
-        }
+        if (submitBtn) submitBtn.textContent = '🌸 Actualizar Gasto';
         
     } catch (error) {
         console.error('Error:', error);
@@ -1691,51 +1737,57 @@ async function cargarVentas() {
         if (!tbody) return;
         
         if (ventas.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No hay ventas registradas<\/td></tr>';
-            document.getElementById('stats-ventas-hoy').textContent = '$0';
-            document.getElementById('stats-ventas-mes').textContent = '$0';
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No hay ventas en este período</td></tr>';
+            const statsVentasHoy = document.getElementById('stats-ventas-hoy');
+            const statsVentasMes = document.getElementById('stats-ventas-mes');
+            if (statsVentasHoy) statsVentasHoy.textContent = '$0';
+            if (statsVentasMes) statsVentasMes.textContent = '$0';
             return;
         }
         
-        // Ventas de hoy
         const hoy = new Date();
         hoy.setHours(0, 0, 0, 0);
         
         const ventasHoy = ventas.filter(v => new Date(v.fecha) >= hoy);
         const totalHoy = ventasHoy.reduce((sum, v) => sum + (v.total || 0), 0);
-        document.getElementById('stats-ventas-hoy').textContent = `$${totalHoy.toLocaleString()}`;
         
-        // Ventas del mes
-        const inicioMes = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
-        inicioMes.setHours(0, 0, 0, 0);
+        const fechaInicioMes = new Date();
+        fechaInicioMes.setDate(1);
+        fechaInicioMes.setHours(0, 0, 0, 0);
         
-        const ventasMes = ventas.filter(v => new Date(v.fecha) >= inicioMes);
+        let ventasMes = ventas;
+        if (!fechaInicioVentas && !fechaFinVentas) {
+            ventasMes = ventas.filter(v => new Date(v.fecha) >= fechaInicioMes);
+        }
         const totalMes = ventasMes.reduce((sum, v) => sum + (v.total || 0), 0);
-        document.getElementById('stats-ventas-mes').textContent = `$${totalMes.toLocaleString()}`;
         
-        tbody.innerHTML = ventas.map(venta => {
-            const fecha = new Date(venta.fecha);
-            const fechaFormateada = fecha.toLocaleDateString('es-CO') + ' ' + fecha.toLocaleTimeString();
-            
-            return `
-                <tr>
-                    <td>${fechaFormateada}</td>
-                    <td>${venta.productos || 'Venta'}</td>
-                    <td>$${(venta.total || 0).toLocaleString()}</td>
-                    <td>${venta.metodo_pago || 'Efectivo'}</td>
-                    <td>${venta.vendedor || '-'}</td>
-                    <td>
-                        <button class="action-btn" onclick="verFactura(${venta.id})" title="Ver factura"><i class="fas fa-receipt"></i></button>
-                    </td>
-                </tr>
-            `;
-        }).join('');
+        const statsVentasHoy = document.getElementById('stats-ventas-hoy');
+        const statsVentasMes = document.getElementById('stats-ventas-mes');
+        if (statsVentasHoy) statsVentasHoy.textContent = `$${totalHoy.toLocaleString()}`;
+        if (statsVentasMes) statsVentasMes.textContent = `$${totalMes.toLocaleString()}`;
+        
+        tbody.innerHTML = ventas.map(venta => `
+            <tr>
+                <td>${new Date(venta.fecha).toLocaleString()}</td>
+                <td>${venta.productos || 'Venta'}</td>
+                <td>$${(venta.total || 0).toLocaleString()}</td>
+                <td>
+                    <span style="background: #ffe4e9; padding: 0.2rem 0.8rem; border-radius: 50px;">
+                        ${venta.metodo_pago || 'Efectivo'}
+                    </span>
+                </td>
+                <td>${venta.vendedor || '-'}</td>
+                <td>
+                    <button class="action-btn" onclick="verFactura(${venta.id})">🧾</button>
+                </td>
+            </tr>
+        `).join('');
         
     } catch (error) {
         console.error('Error cargando ventas:', error);
         const tbody = document.querySelector('#tabla-ventas tbody');
         if (tbody) {
-            tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #e74c3c;">Error al cargar ventas<\/td></tr>';
+            tbody.innerHTML = '<td><td colspan="6" style="text-align: center; color: #ff4757;">Error al cargar ventas<\/td></tr>';
         }
     }
 }
