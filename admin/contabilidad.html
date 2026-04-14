@@ -1206,6 +1206,288 @@
         }
 
         // ============================================
+// Sincronizar asientos desde transacciones a la tabla
+// ============================================
+async function sincronizarAsientos() {
+    try {
+        const token = JSON.parse(localStorage.getItem('admin_token'));
+        
+        // 1. Obtener todas las transacciones (ventas, compras, gastos)
+        const [ventas, compras, gastos, asientosExistentes] = await Promise.all([
+            fetch(`${SUPABASE_URL}/rest/v1/ventas`, { headers: { 'apikey': SUPABASE_KEY } }).then(r => r.json()),
+            fetch(`${SUPABASE_URL}/rest/v1/compras`, { headers: { 'apikey': SUPABASE_KEY } }).then(r => r.json()),
+            fetch(`${SUPABASE_URL}/rest/v1/gastos`, { headers: { 'apikey': SUPABASE_KEY } }).then(r => r.json()),
+            fetch(`${SUPABASE_URL}/rest/v1/asientos_contables`, { headers: { 'apikey': SUPABASE_KEY } }).then(r => r.json())
+        ]);
+        
+        // 2. Crear mapa de asientos existentes
+        const asientosMap = new Map();
+        asientosExistentes.forEach(a => {
+            asientosMap.set(`${a.transaccion_tabla}-${a.transaccion_id}`, a);
+        });
+        
+        // 3. Procesar ventas (crear asientos que no existan)
+        for (const venta of ventas) {
+            const key = `ventas-${venta.id}`;
+            if (!asientosMap.has(key)) {
+                await crearAsientoDesdeVenta(venta, token);
+            }
+        }
+        
+        // 4. Procesar compras
+        for (const compra of compras) {
+            const key = `compras-${compra.id}`;
+            if (!asientosMap.has(key)) {
+                await crearAsientoDesdeCompra(compra, token);
+            }
+        }
+        
+        // 5. Procesar gastos
+        for (const gasto of gastos) {
+            const key = `gastos-${gasto.id}`;
+            if (!asientosMap.has(key)) {
+                await crearAsientoDesdeGasto(gasto, token);
+            }
+        }
+        
+        mostrarToast('Asientos sincronizados correctamente', 'success');
+        await cargarAsientosDesdeTabla();
+        
+    } catch (error) {
+        console.error('Error sincronizando:', error);
+        mostrarToast('Error al sincronizar', 'error');
+    }
+}
+
+async function crearAsientoDesdeVenta(venta, token) {
+    const total = venta.total || 0;
+    const iva = venta.iva || 0;
+    const base = total - iva;
+    
+    // Crear asiento
+    const asientoData = {
+        fecha: venta.fecha,
+        referencia: `Venta #${venta.id}`,
+        tercero: venta.cliente || 'Cliente general',
+        nota: venta.productos || 'Venta de productos',
+        tipo: 'venta',
+        transaccion_id: venta.id,
+        transaccion_tabla: 'ventas'
+    };
+    
+    const asientoRes = await fetch(`${SUPABASE_URL}/rest/v1/asientos_contables`, {
+        method: 'POST',
+        headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${token.access_token}`,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=representation'
+        },
+        body: JSON.stringify(asientoData)
+    });
+    
+    const asientosCreados = await asientoRes.json();
+    const asientoId = asientosCreados[0].id;
+    
+    // Crear líneas
+    const lineas = [
+        { codigo_cuenta: '110505', nombre_cuenta: getNombreCuenta('110505'), debito: total, credito: 0 },
+        { codigo_cuenta: '413505', nombre_cuenta: getNombreCuenta('413505'), debito: 0, credito: base }
+    ];
+    
+    if (iva > 0) {
+        lineas.push({ codigo_cuenta: '250810', nombre_cuenta: getNombreCuenta('250810'), debito: 0, credito: iva });
+    }
+    
+    for (const linea of lineas) {
+        await fetch(`${SUPABASE_URL}/rest/v1/lineas_asiento`, {
+            method: 'POST',
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${token.access_token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ ...linea, asiento_id: asientoId })
+        });
+    }
+}
+
+// Funciones similares para crearAsientoDesdeCompra y crearAsientoDesdeGasto...
+
+// ============================================
+// Cargar asientos DESDE LA TABLA (no calcular en vivo)
+// ============================================
+async function cargarAsientosDesdeTabla() {
+    try {
+        const response = await fetch(
+            `${SUPABASE_URL}/rest/v1/asientos_contables?order=fecha.asc&order=numero.asc`,
+            { headers: { 'apikey': SUPABASE_KEY } }
+        );
+        const asientosData = await response.json();
+        
+        // Cargar líneas para cada asiento
+        asientos = [];
+        for (const asiento of asientosData) {
+            const lineasRes = await fetch(
+                `${SUPABASE_URL}/rest/v1/lineas_asiento?asiento_id=eq.${asiento.id}`,
+                { headers: { 'apikey': SUPABASE_KEY } }
+            );
+            const lineas = await lineasRes.json();
+            
+            asientos.push({
+                id: asiento.id,
+                numero: asiento.numero,
+                fecha: asiento.fecha,
+                tipo: asiento.tipo,
+                referencia: asiento.referencia,
+                tercero: asiento.tercero,
+                nota: asiento.nota,
+                lineas: lineas.map(l => ({
+                    codigo: l.codigo_cuenta,
+                    nombre: l.nombre_cuenta,
+                    debito: l.debito,
+                    credito: l.credito
+                })),
+                transaccion_id: asiento.transaccion_id,
+                transaccion_tabla: asiento.transaccion_tabla
+            });
+        }
+        
+        mostrarLibroDiario();
+        calcularResumen();
+        cargarEstadoResultados();
+        cargarBalanceGeneral();
+        cargarListaCuentasMayor();
+        
+    } catch (error) {
+        console.error('Error cargando asientos:', error);
+        mostrarToast('Error al cargar asientos', 'error');
+    }
+}
+
+// ============================================
+// EDITAR ASIENTO (actualizar en la tabla)
+// ============================================
+document.getElementById('form-editar-asiento')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    if (!asientoActual) return;
+    
+    try {
+        const token = JSON.parse(localStorage.getItem('admin_token'));
+        const asientoId = asientoActual.id;
+        
+        // 1. Actualizar cabecera del asiento
+        const fecha = document.getElementById('asiento-fecha').value;
+        const referencia = document.getElementById('asiento-referencia').value;
+        const tercero = document.getElementById('asiento-tercero').value;
+        const nota = document.getElementById('asiento-nota').value;
+        
+        const updateResponse = await fetch(`${SUPABASE_URL}/rest/v1/asientos_contables?id=eq.${asientoId}`, {
+            method: 'PATCH',
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${token.access_token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                fecha: fecha,
+                referencia: referencia,
+                tercero: tercero,
+                nota: nota,
+                tipo: 'manual'  // Marcar como manual después de editar
+            })
+        });
+        
+        if (!updateResponse.ok) throw new Error('Error al actualizar asiento');
+        
+        // 2. Eliminar líneas antiguas
+        await fetch(`${SUPABASE_URL}/rest/v1/lineas_asiento?asiento_id=eq.${asientoId}`, {
+            method: 'DELETE',
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${token.access_token}`
+            }
+        });
+        
+        // 3. Insertar nuevas líneas
+        const lineas = [];
+        document.querySelectorAll('.linea-row').forEach(row => {
+            const codigo = row.querySelector('.linea-codigo')?.value;
+            const nombre = row.querySelector('.linea-nombre')?.value;
+            const debito = parseFloat(row.querySelector('.linea-debito')?.value) || 0;
+            const credito = parseFloat(row.querySelector('.linea-credito')?.value) || 0;
+            if (codigo && (debito > 0 || credito > 0)) {
+                lineas.push({ codigo_cuenta: codigo, nombre_cuenta: nombre, debito, credito, asiento_id: asientoId });
+            }
+        });
+        
+        for (const linea of lineas) {
+            await fetch(`${SUPABASE_URL}/rest/v1/lineas_asiento`, {
+                method: 'POST',
+                headers: {
+                    'apikey': SUPABASE_KEY,
+                    'Authorization': `Bearer ${token.access_token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(linea)
+            });
+        }
+        
+        mostrarToast('✅ Asiento actualizado correctamente', 'success');
+        cerrarModalAsiento();
+        await cargarAsientosDesdeTabla();
+        
+    } catch (error) {
+        console.error('Error:', error);
+        mostrarToast('Error al guardar cambios', 'error');
+    }
+});
+
+// ============================================
+// ELIMINAR ASIENTO
+// ============================================
+async function eliminarAsiento(id) {
+    const asiento = asientos.find(a => a.id == id);
+    if (!asiento) return;
+    
+    if (!confirm(`¿Eliminar el asiento "${asiento.referencia}"? Esta acción NO se puede deshacer.`)) return;
+    
+    try {
+        const token = JSON.parse(localStorage.getItem('admin_token'));
+        
+        // Eliminar líneas primero (por cascada, pero explícito)
+        await fetch(`${SUPABASE_URL}/rest/v1/lineas_asiento?asiento_id=eq.${id}`, {
+            method: 'DELETE',
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${token.access_token}`
+            }
+        });
+        
+        // Eliminar asiento
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/asientos_contables?id=eq.${id}`, {
+            method: 'DELETE',
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${token.access_token}`
+            }
+        });
+        
+        if (response.ok) {
+            mostrarToast('✅ Asiento eliminado', 'success');
+            await cargarAsientosDesdeTabla();
+        } else {
+            mostrarToast('Error al eliminar', 'error');
+        }
+        
+    } catch (error) {
+        console.error('Error:', error);
+        mostrarToast('Error de conexión', 'error');
+    }
+}
+
+        // ============================================
         // MOSTRAR LIBRO DIARIO (TABLA DE ASIENTOS)
         // ============================================
         function mostrarLibroDiario() {
