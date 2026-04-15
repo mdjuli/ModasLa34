@@ -731,8 +731,12 @@
             <div class="libro-card">
                 <div class="libro-header">
                     <h2>📒 LIBRO DIARIO CONTABLE</h2>
-                    <button class="btn-export" onclick="exportarLibroDiario()">📥 Exportar a Excel</button>
-                </div>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button class="btn-export" onclick="sincronizarAsientos()" style="background: #27ae60;">
+                            🔄 Sincronizar Asientos
+                        </button>
+                        <button class="btn-export" onclick="exportarLibroDiario()">📥 Exportar a Excel</button>                    
+                    </div>
                 <div style="overflow-x: auto;">
                     <table class="asientos-table" id="tabla-asientos">
                         <thead>
