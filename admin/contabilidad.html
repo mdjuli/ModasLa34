@@ -1071,7 +1071,7 @@
         }
 
         // ============================================
-        // CARGAR ASIENTOS CONTABLES
+        // CARGAR ASIENTOS CONTABLES - CORREGIDO
         // ============================================
         async function cargarAsientos() {
             try {
@@ -1100,7 +1100,6 @@
                 
                 asientos = [];
                 transaccionesOriginales = [];
-                let contadorAsiento = 1;
                 
                 // PROCESAR VENTAS
                 for (const venta of ventas) {
@@ -1119,7 +1118,6 @@
                     
                     asientos.push({
                         id: `VTA-${venta.id}`,
-                        numero: contadorAsiento++,
                         fecha: venta.fecha,
                         tipo: 'venta',
                         referencia: `Venta #${venta.id}`,
@@ -1148,7 +1146,6 @@
                     
                     asientos.push({
                         id: `COMP-${compra.id}`,
-                        numero: contadorAsiento++,
                         fecha: compra.fecha,
                         tipo: 'compra',
                         referencia: `Compra #${compra.id}`,
@@ -1179,7 +1176,6 @@
                     
                     asientos.push({
                         id: `GAS-${gasto.id}`,
-                        numero: contadorAsiento++,
                         fecha: gasto.fecha,
                         tipo: 'gasto',
                         referencia: `Gasto #${gasto.id}`,
@@ -1191,9 +1187,21 @@
                     });
                 }
                 
-                // Ordenar por fecha
-                asientos.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
-                asientos.forEach((a, idx) => { a.numero = idx + 1; });
+                // ========== CRUCIAL: ORDENAR CORRECTAMENTE POR FECHA ==========
+                console.log('Asientos antes de ordenar:', asientos.map(a => ({ id: a.id, fecha: a.fecha })));
+                
+                asientos.sort((a, b) => {
+                    const fechaA = new Date(a.fecha);
+                    const fechaB = new Date(b.fecha);
+                    return fechaA - fechaB;
+                });
+                
+                console.log('Asientos después de ordenar:', asientos.map(a => ({ id: a.id, fecha: a.fecha })));
+                
+                // Asignar números secuenciales en el orden correcto
+                for (let idx = 0; idx < asientos.length; idx++) {
+                    asientos[idx].numero = idx + 1;
+                }
                 
                 mostrarLibroDiario();
                 calcularResumen();
@@ -1208,7 +1216,7 @@
                 mostrarToast('Error al cargar los datos', 'error');
             }
         }
-
+        
         // ============================================
 // Sincronizar asientos desde transacciones a la tabla
 // ============================================
@@ -1497,64 +1505,107 @@ async function eliminarAsiento(id) {
 }
 
         // ============================================
-        // MOSTRAR LIBRO DIARIO (TABLA DE ASIENTOS)
+        // MOSTRAR LIBRO DIARIO - CON ORDEN CORRECTO
         // ============================================
         function mostrarLibroDiario() {
             const tbody = document.getElementById('asientos-body');
             const footer = document.getElementById('asientos-footer');
             
-            if (asientos.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 2rem;">No hay movimientos en este período</td></tr>';
+            if (!asientos || asientos.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:2rem;">No hay asientos. Haz clic en "Sincronizar" primero. </td></tr>';
                 footer.style.display = 'none';
                 return;
             }
             
-            let totalDebitosGlobal = 0;
-            let totalCreditosGlobal = 0;
+            // ========== CRUCIAL: ORDENAR ASIENTOS POR FECHA ==========
+            const asientosOrdenados = [...asientos].sort((a, b) => {
+                const fechaA = new Date(a.fecha);
+                const fechaB = new Date(b.fecha);
+                return fechaA - fechaB;  // Orden ascendente (más antiguo primero)
+            });
             
-            tbody.innerHTML = asientos.map(asiento => {
-                let totalDebitoAsiento = 0;
-                let totalCreditoAsiento = 0;
-                
-                const lineasHTML = asiento.lineas.map(linea => {
-                    totalDebitoAsiento += linea.debito;
-                    totalCreditoAsiento += linea.credito;
-                    return `
-                        <div class="detalle-linea">
-                            <span class="cuenta-nombre">${linea.codigo} - ${linea.nombre}</span>
-                            <span class="cuenta-monto">
-                                ${linea.debito > 0 ? `<span class="monto-debito">$${linea.debito.toLocaleString()}</span>` : ''}
-                                ${linea.credito > 0 ? `<span class="monto-credito">$${linea.credito.toLocaleString()}</span>` : ''}
-                            </span>
-                        </div>
-                    `;
-                }).join('');
-                
-                totalDebitosGlobal += totalDebitoAsiento;
-                totalCreditosGlobal += totalCreditoAsiento;
-                
-                const fechaObj = new Date(asiento.fecha);
-                const fechaStr = `${fechaObj.getDate()}/${fechaObj.getMonth() + 1}/${fechaObj.getFullYear()}`;
-                
-                return `
-                    <tr class="asiento-row">
-                        <td style="vertical-align: middle; font-weight: bold;">AS-${asiento.numero.toString().padStart(3, '0')}</td>
-                        <td style="vertical-align: middle;">${fechaStr}</td>
-                        <td class="detalle-cuentas">${lineasHTML}</td>
-                        <td style="vertical-align: middle; text-align: right;" class="monto-debito">$${totalDebitoAsiento.toLocaleString()}</td>
-                        <td style="vertical-align: middle; text-align: right;" class="monto-credito">$${totalCreditoAsiento.toLocaleString()}</td>
-                        <td style="vertical-align: middle;">
-                            <div class="asiento-actions">
-                                <button class="btn-editar" onclick="abrirEditarAsiento('${asiento.id}')">✏️ EDITAR</button>
-                                <button class="btn-eliminar" onclick="eliminarAsiento('${asiento.id}')">🗑️</button>
-                            </div>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
+            // Re-numerar asientos en orden cronológico
+            for (let i = 0; i < asientosOrdenados.length; i++) {
+                asientosOrdenados[i].numero = i + 1;
+            }
             
-            document.getElementById('total-debitos').innerHTML = `<strong>$${totalDebitosGlobal.toLocaleString()}</strong>`;
-            document.getElementById('total-creditos').innerHTML = `<strong>$${totalCreditosGlobal.toLocaleString()}</strong>`;
+            let totalDebGlobal = 0;
+            let totalCredGlobal = 0;
+            let html = '';
+            
+            for (let i = 0; i < asientosOrdenados.length; i++) {
+                const a = asientosOrdenados[i];
+                let debAs = 0;
+                let credAs = 0;
+                let lineasHtml = '';
+                
+                // Ordenar líneas: primero débitos, luego créditos
+                const lineasOrdenadas = [...a.lineas].sort((x, y) => {
+                    if (x.debito > 0 && y.debito === 0) return -1;
+                    if (x.debito === 0 && y.debito > 0) return 1;
+                    return 0;
+                });
+                
+                for (let j = 0; j < lineasOrdenadas.length; j++) {
+                    const l = lineasOrdenadas[j];
+                    debAs += l.debito;
+                    credAs += l.credito;
+                    
+                    let montoStr = '';
+                    let claseStr = '';
+                    let emoji = '';
+                    
+                    if (l.debito > 0) {
+                        montoStr = '$' + l.debito.toLocaleString();
+                        claseStr = 'monto-debito';
+                        if (l.codigo === '110505') emoji = '💰 ';
+                        else if (l.codigo === '143505') emoji = '📦 ';
+                        else if (l.codigo === '620501') emoji = '📦 ';
+                        else if (l.codigo.startsWith('51')) emoji = '💸 ';
+                    } else if (l.credito > 0) {
+                        montoStr = '$' + l.credito.toLocaleString();
+                        claseStr = 'monto-credito';
+                        if (l.codigo === '413505') emoji = '📈 ';
+                        else if (l.codigo === '250810') emoji = '🏛️ ';
+                        else if (l.codigo === '110505') emoji = '💰 ';
+                    } else {
+                        montoStr = '$0';
+                    }
+                    
+                    lineasHtml += '<div class="detalle-linea" style="display: flex; justify-content: space-between; align-items: center; padding: 0.3rem 0; border-bottom: 1px dashed #ffe0e5;">';
+                    lineasHtml += '<span style="font-weight: 500;">' + emoji + l.codigo + ' - ' + l.nombre + '</span>';
+                    lineasHtml += '<span class="' + claseStr + '">' + montoStr + '</span>';
+                    lineasHtml += '</div>';
+                }
+                
+                totalDebGlobal += debAs;
+                totalCredGlobal += credAs;
+                
+                const fecha = new Date(a.fecha);
+                const fechaStr = fecha.getDate() + '/' + (fecha.getMonth() + 1) + '/' + fecha.getFullYear();
+                
+                // Color de borde según tipo de asiento
+                let borderColor = '';
+                if (a.tipo === 'venta') borderColor = 'border-left: 4px solid #27ae60;';
+                else if (a.tipo === 'compra') borderColor = 'border-left: 4px solid #3498db;';
+                else if (a.tipo === 'gasto') borderColor = 'border-left: 4px solid #e74c3c;';
+                
+                html += '<tr style="border-bottom: 1px solid #ffe0e5; ' + borderColor + '">';
+                html += '<td style="font-weight: bold; background: #faf0f2; padding: 0.8rem;">AS-' + a.numero.toString().padStart(3, '0') + '</td>';
+                html += '<td style="padding: 0.8rem;">' + fechaStr + '</td>';
+                html += '<td style="padding: 0.8rem;">' + lineasHtml + '</td>';
+                html += '<td style="text-align: right; padding: 0.8rem;" class="monto-debito">$' + debAs.toLocaleString() + '</td>';
+                html += '<td style="text-align: right; padding: 0.8rem;" class="monto-credito">$' + credAs.toLocaleString() + '</td>';
+                html += '<td style="text-align: center; padding: 0.8rem;">';
+                html += '<button class="btn-editar" onclick="abrirEditarAsiento(' + a.id + ')">✏️</button> ';
+                html += '<button class="btn-eliminar" onclick="eliminarAsiento(' + a.id + ')">🗑️</button>';
+                html += '</td>';
+                html += '</tr>';
+            }
+            
+            tbody.innerHTML = html;
+            document.getElementById('total-debitos').innerHTML = '<strong>$' + totalDebGlobal.toLocaleString() + '</strong>';
+            document.getElementById('total-creditos').innerHTML = '<strong>$' + totalCredGlobal.toLocaleString() + '</strong>';
             footer.style.display = 'table-row-group';
         }
 
