@@ -1066,66 +1066,116 @@
         }
 
         // ============================================
-        // MAYOR DE CUENTAS - CORREGIDO
+        // MAYOR DE CUENTAS - VERSIÓN CORREGIDA
         // ============================================
+        function cargarListaCuentasMayor() {
+            const select = document.getElementById('select-cuenta-mayor');
+            select.innerHTML = '<option value="">Seleccionar cuenta...</option>';
+            planCuentas.forEach(c => {
+                select.innerHTML += `<option value="${c.codigo}">${c.codigo} - ${c.nombre}</option>`;
+            });
+        }
+
         function cargarMayorCuenta() {
             const codigo = document.getElementById('select-cuenta-mayor').value;
             const contenido = document.getElementById('mayor-contenido');
-            if (!codigo) { 
-                contenido.innerHTML = '<p style="text-align:center;">Selecciona una cuenta</p>'; 
-                return; 
+            
+            if (!codigo) {
+                contenido.innerHTML = '<p style="text-align:center;">Selecciona una cuenta</p>';
+                return;
             }
             
-            const movs = [];
-            asientos.forEach(a => {
-                a.lineas.forEach(l => {
-                    if (l.codigo === codigo) {
-                        movs.push({ fecha: a.fecha, detalle: a.referencia, debito: l.debito, credito: l.credito });
+            // Recolectar movimientos de la cuenta seleccionada
+            const movimientos = [];
+            
+            for (let i = 0; i < asientos.length; i++) {
+                const asiento = asientos[i];
+                for (let j = 0; j < asiento.lineas.length; j++) {
+                    const linea = asiento.lineas[j];
+                    if (linea.codigo === codigo) {
+                        movimientos.push({
+                            fecha: asiento.fecha,
+                            detalle: asiento.referencia,
+                            debito: linea.debito,
+                            credito: linea.credito
+                        });
                     }
-                });
-            });
-            
-            if (movs.length === 0) { 
-                contenido.innerHTML = '<p style="text-align:center;">Sin movimientos</p>'; 
-                return; 
+                }
             }
             
-            let totalDeb = 0, totalCred = 0, saldo = 0;
-            const cuenta = planCuentas.find(c => c.codigo === codigo);
-            const naturaleza = cuenta?.tipo === 'ACTIVO' ? 'DEUDORA' : 'ACREEDORA';
+            if (movimientos.length === 0) {
+                contenido.innerHTML = '<p style="text-align:center;">Sin movimientos en este período</p>';
+                return;
+            }
             
-            let html = '<table class="mayor-table"><thead><tr><th>Fecha</th><th>Detalle</th><th>Débito</th><th>Crédito</th></tr></thead><tbody>';
+            let totalDebitos = 0;
+            let totalCreditos = 0;
+            let saldo = 0;
             
-            for (const m of movs) {
-                totalDeb += m.debito;
-                totalCred += m.credito;
+            // Buscar la cuenta para determinar su naturaleza
+            let cuenta = null;
+            for (let i = 0; i < planCuentas.length; i++) {
+                if (planCuentas[i].codigo === codigo) {
+                    cuenta = planCuentas[i];
+                    break;
+                }
+            }
+            
+            const naturaleza = (cuenta && (cuenta.tipo === 'ACTIVO' || cuenta.tipo === 'COSTO')) ? 'DEUDORA' : 'ACREEDORA';
+            
+            let html = '<table class="mayor-table">';
+            html += '<thead><tr>';
+            html += '<th>Fecha</th>';
+            html += '<th>Detalle</th>';
+            html += '<th>Débito</th>';
+            html += '<th>Crédito</th>';
+            html += '</tr></thead><tbody>';
+            
+            for (let i = 0; i < movimientos.length; i++) {
+                const m = movimientos[i];
+                totalDebitos += m.debito;
+                totalCreditos += m.credito;
                 saldo += m.debito - m.credito;
+                
                 const fecha = new Date(m.fecha);
-                const fechaStr = `${fecha.getDate()}/${fecha.getMonth()+1}/${fecha.getFullYear()}`;
-                html += `<tr>
-                            <td>${fechaStr}</td>
-                            <td>${m.detalle}</td>
-                            <td class="monto-debito">${m.debito > 0 ? `$${m.debito.toLocaleString()}` : '-'}</td>
-                            <td class="monto-credito">${m.credito > 0 ? `$${m.credito.toLocaleString()}` : '-'}</td>
-                         </tr>`;
+                const fechaStr = fecha.getDate() + '/' + (fecha.getMonth() + 1) + '/' + fecha.getFullYear();
+                
+                html += '<tr>';
+                html += '<td>' + fechaStr + '</td>';
+                html += '<td>' + m.detalle + '</td>';
+                html += '<td class="monto-debito">';
+                if (m.debito > 0) {
+                    html += '$' + m.debito.toLocaleString();
+                } else {
+                    html += '-';
+                }
+                html += '</td>';
+                html += '<td class="monto-credito">';
+                if (m.credito > 0) {
+                    html += '$' + m.credito.toLocaleString();
+                } else {
+                    html += '-';
+                }
+                html += '</td>';
+                html += '</tr>';
             }
             
             const saldoEsDebito = (naturaleza === 'DEUDORA' && saldo >= 0) || (naturaleza === 'ACREEDORA' && saldo <= 0);
-            html += `</tbody>
-                    <tfoot>
-                        <tr style="background:#faf0f2; font-weight:bold;">
-                            <td colspan="2"><strong>TOTALES</strong></td>
-                            <td class="monto-debito"><strong>$${totalDeb.toLocaleString()}</strong></td>
-                            <td class="monto-credito"><strong>$${totalCred.toLocaleString()}</strong></td>
-                        </tr>
-                        <tr style="background:#faf0f2; font-weight:bold;">
-                            <td colspan="2"><strong>SALDO FINAL</strong></td>
-                            <td colspan="2" class="${saldoEsDebito ? 'monto-debito' : 'monto-credito'}">
-                                <strong>$${Math.abs(saldo).toLocaleString()} ${saldoEsDebito ? 'Débito' : 'Crédito'}</strong>
-                            </td>
-                        </tr>
-                    </tfoot>
-                 </table>`;
+            const saldoStr = (saldoEsDebito ? 'Débito' : 'Crédito');
+            
+            html += '</tbody><tfoot>';
+            html += '<tr style="background:#faf0f2; font-weight:bold;">';
+            html += '<td colspan="2"><strong>TOTALES</strong></td>';
+            html += '<td class="monto-debito"><strong>$' + totalDebitos.toLocaleString() + '</strong></td>';
+            html += '<td class="monto-credito"><strong>$' + totalCreditos.toLocaleString() + '</strong></td>';
+            html += '</tr>';
+            html += '<tr style="background:#faf0f2; font-weight:bold;">';
+            html += '<td colspan="2"><strong>SALDO FINAL</strong></td>';
+            html += '<td colspan="2" class="' + (saldoEsDebito ? 'monto-debito' : 'monto-credito') + '">';
+            html += '<strong>$' + Math.abs(saldo).toLocaleString() + ' ' + saldoStr + '</strong>';
+            html += '</td>';
+            html += '</tr>';
+            html += '</tfoot></table>';
             
             contenido.innerHTML = html;
         }
