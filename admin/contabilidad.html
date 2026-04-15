@@ -1315,14 +1315,18 @@ async function crearAsientoDesdeVenta(venta, token) {
 // Funciones similares para crearAsientoDesdeCompra y crearAsientoDesdeGasto...
 
 // ============================================
-// Cargar asientos DESDE LA TABLA (no calcular en vivo)
+// Cargar asientos DESDE LA TABLA
 // ============================================
 async function cargarAsientosDesdeTabla() {
     try {
-        const response = await fetch(
-            `${SUPABASE_URL}/rest/v1/asientos_contables?order=fecha.asc&order=numero.asc`,
-            { headers: { 'apikey': SUPABASE_KEY } }
-        );
+        const token = JSON.parse(localStorage.getItem('admin_token'));
+        
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/asientos_contables?order=fecha.asc&order=numero.asc`, {
+            headers: { 
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${token.access_token}`
+            }
+        });
         const asientosData = await response.json();
         
         // Cargar líneas para cada asiento
@@ -1335,7 +1339,8 @@ async function cargarAsientosDesdeTabla() {
             const lineas = await lineasRes.json();
             
             asientos.push({
-                id: asiento.id,
+                id: asiento.id,  // ← AHORA ES NUMÉRICO (ej: 1, 2, 3...)
+                id_texto: `${asiento.transaccion_tabla}-${asiento.transaccion_id}`, // Guardamos también el texto para referencia
                 numero: asiento.numero,
                 fecha: asiento.fecha,
                 tipo: asiento.tipo,
@@ -2292,7 +2297,7 @@ async function eliminarAsiento(id) {
                         <td><span style="background: ${getTipoColor(c.tipo)}; color: white; padding: 0.2rem 0.5rem; border-radius: 20px;">${c.tipo}</span></td>
                         <td>${c.naturaleza}</td>
                         <td>
-                            <button class="btn-editar" onclick="editarCuentaPlan(${c.id})">✏️</button>
+                            <button class="btn-editar" onclick="abrirEditarAsiento(${asiento.id})">✏️ EDITAR</button>
                             <button class="btn-eliminar" onclick="eliminarCuentaPlan(${c.id}, '${c.codigo}')">🗑️</button>
                         </td>
                     </tr>
