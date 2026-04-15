@@ -1066,18 +1066,15 @@
         }
 
         // ============================================
-        // MAYOR DE CUENTAS
+        // MAYOR DE CUENTAS - CORREGIDO
         // ============================================
-        function cargarListaCuentasMayor() {
-            const select = document.getElementById('select-cuenta-mayor');
-            select.innerHTML = '<option value="">Seleccionar cuenta...</option>';
-            planCuentas.forEach(c => { select.innerHTML += `<option value="${c.codigo}">${c.codigo} - ${c.nombre}</option>`; });
-        }
-
         function cargarMayorCuenta() {
             const codigo = document.getElementById('select-cuenta-mayor').value;
             const contenido = document.getElementById('mayor-contenido');
-            if (!codigo) { contenido.innerHTML = '<p style="text-align:center;">Selecciona una cuenta</p>'; return; }
+            if (!codigo) { 
+                contenido.innerHTML = '<p style="text-align:center;">Selecciona una cuenta</p>'; 
+                return; 
+            }
             
             const movs = [];
             asientos.forEach(a => {
@@ -1087,25 +1084,52 @@
                     }
                 });
             });
-            if (movs.length === 0) { contenido.innerHTML = '<p style="text-align:center;">Sin movimientos</p>'; return; }
+            
+            if (movs.length === 0) { 
+                contenido.innerHTML = '<p style="text-align:center;">Sin movimientos</p>'; 
+                return; 
+            }
             
             let totalDeb = 0, totalCred = 0, saldo = 0;
             const cuenta = planCuentas.find(c => c.codigo === codigo);
             const naturaleza = cuenta?.tipo === 'ACTIVO' ? 'DEUDORA' : 'ACREEDORA';
             
             let html = '<table class="mayor-table"><thead><tr><th>Fecha</th><th>Detalle</th><th>Débito</th><th>Crédito</th></tr></thead><tbody>';
-            movs.forEach(m => {
-                totalDeb += m.debito; totalCred += m.credito;
+            
+            for (const m of movs) {
+                totalDeb += m.debito;
+                totalCred += m.credito;
                 saldo += m.debito - m.credito;
                 const fecha = new Date(m.fecha);
-                html += `<tr><td>${fecha.getDate()}/${fecha.getMonth()+1}/${fecha.getFullYear()}</td><td>${m.detalle}</td><td class="monto-debito">${m.debito > 0 ? `$${m.debito.toLocaleString()}` : '-'}</td><td class="monto-credito">${m.credito > 0 ? `$${m.credito.toLocaleString()}` : '-'}</td></tr>`;
-            });
+                const fechaStr = `${fecha.getDate()}/${fecha.getMonth()+1}/${fecha.getFullYear()}`;
+                html += `<tr>
+                            <td>${fechaStr}</td>
+                            <td>${m.detalle}</td>
+                            <td class="monto-debito">${m.debito > 0 ? `$${m.debito.toLocaleString()}` : '-'}</td>
+                            <td class="monto-credito">${m.credito > 0 ? `$${m.credito.toLocaleString()}` : '-'}</td>
+                         </tr>`;
+            }
+            
             const saldoEsDebito = (naturaleza === 'DEUDORA' && saldo >= 0) || (naturaleza === 'ACREEDORA' && saldo <= 0);
-            html += `</tbody><tfoot><tr style="background:#faf0f2;"><td colspan="2"><strong>TOTALES</strong></td><td class="monto-debito"><strong>$${totalDeb.toLocaleString()}</strong></td><td class="monto-credito"><strong>$${totalCred.toLocaleString()}</strong></td></tr>
-                     <tr style="background:#faf0f2;"><td colspan="2"><strong>SALDO FINAL</strong></td><td colspan="2" class="${saldoEsDebito ? 'monto-debito' : 'monto-credito'}"><strong>$${Math.abs(saldo).toLocaleString()} ${saldoEsDebito ? 'Débito' : 'Crédito'}</strong></td></tr></tfoot></table>`;
+            html += `</tbody>
+                    <tfoot>
+                        <tr style="background:#faf0f2; font-weight:bold;">
+                            <td colspan="2"><strong>TOTALES</strong></td>
+                            <td class="monto-debito"><strong>$${totalDeb.toLocaleString()}</strong></td>
+                            <td class="monto-credito"><strong>$${totalCred.toLocaleString()}</strong></td>
+                        </tr>
+                        <tr style="background:#faf0f2; font-weight:bold;">
+                            <td colspan="2"><strong>SALDO FINAL</strong></td>
+                            <td colspan="2" class="${saldoEsDebito ? 'monto-debito' : 'monto-credito'}">
+                                <strong>$${Math.abs(saldo).toLocaleString()} ${saldoEsDebito ? 'Débito' : 'Crédito'}</strong>
+                            </td>
+                        </tr>
+                    </tfoot>
+                 </table>`;
+            
             contenido.innerHTML = html;
         }
-
+        
         // ============================================
         // PERIODO Y NAVEGACIÓN
         // ============================================
