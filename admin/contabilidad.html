@@ -819,31 +819,59 @@
         // ============================================
         async function cargarAsientos() {
             try {
+                mostrarToast('Cargando asientos...', 'info');
                 const token = JSON.parse(localStorage.getItem('admin_token'));
-                const res = await fetch(`${SUPABASE_URL}/rest/v1/asientos_contables?fecha=gte.${fechaInicio.toISOString()}&fecha=lte.${fechaFin.toISOString()}&order=fecha.asc`, {
-                    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}` }
+                const url = SUPABASE_URL + '/rest/v1/asientos_contables?fecha=gte.' + fechaInicio.toISOString() + '&fecha=lte.' + fechaFin.toISOString() + '&order=fecha.asc';
+                const res = await fetch(url, {
+                    headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + token.access_token }
                 });
                 const data = await res.json();
                 
                 asientos = [];
-                for (const a of data) {
-                    const lineasRes = await fetch(`${SUPABASE_URL}/rest/v1/lineas_asiento?asiento_id=eq.${a.id}`, {
+                for (let i = 0; i < data.length; i++) {
+                    const a = data[i];
+                    const lineasRes = await fetch(SUPABASE_URL + '/rest/v1/lineas_asiento?asiento_id=eq.' + a.id, {
                         headers: { 'apikey': SUPABASE_KEY }
                     });
                     const lineas = await lineasRes.json();
-                        referencia: a.referencia, tercero: a.tercero, nota: a.nota,
-                        lineas: lineas.map(l => ({ codigo: l.codigo_cuenta, nombre: l.nombre_cuenta, debito: l.debito, credito: l.credito })),
-                        transaccion_id: a.transaccion_id, transaccion_tabla: a.transaccion_tabla
+                    
+                    const lineasFormateadas = [];
+                    for (let j = 0; j < lineas.length; j++) {
+                        lineasFormateadas.push({
+                            codigo: lineas[j].codigo_cuenta,
+                            nombre: lineas[j].nombre_cuenta,
+                            debito: lineas[j].debito,
+                            credito: lineas[j].credito
+                        });
+                    }
+                    
+                    // Esta es la línea que causaba el error - CORREGIDA
+                    asientos.push({
+                        id: a.id,
+                        numero: a.numero,
+                        fecha: a.fecha,
+                        tipo: a.tipo,
+                        referencia: a.referencia,
+                        tercero: a.tercero,
+                        nota: a.nota,
+                        lineas: lineasFormateadas,
+                        transaccion_id: a.transaccion_id,
+                        transaccion_tabla: a.transaccion_tabla
                     });
                 }
+                
                 mostrarLibroDiario();
                 calcularResumen();
                 cargarEstadoResultados();
                 cargarBalanceGeneral();
                 cargarListaCuentasMayor();
-            } catch (error) { console.error(error); mostrarToast('Error cargando asientos', 'error'); }
+                mostrarToast('Asientos cargados', 'success');
+            } catch (error) {
+                console.error(error);
+                mostrarToast('Error cargando asientos', 'error');
+            }
         }
-
+        
         // ============================================
         // SINCRONIZAR ASIENTOS DESDE TRANSACCIONES
         // ============================================
