@@ -590,53 +590,6 @@
             .asientos-table { font-size: 0.7rem; }
             .linea-header, .linea-row { grid-template-columns: 1.5fr 1.5fr 1fr 1fr 0.5fr; }
         }
-
-                /* ============================================ */
-        /* ESTILOS PARA ASIENTOS ORDENADOS - AGREGAR AQUÍ */
-        /* ============================================ */
-        
-        .asiento-row {
-            transition: all 0.2s ease;
-        }
-        
-        .asiento-row:hover {
-            background: #fffafb !important;
-            transform: translateX(2px);
-        }
-        
-        .detalle-linea {
-            transition: background 0.2s ease;
-        }
-        
-        .detalle-linea:hover {
-            background: #fff0f3;
-        }
-        
-        .monto-debito {
-            color: #27ae60;
-            font-weight: 600;
-        }
-        
-        .monto-credito {
-            color: #e74c3c;
-            font-weight: 600;
-        }
-        
-        /* Tooltip para ver más detalles */
-        .asiento-row {
-            cursor: pointer;
-        }
-        
-        /* Resaltar asientos por tipo */
-        .asiento-row[data-tipo="venta"] {
-            border-left-color: #27ae60;
-        }
-        .asiento-row[data-tipo="compra"] {
-            border-left-color: #3498db;
-        }
-        .asiento-row[data-tipo="gasto"] {
-            border-left-color: #e74c3c;
-        }
     </style>
 </head>
 <body>
@@ -1131,6 +1084,28 @@
             document.getElementById('total-debitos').innerHTML = '<strong>$' + totalDebGlobal.toLocaleString() + '</strong>';
             document.getElementById('total-creditos').innerHTML = '<strong>$' + totalCredGlobal.toLocaleString() + '</strong>';
             footer.style.display = 'table-row-group';
+        }
+
+        // ============================================
+        // CALCULAR RESUMEN
+        // ============================================
+        function calcularResumen() {
+            let ingresos = 0, egresos = 0, caja = 0, bancos = 0, inventario = 0;
+            asientos.forEach(a => {
+                a.lineas.forEach(l => {
+                    if (l.codigo === '413505') ingresos += l.credito;
+                    if (l.codigo === '620501') egresos += l.debito;
+                    if (l.codigo === '110505') caja += l.debito - l.credito;
+                    if (l.codigo === '111005') bancos += l.debito - l.credito;
+                    if (l.codigo === '143505') inventario += l.debito - l.credito;
+                });
+            });
+            document.getElementById('total-ingresos').innerHTML = `$${ingresos.toLocaleString()}`;
+            document.getElementById('total-egresos').innerHTML = `$${egresos.toLocaleString()}`;
+            document.getElementById('utilidad').innerHTML = `$${(ingresos - egresos).toLocaleString()}`;
+            document.getElementById('saldo-caja').innerHTML = `$${caja.toLocaleString()}`;
+            document.getElementById('saldo-bancos').innerHTML = `$${bancos.toLocaleString()}`;
+            document.getElementById('saldo-inventario').innerHTML = `$${inventario.toLocaleString()}`;
         }
 
         // ============================================
