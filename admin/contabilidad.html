@@ -1354,62 +1354,139 @@
         function eliminarAsientoModal() { if (asientoActual) { cerrarModalAsiento(); eliminarAsiento(asientoActual.id); } }
 
         // ============================================
-        // PLAN DE CUENTAS CRUD
+        // PLAN DE CUENTAS CRUD - CORREGIDO
         // ============================================
-        async function abrirPlanCuentas() { document.getElementById('modal-plan-cuentas').style.display = 'flex'; await cargarPlanCuentasTabla(); }
-        function cerrarPlanCuentas() { document.getElementById('modal-plan-cuentas').style.display = 'none'; }
+        async function abrirPlanCuentas() {
+            document.getElementById('modal-plan-cuentas').style.display = 'flex';
+            await cargarPlanCuentasTabla();
+        }
+        
+        function cerrarPlanCuentas() {
+            document.getElementById('modal-plan-cuentas').style.display = 'none';
+        }
+        
         async function cargarPlanCuentasTabla() {
-            const token = JSON.parse(localStorage.getItem('admin_token'));
-            const res = await fetch(`${SUPABASE_URL}/rest/v1/plan_cuentas?order=codigo.asc`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}` } });
-            const cuentas = await res.json();
-            document.getElementById('plan-cuentas-body').innerHTML = cuentas.map(c => `<tr><td>${c.codigo}</td><td>${c.nombre}</td><td>${c.tipo}</td><td><button class="btn-editar" onclick="editarCuentaPlan(${c.id})">✏️</button> <button class="btn-eliminar" onclick="eliminarCuentaPlan(${c.id})">🗑️</button></td></tr>`).join('');
-        }
-        function agregarCuentaPlan() { document.getElementById('cuenta-plan-id').value = ''; document.getElementById('cuenta-codigo').value = ''; document.getElementById('cuenta-nombre').value = ''; document.getElementById('cuenta-tipo').value = 'ACTIVO'; document.getElementById('modal-editar-cuenta').style.display = 'flex'; }
-        async function editarCuentaPlan(id) {
-            const token = JSON.parse(localStorage.getItem('admin_token'));
-            const res = await fetch(`${SUPABASE_URL}/rest/v1/plan_cuentas?id=eq.${id}`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}` } });
-            const c = await res.json();
-            document.getElementById('cuenta-plan-id').value = c[0].id;                        id: a.id, numero: a.numero, fecha: a.fecha, tipo: a.tipo,
-            document.getElementById('cuenta-codigo').value = c[0].codigo;
-            document.getElementById('cuenta-nombre').value = c[0].nombre;
-            document.getElementById('cuenta-tipo').value = c[0].tipo;
-            document.getElementById('modal-editar-cuenta').style.display = 'flex';
-        }
-
-        function cerrarEditarCuenta() { document.getElementById('modal-editar-cuenta').style.display = 'none'; }
-
-        document.getElementById('form-cuenta-plan')?.addEventListener('submit', async (e) => {
-            e.preventDefault();
             try {
                 const token = JSON.parse(localStorage.getItem('admin_token'));
-                const id = document.getElementById('cuenta-plan-id').value;
-                const data = {
-                    codigo: document.getElementById('cuenta-codigo').value,
-                    nombre: document.getElementById('cuenta-nombre').value.toUpperCase(),
-                    tipo: document.getElementById('cuenta-tipo').value
-                };
-                let url = `${SUPABASE_URL}/rest/v1/plan_cuentas`;
-                let method = 'POST';
-                if (id) { url += `?id=eq.${id}`; method = 'PATCH'; }
-                const res = await fetch(url, { method, headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}`, 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
-                if (res.ok) {
-                    mostrarToast(id ? 'Cuenta actualizada' : 'Cuenta creada', 'success');
-                    cerrarEditarCuenta();
-                    await cargarPlanCuentas();
-                    await cargarPlanCuentasTabla();
-                } else { mostrarToast('Error al guardar', 'error'); }
-            } catch (error) { mostrarToast('Error de conexión', 'error'); }
-        });
-
+                const res = await fetch(SUPABASE_URL + '/rest/v1/plan_cuentas?order=codigo.asc', {
+                    headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + token.access_token }
+                });
+                const cuentas = await res.json();
+                const tbody = document.getElementById('plan-cuentas-body');
+                
+                let html = '';
+                for (let i = 0; i < cuentas.length; i++) {
+                    const c = cuentas[i];
+                    html += '<tr>';
+                    html += '<td>' + c.codigo + '</td>';
+                    html += '<td>' + c.nombre + '</td>';
+                    html += '<td>' + c.tipo + '</td>';
+                    html += '<td>';
+                    html += '<button class="btn-editar" onclick="editarCuentaPlan(' + c.id + ')">✏️</button> ';
+                    html += '<button class="btn-eliminar" onclick="eliminarCuentaPlan(' + c.id + ')">🗑️</button>';
+                    html += '</td>';
+                    html += '</tr>';
+                }
+                tbody.innerHTML = html;
+            } catch (error) {
+                console.error('Error cargando plan cuentas:', error);
+            }
+        }
+        
+        function agregarCuentaPlan() {
+            document.getElementById('cuenta-plan-id').value = '';
+            document.getElementById('cuenta-codigo').value = '';
+            document.getElementById('cuenta-nombre').value = '';
+            document.getElementById('cuenta-tipo').value = 'ACTIVO';
+            document.getElementById('modal-editar-cuenta').style.display = 'flex';
+        }
+        
+        async function editarCuentaPlan(id) {
+            try {
+                const token = JSON.parse(localStorage.getItem('admin_token'));
+                const res = await fetch(SUPABASE_URL + '/rest/v1/plan_cuentas?id=eq.' + id, {
+                    headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + token.access_token }
+                });
+                const cuentas = await res.json();
+                const c = cuentas[0];
+                
+                document.getElementById('cuenta-plan-id').value = c.id;
+                document.getElementById('cuenta-codigo').value = c.codigo;
+                document.getElementById('cuenta-nombre').value = c.nombre;
+                document.getElementById('cuenta-tipo').value = c.tipo;
+                document.getElementById('modal-editar-cuenta').style.display = 'flex';
+            } catch (error) {
+                mostrarToast('Error al cargar la cuenta', 'error');
+            }
+        }
+        
+        function cerrarEditarCuenta() {
+            document.getElementById('modal-editar-cuenta').style.display = 'none';
+        }
+        
+        // Formulario de cuenta plan
+        const formCuentaPlan = document.getElementById('form-cuenta-plan');
+        if (formCuentaPlan) {
+            formCuentaPlan.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                try {
+                    const token = JSON.parse(localStorage.getItem('admin_token'));
+                    const id = document.getElementById('cuenta-plan-id').value;
+                    const cuentaData = {
+                        codigo: document.getElementById('cuenta-codigo').value,
+                        nombre: document.getElementById('cuenta-nombre').value.toUpperCase(),
+                        tipo: document.getElementById('cuenta-tipo').value
+                    };
+                    
+                    let url = SUPABASE_URL + '/rest/v1/plan_cuentas';
+                    let method = 'POST';
+                    if (id) {
+                        url = url + '?id=eq.' + id;
+                        method = 'PATCH';
+                    }
+                    
+                    const res = await fetch(url, {
+                        method: method,
+                        headers: {
+                            'apikey': SUPABASE_KEY,
+                            'Authorization': 'Bearer ' + token.access_token,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(cuentaData)
+                    });
+                    
+                    if (res.ok) {
+                        mostrarToast(id ? 'Cuenta actualizada' : 'Cuenta creada', 'success');
+                        cerrarEditarCuenta();
+                        await cargarPlanCuentas();
+                        await cargarPlanCuentasTabla();
+                    } else {
+                        mostrarToast('Error al guardar', 'error');
+                    }
+                } catch (error) {
+                    console.error(error);
+                    mostrarToast('Error de conexión', 'error');
+                }
+            });
+        }
+        
         async function eliminarCuentaPlan(id) {
             if (!confirm('¿Eliminar esta cuenta?')) return;
             try {
                 const token = JSON.parse(localStorage.getItem('admin_token'));
-                await fetch(`${SUPABASE_URL}/rest/v1/plan_cuentas?id=eq.${id}`, { method: 'DELETE', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}` } });
+                await fetch(SUPABASE_URL + '/rest/v1/plan_cuentas?id=eq.' + id, {
+                    method: 'DELETE',
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': 'Bearer ' + token.access_token
+                    }
+                });
                 mostrarToast('Cuenta eliminada', 'success');
                 await cargarPlanCuentas();
                 await cargarPlanCuentasTabla();
-            } catch (error) { mostrarToast('Error al eliminar', 'error'); }
+            } catch (error) {
+                mostrarToast('Error al eliminar', 'error');
+            }
         }
 
         // ============================================
