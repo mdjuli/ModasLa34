@@ -6,6 +6,22 @@
 let todosLosProductos = [];
 let categoriaActual = 'todos';
 
+function ordenarVariantesPorTalla(variantes) {
+    const ordenTallas = {
+        'XS': 1, 'S': 2, 'M': 3, 'L': 4, 'XL': 5, 'XXL': 6, 'XXXL': 7,
+        '2XL': 6, '3XL': 7, '4XL': 8, '5XL': 9,
+        '6': 10, '7': 11, '8': 12, '9': 13, '10': 14, '11': 15, '12': 16,
+        '34': 17, '35': 18, '36': 19, '37': 20, '38': 21, '39': 22, '40': 23,
+        '41': 24, '42': 25, '43': 26, '44': 27, '45': 28, '46': 29
+    };
+    
+    return [...variantes].sort((a, b) => {
+        const ordenA = ordenTallas[a.talla] || 999;
+        const ordenB = ordenTallas[b.talla] || 999;
+        return ordenA - ordenB;
+    });
+}
+
 // Cargar productos al iniciar la página
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('🚀 Catálogo iniciado');
@@ -270,7 +286,8 @@ function llenarModal(producto) {
     const contenedor = document.getElementById('modal-contenido-producto');
     if (!contenedor) return;
     
-    const variantes = producto.variantes || [];
+    // Ordenar variantes por talla
+    const variantes = ordenarVariantesPorTalla(producto.variantes || []);
     
     // Emoji según categoría
     const emojis = {
@@ -292,63 +309,6 @@ function llenarModal(producto) {
         });
     });
     
-    // Generar HTML de tallas y colores
-    let tallasHTML = '';
-    
-    if (variantes.length > 0) {
-        tallasHTML = '<div style="margin: 1.5rem 0;">';
-        tallasHTML += '<h4 style="color: #ff6b6b; margin-bottom: 1rem;">📋 Tallas y colores disponibles:</h4>';
-        
-        variantes.forEach(v => {
-            const colores = v.colores || [];
-            if (colores.length > 0) {
-                tallasHTML += `
-                    <div style="margin-bottom: 1.5rem; padding: 1rem; background: #fff9fc; border-radius: 15px; border: 1px solid #ffe4e9;">
-                        <h5 style="color: #ff6b6b; margin-bottom: 0.8rem;">Talla ${v.talla} - Precio: $${(v.precio_venta || 0).toLocaleString()}</h5>
-                        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 1rem;">
-                `;
-                
-                colores.forEach(c => {
-                    const stockColor = c.stock > 5 ? '#27ae60' : (c.stock > 0 ? '#f39c12' : '#ff4757');
-                    
-                    tallasHTML += `
-                        <div style="text-align: center; padding: 0.8rem; background: white; border-radius: 10px;">
-                            <div style="
-                                display: inline-block;
-                                width: 40px;
-                                height: 40px;
-                                background-color: ${c.codigo || '#cccccc'};
-                                border-radius: 50%;
-                                border: 3px solid white;
-                                box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-                                margin-bottom: 5px;
-                            "></div>
-                            <p style="font-size: 0.9rem; font-weight: bold; margin: 5px 0;">${c.nombre || 'Color'}</p>
-                            <p style="font-size: 0.8rem; color: ${stockColor};">
-                                Stock: ${c.stock}
-                            </p>
-                        </div>
-                    `;
-                });
-                
-                tallasHTML += `</div></div>`;
-            } else {
-                // Sin colores específicos
-                tallasHTML += `
-                    <div style="margin-bottom: 1.5rem; padding: 1rem; background: #fff9fc; border-radius: 15px; border: 1px solid #ffe4e9;">
-                        <h5 style="color: #ff6b6b; margin-bottom: 0.8rem;">Talla ${v.talla}</h5>
-                        <p style="color: #a5a5a5;">Stock disponible: ${v.stock_total || 0} unidades</p>
-                        <p><strong>Precio:</strong> $${(v.precio_venta || 0).toLocaleString()}</p>
-                    </div>
-                `;
-            }
-        });
-        
-        tallasHTML += '</div>';
-    } else {
-        tallasHTML = '<p style="color: #a5a5a5; text-align: center;">No hay variantes disponibles</p>';
-    }
-    
     // Obtener rango de precios
     const precios = variantes.map(v => v.precio_venta || 0);
     const precioMin = Math.min(...precios);
@@ -357,34 +317,107 @@ function llenarModal(producto) {
         `$${precioMin.toLocaleString()}` : 
         `$${precioMin.toLocaleString()} - $${precioMax.toLocaleString()}`;
     
+    // Generar HTML de tallas y colores
+    let tallasHTML = '';
+    
+    if (variantes.length > 0) {
+        tallasHTML = `
+            <div style="margin: 1.5rem 0;">
+                <h4 style="color: #ff6b6b; margin-bottom: 1rem; display: flex; align-items: center; gap: 8px;">
+                    📏 Tallas disponibles 
+                    <span style="font-size: 0.8rem; color: #888;">(${variantes.length} tallas)</span>
+                </h4>
+                <div class="tallas-scroll-container">
+                    <div class="tallas-grid">
+        `;
+        
+        variantes.forEach(v => {
+            const colores = v.colores || [];
+            const tieneStock = colores.some(c => (c.stock || 0) > 0) || (v.stock_total > 0);
+            
+            let stockClass = 'talla-sin-stock';
+            let stockTexto = 'Sin stock';
+            
+            if (tieneStock) {
+                const maxStock = Math.max(...colores.map(c => c.stock || 0), v.stock_total || 0);
+                if (maxStock > 5) {
+                    stockClass = 'talla-con-stock';
+                    stockTexto = `Stock: ${maxStock}`;
+                } else if (maxStock > 0) {
+                    stockClass = 'talla-stock-bajo';
+                    stockTexto = `¡Quedan ${maxStock}!`;
+                }
+            }
+            
+            tallasHTML += `
+                <div class="talla-card ${stockClass}" onclick="mostrarColoresTalla(${v.id}, '${v.talla}', ${v.precio_venta})">
+                    <div class="talla-numero">${v.talla}</div>
+                    <div class="talla-precio">$${(v.precio_venta || 0).toLocaleString()}</div>
+                    <div class="talla-stock">${stockTexto}</div>
+                </div>
+            `;
+        });
+        
+        tallasHTML += `
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Contenedor para colores (se muestra al hacer clic en una talla)
+        tallasHTML += `
+            <div id="modal-colores-container" style="display: none; margin: 1rem 0;">
+                <h4 style="color: #ff6b6b; margin-bottom: 0.8rem;">🎨 Colores disponibles para talla <span id="talla-seleccionada-nombre"></span>:</h4>
+                <div class="colores-scroll-container">
+                    <div id="modal-colores-grid" class="colores-grid"></div>
+                </div>
+            </div>
+        `;
+    } else {
+        tallasHTML = '<p style="color: #a5a5a5; text-align: center;">No hay variantes disponibles</p>';
+    }
+    
+    // Stock total badge
+    let stockBadge = '';
+    if (stockTotal === 0) {
+        stockBadge = '<span class="stock-badge stock-out">❌ Agotado</span>';
+    } else if (stockTotal < 5) {
+        stockBadge = '<span class="stock-badge stock-low">⚠️ Stock bajo (' + stockTotal + ' unidades)</span>';
+    } else {
+        stockBadge = '<span class="stock-badge stock-available">✅ En stock (' + stockTotal + ' unidades)</span>';
+    }
+    
     contenedor.innerHTML = `
-        <div class="modal-grid">
-            <div class="modal-imagen">
+        <div class="modal-layout">
+            <button class="modal-close-btn" onclick="cerrarModal()">✕</button>
+            
+            <div class="modal-imagen-section">
                 ${producto.imagen_url ? 
-                    `<img src="${producto.imagen_url}" alt="${producto.nombre}" style="width:100%; border-radius:15px;">` : 
+                    `<img src="${producto.imagen_url}" alt="${producto.nombre}" class="modal-imagen">` : 
                     `<div class="modal-imagen-placeholder">
                         <span style="font-size: 5rem;">${emoji}</span>
                     </div>`
                 }
             </div>
-            <div class="modal-info">
-                <h2 style="color: #ff6b6b;">${producto.nombre}</h2>
-                <span class="modal-codigo">Código: ${producto.codigo || 'N/A'}</span>
+            
+            <div class="modal-info-section">
+                <h2 class="modal-titulo">${producto.nombre}</h2>
+                <p class="modal-categoria">${emoji} ${producto.categoria || 'General'}</p>
+                <p class="modal-codigo">Código: ${producto.codigo || 'N/A'}</p>
                 
-                <div class="modal-detalle">
-                    <p><strong>Categoría:</strong> ${emoji} ${producto.categoria || 'General'}</p>
-                    <p><strong>Stock total:</strong> ${stockTotal} unidades</p>
-                    
-                    ${tallasHTML}
-                </div>
-                
-                <div class="modal-precio">
+                <div class="modal-precio-principal">
                     ${rangoPrecios}
                 </div>
                 
+                <div class="modal-stock-info">
+                    ${stockBadge}
+                </div>
+                
+                ${tallasHTML}
+                
                 <div class="modal-botones">
-                    <button class="modal-btn btn-consultar" onclick="consultarProducto()">
-                        📱 Consultar disponibilidad
+                    <button class="modal-btn btn-whatsapp" onclick="consultarProductoWhatsApp()">
+                        💬 Consultar por WhatsApp
                     </button>
                     <button class="modal-btn btn-cerrar" onclick="cerrarModal()">
                         ❌ Cerrar
@@ -393,6 +426,100 @@ function llenarModal(producto) {
             </div>
         </div>
     `;
+    
+    // Guardar datos para usar después
+    window.modalProductoActual = producto;
+    window.modalVariantesActuales = variantes;
+}
+
+// Función para mostrar colores de una talla específica
+function mostrarColoresTalla(varianteId, talla, precio) {
+    // Remover selección anterior de tallas
+    document.querySelectorAll('.talla-card').forEach(card => {
+        card.classList.remove('selected');
+    });
+    
+    // Marcar la talla seleccionada
+    event.currentTarget.classList.add('selected');
+    
+    // Guardar talla seleccionada
+    window.tallaSeleccionada = {
+        id: varianteId,
+        talla: talla,
+        precio: precio
+    };
+    
+    // Buscar la variante para mostrar sus colores
+    const variante = window.modalVariantesActuales.find(v => v.id === varianteId);
+    
+    if (variante && variante.colores && variante.colores.length > 0) {
+        // Actualizar título
+        document.getElementById('talla-seleccionada-nombre').textContent = talla;
+        
+        const coloresGrid = document.getElementById('modal-colores-grid');
+        const coloresContainer = document.getElementById('modal-colores-container');
+        
+        if (coloresGrid) {
+            const coloresOrdenados = [...variante.colores].sort((a, b) => {
+                if (a.nombre === null && b.nombre !== null) return 1;
+                if (a.nombre !== null && b.nombre === null) return -1;
+                if (a.nombre && b.nombre) return a.nombre.localeCompare(b.nombre);
+                return 0;
+            });
+            
+            coloresGrid.innerHTML = coloresOrdenados.map((color) => {
+                const tieneStock = (color.stock || 0) > 0;
+                return `
+                    <div class="color-card ${tieneStock ? '' : 'color-sin-stock'}">
+                        <div class="color-circulo" style="background: ${color.codigo || '#ccc'};"></div>
+                        <div class="color-nombre">${color.nombre || 'Sin color'}</div>
+                        <div class="color-stock">${color.stock > 0 ? color.stock + ' uds' : 'Agotado'}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        coloresContainer.style.display = 'block';
+        
+        // Hacer scroll hacia los colores
+        coloresContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    } else {
+        // Sin colores, mostrar mensaje
+        const coloresContainer = document.getElementById('modal-colores-container');
+        const coloresGrid = document.getElementById('modal-colores-grid');
+        
+        if (coloresGrid) {
+            coloresGrid.innerHTML = `
+                <div style="grid-column: 1/-1; text-align: center; padding: 1rem; color: #888;">
+                    ⚪ Sin colores específicos para esta talla
+                </div>
+            `;
+        }
+        coloresContainer.style.display = 'block';
+    }
+}
+
+// Función para consultar por WhatsApp
+function consultarProductoWhatsApp() {
+    if (!window.modalProductoActual) return;
+    
+    const producto = window.modalProductoActual;
+    const tallaSel = window.tallaSeleccionada;
+    
+    let mensaje = `🌸 *MODAS LA 34* 🌸\n\n`;
+    mensaje += `Me interesa este producto:\n`;
+    mensaje += `📦 *${producto.nombre}*\n`;
+    mensaje += `💵 Precio: *$${(tallaSel?.precio || 0).toLocaleString()}*\n`;
+    
+    if (tallaSel?.talla) {
+        mensaje += `📏 Talla: *${tallaSel.talla}*\n`;
+    }
+    
+    mensaje += `\n¿Podrían darme más información sobre disponibilidad?`;
+    
+    const numeroWhatsApp = "573208049635";
+    const url = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensaje)}`;
+    window.open(url, '_blank');
 }
 
 // Función para cerrar el modal
