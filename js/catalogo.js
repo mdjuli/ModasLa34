@@ -487,3 +487,678 @@ document.addEventListener('keydown', function(event) {
         cerrarModal();
     }
 });
+
+// ============================================
+// FUNCIONES PARA ORDENAR TALLAS CORRECTAMENTE
+// ============================================
+
+// Función para ordenar tallas numérica y alfabéticamente
+function ordenarTallas(tallas) {
+    const ordenTallas = {
+        'XS': 1, 'S': 2, 'M': 3, 'L': 4, 'XL': 5, 'XXL': 6, 'XXXL': 7,
+        '2XL': 6, '3XL': 7, '4XL': 8, '5XL': 9,
+        '6': 10, '7': 11, '8': 12, '9': 13, '10': 14, '11': 15, '12': 16,
+        '34': 17, '35': 18, '36': 19, '37': 20, '38': 21, '39': 22, '40': 23,
+        '41': 24, '42': 25, '43': 26, '44': 27
+    };
+    
+    return tallas.sort((a, b) => {
+        const ordenA = ordenTallas[a.talla] || 999;
+        const ordenB = ordenTallas[b.talla] || 999;
+        return ordenA - ordenB;
+    });
+}
+
+// Función para ordenar colores
+function ordenarColores(colores) {
+    if (!colores || colores.length === 0) return [];
+    
+    // Primero los que tienen nombre, luego los "sin color"
+    return [...colores].sort((a, b) => {
+        if (a.nombre === null && b.nombre !== null) return 1;
+        if (a.nombre !== null && b.nombre === null) return -1;
+        if (a.nombre && b.nombre) return a.nombre.localeCompare(b.nombre);
+        return 0;
+    });
+}
+
+// ============================================
+// MODAL MEJORADO CON SCROLL Y ORDEN
+// ============================================
+
+let selectedTalla = null;
+let selectedColor = null;
+let currentStock = 0;
+
+function verDetalleProducto(productoId) {
+    const producto = productosData.find(p => p.id === productoId);
+    if (!producto) return;
+    
+    // Ordenar variantes por talla
+    const variantesOrdenadas = ordenarTallas([...producto.variantes]);
+    
+    // Crear modal
+    const modalHTML = `
+        <div id="productModal" class="product-modal" onclick="cerrarModalClickFondo(event)">
+            <div class="product-modal-content">
+                <span class="close-modal" onclick="cerrarModal()">&times;</span>
+                <div class="modal-body">
+                    <img src="${producto.imagen_url || 'https://via.placeholder.com/300x300?text=Modas+La+34'}" 
+                         style="width: 100%; border-radius: 15px; margin-bottom: 15px;">
+                    
+                    <h2 style="color: #ff6b6b; margin: 0 0 5px 0;">${producto.nombre}</h2>
+                    <p style="color: #666; margin-bottom: 15px;">${producto.categoria || 'Ropa'}</p>
+                    
+                    <div class="tallas-container" id="tallasContainer">
+                        ${variantesOrdenadas.map(v => `
+                            <div class="talla-item" onclick="seleccionarTalla(${v.id}, '${v.talla}', ${v.precio_venta})">
+                                <div class="talla-size">${v.talla}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    
+                    <div id="coloresContainer" style="display: none;"></div>
+                    
+                    <div id="stockInfo" class="stock-info" style="display: none;"></div>
+                    
+                    <div class="modal-actions">
+                        <button id="addToCartBtn" class="btn-add-to-cart" disabled onclick="agregarAlCarrito()">
+                            🛍️ Agregar al carrito
+                        </button>
+                        <button class="btn-whatsapp" onclick="compartirWhatsApp('${producto.nombre}')">
+                            💬
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Agregar modal al DOM
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    
+    // Guardar datos del producto seleccionado
+    window.selectedProducto = producto;
+    window.variantesData = variantesOrdenadas;
+    
+    // Mostrar modal
+    const modal = document.getElementById('productModal');
+    modal.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+}
+
+function seleccionarTalla(varianteId, talla, precio) {
+    // Limpiar selección anterior
+    document.querySelectorAll('.talla-item').forEach(item => {
+        item.classList.remove('selected');
+    });
+    
+    // Marcar talla seleccionada
+    event.currentTarget.classList.add('selected');
+    
+    // Guardar selección
+    window.selectedVarianteId = varianteId;
+    window.selectedTallaNombre = talla;
+    window.selectedPrecio = precio;
+    
+    // Mostrar colores de esta talla
+    const variante = window.variantesData.find(v => v.id === varianteId);
+    
+    if (variante && variante.colores && variante.colores.length > 0) {
+        const coloresOrdenados = ordenarColores(variante.colores);
+        
+        const coloresHTML = `
+            <h4 style="margin: 15px 0 10px 0;">🎨 Colores disponibles:</h4>
+            <div class="colores-container-modal">
+                ${coloresOrdenados.map((color, idx) => {
+                    const tieneStock = color.stock > 0;
+                    return `
+                        <div class="color-option ${tieneStock ? '' : 'disabled'}" 
+                             onclick="${tieneStock ? `seleccionarColor(${idx}, ${color.stock})` : ''}"
+                             style="${!tieneStock ? 'opacity: 0.5; cursor: not-allowed;' : ''}">
+                            ${color.codigo ? 
+                                `<div class="color-circle" style="background: ${color.codigo};"></div>` :
+                                `<div class="color-circle" style="background: #ccc; display: flex; align-items: center; justify-content: center;">⚪</div>`
+                            }
+                            <div class="color-name">${color.nombre || 'Sin color'}</div>
+                            <small>${color.stock} uds</small>
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+        `;
+        
+        const coloresContainer = document.getElementById('coloresContainer');
+        coloresContainer.innerHTML = coloresHTML;
+        coloresContainer.style.display = 'block';
+        
+        // Resetear selección de color
+        window.selectedColorIndex = null;
+        document.getElementById('addToCartBtn').disabled = true;
+        document.getElementById('stockInfo').style.display = 'none';
+    } else {
+        // Sin colores, agregar directamente
+        window.selectedColorIndex = null;
+        window.selectedStock = variante.stock_total || 0;
+        
+        const stockInfo = document.getElementById('stockInfo');
+        if (window.selectedStock > 0) {
+            stockInfo.innerHTML = `
+                <span class="stock-badge stock-available">✅ Stock disponible: ${window.selectedStock} unidades</span>
+            `;
+            document.getElementById('addToCartBtn').disabled = false;
+        } else {
+            stockInfo.innerHTML = `
+                <span class="stock-badge stock-out">❌ Agotado</span>
+            `;
+            document.getElementById('addToCartBtn').disabled = true;
+        }
+        stockInfo.style.display = 'block';
+    }
+}
+
+function seleccionarColor(index, stock) {
+    // Limpiar selección anterior
+    document.querySelectorAll('.color-option').forEach(opt => {
+        opt.classList.remove('selected');
+    });
+    
+    // Marcar color seleccionado
+    event.currentTarget.classList.add('selected');
+    
+    // Guardar selección
+    window.selectedColorIndex = index;
+    window.selectedStock = stock;
+    
+    // Actualizar stock info
+    const stockInfo = document.getElementById('stockInfo');
+    if (stock > 0) {
+        stockInfo.innerHTML = `
+            <span class="stock-badge stock-available">✅ Stock disponible: ${stock} unidades</span>
+        `;
+        document.getElementById('addToCartBtn').disabled = false;
+    } else {
+        stockInfo.innerHTML = `
+            <span class="stock-badge stock-out">❌ Agotado</span>
+        `;
+        document.getElementById('addToCartBtn').disabled = true;
+    }
+    stockInfo.style.display = 'block';
+}
+
+function agregarAlCarrito() {
+    if (!window.selectedVarianteId) {
+        mostrarNotificacion('❌ Por favor selecciona una talla', 'error');
+        return;
+    }
+    
+    const producto = window.selectedProducto;
+    const variante = window.variantesData.find(v => v.id === window.selectedVarianteId);
+    let colorInfo = '';
+    
+    if (window.selectedColorIndex !== null && variante.colores[window.selectedColorIndex]) {
+        const color = variante.colores[window.selectedColorIndex];
+        colorInfo = color.nombre ? ` - ${color.nombre}` : '';
+    }
+    
+    const itemCarrito = {
+        id: producto.id,
+        varianteId: window.selectedVarianteId,
+        nombre: producto.nombre,
+        talla: window.selectedTallaNombre,
+        color: colorInfo,
+        precio: window.selectedPrecio,
+        cantidad: 1,
+        imagen: producto.imagen_url,
+        stock: window.selectedStock
+    };
+    
+    // Obtener carrito actual
+    let carrito = JSON.parse(localStorage.getItem('carrito') || '[]');
+    
+    // Verificar si ya existe el mismo producto
+    const existeIndex = carrito.findIndex(item => 
+        item.varianteId === window.selectedVarianteId && 
+        item.color === colorInfo
+    );
+    
+    if (existeIndex !== -1) {
+        carrito[existeIndex].cantidad++;
+    } else {
+        carrito.push(itemCarrito);
+    }
+    
+    localStorage.setItem('carrito', JSON.stringify(carrito));
+    
+    mostrarNotificacion(`✅ ${producto.nombre} - Talla ${window.selectedTallaNombre}${colorInfo} agregado al carrito`, 'success');
+    actualizarContadorCarrito();
+    
+    // Opcional: cerrar modal después de agregar
+    setTimeout(() => {
+        cerrarModal();
+    }, 1500);
+}
+
+function cerrarModal() {
+    const modal = document.getElementById('productModal');
+    if (modal) {
+        modal.remove();
+        document.body.style.overflow = 'auto';
+    }
+    window.selectedTalla = null;
+    window.selectedColor = null;
+}
+
+function cerrarModalClickFondo(event) {
+    if (event.target.classList.contains('product-modal')) {
+        cerrarModal();
+    }
+}
+
+function compartirWhatsApp(productoNombre) {
+    const mensaje = `🌸 *Modas La 34* 🌸\n\nMe interesa el producto: *${productoNombre}*\n¿Podrían darme más información?`;
+    const url = `https://wa.me/573000000000?text=${encodeURIComponent(mensaje)}`;
+    window.open(url, '_blank');
+}
+
+function mostrarNotificacion(mensaje, tipo) {
+    // Crear elemento de notificación
+    const notificacion = document.createElement('div');
+    notificacion.className = `notificacion notificacion-${tipo}`;
+    notificacion.innerHTML = `
+        <div style="
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: ${tipo === 'success' ? '#4CAF50' : '#ff4757'};
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            z-index: 1001;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            animation: slideUp 0.3s ease;
+        ">
+            ${mensaje}
+        </div>
+    `;
+    
+    document.body.appendChild(notificacion);
+    
+    setTimeout(() => {
+        notificacion.remove();
+    }, 3000);
+}
+
+// Agregar estilos de animación para notificaciones
+const notificacionStyles = document.createElement('style');
+notificacionStyles.textContent = `
+    @keyframes slideUp {
+        from {
+            transform: translateX(-50%) translateY(100px);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+    }
+`;
+document.head.appendChild(notificacionStyles);
+
+// ============================================
+// FUNCIÓN PARA RENDERIZAR PRODUCTOS CON MEJOR VISUAL
+// ============================================
+
+async function cargarProductosCatalogo() {
+    try {
+        mostrarLoading(true);
+        
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/vista_productos_completa`, {
+            headers: { 'apikey': SUPABASE_KEY }
+        });
+        
+        if (!response.ok) throw new Error('Error al cargar productos');
+        
+        const productos = await response.json();
+        window.productosData = productos;
+        
+        const container = document.getElementById('productos-container');
+        if (!container) return;
+        
+        if (productos.length === 0) {
+            container.innerHTML = '<div class="no-products">No hay productos disponibles</div>';
+            return;
+        }
+        
+        // Filtrar solo productos con stock
+        const productosConStock = productos.filter(p => {
+            const stockTotal = p.variantes?.reduce((sum, v) => sum + (v.stock_total || 0), 0) || 0;
+            return stockTotal > 0;
+        });
+        
+        container.innerHTML = productosConStock.map(producto => {
+            const variantes = producto.variantes || [];
+            const stockTotal = variantes.reduce((sum, v) => sum + (v.stock_total || 0), 0);
+            const precioMin = Math.min(...variantes.map(v => v.precio_venta || 0));
+            const precioMax = Math.max(...variantes.map(v => v.precio_venta || 0));
+            const precioTexto = precioMin === precioMax ? `$${precioMin.toLocaleString()}` : `$${precioMin.toLocaleString()} - $${precioMax.toLocaleString()}`;
+            
+            // Obtener primeras tallas para mostrar (ordenadas)
+            const tallasUnicas = [...new Set(variantes.map(v => v.talla))];
+            const tallasOrdenadas = ordenarTallasPorValor(tallasUnicas);
+            const primerasTallas = tallasOrdenadas.slice(0, 4);
+            
+            return `
+                <div class="producto-card" onclick="verDetalleProducto(${producto.id})">
+                    <div class="producto-imagen">
+                        ${producto.imagen_url ? 
+                            `<img src="${producto.imagen_url}" alt="${producto.nombre}">` : 
+                            `<div class="producto-imagen-placeholder">📦</div>`
+                        }
+                        ${stockTotal < 5 && stockTotal > 0 ? '<span class="stock-bajo">📉 Stock bajo</span>' : ''}
+                        ${stockTotal === 0 ? '<span class="stock-agotado">❌ Agotado</span>' : ''}
+                    </div>
+                    <div class="producto-info">
+                        <h3 class="producto-nombre">${producto.nombre}</h3>
+                        <p class="producto-categoria">${producto.categoria || 'Ropa'}</p>
+                        <p class="producto-precio">${precioTexto}</p>
+                        <div class="producto-tallas">
+                            ${primerasTallas.map(talla => `<span class="talla-badge">${talla}</span>`).join('')}
+                            ${tallasUnicas.length > 4 ? `<span class="talla-badge">+${tallasUnicas.length - 4}</span>` : ''}
+                        </div>
+                        <button class="btn-ver-mas" onclick="event.stopPropagation(); verDetalleProducto(${producto.id})">
+                            Ver más 🔍
+                        </button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+        
+        mostrarLoading(false);
+        
+    } catch (error) {
+        console.error('Error:', error);
+        mostrarLoading(false);
+        mostrarNotificacion('Error al cargar productos', 'error');
+    }
+}
+
+// Función auxiliar para ordenar tallas
+function ordenarTallasPorValor(tallas) {
+    const ordenTallas = {
+        'XS': 1, 'S': 2, 'M': 3, 'L': 4, 'XL': 5, 'XXL': 6, 'XXXL': 7,
+        '2XL': 6, '3XL': 7, '4XL': 8, '5XL': 9,
+        '6': 10, '7': 11, '8': 12, '9': 13, '10': 14, '11': 15, '12': 16,
+        '34': 17, '35': 18, '36': 19, '37': 20, '38': 21, '39': 22, '40': 23,
+        '41': 24, '42': 25, '43': 26, '44': 27
+    };
+    
+    return [...tallas].sort((a, b) => {
+        const ordenA = ordenTallas[a] || 999;
+        const ordenB = ordenTallas[b] || 999;
+        return ordenA - ordenB;
+    });
+}
+
+function mostrarLoading(mostrar) {
+    const loader = document.getElementById('loading-spinner');
+    if (loader) {
+        loader.style.display = mostrar ? 'flex' : 'none';
+    }
+}
+
+// ============================================
+// FUNCIONES DEL CARRITO
+// ============================================
+
+function actualizarContadorCarrito() {
+    const carrito = JSON.parse(localStorage.getItem('carrito') || '[]');
+    const totalItems = carrito.reduce((sum, item) => sum + item.cantidad, 0);
+    
+    const contador = document.getElementById('cart-count');
+    if (contador) {
+        contador.textContent = totalItems;
+        contador.style.display = totalItems > 0 ? 'flex' : 'none';
+    }
+}
+
+function toggleCarrito() {
+    const sidebar = document.getElementById('cart-sidebar');
+    if (sidebar) {
+        sidebar.classList.toggle('active');
+    }
+}
+
+function renderizarCarrito() {
+    const carrito = JSON.parse(localStorage.getItem('carrito') || '[]');
+    const cartItems = document.getElementById('cart-items');
+    const cartTotal = document.getElementById('cart-total');
+    
+    if (!cartItems) return;
+    
+    if (carrito.length === 0) {
+        cartItems.innerHTML = '<div class="cart-empty">🛒 El carrito está vacío</div>';
+        if (cartTotal) cartTotal.textContent = '$0';
+        return;
+    }
+    
+    let total = 0;
+    
+    cartItems.innerHTML = carrito.map((item, index) => {
+        const subtotal = item.precio * item.cantidad;
+        total += subtotal;
+        
+        return `
+            <div class="cart-item">
+                <div class="cart-item-imagen">
+                    ${item.imagen ? 
+                        `<img src="${item.imagen}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 10px;">` :
+                        `<div style="width: 60px; height: 60px; background: #ffe4e9; border-radius: 10px; display: flex; align-items: center; justify-content: center;">👕</div>`
+                    }
+                </div>
+                <div class="cart-item-info">
+                    <div class="cart-item-nombre">${item.nombre}</div>
+                    <div class="cart-item-detalle">Talla: ${item.talla}${item.color}</div>
+                    <div class="cart-item-precio">$${item.precio.toLocaleString()}</div>
+                </div>
+                <div class="cart-item-cantidad">
+                    <button class="cantidad-btn" onclick="modificarCantidad(${index}, -1)">-</button>
+                    <span>${item.cantidad}</span>
+                    <button class="cantidad-btn" onclick="modificarCantidad(${index}, 1)">+</button>
+                </div>
+                <button class="cart-item-eliminar" onclick="eliminarDelCarrito(${index})">🗑️</button>
+            </div>
+        `;
+    }).join('');
+    
+    if (cartTotal) {
+        cartTotal.textContent = `$${total.toLocaleString()}`;
+    }
+}
+
+function modificarCantidad(index, cambio) {
+    const carrito = JSON.parse(localStorage.getItem('carrito') || '[]');
+    
+    if (carrito[index]) {
+        const nuevaCantidad = carrito[index].cantidad + cambio;
+        
+        if (nuevaCantidad <= 0) {
+            carrito.splice(index, 1);
+        } else if (nuevaCantidad <= carrito[index].stock) {
+            carrito[index].cantidad = nuevaCantidad;
+        } else {
+            mostrarNotificacion(`⚠️ Solo hay ${carrito[index].stock} unidades disponibles`, 'error');
+            return;
+        }
+        
+        localStorage.setItem('carrito', JSON.stringify(carrito));
+        renderizarCarrito();
+        actualizarContadorCarrito();
+    }
+}
+
+function eliminarDelCarrito(index) {
+    const carrito = JSON.parse(localStorage.getItem('carrito') || '[]');
+    carrito.splice(index, 1);
+    localStorage.setItem('carrito', JSON.stringify(carrito));
+    renderizarCarrito();
+    actualizarContadorCarrito();
+    mostrarNotificacion('✅ Producto eliminado del carrito', 'success');
+}
+
+async finalizarCompra() {
+    const carrito = JSON.parse(localStorage.getItem('carrito') || '[]');
+    
+    if (carrito.length === 0) {
+        mostrarNotificacion('🛒 El carrito está vacío', 'error');
+        return;
+    }
+    
+    // Generar mensaje para WhatsApp
+    let mensaje = "🌸 *MODAS LA 34 - NUEVO PEDIDO* 🌸\n\n";
+    mensaje += "📋 *DETALLE DEL PEDIDO:*\n";
+    mensaje += "─────────────────────\n\n";
+    
+    let total = 0;
+    
+    carrito.forEach((item, idx) => {
+        const subtotal = item.precio * item.cantidad;
+        total += subtotal;
+        mensaje += `*${idx + 1}.* ${item.nombre}\n`;
+        mensaje += `   📏 Talla: ${item.talla}\n`;
+        if (item.color) mensaje += `   🎨 Color: ${item.color}\n`;
+        mensaje += `   📦 Cantidad: ${item.cantidad}\n`;
+        mensaje += `   💰 Precio unitario: $${item.precio.toLocaleString()}\n`;
+        mensaje += `   💵 Subtotal: $${subtotal.toLocaleString()}\n\n`;
+    });
+    
+    mensaje += "─────────────────────\n";
+    mensaje += `💰 *TOTAL: $${total.toLocaleString()}*\n\n`;
+    mensaje += "📞 *DATOS DE CONTACTO:*\n";
+    mensaje += "Nombre: _____________\n";
+    mensaje += "Teléfono: ___________\n";
+    mensaje += "Dirección: __________\n\n";
+    mensaje += "🌸 ¡Gracias por tu compra! 🌸";
+    
+    // Enviar a WhatsApp
+    const numeroWhatsApp = "573000000000"; // Cambia por tu número
+    const url = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensaje)}`;
+    
+    window.open(url, '_blank');
+    
+    // Limpiar carrito después de enviar
+    localStorage.removeItem('carrito');
+    renderizarCarrito();
+    actualizarContadorCarrito();
+    toggleCarrito();
+}
+
+// ============================================
+// FUNCIONES DE BÚSQUEDA Y FILTROS
+// ============================================
+
+function buscarProductos() {
+    const searchTerm = document.getElementById('search-input')?.value.toLowerCase() || '';
+    const categoriaFiltro = document.getElementById('categoria-filtro')?.value || '';
+    
+    let productosFiltrados = window.productosData || [];
+    
+    // Filtrar por búsqueda
+    if (searchTerm) {
+        productosFiltrados = productosFiltrados.filter(p => 
+            p.nombre.toLowerCase().includes(searchTerm) || 
+            p.codigo.toLowerCase().includes(searchTerm)
+        );
+    }
+    
+    // Filtrar por categoría
+    if (categoriaFiltro) {
+        productosFiltrados = productosFiltrados.filter(p => p.categoria === categoriaFiltro);
+    }
+    
+    // Filtrar solo con stock
+    productosFiltrados = productosFiltrados.filter(p => {
+        const stockTotal = p.variantes?.reduce((sum, v) => sum + (v.stock_total || 0), 0) || 0;
+        return stockTotal > 0;
+    });
+    
+    // Renderizar productos filtrados
+    const container = document.getElementById('productos-container');
+    if (!container) return;
+    
+    if (productosFiltrados.length === 0) {
+        container.innerHTML = '<div class="no-products">🔍 No se encontraron productos</div>';
+        return;
+    }
+    
+    container.innerHTML = productosFiltrados.map(producto => {
+        const variantes = producto.variantes || [];
+        const stockTotal = variantes.reduce((sum, v) => sum + (v.stock_total || 0), 0);
+        const precioMin = Math.min(...variantes.map(v => v.precio_venta || 0));
+        const precioMax = Math.max(...variantes.map(v => v.precio_venta || 0));
+        const precioTexto = precioMin === precioMax ? `$${precioMin.toLocaleString()}` : `$${precioMin.toLocaleString()} - $${precioMax.toLocaleString()}`;
+        
+        const tallasUnicas = [...new Set(variantes.map(v => v.talla))];
+        const tallasOrdenadas = ordenarTallasPorValor(tallasUnicas);
+        const primerasTallas = tallasOrdenadas.slice(0, 4);
+        
+        return `
+            <div class="producto-card" onclick="verDetalleProducto(${producto.id})">
+                <div class="producto-imagen">
+                    ${producto.imagen_url ? 
+                        `<img src="${producto.imagen_url}" alt="${producto.nombre}">` : 
+                        `<div class="producto-imagen-placeholder">📦</div>`
+                    }
+                    ${stockTotal < 5 && stockTotal > 0 ? '<span class="stock-bajo">📉 Stock bajo</span>' : ''}
+                </div>
+                <div class="producto-info">
+                    <h3 class="producto-nombre">${producto.nombre}</h3>
+                    <p class="producto-categoria">${producto.categoria || 'Ropa'}</p>
+                    <p class="producto-precio">${precioTexto}</p>
+                    <div class="producto-tallas">
+                        ${primerasTallas.map(talla => `<span class="talla-badge">${talla}</span>`).join('')}
+                        ${tallasUnicas.length > 4 ? `<span class="talla-badge">+${tallasUnicas.length - 4}</span>` : ''}
+                    </div>
+                    <button class="btn-ver-mas" onclick="event.stopPropagation(); verDetalleProducto(${producto.id})">
+                        Ver más 🔍
+                    </button>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+// ============================================
+// INICIALIZACIÓN DEL CATÁLOGO
+// ============================================
+
+document.addEventListener('DOMContentLoaded', async () => {
+    console.log('Catálogo iniciado');
+    
+    await cargarProductosCatalogo();
+    actualizarContadorCarrito();
+    
+    // Configurar eventos de búsqueda
+    const searchInput = document.getElementById('search-input');
+    if (searchInput) {
+        searchInput.addEventListener('input', buscarProductos);
+    }
+    
+    const categoriaFiltro = document.getElementById('categoria-filtro');
+    if (categoriaFiltro) {
+        categoriaFiltro.addEventListener('change', buscarProductos);
+    }
+    
+    // Cerrar carrito al hacer clic fuera
+    document.addEventListener('click', (event) => {
+        const sidebar = document.getElementById('cart-sidebar');
+        const cartIcon = document.querySelector('.cart-icon');
+        
+        if (sidebar && sidebar.classList.contains('active')) {
+            if (!sidebar.contains(event.target) && !cartIcon?.contains(event.target)) {
+                sidebar.classList.remove('active');
+            }
+        }
+    });
+});
