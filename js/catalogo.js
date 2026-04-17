@@ -1007,7 +1007,7 @@ function eliminarDelCarrito(index) {
     mostrarNotificacion('✅ Producto eliminado del carrito', 'success');
 }
 
-async finalizarCompra() {
+async function finalizarCompra() {
     const carrito = JSON.parse(localStorage.getItem('carrito') || '[]');
     
     if (carrito.length === 0) {
