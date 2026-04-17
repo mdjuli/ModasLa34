@@ -263,3 +263,52 @@
         padding: 12px;
     }
 }
+
+/* Estilos para el scroll suave */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Mejoras para móvil */
+@media (max-width: 768px) {
+    .producto-card {
+        width: calc(50% - 10px);
+    }
+    
+    .tallas-container {
+        gap: 8px;
+    }
+    
+    .talla-item {
+        padding: 10px 8px;
+    }
+    
+    .color-option {
+        min-width: 65px;
+    }
+}
+
+/* Animaciones */
+.producto-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.producto-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+/* Scroll personalizado */
+.modal-body::-webkit-scrollbar {
+    width: 5px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+    background: #ff6b6b;
+    border-radius: 10px;
+}
