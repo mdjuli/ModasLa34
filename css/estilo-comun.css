@@ -1039,3 +1039,363 @@ footer {
         padding: 12px;
     }
 }
+
+/* ============================================
+   ESTILOS MEJORADOS PARA MODAL (SIN CARRITO)
+   ============================================ */
+
+/* Contenedor de tallas con scroll */
+.tallas-scroll-container {
+    max-height: 280px;
+    overflow-y: auto;
+    padding: 5px;
+    border-radius: 15px;
+    background: #fafafa;
+    margin: 10px 0;
+}
+
+.tallas-scroll-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.tallas-scroll-container::-webkit-scrollbar-track {
+    background: #f0ebe4;
+    border-radius: 10px;
+}
+
+.tallas-scroll-container::-webkit-scrollbar-thumb {
+    background: #b87c4e;
+    border-radius: 10px;
+}
+
+.tallas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 12px;
+    padding: 10px;
+}
+
+.talla-card {
+    background: white;
+    border-radius: 12px;
+    padding: 12px 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 2px solid #f0ebe4;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.talla-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    border-color: #b87c4e;
+}
+
+.talla-card.selected {
+    border-color: #b87c4e;
+    background: #faf7f2;
+    transform: scale(1.02);
+}
+
+.talla-numero {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #4a3728;
+}
+
+.talla-precio {
+    font-size: 0.8rem;
+    color: #b87c4e;
+    font-weight: bold;
+    margin: 5px 0;
+}
+
+.talla-stock {
+    font-size: 0.7rem;
+    color: #888;
+}
+
+.talla-con-stock .talla-stock {
+    color: #5a7a5a;
+}
+
+.talla-stock-bajo .talla-stock {
+    color: #e67e22;
+}
+
+.talla-sin-stock .talla-stock {
+    color: #e74c3c;
+}
+
+.talla-sin-stock {
+    opacity: 0.6;
+}
+
+/* Contenedor de colores con scroll */
+.colores-scroll-container {
+    max-height: 200px;
+    overflow-y: auto;
+    padding: 5px;
+    border-radius: 15px;
+    background: #fafafa;
+    margin: 10px 0;
+}
+
+.colores-scroll-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.colores-scroll-container::-webkit-scrollbar-track {
+    background: #f0ebe4;
+    border-radius: 10px;
+}
+
+.colores-scroll-container::-webkit-scrollbar-thumb {
+    background: #b87c4e;
+    border-radius: 10px;
+}
+
+.colores-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 10px;
+    padding: 10px;
+}
+
+.color-card {
+    background: white;
+    border-radius: 12px;
+    padding: 10px 5px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
+}
+
+.color-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    border-color: #b87c4e;
+}
+
+.color-card.selected {
+    border-color: #b87c4e;
+    background: #faf7f2;
+}
+
+.color-circulo {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin: 0 auto 8px;
+    border: 2px solid #f0ebe4;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.color-nombre {
+    font-size: 0.75rem;
+    font-weight: 500;
+    margin-bottom: 3px;
+    color: #4a3728;
+}
+
+.color-stock {
+    font-size: 0.7rem;
+    color: #888;
+}
+
+.color-sin-stock {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Layout del modal mejorado */
+.modal-layout {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal-close-btn {
+    position: sticky;
+    top: 10px;
+    right: 10px;
+    float: right;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.5);
+    color: white;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.modal-close-btn:hover {
+    background: rgba(0,0,0,0.7);
+    transform: scale(1.05);
+}
+
+.modal-imagen-section {
+    text-align: center;
+    padding: 20px;
+    background: #faf7f2;
+}
+
+.modal-imagen {
+    max-width: 100%;
+    max-height: 300px;
+    object-fit: cover;
+    border-radius: 15px;
+}
+
+.modal-info-section {
+    padding: 20px;
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.modal-info-section::-webkit-scrollbar {
+    width: 6px;
+}
+
+.modal-info-section::-webkit-scrollbar-track {
+    background: #f0ebe4;
+    border-radius: 10px;
+}
+
+.modal-info-section::-webkit-scrollbar-thumb {
+    background: #b87c4e;
+    border-radius: 10px;
+}
+
+.modal-titulo {
+    color: #4a3728;
+    margin: 0 0 5px 0;
+    font-size: 1.5rem;
+    font-family: 'Playfair Display', Georgia, serif;
+}
+
+.modal-categoria {
+    color: #8b7a6b;
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+}
+
+.modal-codigo {
+    font-size: 0.8rem;
+    color: #c4b8ac;
+    margin-bottom: 15px;
+    font-family: monospace;
+}
+
+.modal-precio-principal {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #b87c4e;
+    margin: 15px 0;
+    background: #faf7f2;
+    padding: 12px;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.modal-stock-info {
+    margin: 10px 0;
+}
+
+/* Botones del modal mejorado */
+.modal-botones {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.modal-btn {
+    flex: 1;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 50px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-family: 'Inter', sans-serif;
+}
+
+.btn-whatsapp {
+    background: #25D366;
+    color: white;
+}
+
+.btn-whatsapp:hover {
+    background: #128C7E;
+    transform: translateY(-2px);
+}
+
+.btn-cerrar {
+    background: #f5f0ea;
+    color: #4a3728;
+    border: 1px solid #e8e0d5;
+}
+
+.btn-cerrar:hover {
+    background: #e8e0d5;
+    transform: translateY(-2px);
+}
+
+/* Animación del modal */
+@keyframes modalSlideIn {
+    from {
+        transform: translateY(50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Responsive para móvil */
+@media (max-width: 768px) {
+    .tallas-grid {
+        grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+        gap: 8px;
+    }
+    
+    .colores-grid {
+        grid-template-columns: repeat(auto-fill, minmax(65px, 1fr));
+    }
+    
+    .modal-precio-principal {
+        font-size: 1.4rem;
+        padding: 10px;
+    }
+    
+    .modal-btn {
+        padding: 10px;
+        font-size: 12px;
+    }
+    
+    .talla-card {
+        padding: 8px 5px;
+    }
+    
+    .talla-numero {
+        font-size: 1rem;
+    }
+    
+    .color-circulo {
+        width: 35px;
+        height: 35px;
+    }
+}
