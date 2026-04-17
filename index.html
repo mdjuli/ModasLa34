@@ -1,3 +1,13 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modas La 34 | Tienda indie</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <style>
     * {
         margin: 0;
@@ -669,3 +679,83 @@
         }
     }
 </style>
+</head>
+<body>
+    <header>
+        <h1>Modas La 34</h1>
+        
+        <nav>
+            <div class="dropdown">
+                <a href="#" class="dropbtn">Colección ▼</a>
+                <div class="dropdown-content">
+                    <a href="#" onclick="filtrarPorCategoria('todos')">✨ Todos los productos</a>
+                    <a href="#" onclick="filtrarPorCategoria('vestidos')">👗 Vestidos</a>
+                    <a href="#" onclick="filtrarPorCategoria('blusas')">👚 Blusas</a>
+                    <a href="#" onclick="filtrarPorCategoria('pantalones')">👖 Pantalones</a>
+                    <a href="#" onclick="filtrarPorCategoria('deportivo')">⚽ Deportivo</a>
+                    <a href="#" onclick="filtrarPorCategoria('caballero')">👔 Caballero</a>
+                    <a href="#" onclick="filtrarPorCategoria('accesorios')">🎀 Accesorios</a>
+                </div>
+            </div>
+            
+            <a href="#">🌿 Novedades</a>
+        </nav>
+    </header>
+    
+    <main>
+        <h2>Prendas con esencia</h2>
+        <p>Hechas para quienes buscan autenticidad y estilo atemporal</p>
+        
+        <div class="grid-productos" id="catalogo-productos">
+            <div class="producto-card">
+                <div class="producto-sin-imagen">🌿</div>
+                <div class="producto-info">
+                    <h3 class="producto-titulo">Cargando...</h3>
+                    <p class="producto-precio">$0</p>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <p>© 2026 Modas La 34 — Diseño atemporal para almas libres</p>
+        <a href="admin/login.html" class="admin-link">🔑 Acceso administrador</a>
+    </footer>
+
+    <!-- MODAL -->
+    <div id="modal-producto" class="modal" style="display: none;">
+        <div class="modal-contenido">
+            <span class="modal-cerrar" onclick="cerrarModal()">&times;</span>
+            <div id="modal-contenido-producto"></div>
+        </div>
+    </div>
+    
+    <script src="js/supabase-config.js"></script>
+    <script src="js/catalogo.js"></script>
+
+    <script>
+    // Cerrar menú móvil
+    document.addEventListener('click', function(event) {
+        const dropdown = document.querySelector('.dropdown');
+        if (dropdown && !dropdown.contains(event.target)) {
+            const dropdownContent = document.querySelector('.dropdown-content');
+            if (dropdownContent && dropdownContent.style.display === 'block') {
+                dropdownContent.style.display = 'none';
+            }
+        }
+    });
+    
+    // Menú móvil
+    const dropbtn = document.querySelector('.dropbtn');
+    if (dropbtn) {
+        dropbtn.addEventListener('click', function(e) {
+            if (window.innerWidth <= 768) {
+                e.preventDefault();
+                const dropdownContent = document.querySelector('.dropdown-content');
+                dropdownContent.style.display = dropdownContent.style.display === 'block' ? 'none' : 'block';
+            }
+        });
+    }
+    </script>
+</body>
+</html>
