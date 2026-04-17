@@ -1,90 +1,671 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modas La 34 | Tienda indie</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
-</head>
-<body>
-    <header>
-        <h1>Modas La 34</h1>
-        
-        <nav>
-            <div class="dropdown">
-                <a href="#" class="dropbtn">Colección ▼</a>
-                <div class="dropdown-content">
-                    <a href="#" onclick="filtrarPorCategoria('todos')">✨ Todos los productos</a>
-                    <a href="#" onclick="filtrarPorCategoria('vestidos')">👗 Vestidos</a>
-                    <a href="#" onclick="filtrarPorCategoria('blusas')">👚 Blusas</a>
-                    <a href="#" onclick="filtrarPorCategoria('pantalones')">👖 Pantalones</a>
-                    <a href="#" onclick="filtrarPorCategoria('deportivo')">⚽ Deportivo</a>
-                    <a href="#" onclick="filtrarPorCategoria('caballero')">👔 Caballero</a>
-                    <a href="#" onclick="filtrarPorCategoria('accesorios')">🎀 Accesorios</a>
-                </div>
-            </div>
-            
-            <a href="#">🌿 Novedades</a>
-        </nav>
-    </header>
-    
-    <main>
-        <h2>Prendas con esencia</h2>
-        <p>Hechas para quienes buscan autenticidad y estilo atemporal</p>
-        
-        <div class="grid-productos" id="catalogo-productos">
-            <div class="producto-card">
-                <div class="producto-sin-imagen">🌿</div>
-                <div class="producto-info">
-                    <h3 class="producto-titulo">Cargando...</h3>
-                    <p class="producto-precio">$0</p>
-                </div>
-            </div>
-        </div>
-    </main>
-    
-    <footer>
-        <p>© 2026 Modas La 34 — Diseño atemporal para almas libres</p>
-        <a href="admin/login.html" class="admin-link">🔑 Acceso administrador</a>
-    </footer>
-
-    <!-- MODAL -->
-    <div id="modal-producto" class="modal" style="display: none;">
-        <div class="modal-contenido">
-            <span class="modal-cerrar" onclick="cerrarModal()">&times;</span>
-            <div id="modal-contenido-producto"></div>
-        </div>
-    </div>
-    
-    <script src="js/supabase-config.js"></script>
-    <script src="js/catalogo.js"></script>
-
-    <script>
-    // Cerrar menú móvil
-    document.addEventListener('click', function(event) {
-        const dropdown = document.querySelector('.dropdown');
-        if (dropdown && !dropdown.contains(event.target)) {
-            const dropdownContent = document.querySelector('.dropdown-content');
-            if (dropdownContent && dropdownContent.style.display === 'block') {
-                dropdownContent.style.display = 'none';
-            }
-        }
-    });
-    
-    // Menú móvil
-    const dropbtn = document.querySelector('.dropbtn');
-    if (dropbtn) {
-        dropbtn.addEventListener('click', function(e) {
-            if (window.innerWidth <= 768) {
-                e.preventDefault();
-                const dropdownContent = document.querySelector('.dropdown-content');
-                dropdownContent.style.display = dropdownContent.style.display === 'block' ? 'none' : 'block';
-            }
-        });
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
     }
-    </script>
-</body>
-</html>
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background: #faf7f2;
+        color: #2c2b28;
+        line-height: 1.5;
+    }
+
+    h1, h2, h3 {
+        font-family: 'Playfair Display', serif;
+        font-weight: 500;
+        letter-spacing: -0.02em;
+    }
+
+    header {
+        background: #ffffff;
+        padding: 2rem 2rem 1rem 2rem;
+        border-bottom: 1px solid #e8e0d5;
+    }
+
+    header h1 {
+        font-size: 2rem;
+        font-weight: 500;
+        color: #4a3728;
+        text-align: center;
+        letter-spacing: 2px;
+        margin-bottom: 1.5rem;
+    }
+
+    nav {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        flex-wrap: wrap;
+    }
+
+    nav a, .dropbtn {
+        color: #4a3728;
+        text-decoration: none;
+        font-size: 0.85rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: color 0.3s;
+        background: none;
+        border: none;
+        cursor: pointer;
+    }
+
+    nav a:hover, .dropbtn:hover {
+        color: #b87c4e;
+    }
+
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background: #ffffff;
+        min-width: 200px;
+        box-shadow: 0 8px 16px rgba(0,0,0,0.05);
+        z-index: 1000;
+        top: 100%;
+        left: 0;
+        margin-top: 0.5rem;
+        border: 1px solid #e8e0d5;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .dropdown-content a {
+        color: #4a3728;
+        padding: 0.8rem 1.2rem;
+        text-decoration: none;
+        display: block;
+        font-size: 0.8rem;
+        text-transform: none;
+        border-bottom: 1px solid #f0ebe4;
+    }
+
+    .dropdown-content a:last-child {
+        border-bottom: none;
+    }
+
+    .dropdown-content a:hover {
+        background: #faf7f2;
+        color: #b87c4e;
+        padding-left: 1.5rem;
+    }
+
+    .dropdown:hover .dropdown-content {
+        display: block;
+    }
+
+    main {
+        max-width: 1400px;
+        margin: 3rem auto;
+        padding: 0 2rem;
+        min-height: 60vh;
+    }
+
+    main h2 {
+        font-size: 2rem;
+        color: #4a3728;
+        text-align: center;
+        margin-bottom: 0.5rem;
+    }
+
+    main > p {
+        text-align: center;
+        color: #8b7a6b;
+        margin-bottom: 2rem;
+        font-size: 0.95rem;
+    }
+
+    .buscador-container {
+        max-width: 400px;
+        margin: 0 auto 3rem auto;
+    }
+
+    .buscador-input {
+        width: 100%;
+        padding: 1rem 1.5rem;
+        border: 1px solid #e8e0d5;
+        border-radius: 50px;
+        font-size: 0.9rem;
+        background: #ffffff;
+        transition: all 0.3s;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .buscador-input:focus {
+        outline: none;
+        border-color: #b87c4e;
+        box-shadow: 0 0 0 3px rgba(184, 124, 78, 0.1);
+    }
+
+    .grid-productos {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 2rem;
+    }
+
+    .producto-card {
+        background: #ffffff;
+        border-radius: 8px;
+        overflow: hidden;
+        transition: all 0.3s;
+        border: 1px solid #f0ebe4;
+        cursor: pointer;
+    }
+
+    .producto-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 24px rgba(0,0,0,0.05);
+        border-color: #e0d5ca;
+    }
+
+    .producto-imagen {
+        width: 100%;
+        height: 320px;
+        object-fit: cover;
+        background: #f5f0ea;
+    }
+
+    .producto-sin-imagen {
+        width: 100%;
+        height: 320px;
+        background: #f5f0ea;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 4rem;
+    }
+
+    .producto-info {
+        padding: 1.5rem;
+    }
+
+    .producto-titulo {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.2rem;
+        font-weight: 500;
+        color: #4a3728;
+        margin-bottom: 0.5rem;
+    }
+
+    .producto-detalle {
+        font-size: 0.8rem;
+        color: #8b7a6b;
+        margin: 0.5rem 0;
+    }
+
+    .producto-colores {
+        display: flex;
+        gap: 6px;
+        margin: 10px 0;
+        flex-wrap: wrap;
+    }
+
+    .producto-precio {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: #b87c4e;
+        margin: 0.8rem 0;
+    }
+
+    .producto-btn {
+        width: 100%;
+        padding: 0.8rem;
+        background: none;
+        border: 1px solid #d4c9bd;
+        border-radius: 50px;
+        font-family: 'Inter', sans-serif;
+        font-weight: 500;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: #4a3728;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .producto-btn:hover {
+        background: #b87c4e;
+        border-color: #b87c4e;
+        color: white;
+    }
+
+    footer {
+        text-align: center;
+        padding: 2rem;
+        color: #8b7a6b;
+        font-size: 0.8rem;
+        border-top: 1px solid #e8e0d5;
+        margin-top: 3rem;
+    }
+
+    .admin-link {
+        display: inline-block;
+        margin-top: 0.5rem;
+        font-size: 0.7rem;
+        color: #c4b8ac;
+        text-decoration: none;
+        transition: color 0.3s;
+    }
+
+    .admin-link:hover {
+        color: #b87c4e;
+    }
+
+    /* ===== MODAL MEJORADO ===== */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(5px);
+    }
+
+    .modal-contenido {
+        background: #ffffff;
+        margin: 3% auto;
+        padding: 0;
+        width: 90%;
+        max-width: 950px;
+        border-radius: 24px;
+        position: relative;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        overflow: hidden;
+        animation: modalEntrada 0.3s ease-out;
+    }
+
+    @keyframes modalEntrada {
+        from {
+            opacity: 0;
+            transform: scale(0.95) translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+    }
+
+    .modal-cerrar {
+        position: absolute;
+        right: 16px;
+        top: 16px;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: rgba(0, 0, 0, 0.5);
+        color: white;
+        font-size: 24px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+        z-index: 10;
+        border: none;
+    }
+
+    .modal-cerrar:hover {
+        background: rgba(0, 0, 0, 0.7);
+        transform: scale(1.05);
+    }
+
+    .modal-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0;
+        max-height: 85vh;
+        overflow: hidden;
+    }
+
+    .modal-imagen {
+        background: #faf7f2;
+        padding: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow-y: auto;
+    }
+
+    .modal-imagen img {
+        width: 100%;
+        max-height: 400px;
+        object-fit: contain;
+        border-radius: 16px;
+    }
+
+    .modal-imagen-placeholder {
+        width: 100%;
+        aspect-ratio: 1;
+        background: #f5f0ea;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 5rem;
+    }
+
+    .modal-info {
+        padding: 1.5rem;
+        background: white;
+        overflow-y: auto;
+        max-height: 85vh;
+    }
+
+    .modal-info::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .modal-info::-webkit-scrollbar-track {
+        background: #f0ebe4;
+        border-radius: 10px;
+    }
+
+    .modal-info::-webkit-scrollbar-thumb {
+        background: #b87c4e;
+        border-radius: 10px;
+    }
+
+    .modal-info h2 {
+        color: #4a3728;
+        font-size: 1.6rem;
+        margin-bottom: 0.5rem;
+        padding-right: 2rem;
+    }
+
+    .modal-codigo {
+        font-family: monospace;
+        background: #f5f0ea;
+        padding: 0.3rem 0.8rem;
+        border-radius: 20px;
+        display: inline-block;
+        font-size: 0.75rem;
+        color: #8b7a6b;
+        margin-bottom: 1rem;
+    }
+
+    .modal-detalle {
+        margin: 1rem 0;
+    }
+
+    .modal-detalle p {
+        margin: 0.5rem 0;
+        font-size: 0.9rem;
+        color: #4a3728;
+    }
+
+    .modal-detalle strong {
+        color: #4a3728;
+        width: 100px;
+        display: inline-block;
+    }
+
+    .modal-precio {
+        font-size: 1.8rem;
+        font-weight: 600;
+        color: #b87c4e;
+        margin: 1rem 0;
+        text-align: center;
+        background: #faf7f2;
+        padding: 0.8rem;
+        border-radius: 12px;
+    }
+
+    /* Tallas con scroll */
+    .tallas-scroll-container {
+        max-height: 250px;
+        overflow-y: auto;
+        margin: 1rem 0;
+        padding-right: 5px;
+    }
+
+    .tallas-scroll-container::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    .tallas-scroll-container::-webkit-scrollbar-track {
+        background: #f0ebe4;
+        border-radius: 10px;
+    }
+
+    .tallas-scroll-container::-webkit-scrollbar-thumb {
+        background: #b87c4e;
+        border-radius: 10px;
+    }
+
+    .tallas-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+        gap: 10px;
+    }
+
+    .talla-card {
+        background: #faf7f2;
+        border: 1.5px solid #e8e0d5;
+        border-radius: 12px;
+        padding: 10px 5px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .talla-card:hover {
+        border-color: #b87c4e;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .talla-card.selected {
+        border-color: #b87c4e;
+        background: #b87c4e10;
+    }
+
+    .talla-numero {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #4a3728;
+    }
+
+    .talla-precio {
+        font-size: 0.7rem;
+        color: #b87c4e;
+        font-weight: 600;
+        margin-top: 4px;
+    }
+
+    .talla-stock {
+        font-size: 0.65rem;
+        color: #aaa;
+        margin-top: 4px;
+    }
+
+    .talla-con-stock .talla-stock { color: #5a7a5a; }
+    .talla-stock-bajo .talla-stock { color: #e67e22; }
+    .talla-sin-stock { opacity: 0.5; }
+
+    /* Colores con scroll */
+    .colores-scroll-container {
+        max-height: 180px;
+        overflow-y: auto;
+        margin: 1rem 0;
+    }
+
+    .colores-scroll-container::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    .colores-scroll-container::-webkit-scrollbar-track {
+        background: #f0ebe4;
+        border-radius: 10px;
+    }
+
+    .colores-scroll-container::-webkit-scrollbar-thumb {
+        background: #b87c4e;
+        border-radius: 10px;
+    }
+
+    .colores-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
+        gap: 10px;
+    }
+
+    .color-card {
+        background: #faf7f2;
+        border-radius: 12px;
+        padding: 8px 4px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border: 1.5px solid transparent;
+    }
+
+    .color-card:hover {
+        border-color: #b87c4e;
+        transform: translateY(-2px);
+    }
+
+    .color-card.selected {
+        border-color: #b87c4e;
+        background: #b87c4e10;
+    }
+
+    .color-circulo {
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        margin: 0 auto 6px;
+        border: 2px solid #fff;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .color-nombre {
+        font-size: 0.7rem;
+        font-weight: 500;
+        color: #4a3728;
+    }
+
+    .color-stock {
+        font-size: 0.6rem;
+        color: #aaa;
+        margin-top: 3px;
+    }
+
+    .color-sin-stock {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .seleccion-info {
+        background: #e8f0e8;
+        padding: 10px 12px;
+        border-radius: 12px;
+        margin: 1rem 0;
+        text-align: center;
+    }
+
+    .seleccion-info p {
+        margin: 0;
+        font-size: 0.85rem;
+        color: #2c5e2c;
+    }
+
+    .modal-botones {
+        display: flex;
+        gap: 12px;
+        margin-top: 1.5rem;
+        flex-wrap: wrap;
+    }
+
+    .modal-btn {
+        flex: 1;
+        padding: 12px 16px;
+        border: none;
+        border-radius: 50px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .btn-consultar {
+        background: #b87c4e;
+        color: white;
+    }
+
+    .btn-consultar:hover {
+        background: #9a663f;
+        transform: translateY(-2px);
+    }
+
+    .btn-cerrar {
+        background: #f5f0ea;
+        color: #4a3728;
+        border: 1px solid #e8e0d5;
+    }
+
+    .btn-cerrar:hover {
+        background: #e8e0d5;
+        transform: translateY(-2px);
+    }
+
+    @media (max-width: 768px) {
+        .modal-grid {
+            grid-template-columns: 1fr;
+            max-height: 90vh;
+        }
+        
+        .modal-contenido {
+            margin: 5% auto;
+            width: 95%;
+        }
+        
+        .modal-imagen {
+            padding: 1rem;
+            max-height: 250px;
+        }
+        
+        .modal-info {
+            max-height: 50vh;
+        }
+        
+        .modal-info h2 {
+            font-size: 1.3rem;
+        }
+        
+        .modal-precio {
+            font-size: 1.4rem;
+        }
+        
+        .tallas-grid {
+            grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+            gap: 8px;
+        }
+        
+        .colores-grid {
+            grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+        }
+        
+        .grid-productos {
+            gap: 1rem;
+        }
+        
+        nav {
+            gap: 1rem;
+        }
+        
+        header h1 {
+            font-size: 1.5rem;
+        }
+    }
+</style>
