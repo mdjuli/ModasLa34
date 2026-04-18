@@ -548,6 +548,43 @@
                 display: none;
             }
         }
+
+                .user-info {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 15px;
+        margin-top: 10px;
+        padding: 10px;
+        background: #faf7f2;
+        border-radius: 50px;
+    }
+    
+    .user-rol-badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 50px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        background: #f0ebe4;
+        color: #4a3728;
+    }
+    
+    .logout-btn {
+        background: #ff6b6b;
+        color: white;
+        border: none;
+        padding: 6px 15px;
+        border-radius: 50px;
+        cursor: pointer;
+        font-size: 0.8rem;
+        transition: all 0.3s;
+    }
+    
+    .logout-btn:hover {
+        background: #ff4757;
+        transform: scale(1.02);
+    }
     </style>
 </head>
 <body>
@@ -565,8 +602,9 @@
         </div>
         <div class="header-right">
             <div class="user-info">
-                <div class="user-avatar" id="userAvatar">👤</div>
-                <span class="user-name" id="userNameDisplay">Cargando...</span>
+                <span id="userNameDisplay"></span>
+                <span id="userRolDisplay" class="user-rol-badge"></span>
+                <button onclick="logout()" class="logout-btn">🚪 Salir</button>
             </div>
             <button class="logout-btn" onclick="logout()" title="Cerrar sesión">
                 <i class="fas fa-sign-out-alt"></i>
@@ -856,7 +894,8 @@
     </main>
 
     <script src="../js/supabase-config.js"></script>
-    <script src="dashboard.js"></script
+    <script src="../js/permisos.js"></script>
+    <script src="dashboard.js"></script>
     
 </body>
 </html>
