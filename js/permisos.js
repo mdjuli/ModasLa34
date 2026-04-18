@@ -163,20 +163,37 @@ function puedeVerModulo(modulo) {
 
 // Función para ocultar/mostrar elementos según permisos
 function aplicarPermisosUI() {
-    if (!currentUserPermissions) return;
+    if (!currentUserPermissions) {
+        console.warn('⚠️ No hay permisos cargados');
+        return;
+    }
     
-    // Ocultar/mostrar botones de navegación
-    const navButtons = document.querySelectorAll('.nav-btn');
+    console.log('🎨 Aplicando permisos UI para:', currentUserPermissions.nombre);
+    console.log('📋 Módulos visibles:', currentUserPermissions.modulos_visibles);
+    
+    // 🔑 CAMBIADO: nav-btn → nav-item
+    const navButtons = document.querySelectorAll('.nav-item');
+    console.log('🔘 Botones encontrados:', navButtons.length);
+    
     navButtons.forEach(btn => {
-        const modulo = btn.dataset.modulo;
-        if (modulo && !puedeVerModulo(modulo)) {
-            btn.style.display = 'none';
-        } else if (modulo) {
-            btn.style.display = 'flex';
+        // Extraer el módulo del onclick
+        const onclickAttr = btn.getAttribute('onclick');
+        const match = onclickAttr?.match(/cambiarModulo\('([^']+)'/);
+        
+        if (match) {
+            const modulo = match[1];
+            btn.dataset.modulo = modulo;  // Guardar para referencia
+            if (currentUserPermissions.modulos_visibles.includes(modulo)) {
+                btn.style.display = 'flex';
+                console.log(`✅ Mostrando botón: ${modulo}`);
+            } else {
+                btn.style.display = 'none';
+                console.log(`❌ Ocultando botón: ${modulo}`);
+            }
         }
     });
     
-    // Mostrar el rol del usuario en la interfaz
+    // Mostrar el rol del usuario
     const userRolSpan = document.getElementById('userRolDisplay');
     if (userRolSpan) {
         userRolSpan.textContent = currentUserPermissions.nombre;
@@ -185,17 +202,32 @@ function aplicarPermisosUI() {
     }
 }
 
+function getPrimerModuloVisible() {
+    const modulos = currentUserPermissions?.modulos_visibles || ['productos'];
+    console.log('🎯 Primer módulo visible:', modulos[0]);
+    return modulos[0];
+}
+
 // Función para mostrar solo módulos permitidos
 function filtrarModulosPorPermisos() {
+    if (!currentUserPermissions) {
+        console.warn('⚠️ No hay permisos para filtrar módulos');
+        return;
+    }
+    
     const todasSecciones = ['productos', 'inventario', 'compras', 'gastos', 'proveedores', 'ventas', 'perfiles', 'contabilidad'];
+    
+    console.log('🔍 Filtrando secciones...');
     
     todasSecciones.forEach(modulo => {
         const seccion = document.getElementById(`modulo-${modulo}`);
         if (seccion) {
-            if (puedeVerModulo(modulo)) {
+            if (currentUserPermissions.modulos_visibles.includes(modulo)) {
                 seccion.style.display = 'block';
+                console.log(`✅ Mostrando sección: ${modulo}`);
             } else {
                 seccion.style.display = 'none';
+                console.log(`❌ Ocultando sección: ${modulo}`);
             }
         }
     });
