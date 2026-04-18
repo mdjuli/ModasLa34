@@ -59,7 +59,7 @@ async function verificarSesion() {
         });
         const perfil = await perfilRes.json();
         
-        // 🔑 Cargar permisos del usuario (IMPORTANTE)
+        // 🔑 Cargar permisos del usuario
         await cargarPermisosUsuario(user.id);
         
         // Mostrar nombre
@@ -67,8 +67,8 @@ async function verificarSesion() {
             perfil[0]?.nombre || user.email || 'Administradora';
         
         // Aplicar permisos a la interfaz
-        aplicarPermisosUI();      // ← Oculta botones de navegación
-        filtrarModulosPorPermisos(); // ← Oculta secciones completas
+        aplicarPermisosUI();
+        filtrarModulosPorPermisos();
         
         // Cargar el primer módulo permitido
         const primerModulo = getPrimerModuloVisible();
@@ -76,9 +76,6 @@ async function verificarSesion() {
         
         // Cargar datos iniciales
         await cargarDatosIniciales();
-        
-        // Mostrar mensaje de bienvenida con el rol
-        console.log('✅ Usuario:', currentUserPermissions?.nombre);
         
     } catch (error) {
         console.error('Error de sesión:', error);
@@ -96,32 +93,16 @@ function logout() {
 
 // ===== NAVEGACIÓN =====
 function cambiarModulo(modulo, event = null) {
-    if (!puedeVerModulo(modulo)) {
-        console.warn(`No tienes permiso para ver ${modulo}`);
-        return;
-    }
-    
-    document.querySelectorAll('.module-section').forEach(section => {
-        section.style.display = 'none';
-    });
-    
-    const seccion = document.getElementById(`modulo-${modulo}`);
-    if (seccion) {
-        seccion.style.display = 'block';
-    }
-    
+    document.querySelectorAll('.module-section').forEach(s => s.style.display = 'none');
+    const el = document.getElementById(`modulo-${modulo}`);
+    if (el) el.style.display = 'block';
     if (event) {
-        document.querySelectorAll('.nav-btn').forEach(btn => {
-            btn.classList.remove('active');
-        });
-        event.target.classList.add('active');
+        document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
+        if (event.target.classList) event.target.classList.add('active');
+        else if (event.target.parentElement) event.target.parentElement.classList.add('active');
     }
-    
     currentModule = modulo;
-    
-    if (modulo !== 'ventas' && modulo !== 'contabilidad') {
-        cargarDatosModulo(modulo);
-    }
+    cargarDatosModulo(modulo);
 }
 
 async function cargarDatosModulo(modulo) {
