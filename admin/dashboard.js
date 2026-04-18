@@ -274,13 +274,6 @@ function getVariantesFromForm() {
 }
 
 async function guardarProductoBase() {
-    const editId = document.getElementById('form-producto').dataset.editId;
-    const accion = editId ? 'editar' : 'crear';
-    
-    if (!tienePermiso('productos', accion)) {
-        mostrarAlerta('❌ No tienes permiso para realizar esta acción', 'error');
-        return;
-    }
     try {
         const token = JSON.parse(localStorage.getItem('admin_token'));
         const codigo = document.getElementById('producto-codigo')?.value;
@@ -476,10 +469,6 @@ async function verVariantes(id) {
 }
 
 async function eliminarProducto(id) {
-    if (!tienePermiso('productos', 'eliminar')) {
-    mostrarAlerta('❌ No tienes permiso para eliminar productos', 'error');
-    return;
-    }
     if (!confirm('¿Eliminar este producto?')) return;
     try {
         const token = JSON.parse(localStorage.getItem('admin_token'));
