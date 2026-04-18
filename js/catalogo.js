@@ -282,6 +282,7 @@ async function verProducto(id) {
 }
 
 // Función para llenar el modal (actualizada para la nueva estructura)
+// Función para llenar el modal (VERSIÓN CON SCROLL)
 function llenarModal(producto) {
     const contenedor = document.getElementById('modal-contenido-producto');
     if (!contenedor) return;
@@ -317,16 +318,26 @@ function llenarModal(producto) {
         `$${precioMin.toLocaleString()}` : 
         `$${precioMin.toLocaleString()} - $${precioMax.toLocaleString()}`;
     
-    // Generar HTML de tallas y colores
+    // Stock badge
+    let stockBadgeClass = 'stock-disponible';
+    let stockBadgeText = '✅ En stock';
+    if (stockTotal === 0) {
+        stockBadgeClass = 'stock-agotado';
+        stockBadgeText = '❌ Agotado';
+    } else if (stockTotal < 5) {
+        stockBadgeClass = 'stock-bajo';
+        stockBadgeText = `⚠️ Stock bajo (${stockTotal})`;
+    } else {
+        stockBadgeText = `✅ En stock (${stockTotal})`;
+    }
+    
+    // Generar HTML de tallas (CON SCROLL)
     let tallasHTML = '';
     
     if (variantes.length > 0) {
         tallasHTML = `
-            <div style="margin: 1.5rem 0;">
-                <h4 style="color: #ff6b6b; margin-bottom: 1rem; display: flex; align-items: center; gap: 8px;">
-                    📏 Tallas disponibles 
-                    <span style="font-size: 0.8rem; color: #888;">(${variantes.length} tallas)</span>
-                </h4>
+            <div style="margin: 1rem 0;">
+                <h4 style="color: #4a3728; margin-bottom: 0.8rem;">📏 Tallas disponibles</h4>
                 <div class="tallas-scroll-container">
                     <div class="tallas-grid">
         `;
@@ -342,7 +353,7 @@ function llenarModal(producto) {
                 const maxStock = Math.max(...colores.map(c => c.stock || 0), v.stock_total || 0);
                 if (maxStock > 5) {
                     stockClass = 'talla-con-stock';
-                    stockTexto = `Stock: ${maxStock}`;
+                    stockTexto = `${maxStock} uds`;
                 } else if (maxStock > 0) {
                     stockClass = 'talla-stock-bajo';
                     stockTexto = `¡Quedan ${maxStock}!`;
@@ -350,7 +361,7 @@ function llenarModal(producto) {
             }
             
             tallasHTML += `
-                <div class="talla-card ${stockClass}" onclick="mostrarColoresTalla(${v.id}, '${v.talla}', ${v.precio_venta})">
+                <div class="talla-card ${stockClass}" onclick="seleccionarTallaModal(${v.id}, '${v.talla}', ${v.precio_venta})">
                     <div class="talla-numero">${v.talla}</div>
                     <div class="talla-precio">$${(v.precio_venta || 0).toLocaleString()}</div>
                     <div class="talla-stock">${stockTexto}</div>
@@ -362,61 +373,46 @@ function llenarModal(producto) {
                     </div>
                 </div>
             </div>
-        `;
-        
-        // Contenedor para colores (se muestra al hacer clic en una talla)
-        tallasHTML += `
-            <div id="modal-colores-container" style="display: none; margin: 1rem 0;">
-                <h4 style="color: #ff6b6b; margin-bottom: 0.8rem;">🎨 Colores disponibles para talla <span id="talla-seleccionada-nombre"></span>:</h4>
+            <div id="colores-section" style="display: none;">
+                <h4 style="color: #4a3728; margin-bottom: 0.8rem;">🎨 Colores disponibles</h4>
                 <div class="colores-scroll-container">
-                    <div id="modal-colores-grid" class="colores-grid"></div>
+                    <div id="colores-grid" class="colores-grid"></div>
                 </div>
+            </div>
+            <div id="seleccion-info" class="seleccion-info" style="display: none;">
+                <p>✅ <span id="selected-talla-text"></span> <span id="selected-color-text"></span></p>
             </div>
         `;
     } else {
         tallasHTML = '<p style="color: #a5a5a5; text-align: center;">No hay variantes disponibles</p>';
     }
     
-    // Stock total badge
-    let stockBadge = '';
-    if (stockTotal === 0) {
-        stockBadge = '<span class="stock-badge stock-out">❌ Agotado</span>';
-    } else if (stockTotal < 5) {
-        stockBadge = '<span class="stock-badge stock-low">⚠️ Stock bajo (' + stockTotal + ' unidades)</span>';
-    } else {
-        stockBadge = '<span class="stock-badge stock-available">✅ En stock (' + stockTotal + ' unidades)</span>';
-    }
-    
+    // Generar todo el HTML del modal
     contenedor.innerHTML = `
-        <div class="modal-layout">
-            <button class="modal-close-btn" onclick="cerrarModal()">✕</button>
-            
-            <div class="modal-imagen-section">
+        <div class="modal-grid">
+            <div class="modal-imagen">
                 ${producto.imagen_url ? 
-                    `<img src="${producto.imagen_url}" alt="${producto.nombre}" class="modal-imagen">` : 
+                    `<img src="${producto.imagen_url}" alt="${producto.nombre}">` : 
                     `<div class="modal-imagen-placeholder">
-                        <span style="font-size: 5rem;">${emoji}</span>
+                        <span>${emoji}</span>
                     </div>`
                 }
             </div>
-            
-            <div class="modal-info-section">
-                <h2 class="modal-titulo">${producto.nombre}</h2>
-                <p class="modal-categoria">${emoji} ${producto.categoria || 'General'}</p>
-                <p class="modal-codigo">Código: ${producto.codigo || 'N/A'}</p>
+            <div class="modal-info">
+                <h2>${producto.nombre}</h2>
+                <div class="modal-codigo">Código: ${producto.codigo || 'N/A'}</div>
                 
-                <div class="modal-precio-principal">
-                    ${rangoPrecios}
+                <div class="modal-detalle">
+                    <p><strong>Categoría:</strong> ${emoji} ${producto.categoria || 'General'}</p>
+                    <p><strong>Stock total:</strong> <span class="${stockBadgeClass}" style="display: inline-block; padding: 0.2rem 0.8rem; border-radius: 20px;">${stockBadgeText}</span></p>
                 </div>
                 
-                <div class="modal-stock-info">
-                    ${stockBadge}
-                </div>
+                <div class="modal-precio">${rangoPrecios}</div>
                 
                 ${tallasHTML}
                 
                 <div class="modal-botones">
-                    <button class="modal-btn btn-whatsapp" onclick="consultarProductoWhatsApp()">
+                    <button class="modal-btn btn-consultar" onclick="consultarProductoWhatsApp()">
                         💬 Consultar por WhatsApp
                     </button>
                     <button class="modal-btn btn-cerrar" onclick="cerrarModal()">
@@ -430,6 +426,139 @@ function llenarModal(producto) {
     // Guardar datos para usar después
     window.modalProductoActual = producto;
     window.modalVariantesActuales = variantes;
+    window.modalSeleccion = {
+        varianteId: null,
+        talla: null,
+        precio: null,
+        colorIndex: null,
+        colorNombre: null,
+        stock: 0
+    };
+}
+
+// Función para seleccionar talla en el modal
+function seleccionarTallaModal(varianteId, talla, precio) {
+    // Remover selección anterior
+    document.querySelectorAll('.talla-card').forEach(card => {
+        card.classList.remove('selected');
+    });
+    
+    // Marcar seleccionada
+    event.currentTarget.classList.add('selected');
+    
+    // Guardar selección
+    window.modalSeleccion = {
+        varianteId: varianteId,
+        talla: talla,
+        precio: precio,
+        colorIndex: null,
+        colorNombre: null,
+        stock: 0
+    };
+    
+    // Buscar la variante
+    const variante = window.modalVariantesActuales.find(v => v.id === varianteId);
+    
+    // Actualizar texto de talla seleccionada
+    document.getElementById('selected-talla-text').innerHTML = `Talla ${talla}`;
+    
+    if (variante && variante.colores && variante.colores.length > 0) {
+        // Mostrar colores
+        const coloresSection = document.getElementById('colores-section');
+        const coloresGrid = document.getElementById('colores-grid');
+        const seleccionInfo = document.getElementById('seleccion-info');
+        
+        const coloresOrdenados = [...variante.colores].sort((a, b) => {
+            if (a.nombre === null && b.nombre !== null) return 1;
+            if (a.nombre !== null && b.nombre === null) return -1;
+            if (a.nombre && b.nombre) return a.nombre.localeCompare(b.nombre);
+            return 0;
+        });
+        
+        coloresGrid.innerHTML = coloresOrdenados.map((color, idx) => {
+            const tieneStock = (color.stock || 0) > 0;
+            return `
+                <div class="color-card ${tieneStock ? '' : 'color-sin-stock'}" 
+                     onclick="seleccionarColorModal(${idx}, '${color.nombre || 'Sin color'}', ${color.stock || 0})">
+                    <div class="color-circulo" style="background: ${color.codigo || '#ccc'};"></div>
+                    <div class="color-nombre">${color.nombre || 'Sin color'}</div>
+                    <div class="color-stock">${color.stock > 0 ? color.stock + ' uds' : 'Agotado'}</div>
+                </div>
+            `;
+        }).join('');
+        
+        coloresSection.style.display = 'block';
+        seleccionInfo.style.display = 'block';
+        document.getElementById('selected-color-text').innerHTML = 'Selecciona un color';
+        
+    } else {
+        // Sin colores
+        window.modalSeleccion.stock = variante?.stock_total || 0;
+        document.getElementById('selected-color-text').innerHTML = 'Sin color específico';
+        document.getElementById('seleccion-info').style.display = 'block';
+        document.getElementById('colores-section').style.display = 'none';
+    }
+}
+
+// Función para seleccionar color en el modal
+function seleccionarColorModal(index, nombre, stock) {
+    // Remover selección anterior
+    document.querySelectorAll('.color-card').forEach(card => {
+        card.classList.remove('selected');
+    });
+    
+    // Marcar seleccionado
+    event.currentTarget.classList.add('selected');
+    
+    // Guardar selección
+    window.modalSeleccion.colorIndex = index;
+    window.modalSeleccion.colorNombre = nombre;
+    window.modalSeleccion.stock = stock;
+    
+    // Actualizar texto
+    document.getElementById('selected-color-text').innerHTML = nombre;
+}
+
+// Función para ordenar tallas
+function ordenarVariantesPorTalla(variantes) {
+    const ordenTallas = {
+        'XS': 1, 'S': 2, 'M': 3, 'L': 4, 'XL': 5, 'XXL': 6, 'XXXL': 7,
+        '2XL': 6, '3XL': 7, '4XL': 8, '5XL': 9,
+        '6': 10, '7': 11, '8': 12, '9': 13, '10': 14, '11': 15, '12': 16,
+        '34': 17, '35': 18, '36': 19, '37': 20, '38': 21, '39': 22, '40': 23,
+        '41': 24, '42': 25, '43': 26, '44': 27, '45': 28, '46': 29
+    };
+    
+    return [...variantes].sort((a, b) => {
+        const ordenA = ordenTallas[a.talla] || 999;
+        const ordenB = ordenTallas[b.talla] || 999;
+        return ordenA - ordenB;
+    });
+}
+
+// Función para consultar por WhatsApp
+function consultarProductoWhatsApp() {
+    if (!window.modalProductoActual) return;
+    
+    const producto = window.modalProductoActual;
+    const seleccion = window.modalSeleccion;
+    
+    let mensaje = `🌸 MODAS LA 34 🌸\n\n`;
+    mensaje += `Me interesa: ${producto.nombre}\n`;
+    
+    if (seleccion.talla) {
+        mensaje += `Talla: ${seleccion.talla}\n`;
+    }
+    if (seleccion.colorNombre && seleccion.colorNombre !== 'Sin color') {
+        mensaje += `Color: ${seleccion.colorNombre}\n`;
+    }
+    
+    mensaje += `\n¿Podrían darme más información?`;
+    
+    // Cambia este número por el WhatsApp del negocio
+    const numeroWhatsApp = "573208049635";
+    const url = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensaje)}`;
+    window.open(url, '_blank');
 }
 
 // Función para mostrar colores de una talla específica
