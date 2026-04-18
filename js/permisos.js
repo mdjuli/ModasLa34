@@ -110,46 +110,42 @@ let currentUserRol = null;
 
 // Función para cargar permisos del usuario
 async function cargarPermisosUsuario(userId) {
+    console.log('1. userId recibido:', userId);
+    
     try {
-        console.log('📡 Cargando permisos para userId:', userId);
-        
         const response = await fetch(`${SUPABASE_URL}/rest/v1/perfiles?id=eq.${userId}`, {
             headers: { 
                 'apikey': SUPABASE_KEY,
-                'Content-Type': 'application/json'
+                'Authorization': `Bearer ${SUPABASE_KEY}`
             }
         });
         
-        if (!response.ok) {
-            console.error('Error HTTP:', response.status);
-            return null;
-        }
+        console.log('2. Response status:', response.status);
         
         const perfiles = await response.json();
-        console.log('📡 Perfil recibido:', perfiles);
+        console.log('3. Datos recibidos:', perfiles);
         
         if (perfiles.length === 0) {
-            console.error('❌ No se encontró perfil para userId:', userId);
+            console.error('❌ No hay perfil para este usuario');
             return null;
         }
         
         const perfil = perfiles[0];
-        console.log('📡 Datos del perfil:', perfil);
+        console.log('4. Perfil completo:', perfil);
+        console.log('5. rol_usuario:', perfil.rol_usuario);
         
-        // Leer el rol_usuario (con fallback)
-        const rolUsuario = perfil.rol_usuario || perfil.rol || 'admin_productos';
-        console.log('📡 Rol detectado:', rolUsuario);
+        const rolUsuario = perfil.rol_usuario || 'admin_productos';
+        console.log('6. Rol asignado:', rolUsuario);
         
         currentUserRol = rolUsuario;
-        currentUserPermissions = ROLES_CONFIG[rolUsuario] || ROLES_CONFIG['admin_productos'];
+        currentUserPermissions = ROLES_CONFIG[rolUsuario];
         
-        console.log('✅ Permisos cargados:', currentUserPermissions.nombre);
-        console.log('✅ Módulos visibles:', currentUserPermissions.modulos_visibles);
+        console.log('7. Permisos finales:', currentUserPermissions);
         
         return currentUserPermissions;
         
     } catch (error) {
-        console.error('❌ Error cargando permisos:', error);
+        console.error('Error:', error);
         return null;
     }
 }
