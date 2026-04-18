@@ -111,27 +111,45 @@ let currentUserRol = null;
 // Función para cargar permisos del usuario
 async function cargarPermisosUsuario(userId) {
     try {
+        console.log('📡 Cargando permisos para userId:', userId);
+        
         const response = await fetch(`${SUPABASE_URL}/rest/v1/perfiles?id=eq.${userId}`, {
-            headers: { 'apikey': SUPABASE_KEY }
+            headers: { 
+                'apikey': SUPABASE_KEY,
+                'Content-Type': 'application/json'
+            }
         });
         
+        if (!response.ok) {
+            console.error('Error HTTP:', response.status);
+            return null;
+        }
+        
         const perfiles = await response.json();
-        if (perfiles.length === 0) return null;
+        console.log('📡 Perfil recibido:', perfiles);
+        
+        if (perfiles.length === 0) {
+            console.error('❌ No se encontró perfil para userId:', userId);
+            return null;
+        }
         
         const perfil = perfiles[0];
-        // Leer el rol_usuario de la base de datos
-        const rolUsuario = perfil.rol_usuario || ROLES.ADMIN_PRODUCTOS;
+        console.log('📡 Datos del perfil:', perfil);
+        
+        // Leer el rol_usuario (con fallback)
+        const rolUsuario = perfil.rol_usuario || perfil.rol || 'admin_productos';
+        console.log('📡 Rol detectado:', rolUsuario);
         
         currentUserRol = rolUsuario;
-        currentUserPermissions = ROLES_CONFIG[rolUsuario] || ROLES_CONFIG[ROLES.ADMIN_PRODUCTOS];
+        currentUserPermissions = ROLES_CONFIG[rolUsuario] || ROLES_CONFIG['admin_productos'];
         
-        console.log('📋 Rol del usuario:', currentUserPermissions.nombre);
-        console.log('📋 Módulos visibles:', currentUserPermissions.modulos_visibles);
+        console.log('✅ Permisos cargados:', currentUserPermissions.nombre);
+        console.log('✅ Módulos visibles:', currentUserPermissions.modulos_visibles);
         
         return currentUserPermissions;
         
     } catch (error) {
-        console.error('Error cargando permisos:', error);
+        console.error('❌ Error cargando permisos:', error);
         return null;
     }
 }
