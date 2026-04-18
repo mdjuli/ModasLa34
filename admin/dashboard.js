@@ -34,23 +34,51 @@ document.addEventListener('DOMContentLoaded', async () => {
 // ===== AUTENTICACIÓN =====
 async function verificarSesion() {
     const tokenData = localStorage.getItem('admin_token');
-    if (!tokenData) { window.location.href = 'login.html'; return; }
+    if (!tokenData) {
+        window.location.href = 'login.html';
+        return;
+    }
+
     try {
         const token = JSON.parse(tokenData);
         const response = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
-            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}` }
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${token.access_token}`
+            }
         });
-        if (!response.ok) throw new Error();
+
+        if (!response.ok) throw new Error('Sesión inválida');
+
         const user = await response.json();
         currentUser = user;
+        
+        // Cargar perfil
         const perfilRes = await fetch(`${SUPABASE_URL}/rest/v1/perfiles?id=eq.${user.id}`, {
             headers: { 'apikey': SUPABASE_KEY }
         });
         const perfil = await perfilRes.json();
-        const nombre = perfil[0]?.nombre || user.email || 'Admin';
-        if (document.getElementById('userNameDisplay')) document.getElementById('userNameDisplay').textContent = nombre;
-        if (document.getElementById('userAvatar')) document.getElementById('userAvatar').textContent = nombre.charAt(0).toUpperCase();
+        
+        // 🔑 Cargar permisos del usuario
+        await cargarPermisosUsuario(user.id);
+        
+        // Mostrar nombre
+        document.getElementById('userNameDisplay').textContent = 
+            perfil[0]?.nombre || user.email || 'Administradora';
+        
+        // Aplicar permisos a la interfaz
+        aplicarPermisosUI();
+        filtrarModulosPorPermisos();
+        
+        // Cargar el primer módulo permitido
+        const primerModulo = getPrimerModuloVisible();
+        cambiarModulo(primerModulo, null);
+        
+        // Cargar datos iniciales
+        await cargarDatosIniciales();
+        
     } catch (error) {
+        console.error('Error de sesión:', error);
         localStorage.removeItem('admin_token');
         window.location.href = 'login.html';
     }
