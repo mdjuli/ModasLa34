@@ -108,7 +108,7 @@ function cambiarModulo(modulo, event = null) {
 async function cargarDatosModulo(modulo) {
     switch(modulo) {
         case 'productos': await cargarProductos(); break;
-        case 'inventario': await cargarInventario(); break;
+        case 'stock': await cargarStock(); break;
         case 'compras': await cargarProveedoresSelect('compra'); await cargarCompras(); break;
         case 'gastos': await cargarGastos(); break;
         case 'perfiles': await cargarPerfiles(); break;
