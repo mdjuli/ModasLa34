@@ -756,51 +756,155 @@ async function guardarPerfil() {
 function editarPerfil(id) { mostrarAlerta('Editar usuario en desarrollo', 'warning'); }
 function eliminarPerfil(id) { if(confirm('¿Eliminar usuario?')) mostrarAlerta('Usuario eliminado', 'success'); }
 
-// ===== INVENTARIO =====
-async function cargarInventario() {
+// ============================================
+// FUNCIÓN PARA CARGAR CONTROL DE STOCK
+// ============================================
+
+async function cargarStock() {
     try {
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/vista_productos_completa`, { headers: { 'apikey': SUPABASE_KEY } });
-        const productos = await res.json();
-        const tbody = document.getElementById('inventario-body');
-        if (!tbody) return;
-        let valorTotal = 0, gananciaTotal = 0;
-        let todasVariantes = [];
-        productos.forEach(p => {
-            const variantes = p.variantes || [];
-            variantes.forEach(v => {
-                const colores = v.colores || [];
-                colores.forEach(c => {
-                    const stock = c.stock || 0;
-                    const precioCompra = v.precio_compra || 0;
-                    const precioVenta = v.precio_venta || 0;
-                    valorTotal += stock * precioCompra;
-                    gananciaTotal += stock * (precioVenta - precioCompra);
-                    todasVariantes.push({
-                        codigo: p.codigo, nombre: p.nombre, talla: v.talla,
-                        color: c.nombre || 'Sin color', stock, precioCompra, precioVenta,
-                        gananciaUnidad: precioVenta - precioCompra, valorTotal: stock * precioCompra
+        console.log('📊 Cargando control de stock...');
+        
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/vista_productos_completa`, {
+            headers: { 'apikey': SUPABASE_KEY }
+        });
+        
+        if (!response.ok) throw new Error('Error al cargar stock');
+        
+        const productos = await response.json();
+        
+        // Procesar todas las variantes y colores
+        let productosStockBajo = [];
+        let productosAgotados = [];
+        let productosNormales = 0;
+        
+        productos.forEach(producto => {
+            const variantes = producto.variantes || [];
+            
+            variantes.forEach(variante => {
+                const colores = variante.colores || [];
+                
+                if (colores.length > 0) {
+                    colores.forEach(color => {
+                        const stock = color.stock || 0;
+                        const item = {
+                            producto_id: producto.id,
+                            producto_nombre: producto.nombre,
+                            producto_codigo: producto.codigo,
+                            talla: variante.talla,
+                            color: color.nombre || 'Sin color',
+                            color_codigo: color.codigo || '#ccc',
+                            stock: stock,
+                            precio_venta: variante.precio_venta
+                        };
+                        
+                        if (stock === 0) {
+                            productosAgotados.push(item);
+                        } else if (stock < 5) {
+                            productosStockBajo.push(item);
+                        } else {
+                            productosNormales++;
+                        }
                     });
-                });
+                } else {
+                    // Sin colores específicos
+                    const stock = variante.stock_total || 0;
+                    const item = {
+                        producto_id: producto.id,
+                        producto_nombre: producto.nombre,
+                        producto_codigo: producto.codigo,
+                        talla: variante.talla,
+                        color: 'N/A',
+                        color_codigo: '#ccc',
+                        stock: stock,
+                        precio_venta: variante.precio_venta
+                    };
+                    
+                    if (stock === 0) {
+                        productosAgotados.push(item);
+                    } else if (stock < 5) {
+                        productosStockBajo.push(item);
+                    } else {
+                        productosNormales++;
+                    }
+                }
             });
         });
-        if (document.getElementById('valor-inventario')) document.getElementById('valor-inventario').textContent = `$${valorTotal.toLocaleString()}`;
-        if (document.getElementById('ganancia-potencial')) document.getElementById('ganancia-potencial').textContent = `$${gananciaTotal.toLocaleString()}`;
-        if (!todasVariantes.length) { tbody.innerHTML = '<tr><td colspan="6">No hay productos<\/td></tr>'; return; }
-        tbody.innerHTML = todasVariantes.map(item => `<tr>
-            <td>${item.codigo}</td>
-            <td>${item.nombre}</td>
-            <td>${item.talla}</td>
-            <td><span style="display:inline-block;width:12px;height:12px;background:${item.color !== 'Sin color' ? item.color : '#ccc'};border-radius:50%;margin-right:5px;"></span>${item.color}</td>
-            <td style="color:${item.stock<5?'#e74c3c':'#333'}">${item.stock}</td>
-            <td>$${item.precioCompra.toLocaleString()}</td>
-            <td>$${item.precioVenta.toLocaleString()}</td>
-            <td style="color:${item.gananciaUnidad>0?'#27ae60':'#e74c3c'}">$${item.gananciaUnidad.toLocaleString()}</td>
-            <td>$${item.valorTotal.toLocaleString()}</td>
-        </tr>`).join('');
-    } catch(e) { console.error(e); }
+        
+        // Actualizar contadores
+        document.getElementById('stock-bajo-count').textContent = productosStockBajo.length;
+        document.getElementById('stock-agotado-count').textContent = productosAgotados.length;
+        document.getElementById('stock-normal-count').textContent = productosNormales;
+        
+        // Llenar tabla de stock bajo
+        const stockBajoBody = document.getElementById('stock-bajo-body');
+        if (productosStockBajo.length === 0) {
+            stockBajoBody.innerHTML = '<tr><td colspan="6" style="text-align: center;">✅ No hay productos con stock bajo</td></tr>';
+        } else {
+            stockBajoBody.innerHTML = productosStockBajo.map(item => `
+                <tr class="stock-bajo-row">
+                    <td><strong>${item.producto_nombre}</strong><br><small>${item.producto_codigo}</small></td>
+                    <td>${item.talla}</td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <div style="width: 20px; height: 20px; background: ${item.color_codigo}; border-radius: 50%; border: 1px solid #ddd;"></div>
+                            ${item.color}
+                        </div>
+                    </td>
+                    <td class="stock-critico">${item.stock} unidades</td>
+                    <td>5</td>
+                    <td>
+                        <button class="action-btn" onclick="solicitarReposicion(${item.producto_id}, '${item.producto_nombre}', '${item.talla}', '${item.color}')" title="Solicitar reposición">
+                            📦 Pedir
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        // Llenar tabla de agotados
+        const stockAgotadoBody = document.getElementById('stock-agotado-body');
+        if (productosAgotados.length === 0) {
+            stockAgotadoBody.innerHTML = '<tr><td colspan="5" style="text-align: center;">🎉 Todos los productos tienen stock disponible</td></tr>';
+        } else {
+            stockAgotadoBody.innerHTML = productosAgotados.map(item => `
+                <tr class="stock-agotado-row">
+                    <td><strong>${item.producto_nombre}</strong><br><small>${item.producto_codigo}</small></td>
+                    <td>${item.talla}</td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <div style="width: 20px; height: 20px; background: ${item.color_codigo}; border-radius: 50%; border: 1px solid #ddd;"></div>
+                            ${item.color}
+                        </div>
+                    </td>
+                    <td class="stock-agotado">AGOTADO</td>
+                    <td>
+                        <button class="action-btn" onclick="solicitarReposicion(${item.producto_id}, '${item.producto_nombre}', '${item.talla}', '${item.color}')" title="Solicitar reposición">
+                            📦 Solicitar
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+    } catch (error) {
+        console.error('Error cargando stock:', error);
+        const stockBajoBody = document.getElementById('stock-bajo-body');
+        if (stockBajoBody) {
+            stockBajoBody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #ff4757;">Error al cargar datos</td></tr>';
+        }
+    }
 }
 
-function exportarInventario() { mostrarAlerta('Exportando inventario...', 'success'); }
+// Función para solicitar reposición (opcional)
+function solicitarReposicion(productoId, nombre, talla, color) {
+    const mensaje = `📦 *REPOSICIÓN DE STOCK*\n\nProducto: ${nombre}\nTalla: ${talla}\nColor: ${color}\n\nPor favor, gestionar reposición.`;
+    alert(`📋 Solicitud de reposición:\n\n${mensaje}\n\n(Próximamente: notificación a proveedores)`);
+    
+    // Aquí puedes agregar lógica para:
+    // 1. Crear automáticamente una orden de compra
+    // 2. Enviar notificación por WhatsApp al proveedor
+    // 3. Agregar a una lista de pendientes
+}
 
 // ===== VENTAS =====
 async function cargarVentas() {
