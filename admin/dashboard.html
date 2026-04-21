@@ -737,25 +737,75 @@
             </div>
         </div>
 
-        <!-- INVENTARIO -->
-        <div id="modulo-inventario" class="module-section" style="display: none;">
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-header"><span class="stat-title">Valor Inventario</span><i class="fas fa-dollar-sign stat-icon"></i></div>
-                    <div class="stat-value" id="valor-inventario">$0</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-header"><span class="stat-title">Ganancia Potencial</span><i class="fas fa-chart-line stat-icon"></i></div>
-                    <div class="stat-value" id="ganancia-potencial">$0</div>
-                </div>
-                <div class="stat-card" onclick="exportarInventario()" style="cursor:pointer">
-                    <div class="stat-header"><span class="stat-title">Exportar</span><i class="fas fa-download stat-icon"></i></div>
-                    <div class="stat-value">📥</div>
-                </div>
+<!-- MÓDULO DE STOCK (Control de inventario bajo) -->
+<div id="modulo-stock" class="module-section" style="display: none;">
+    <div class="module-header">
+        <h2>📊 Control de Stock</h2>
+        <p>Productos con stock bajo o agotados</p>
+    </div>
+    
+    <!-- Tarjetas de resumen -->
+    <div class="stock-cards">
+        <div class="stat-card">
+            <div class="stat-icon">⚠️</div>
+            <div class="stat-info">
+                <h3 id="stock-bajo-count">0</h3>
+                <p>Productos con stock bajo</p>
             </div>
-            <div class="data-card">
-                <div class="data-header"><h2>Inventario Detallado</h2><button class="add-btn" onclick="exportarInventario()">Exportar</button></div>
-                <table id="tabla-inventario"><thead><tr><th>Producto</th><th>Talla</th><th>Color</th><th>Stock</th><th>P.Compra</th><th>P.Venta</th></tr></thead><tbody><tr><td colspan="6">Cargando...</td></tr></tbody></table>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">❌</div>
+            <div class="stat-info">
+                <h3 id="stock-agotado-count">0</h3>
+                <p>Productos agotados</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">✅</div>
+            <div class="stat-info">
+                <h3 id="stock-normal-count">0</h3>
+                <p>Productos con stock normal</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Tabla de productos con stock bajo -->
+            <div class="table-container">
+                <h3>⚠️ Productos con stock bajo (menos de 5 unidades)</h3>
+                <table class="data-table" id="tabla-stock-bajo">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Talla</th>
+                            <th>Color</th>
+                            <th>Stock actual</th>
+                            <th>Stock mínimo</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="stock-bajo-body">
+                        <tr><td colspan="6" style="text-align: center;">Cargando...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Tabla de productos agotados -->
+            <div class="table-container" style="margin-top: 2rem;">
+                <h3>❌ Productos agotados (stock 0)</h3>
+                <table class="data-table" id="tabla-stock-agotado">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Talla</th>
+                            <th>Color</th>
+                            <th>Stock actual</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="stock-agotado-body">
+                        <tr><td colspan="5" style="text-align: center;">Cargando...</td></tr>
+                    </tbody>
+                </table>
             </div>
         </div>
 
