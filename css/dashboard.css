@@ -3,6 +3,15 @@
    Versión completa y optimizada
    ============================================ */
 
+/* Ocultar todos los formularios modales al inicio */
+.form-modal {
+    display: none !important;
+}
+
+.form-modal.active {
+    display: block !important;
+}
+
 /* ===== VARIABLES ===== */
 :root {
     --primary: #d4a5a9;
