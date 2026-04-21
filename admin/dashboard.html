@@ -585,6 +585,88 @@
         background: #ff4757;
         transform: scale(1.02);
     }
+
+        /* ===== ESTILOS PARA VENTAS ===== */
+    .ventas-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+    
+    .buscador-mini, .filtro-mini {
+        padding: 0.5rem;
+        border: 1px solid #e8e0d5;
+        border-radius: 8px;
+        font-size: 0.85rem;
+    }
+    
+    .buscador-productos {
+        position: relative;
+    }
+    
+    .resultados-dropdown {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
+        border: 1px solid #e8e0d5;
+        border-radius: 8px;
+        max-height: 200px;
+        overflow-y: auto;
+        z-index: 100;
+        display: none;
+    }
+    
+    .resultado-item {
+        padding: 0.8rem;
+        cursor: pointer;
+        border-bottom: 1px solid #f0ebe4;
+    }
+    
+    .resultado-item:hover {
+        background: #faf7f2;
+    }
+    
+    .cantidad-input {
+        width: 60px;
+        padding: 0.3rem;
+        text-align: center;
+        border: 1px solid #e8e0d5;
+        border-radius: 6px;
+    }
+    
+    .btn-eliminar-item {
+        background: none;
+        border: none;
+        color: #e74c3c;
+        cursor: pointer;
+        font-size: 1.2rem;
+    }
+    
+    .estado-badge-cambiado {
+        background: #f39c12;
+        color: white;
+    }
+    
+    .estado-badge-devuelto {
+        background: #e74c3c;
+        color: white;
+    }
+    
+    .btn-danger {
+        background: #e74c3c;
+        color: white;
+        border: none;
+        padding: 0.6rem 1rem;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+    
+    .btn-danger:hover {
+        background: #c0392b;
+    }
     </style>
 </head>
 <body>
@@ -912,21 +994,200 @@
 
         <!-- VENTAS -->
         <div id="modulo-ventas" class="module-section" style="display: none;">
-            <div class="stats-grid">
-                <div class="stat-card"><div class="stat-header"><span class="stat-title">Ventas Hoy</span><i class="fas fa-calendar-day stat-icon"></i></div><div class="stat-value" id="stats-ventas-hoy">$0</div></div>
-                <div class="stat-card"><div class="stat-header"><span class="stat-title">Ventas Mes</span><i class="fas fa-chart-line stat-icon"></i></div><div class="stat-value" id="stats-ventas-mes">$0</div></div>
+            <div class="module-header">
+                <h2>🛍️ Punto de Venta</h2>
+                <p>Gestión completa de ventas</p>
             </div>
-            <div class="filters-bar">
-                <label>Filtrar por fecha:</label>
-                <input type="date" id="ventas-fecha-inicio">
-                <span>a</span>
-                <input type="date" id="ventas-fecha-fin">
-                <button onclick="aplicarFiltroVentas()" class="filter-btn">Filtrar</button>
-                <button onclick="limpiarFiltroVentas()" class="filter-btn">Limpiar</button>
+            
+            <!-- Tarjetas de resumen -->
+            <div class="ventas-cards">
+                <div class="stat-card" onclick="mostrarFormulario('venta')" style="cursor: pointer;">
+                    <div class="stat-icon">➕</div>
+                    <div class="stat-info">
+                        <h3>Nueva Venta</h3>
+                        <p>Registrar venta manual</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-info">
+                        <h3 id="ventas-hoy-total">$0</h3>
+                        <p>Ventas de hoy</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📊</div>
+                    <div class="stat-info">
+                        <h3 id="ventas-mes-total">$0</h3>
+                        <p>Ventas del mes</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🔄</div>
+                    <div class="stat-info">
+                        <h3 id="ventas-cambios-count">0</h3>
+                        <p>Cambios/Devoluciones</p>
+                    </div>
+                </div>
             </div>
-            <div class="data-card">
-                <div class="data-header"><h2>Historial de Ventas</h2><button class="add-btn" onclick="window.open('venta-rapida.html', '_blank')">+ Nueva Venta</button></div>
-                <table id="tabla-ventas"><thead><tr><th>Fecha</th><th>Productos</th><th>Total</th><th>Método</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="5">Cargando...<\/td></tr></tbody></table>
+            
+            <!-- Tabla de ventas recientes -->
+            <div class="table-container">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h3>📋 Ventas recientes</h3>
+                    <div>
+                        <input type="text" id="buscador-ventas" placeholder="🔍 Buscar venta..." class="buscador-mini">
+                        <select id="filtro-estado-ventas" class="filtro-mini">
+                            <option value="todos">Todas</option>
+                            <option value="completada">Completadas</option>
+                            <option value="pendiente">Pendientes</option>
+                            <option value="cambiado">Con cambios</option>
+                            <option value="devuelto">Devueltas</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="data-table" id="tabla-ventas">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Fecha</th>
+                                <th>Cliente</th>
+                                <th>Productos</th>
+                                <th>Total</th>
+                                <th>Método</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ventas-body">
+                            <tr><td colspan="8" style="text-align: center;">Cargando...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- FORMULARIO DE NUEVA VENTA -->
+        <div id="form-venta" class="form-modal" style="display: none;">
+            <div class="form-modal-content" style="max-width: 800px;">
+                <div class="form-modal-header">
+                    <h3>🛍️ Nueva Venta</h3>
+                    <span class="close" onclick="cerrarFormulario('venta')">&times;</span>
+                </div>
+                <div class="form-modal-body">
+                    <form id="venta-form" onsubmit="event.preventDefault(); guardarVenta();">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>📅 Fecha</label>
+                                <input type="date" id="venta-fecha" required>
+                            </div>
+                            <div class="form-group">
+                                <label>👤 Cliente</label>
+                                <input type="text" id="venta-cliente" placeholder="Nombre del cliente (opcional)">
+                            </div>
+                            <div class="form-group">
+                                <label>💵 Método de pago</label>
+                                <select id="venta-metodo" required>
+                                    <option value="Efectivo">Efectivo</option>
+                                    <option value="Tarjeta Débito">Tarjeta Débito</option>
+                                    <option value="Tarjeta Crédito">Tarjeta Crédito</option>
+                                    <option value="Transferencia">Transferencia</option>
+                                    <option value="QR">QR (Nequi/Daviplata)</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>📦 Agregar productos</label>
+                            <div class="buscador-productos">
+                                <input type="text" id="buscador-producto-venta" placeholder="Buscar por nombre o código..." class="buscador-input">
+                                <div id="resultados-productos" class="resultados-dropdown"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="table-responsive">
+                            <table class="data-table" id="tabla-carrito">
+                                <thead>
+                                    <tr>
+                                        <th>Producto</th>
+                                        <th>Talla</th>
+                                        <th>Color</th>
+                                        <th>Precio</th>
+                                        <th>Cantidad</th>
+                                        <th>Subtotal</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="carrito-body"></tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="5" style="text-align: right;"><strong>Total:</strong></td>
+                                        <td colspan="2"><strong id="carrito-total">$0</strong></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="btn-primary">✅ Registrar Venta</button>
+                            <button type="button" class="btn-secondary" onclick="cerrarFormulario('venta')">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- MODAL PARA EDITAR VENTA -->
+        <div id="modal-editar-venta" class="form-modal" style="display: none;">
+            <div class="form-modal-content" style="max-width: 600px;">
+                <div class="form-modal-header">
+                    <h3>✏️ Editar Venta</h3>
+                    <span class="close" onclick="cerrarModalEditarVenta()">&times;</span>
+                </div>
+                <div class="form-modal-body">
+                    <form id="editar-venta-form" onsubmit="event.preventDefault(); actualizarVenta();">
+                        <input type="hidden" id="editar-venta-id">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>📅 Fecha</label>
+                                <input type="date" id="editar-venta-fecha" required>
+                            </div>
+                            <div class="form-group">
+                                <label>👤 Cliente</label>
+                                <input type="text" id="editar-venta-cliente">
+                            </div>
+                            <div class="form-group">
+                                <label>💵 Método de pago</label>
+                                <select id="editar-venta-metodo" required>
+                                    <option value="Efectivo">Efectivo</option>
+                                    <option value="Tarjeta Débito">Tarjeta Débito</option>
+                                    <option value="Tarjeta Crédito">Tarjeta Crédito</option>
+                                    <option value="Transferencia">Transferencia</option>
+                                    <option value="QR">QR</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>📝 Notas</label>
+                            <textarea id="editar-venta-notas" rows="2" placeholder="Motivo del cambio, devolución, etc."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>🔄 Estado</label>
+                            <select id="editar-venta-estado">
+                                <option value="completada">Completada</option>
+                                <option value="pendiente">Pendiente</option>
+                                <option value="cambiado">Cambio solicitado</option>
+                                <option value="devuelto">Devuelto</option>
+                            </select>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn-primary">💾 Guardar cambios</button>
+                            <button type="button" class="btn-danger" onclick="eliminarVenta()">🗑️ Eliminar venta</button>
+                            <button type="button" class="btn-secondary" onclick="cerrarModalEditarVenta()">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
 
