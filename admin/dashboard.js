@@ -1526,6 +1526,35 @@ async function guardarVenta() {
 }
 
 // ============================================
+// FUNCIONES PARA ABRIR VENTAS
+// ============================================
+
+// Abrir Venta Rápida (tu sistema existente)
+function abrirVentaRapida() {
+    // Opción 1: Abrir en nueva pestaña/ventana
+    window.open('venta-rapida.html', '_blank');
+    
+    // Opción 2: Si quieres abrir en un modal dentro del mismo dashboard:
+    // mostrarFormularioVentaRapida();
+}
+
+// Abrir Nueva Venta Manual (el sistema que creamos)
+function abrirNuevaVenta() {
+    // Limpiar carrito antes de abrir
+    carrito = [];
+    actualizarCarritoUI();
+    
+    // Establecer fecha actual
+    document.getElementById('venta-fecha').value = new Date().toISOString().split('T')[0];
+    
+    // Cargar productos para el buscador
+    cargarProductosParaVenta();
+    
+    // Mostrar el formulario
+    mostrarFormulario('venta');
+}
+
+// ============================================
 // EDITAR, ELIMINAR Y CAMBIOS
 // ============================================
 let ventaEditando = null;
