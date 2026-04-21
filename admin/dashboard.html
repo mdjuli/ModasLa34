@@ -586,6 +586,73 @@
         transform: scale(1.02);
     }
 
+        /* ===== ESTILOS PARA MÓDULO DE STOCK ===== */
+    .stock-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .stat-card {
+        background: white;
+        border-radius: 16px;
+        padding: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        border: 1px solid #e8e0d5;
+    }
+    
+    .stat-icon {
+        font-size: 2.5rem;
+    }
+    
+    .stat-info h3 {
+        font-size: 2rem;
+        margin: 0;
+        color: #4a3728;
+    }
+    
+    .stat-info p {
+        margin: 0;
+        color: #8b7a6b;
+        font-size: 0.85rem;
+    }
+    
+    .stock-critico {
+        color: #e67e22;
+        font-weight: bold;
+    }
+    
+    .stock-agotado {
+        color: #e74c3c;
+        font-weight: bold;
+    }
+    
+    .stock-bajo-row {
+        background: #fff3e0;
+    }
+    
+    .stock-agotado-row {
+        background: #ffe8e8;
+    }
+    
+    .table-container {
+        background: white;
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        border: 1px solid #e8e0d5;
+    }
+    
+    .table-container h3 {
+        margin-bottom: 1rem;
+        color: #4a3728;
+        font-size: 1.1rem;
+    }
+
         /* ===== ESTILOS PARA VENTAS ===== */
     .ventas-cards {
         display: grid;
