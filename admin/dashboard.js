@@ -541,7 +541,45 @@ async function guardarProveedor() {
     } catch(e) { mostrarAlerta('Error de conexión', 'error'); }
 }
 
-function editarProveedor(id) { mostrarAlerta('Editar proveedor en desarrollo', 'warning'); }
+async function editarProveedor(id) {
+    try {
+        console.log('Editando proveedor:', id);
+        
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/proveedores?id=eq.${id}`, {
+            headers: { 'apikey': SUPABASE_KEY }
+        });
+        
+        if (!response.ok) throw new Error('Error al cargar proveedor');
+        
+        const proveedores = await response.json();
+        if (proveedores.length === 0) throw new Error('Proveedor no encontrado');
+        
+        const proveedor = proveedores[0];
+        
+        // Mostrar formulario
+        mostrarFormulario('proveedor');
+        
+        // Llenar campos
+        document.getElementById('proveedor-nombre').value = proveedor.nombre || '';
+        document.getElementById('proveedor-contacto').value = proveedor.contacto || '';
+        document.getElementById('proveedor-telefono').value = proveedor.telefono || '';
+        document.getElementById('proveedor-email').value = proveedor.email || '';
+        document.getElementById('proveedor-direccion').value = proveedor.direccion || '';
+        
+        // Guardar ID para actualizar
+        document.getElementById('form-proveedor').dataset.editId = id;
+        
+        // Cambiar texto del botón
+        const submitBtn = document.querySelector('#form-proveedor .submit-btn');
+        if (submitBtn) {
+            submitBtn.textContent = '🌸 Actualizar Proveedor';
+        }
+        
+    } catch (error) {
+        console.error('Error:', error);
+        mostrarAlerta('Error al cargar el proveedor', 'error');
+    }
+}
 function eliminarProveedor(id) { if(confirm('¿Eliminar proveedor?')) mostrarAlerta('Proveedor eliminado', 'success'); }
 
 // ===== COMPRAS =====
@@ -616,7 +654,53 @@ async function guardarCompra() {
     } catch(e) { mostrarAlerta('Error de conexión', 'error'); }
 }
 
-function editarCompra(id) { mostrarAlerta('Editar compra en desarrollo', 'warning'); }
+async function editarCompra(id) {
+    try {
+        console.log('Editando compra:', id);
+        
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/compras?id=eq.${id}`, {
+            headers: { 'apikey': SUPABASE_KEY }
+        });
+        
+        if (!response.ok) throw new Error('Error al cargar compra');
+        
+        const compras = await response.json();
+        if (compras.length === 0) throw new Error('Compra no encontrada');
+        
+        const compra = compras[0];
+        
+        // Mostrar formulario
+        mostrarFormulario('compra');
+        
+        // Cargar proveedores en el select
+        await cargarProveedoresSelect('compra');
+        
+        // Pequeña pausa para asegurar que el select se cargó
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
+        // Llenar campos
+        document.getElementById('compra-proveedor').value = compra.proveedor_id || '';
+        document.getElementById('compra-fecha').value = compra.fecha.split('T')[0];
+        document.getElementById('compra-producto').value = compra.producto || '';
+        document.getElementById('compra-cantidad').value = compra.cantidad || '';
+        document.getElementById('compra-precio').value = compra.precio_unitario || '';
+        document.getElementById('compra-estado').value = compra.estado || 'Pendiente';
+        
+        // Guardar ID para actualizar
+        document.getElementById('form-compra').dataset.editId = id;
+        
+        // Cambiar texto del botón
+        const submitBtn = document.querySelector('#form-compra .submit-btn');
+        if (submitBtn) {
+            submitBtn.textContent = '🌸 Actualizar Compra';
+        }
+        
+    } catch (error) {
+        console.error('Error:', error);
+        mostrarAlerta('Error al cargar la compra', 'error');
+    }
+}
+
 function eliminarCompra(id) { if(confirm('¿Eliminar compra?')) mostrarAlerta('Compra eliminada', 'success'); }
 
 // ===== GASTOS =====
@@ -681,29 +765,101 @@ async function guardarGasto() {
     } catch(e) { mostrarAlerta('Error de conexión', 'error'); }
 }
 
-function editarGasto(id) { mostrarAlerta('Editar gasto en desarrollo', 'warning'); }
+async function editarGasto(id) {
+    try {
+        console.log('Editando gasto:', id);
+        
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/gastos?id=eq.${id}`, {
+            headers: { 'apikey': SUPABASE_KEY }
+        });
+        
+        if (!response.ok) throw new Error('Error al cargar gasto');
+        
+        const gastos = await response.json();
+        if (gastos.length === 0) throw new Error('Gasto no encontrado');
+        
+        const gasto = gastos[0];
+        
+        // Mostrar formulario
+        mostrarFormulario('gasto');
+        
+        // Llenar campos
+        document.getElementById('gasto-fecha').value = gasto.fecha.split('T')[0];
+        document.getElementById('gasto-concepto').value = gasto.concepto || '';
+        document.getElementById('gasto-categoria').value = gasto.categoria || '';
+        document.getElementById('gasto-monto').value = gasto.monto || '';
+        document.getElementById('gasto-metodo').value = gasto.metodo_pago || 'Efectivo';
+        
+        // Guardar ID para actualizar
+        document.getElementById('form-gasto').dataset.editId = id;
+        
+        // Cambiar texto del botón
+        const submitBtn = document.querySelector('#form-gasto .submit-btn');
+        if (submitBtn) {
+            submitBtn.textContent = '🌸 Actualizar Gasto';
+        }
+        
+    } catch (error) {
+        console.error('Error:', error);
+        mostrarAlerta('Error al cargar el gasto', 'error');
+    }
+}
 function eliminarGasto(id) { if(confirm('¿Eliminar gasto?')) mostrarAlerta('Gasto eliminado', 'success'); }
 
 // ===== PERFILES =====
 async function cargarPerfiles() {
     try {
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/perfiles?order=created_at.desc`, { headers: { 'apikey': SUPABASE_KEY } });
-        const perfiles = await res.json();
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/perfiles?order=created_at.desc`, {
+            headers: { 'apikey': SUPABASE_KEY }
+        });
+        const perfiles = await response.json();
+        
         const tbody = document.querySelector('#tabla-perfiles tbody');
-        if (!tbody) return;
-        if (!perfiles.length) { tbody.innerHTML = '<tr><td colspan="4">No hay usuarios<\/td></tr>'; return; }
-        if (document.getElementById('stats-empleados')) document.getElementById('stats-empleados').textContent = perfiles.length;
-        tbody.innerHTML = perfiles.map(p => `<tr>
-            <td><strong>${p.nombre || 'Sin nombre'}</strong></td>
-            <td>${p.email}</td>
-            <td><span style="background:${p.rol === 'admin' ? '#d4a5a9' : '#e0e0e0'};padding:0.2rem 0.8rem;border-radius:20px;">${p.rol || 'empleado'}</span></td>
-            <td>${new Date(p.created_at).toLocaleDateString()}</td>
-            <td>
-                <button class="action-btn" onclick="editarPerfil('${p.id}')"><i class="fas fa-edit"></i></button>
-                ${p.id !== currentUser?.id ? `<button class="action-btn delete-btn" onclick="eliminarPerfil('${p.id}')"><i class="fas fa-trash"></i></button>` : ''}
-            </td>
-        </tr>`).join('');
-    } catch(e) { console.error(e); }
+        
+        if (perfiles.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">No hay usuarios registrados</td></tr>';
+            return;
+        }
+        
+        document.getElementById('stats-empleados').textContent = perfiles.length;
+        
+        // Mapeo de roles a nombres legibles
+        const rolNombres = {
+            'admin_total': '👑 Dueña',
+            'admin_productos': '📦 Inventario',
+            'admin_ventas': '🛍️ Vendedor',
+            'admin_contabilidad': '💰 Contabilidad',
+            'admin_caja': '💵 Cajero'
+        };
+        
+        tbody.innerHTML = perfiles.map(p => {
+            const rolUsuario = p.rol_usuario || p.rol || 'admin_productos';
+            const rolNombre = rolNombres[rolUsuario] || '📦 Inventario';
+            
+            return `
+                <tr>
+                    <td><strong>${p.nombre || 'Sin nombre'}</strong></td>
+                    <td>${p.email}</td>
+                    <td>
+                        <span style="background: ${p.rol_usuario === 'admin_total' ? '#ff6b6b' : '#b87c4e'}; 
+                                     color: white; padding: 0.2rem 0.8rem; border-radius: 50px; font-size: 0.75rem;">
+                            ${rolNombre}
+                        </span>
+                    </td>
+                    <td>${new Date(p.created_at).toLocaleDateString()}</td>
+                    <td>
+                        <button class="action-btn" onclick="editarPerfil('${p.id}')" title="Editar">✏️</button>
+                        ${p.id !== currentUser?.id ? 
+                            `<button class="action-btn delete-btn" onclick="eliminarPerfil('${p.id}')" title="Eliminar">🗑️</button>` 
+                            : '<span style="color:#ccc;">(tú)</span>'}
+                    </td>
+                </tr>
+            `;
+        }).join('');
+        
+    } catch (error) {
+        console.error('Error cargando perfiles:', error);
+    }
 }
 
 async function guardarPerfil() {
@@ -753,7 +909,195 @@ async function guardarPerfil() {
     } catch(e) { mostrarAlerta('Error: ' + e.message, 'error'); }
 }
 
-function editarPerfil(id) { mostrarAlerta('Editar usuario en desarrollo', 'warning'); }
+async function editarPerfil(id) {
+    try {
+        console.log('Editando perfil:', id);
+        
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/perfiles?id=eq.${id}`, {
+            headers: { 'apikey': SUPABASE_KEY }
+        });
+        
+        if (!response.ok) throw new Error('Error al cargar perfil');
+        
+        const perfiles = await response.json();
+        if (perfiles.length === 0) throw new Error('Perfil no encontrado');
+        
+        const perfil = perfiles[0];
+        
+        // Mostrar formulario
+        mostrarFormulario('perfil');
+        
+        // Llenar campos
+        document.getElementById('perfil-nombre').value = perfil.nombre || '';
+        document.getElementById('perfil-email').value = perfil.email || '';
+        document.getElementById('perfil-rol').value = perfil.rol_usuario || perfil.rol || 'empleado';
+        
+        // Guardar ID para actualizar
+        document.getElementById('form-perfil').dataset.editId = id;
+        
+        // Ocultar campo de contraseña (no se puede editar directamente)
+        const passwordField = document.getElementById('perfil-password');
+        if (passwordField) {
+            passwordField.placeholder = 'Dejar vacío para mantener la misma';
+            passwordField.required = false;
+        }
+        
+        // Cambiar texto del botón
+        const submitBtn = document.querySelector('#form-perfil .submit-btn');
+        if (submitBtn) {
+            submitBtn.textContent = '🌸 Actualizar Usuario';
+        }
+        
+    } catch (error) {
+        console.error('Error:', error);
+        mostrarAlerta('Error al cargar el usuario', 'error');
+    }
+}
+
+// También actualiza guardarPerfil para manejar edición
+async function guardarPerfil() {
+    try {
+        const token = JSON.parse(localStorage.getItem('admin_token'));
+        
+        const nombre = document.getElementById('perfil-nombre').value;
+        const email = document.getElementById('perfil-email').value;
+        const password = document.getElementById('perfil-password').value;
+        const rol = document.getElementById('perfil-rol').value;
+        
+        if (!nombre || !email) {
+            mostrarAlerta('Nombre y email son obligatorios', 'error');
+            return;
+        }
+        
+        const editId = document.getElementById('form-perfil').dataset.editId;
+        
+        if (editId) {
+            // ACTUALIZAR perfil existente
+            const perfilData = {
+                nombre: nombre,
+                email: email,
+                rol_usuario: rol
+            };
+            
+            const response = await fetch(`${SUPABASE_URL}/rest/v1/perfiles?id=eq.${editId}`, {
+                method: 'PATCH',
+                headers: {
+                    'apikey': SUPABASE_KEY,
+                    'Authorization': `Bearer ${token.access_token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(perfilData)
+            });
+            
+            if (response.ok) {
+                mostrarAlerta('🌸 Usuario actualizado correctamente', 'success');
+                cerrarFormulario('perfil');
+                await cargarPerfiles();
+            } else {
+                const error = await response.json();
+                mostrarAlerta('Error: ' + (error.message || 'No se pudo actualizar'), 'error');
+            }
+            
+        } else {
+            // CREAR nuevo usuario
+            if (!password || password.length < 6) {
+                mostrarAlerta('La contraseña debe tener al menos 6 caracteres', 'error');
+                return;
+            }
+            
+            // Crear usuario en Auth
+            const authResponse = await fetch(`${SUPABASE_URL}/auth/v1/signup`, {
+                method: 'POST',
+                headers: {
+                    'apikey': SUPABASE_KEY,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, password })
+            });
+            
+            const authData = await authResponse.json();
+            
+            if (!authResponse.ok) {
+                throw new Error(authData.msg || 'Error al crear usuario');
+            }
+            
+            // Crear perfil
+            const perfilResponse = await fetch(`${SUPABASE_URL}/rest/v1/perfiles`, {
+                method: 'POST',
+                headers: {
+                    'apikey': SUPABASE_KEY,
+                    'Authorization': `Bearer ${token.access_token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    id: authData.user.id,
+                    nombre: nombre,
+                    email: email,
+                    rol_usuario: rol
+                })
+            });
+            
+            if (perfilResponse.ok) {
+                mostrarAlerta('🌸 Usuario creado correctamente', 'success');
+                cerrarFormulario('perfil');
+                await cargarPerfiles();
+            } else {
+                throw new Error('Error al crear perfil');
+            }
+        }
+        
+        // Limpiar formulario
+        document.getElementById('perfil-nombre').value = '';
+        document.getElementById('perfil-email').value = '';
+        document.getElementById('perfil-password').value = '';
+        
+        // Limpiar ID de edición
+        delete document.getElementById('form-perfil').dataset.editId;
+        
+        // Restaurar campo de contraseña
+        const passwordField = document.getElementById('perfil-password');
+        if (passwordField) {
+            passwordField.placeholder = 'Contraseña';
+            passwordField.required = true;
+        }
+        
+        // Restaurar texto del botón
+        const submitBtn = document.querySelector('#form-perfil .submit-btn');
+        if (submitBtn) {
+            submitBtn.textContent = '🌸 Crear Usuario';
+        }
+        
+    } catch (error) {
+        console.error('Error:', error);
+        mostrarAlerta('Error: ' + error.message, 'error');
+    }
+}
+
+async function eliminarPerfil(id) {
+    if (!confirm('¿Estás segura de eliminar este usuario?')) return;
+    
+    try {
+        const token = JSON.parse(localStorage.getItem('admin_token'));
+        
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/perfiles?id=eq.${id}`, {
+            method: 'DELETE',
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${token.access_token}`
+            }
+        });
+        
+        if (response.ok) {
+            mostrarAlerta('✅ Usuario eliminado', 'success');
+            await cargarPerfiles();
+        } else {
+            mostrarAlerta('Error al eliminar', 'error');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        mostrarAlerta('Error de conexión', 'error');
+    }
+}
 function eliminarPerfil(id) { if(confirm('¿Eliminar usuario?')) mostrarAlerta('Usuario eliminado', 'success'); }
 
 // ============================================
