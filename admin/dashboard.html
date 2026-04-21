@@ -1060,80 +1060,92 @@
         </div>
 
         <!-- VENTAS -->
-        <div id="modulo-ventas" class="module-section" style="display: none;">
-            <div class="module-header">
-                <h2>🛍️ Punto de Venta</h2>
-                <p>Gestión completa de ventas</p>
-            </div>
-            
-            <!-- Tarjetas de resumen -->
-            <div class="ventas-cards">
-                <div class="stat-card" onclick="mostrarFormulario('venta')" style="cursor: pointer;">
-                    <div class="stat-icon">➕</div>
-                    <div class="stat-info">
-                        <h3>Nueva Venta</h3>
-                        <p>Registrar venta manual</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">💰</div>
-                    <div class="stat-info">
-                        <h3 id="ventas-hoy-total">$0</h3>
-                        <p>Ventas de hoy</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">📊</div>
-                    <div class="stat-info">
-                        <h3 id="ventas-mes-total">$0</h3>
-                        <p>Ventas del mes</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">🔄</div>
-                    <div class="stat-info">
-                        <h3 id="ventas-cambios-count">0</h3>
-                        <p>Cambios/Devoluciones</p>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Tabla de ventas recientes -->
-            <div class="table-container">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                    <h3>📋 Ventas recientes</h3>
-                    <div>
-                        <input type="text" id="buscador-ventas" placeholder="🔍 Buscar venta..." class="buscador-mini">
-                        <select id="filtro-estado-ventas" class="filtro-mini">
-                            <option value="todos">Todas</option>
-                            <option value="completada">Completadas</option>
-                            <option value="pendiente">Pendientes</option>
-                            <option value="cambiado">Con cambios</option>
-                            <option value="devuelto">Devueltas</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="table-responsive">
-                    <table class="data-table" id="tabla-ventas">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Fecha</th>
-                                <th>Cliente</th>
-                                <th>Productos</th>
-                                <th>Total</th>
-                                <th>Método</th>
-                                <th>Estado</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="ventas-body">
-                            <tr><td colspan="8" style="text-align: center;">Cargando...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
+<!-- MÓDULO DE VENTAS - VERSIÓN MANUAL COMPLETA -->
+<div id="modulo-ventas" class="module-section" style="display: none;">
+    <div class="module-header">
+        <h2>🛍️ Punto de Venta</h2>
+        <p>Gestión completa de ventas</p>
+    </div>
+    
+    <!-- Tarjetas de resumen con DOS BOTONES DE VENTA -->
+    <div class="ventas-cards">
+        <!-- Botón Venta Rápida -->
+        <div class="stat-card" onclick="abrirVentaRapida()" style="cursor: pointer;">
+            <div class="stat-icon">⚡</div>
+            <div class="stat-info">
+                <h3>Venta Rápida</h3>
+                <p>Venta express sin tanto detalle</p>
             </div>
         </div>
+        
+        <!-- Botón Nueva Venta Manual -->
+        <div class="stat-card" onclick="abrirNuevaVenta()" style="cursor: pointer;">
+            <div class="stat-icon">📝</div>
+            <div class="stat-info">
+                <h3>Nueva Venta</h3>
+                <p>Venta completa con detalles</p>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">💰</div>
+            <div class="stat-info">
+                <h3 id="ventas-hoy-total">$0</h3>
+                <p>Ventas de hoy</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">📊</div>
+            <div class="stat-info">
+                <h3 id="ventas-mes-total">$0</h3>
+                <p>Ventas del mes</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">🔄</div>
+            <div class="stat-info">
+                <h3 id="ventas-cambios-count">0</h3>
+                <p>Cambios/Devoluciones</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Tabla de ventas recientes (resto igual) -->
+    <div class="table-container">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
+            <h3>📋 Ventas recientes</h3>
+            <div style="display: flex; gap: 0.5rem;">
+                <input type="text" id="buscador-ventas" placeholder="🔍 Buscar venta..." class="buscador-mini">
+                <select id="filtro-estado-ventas" class="filtro-mini">
+                    <option value="todos">Todas</option>
+                    <option value="completada">Completadas</option>
+                    <option value="pendiente">Pendientes</option>
+                    <option value="cambiado">Con cambios</option>
+                    <option value="devuelto">Devueltas</option>
+                </select>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="data-table" id="tabla-ventas">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Fecha</th>
+                        <th>Cliente</th>
+                        <th>Productos</th>
+                        <th>Total</th>
+                        <th>Método</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="ventas-body">
+                    <tr><td colspan="8" style="text-align: center;">Cargando...</td><tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
         
         <!-- FORMULARIO DE NUEVA VENTA -->
         <div id="form-venta" class="form-modal" style="display: none;">
