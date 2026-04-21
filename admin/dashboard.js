@@ -1540,18 +1540,50 @@ function abrirVentaRapida() {
 
 // Abrir Nueva Venta Manual (el sistema que creamos)
 function abrirNuevaVenta() {
-    // Limpiar carrito antes de abrir
+    console.log('🟢 Abriendo nueva venta...');
+    
+    // Limpiar carrito
     carrito = [];
-    actualizarCarritoUI();
+    if (typeof actualizarCarritoUI === 'function') {
+        actualizarCarritoUI();
+    }
     
     // Establecer fecha actual
-    document.getElementById('venta-fecha').value = new Date().toISOString().split('T')[0];
+    const fechaInput = document.getElementById('venta-fecha');
+    if (fechaInput) {
+        fechaInput.value = new Date().toISOString().split('T')[0];
+    }
+    
+    // Limpiar campos
+    const clienteInput = document.getElementById('venta-cliente');
+    if (clienteInput) clienteInput.value = '';
+    
+    const buscador = document.getElementById('buscador-producto-venta');
+    if (buscador) buscador.value = '';
+    
+    // Ocultar resultados si existen
+    const resultados = document.getElementById('resultados-productos');
+    if (resultados) resultados.style.display = 'none';
+    
+    // Mostrar el modal (FORZADO)
+    const formVenta = document.getElementById('form-venta');
+    if (formVenta) {
+        formVenta.style.display = 'flex';
+        formVenta.classList.add('active');
+        
+        // Scroll al top de la página para ver el modal
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        
+        console.log('✅ Modal de venta abierto');
+    } else {
+        console.error('❌ No se encontró form-venta');
+        alert('Error: No se encuentra el formulario de venta');
+    }
     
     // Cargar productos para el buscador
-    cargarProductosParaVenta();
-    
-    // Mostrar el formulario
-    mostrarFormulario('venta');
+    if (typeof cargarProductosParaVenta === 'function') {
+        cargarProductosParaVenta();
+    }
 }
 
 // ============================================
