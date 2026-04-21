@@ -404,17 +404,34 @@
 
         /* ===== FORMULARIOS ===== */
         .form-modal {
-            background: white;
-            border-radius: 24px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            border: 1px solid #eee;
             display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
         }
-
+        
         .form-modal.active {
-            display: block;
-            animation: fadeIn 0.2s ease;
+            display: flex !important;
+        }
+        
+        .form-modal-content {
+            background: white;
+            border-radius: 20px;
+            max-width: 900px;
+            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            position: relative;
+            margin: auto;
+            top: 5%;
         }
 
         @keyframes fadeIn {
