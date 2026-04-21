@@ -108,7 +108,7 @@ function cambiarModulo(modulo, event = null) {
 async function cargarDatosModulo(modulo) {
     switch(modulo) {
         case 'productos': await cargarProductos(); break;
-        case 'stock': await cargarStock(); break;
+        case 'stock': await cargarstock(); break;
         case 'compras': await cargarProveedoresSelect('compra'); await cargarCompras(); break;
         case 'gastos': await cargarGastos(); break;
         case 'perfiles': await cargarPerfiles(); break;
@@ -907,32 +907,412 @@ function solicitarReposicion(productoId, nombre, talla, color) {
 }
 
 // ===== VENTAS =====
+// ============================================
+// VARIABLES GLOBALES PARA VENTAS
+// ============================================
+let carrito = [];
+let productosDisponibles = [];
+
+// ============================================
+// CARGAR VENTAS
+// ============================================
 async function cargarVentas() {
     try {
-        let url = `${SUPABASE_URL}/rest/v1/ventas?select=*&order=fecha.desc`;
-        if (fechaInicioVentas) url += `&fecha=gte.${fechaInicioVentas.toISOString()}`;
-        if (fechaFinVentas) url += `&fecha=lte.${fechaFinVentas.toISOString()}`;
-        const res = await fetch(url, { headers: { 'apikey': SUPABASE_KEY } });
-        const ventas = await res.json();
-        const tbody = document.querySelector('#tabla-ventas tbody');
-        if (!tbody) return;
-        if (!ventas.length) { tbody.innerHTML = '<tr><td colspan="5">No hay ventas<\/td></tr>'; return; }
-        const hoy = new Date(); hoy.setHours(0,0,0,0);
-        const ventasHoy = ventas.filter(v => new Date(v.fecha) >= hoy);
-        const totalHoy = ventasHoy.reduce((s,v) => s + (v.total||0), 0);
-        if (document.getElementById('stats-ventas-hoy')) document.getElementById('stats-ventas-hoy').textContent = `$${totalHoy.toLocaleString()}`;
-        const fechaInicioMes = new Date(); fechaInicioMes.setDate(1); fechaInicioMes.setHours(0,0,0,0);
-        const ventasMes = ventas.filter(v => new Date(v.fecha) >= fechaInicioMes);
-        const totalMes = ventasMes.reduce((s,v) => s + (v.total||0), 0);
-        if (document.getElementById('stats-ventas-mes')) document.getElementById('stats-ventas-mes').textContent = `$${totalMes.toLocaleString()}`;
-        tbody.innerHTML = ventas.map(v => `<tr>
-            <td>${new Date(v.fecha).toLocaleString()}</td>
-            <td>${v.productos || 'Venta'}</td>
-            <td>$${(v.total || 0).toLocaleString()}</td>
-            <td><span style="background:#f0f0f0;padding:0.2rem 0.8rem;border-radius:20px;">${v.metodo_pago || 'Efectivo'}</span></td>
-            <td><button class="action-btn" onclick="verFactura(${v.id})"><i class="fas fa-receipt"></i></button></td>
-        </tr>`).join('');
-    } catch(e) { console.error(e); }
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/ventas?order=fecha.desc`, {
+            headers: { 'apikey': SUPABASE_KEY }
+        });
+        
+        if (!response.ok) throw new Error('Error al cargar ventas');
+        
+        const ventas = await response.json();
+        
+        // Calcular totales
+        const hoy = new Date().toISOString().split('T')[0];
+        const ventasHoy = ventas.filter(v => v.fecha.split('T')[0] === hoy);
+        const totalHoy = ventasHoy.reduce((sum, v) => sum + (v.total || 0), 0);
+        
+        const fechaInicio = new Date();
+        fechaInicio.setDate(1);
+        const ventasMes = ventas.filter(v => new Date(v.fecha) >= fechaInicio);
+        const totalMes = ventasMes.reduce((sum, v) => sum + (v.total || 0), 0);
+        
+        const cambiosCount = ventas.filter(v => v.estado === 'cambiado' || v.estado === 'devuelto').length;
+        
+        document.getElementById('ventas-hoy-total').textContent = `$${totalHoy.toLocaleString()}`;
+        document.getElementById('ventas-mes-total').textContent = `$${totalMes.toLocaleString()}`;
+        document.getElementById('ventas-cambios-count').textContent = cambiosCount;
+        
+        // Mostrar tabla
+        const tbody = document.getElementById('ventas-body');
+        tbody.innerHTML = ventas.map(venta => {
+            let estadoClass = '';
+            let estadoText = '';
+            
+            switch(venta.estado) {
+                case 'completada': estadoClass = 'estado-pagada'; estadoText = '✅ Completada'; break;
+                case 'pendiente': estadoClass = 'estado-pendiente'; estadoText = '⏳ Pendiente'; break;
+                case 'cambiado': estadoClass = 'estado-badge-cambiado'; estadoText = '🔄 Cambio solicitado'; break;
+                case 'devuelto': estadoClass = 'estado-badge-devuelto'; estadoText = '📦 Devuelto'; break;
+                default: estadoClass = 'estado-pagada'; estadoText = '✅ Completada';
+            }
+            
+            return `
+                <tr>
+                    <td>#${venta.id}</td>
+                    <td>${new Date(venta.fecha).toLocaleDateString()}</td>
+                    <td>${venta.cliente || 'Consumidor final'}</td>
+                    <td>${venta.productos || '-'}</td>
+                    <td>$${(venta.total || 0).toLocaleString()}</td>
+                    <td>${venta.metodo_pago || 'Efectivo'}</td>
+                    <td><span class="estado-badge ${estadoClass}">${estadoText}</span></td>
+                    <td>
+                        <button class="action-btn" onclick="verDetalleVenta(${venta.id})" title="Ver detalle">👁️</button>
+                        <button class="action-btn" onclick="editarVenta(${venta.id})" title="Editar">✏️</button>
+                        <button class="action-btn" onclick="solicitarCambio(${venta.id})" title="Solicitar cambio">🔄</button>
+                        <button class="action-btn delete-btn" onclick="eliminarVenta(${venta.id})" title="Eliminar">🗑️</button>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+        
+        // Configurar buscador y filtro
+        configurarFiltrosVentas(ventas);
+        
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+function configurarFiltrosVentas(ventas) {
+    const buscador = document.getElementById('buscador-ventas');
+    const filtro = document.getElementById('filtro-estado-ventas');
+    
+    if (buscador) {
+        buscador.oninput = () => filtrarVentas(ventas);
+    }
+    if (filtro) {
+        filtro.onchange = () => filtrarVentas(ventas);
+    }
+}
+
+function filtrarVentas(ventasOriginales) {
+    const busqueda = document.getElementById('buscador-ventas')?.value.toLowerCase() || '';
+    const estado = document.getElementById('filtro-estado-ventas')?.value || 'todos';
+    
+    let filtradas = [...ventasOriginales];
+    
+    if (estado !== 'todos') {
+        filtradas = filtradas.filter(v => v.estado === estado);
+    }
+    
+    if (busqueda) {
+        filtradas = filtradas.filter(v => 
+            v.id.toString().includes(busqueda) ||
+            (v.cliente && v.cliente.toLowerCase().includes(busqueda)) ||
+            (v.productos && v.productos.toLowerCase().includes(busqueda))
+        );
+    }
+    
+    const tbody = document.getElementById('ventas-body');
+    // Actualizar tabla con ventas filtradas...
+}
+
+// ============================================
+// NUEVA VENTA
+// ============================================
+async function cargarProductosParaVenta() {
+    const response = await fetch(`${SUPABASE_URL}/rest/v1/vista_productos_completa`, {
+        headers: { 'apikey': SUPABASE_KEY }
+    });
+    productosDisponibles = await response.json();
+    
+    const buscador = document.getElementById('buscador-producto-venta');
+    const resultados = document.getElementById('resultados-productos');
+    
+    buscador.oninput = () => {
+        const texto = buscador.value.toLowerCase();
+        if (texto.length < 2) {
+            resultados.style.display = 'none';
+            return;
+        }
+        
+        const filtrados = productosDisponibles.filter(p => 
+            p.nombre.toLowerCase().includes(texto) || 
+            p.codigo?.toLowerCase().includes(texto)
+        );
+        
+        if (filtrados.length === 0) {
+            resultados.style.display = 'none';
+            return;
+        }
+        
+        resultados.innerHTML = filtrados.slice(0, 10).map(p => `
+            <div class="resultado-item" onclick="agregarProductoAlCarrito(${p.id})">
+                <strong>${p.nombre}</strong><br>
+                <small>Código: ${p.codigo} | Precio: $${Math.min(...(p.variantes?.map(v => v.precio_venta) || [0])).toLocaleString()}</small>
+            </div>
+        `).join('');
+        resultados.style.display = 'block';
+    };
+}
+
+function agregarProductoAlCarrito(productoId) {
+    const producto = productosDisponibles.find(p => p.id === productoId);
+    if (!producto) return;
+    
+    // Mostrar selector de talla y color
+    const variantes = producto.variantes || [];
+    if (variantes.length === 1 && variantes[0].colores?.length === 1) {
+        // Solo una opción, agregar directamente
+        agregarItemCarrito(producto, variantes[0], variantes[0].colores?.[0]);
+    } else {
+        mostrarSelectorVariante(producto, variantes);
+    }
+    
+    document.getElementById('resultados-productos').style.display = 'none';
+    document.getElementById('buscador-producto-venta').value = '';
+}
+
+function agregarItemCarrito(producto, variante, color) {
+    const precio = variante.precio_venta;
+    const itemExistente = carrito.find(i => 
+        i.producto_id === producto.id && 
+        i.talla === variante.talla && 
+        i.color === (color?.nombre || 'Sin color')
+    );
+    
+    if (itemExistente) {
+        itemExistente.cantidad++;
+        itemExistente.subtotal = itemExistente.cantidad * itemExistente.precio;
+    } else {
+        carrito.push({
+            producto_id: producto.id,
+            producto_nombre: producto.nombre,
+            talla: variante.talla,
+            color: color?.nombre || 'Sin color',
+            color_codigo: color?.codigo || '#ccc',
+            precio: precio,
+            cantidad: 1,
+            subtotal: precio
+        });
+    }
+    
+    actualizarCarritoUI();
+}
+
+function actualizarCarritoUI() {
+    const tbody = document.getElementById('carrito-body');
+    const total = carrito.reduce((sum, item) => sum + item.subtotal, 0);
+    
+    tbody.innerHTML = carrito.map((item, idx) => `
+        <tr>
+            <td>${item.producto_nombre}</td>
+            <td>${item.talla}</td>
+            <td><div style="display: flex; align-items: center; gap: 5px;"><div style="width: 15px; height: 15px; background: ${item.color_codigo}; border-radius: 50%;"></div>${item.color}</div></td>
+            <td>$${item.precio.toLocaleString()}</td>
+            <td><input type="number" class="cantidad-input" value="${item.cantidad}" min="1" onchange="actualizarCantidadCarrito(${idx}, this.value)"></td>
+            <td>$${item.subtotal.toLocaleString()}</td>
+            <td><button class="btn-eliminar-item" onclick="eliminarItemCarrito(${idx})">🗑️</button></td>
+        </tr>
+    `).join('');
+    
+    document.getElementById('carrito-total').textContent = `$${total.toLocaleString()}`;
+}
+
+function actualizarCantidadCarrito(index, nuevaCantidad) {
+    const cantidad = parseInt(nuevaCantidad);
+    if (cantidad > 0) {
+        carrito[index].cantidad = cantidad;
+        carrito[index].subtotal = cantidad * carrito[index].precio;
+        actualizarCarritoUI();
+    }
+}
+
+function eliminarItemCarrito(index) {
+    carrito.splice(index, 1);
+    actualizarCarritoUI();
+}
+
+async function guardarVenta() {
+    if (carrito.length === 0) {
+        mostrarAlerta('Agrega al menos un producto', 'error');
+        return;
+    }
+    
+    const fecha = document.getElementById('venta-fecha').value;
+    const cliente = document.getElementById('venta-cliente').value || 'Consumidor final';
+    const metodoPago = document.getElementById('venta-metodo').value;
+    const total = carrito.reduce((sum, item) => sum + item.subtotal, 0);
+    const productosTexto = carrito.map(i => `${i.producto_nombre} (${i.talla}) x${i.cantidad}`).join(', ');
+    
+    const nuevaVenta = {
+        fecha: fecha,
+        cliente: cliente,
+        productos: productosTexto,
+        total: total,
+        metodo_pago: metodoPago,
+        estado: 'completada',
+        created_at: new Date().toISOString()
+    };
+    
+    try {
+        const token = JSON.parse(localStorage.getItem('admin_token'));
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/ventas`, {
+            method: 'POST',
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${token.access_token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(nuevaVenta)
+        });
+        
+        if (response.ok) {
+            mostrarAlerta('✅ Venta registrada correctamente', 'success');
+            cerrarFormulario('venta');
+            carrito = [];
+            await cargarVentas();
+        } else {
+            mostrarAlerta('Error al registrar venta', 'error');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        mostrarAlerta('Error de conexión', 'error');
+    }
+}
+
+// ============================================
+// EDITAR, ELIMINAR Y CAMBIOS
+// ============================================
+let ventaEditando = null;
+
+async function editarVenta(id) {
+    const response = await fetch(`${SUPABASE_URL}/rest/v1/ventas?id=eq.${id}`, {
+        headers: { 'apikey': SUPABASE_KEY }
+    });
+    const ventas = await response.json();
+    ventaEditando = ventas[0];
+    
+    document.getElementById('editar-venta-id').value = ventaEditando.id;
+    document.getElementById('editar-venta-fecha').value = ventaEditando.fecha.split('T')[0];
+    document.getElementById('editar-venta-cliente').value = ventaEditando.cliente || '';
+    document.getElementById('editar-venta-metodo').value = ventaEditando.metodo_pago || 'Efectivo';
+    document.getElementById('editar-venta-notas').value = ventaEditando.notas || '';
+    document.getElementById('editar-venta-estado').value = ventaEditando.estado || 'completada';
+    
+    document.getElementById('modal-editar-venta').style.display = 'block';
+}
+
+async function actualizarVenta() {
+    const id = document.getElementById('editar-venta-id').value;
+    const updateData = {
+        fecha: document.getElementById('editar-venta-fecha').value,
+        cliente: document.getElementById('editar-venta-cliente').value,
+        metodo_pago: document.getElementById('editar-venta-metodo').value,
+        notas: document.getElementById('editar-venta-notas').value,
+        estado: document.getElementById('editar-venta-estado').value
+    };
+    
+    try {
+        const token = JSON.parse(localStorage.getItem('admin_token'));
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/ventas?id=eq.${id}`, {
+            method: 'PATCH',
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${token.access_token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(updateData)
+        });
+        
+        if (response.ok) {
+            mostrarAlerta('✅ Venta actualizada correctamente', 'success');
+            cerrarModalEditarVenta();
+            await cargarVentas();
+        } else {
+            mostrarAlerta('Error al actualizar', 'error');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        mostrarAlerta('Error de conexión', 'error');
+    }
+}
+
+async function eliminarVenta(id = null) {
+    const ventaId = id || document.getElementById('editar-venta-id').value;
+    if (!confirm('¿Estás segura de eliminar esta venta? Esta acción no se puede deshacer.')) return;
+    
+    try {
+        const token = JSON.parse(localStorage.getItem('admin_token'));
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/ventas?id=eq.${ventaId}`, {
+            method: 'DELETE',
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${token.access_token}`
+            }
+        });
+        
+        if (response.ok) {
+            mostrarAlerta('✅ Venta eliminada correctamente', 'success');
+            cerrarModalEditarVenta();
+            await cargarVentas();
+        } else {
+            mostrarAlerta('Error al eliminar', 'error');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        mostrarAlerta('Error de conexión', 'error');
+    }
+}
+
+function solicitarCambio(id) {
+    const motivo = prompt('¿Cuál es el motivo del cambio/devolución?\nEj: Talla incorrecta, producto defectuoso, cambio de color, etc.');
+    if (motivo) {
+        registrarCambio(id, motivo);
+    }
+}
+
+async function registrarCambio(id, motivo) {
+    try {
+        const token = JSON.parse(localStorage.getItem('admin_token'));
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/ventas?id=eq.${id}`, {
+            method: 'PATCH',
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${token.access_token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                estado: 'cambiado',
+                notas: `Cambio solicitado: ${motivo} - Fecha: ${new Date().toLocaleString()}`
+            })
+        });
+        
+        if (response.ok) {
+            mostrarAlerta(`🔄 Cambio registrado: ${motivo}`, 'success');
+            await cargarVentas();
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+function verDetalleVenta(id) {
+        verFactura(id);
+}
+
+function cerrarModalEditarVenta() {
+    document.getElementById('modal-editar-venta').style.display = 'none';
+    ventaEditando = null;
+}
+
+// Inicializar buscador de productos al abrir el formulario
+function mostrarFormularioVenta() {
+    mostrarFormulario('venta');
+    carrito = [];
+    actualizarCarritoUI();
+    document.getElementById('venta-fecha').value = new Date().toISOString().split('T')[0];
+    cargarProductosParaVenta();
 }
 
 function verFactura(id) { window.open(`factura.html?id=${id}`, '_blank'); }
