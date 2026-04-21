@@ -5,7 +5,7 @@
 // Roles posibles (esto es lo que preguntaste)
 const ROLES = {
     ADMIN_TOTAL: 'admin_total',           // Dueña - Ve todo
-    ADMIN_PRODUCTOS: 'admin_productos',   // Encargada de inventario
+    ADMIN_PRODUCTOS: 'admin_productos',   // Encargada de stock
     ADMIN_VENTAS: 'admin_ventas',         // Vendedora
     ADMIN_CONTABILIDAD: 'admin_contabilidad', // Contadora
     ADMIN_CAJA: 'admin_caja'              // Cajera
@@ -17,10 +17,10 @@ const ROLES_CONFIG = {
     [ROLES.ADMIN_TOTAL]: {
         nombre: "👑 Administradora General",
         color: "#ff6b6b",
-        modulos_visibles: ['productos', 'inventario', 'compras', 'gastos', 'proveedores', 'ventas', 'perfiles', 'contabilidad'],
+        modulos_visibles: ['productos', 'stock', 'compras', 'gastos', 'proveedores', 'ventas', 'perfiles', 'contabilidad'],
         permisos: {
             productos: { ver: true, crear: true, editar: true, eliminar: true },
-            inventario: { ver: true, ajustar: true },
+            stock: { ver: true, ajustar: true },
             compras: { ver: true, crear: true, editar: true, eliminar: true },
             gastos: { ver: true, crear: true, editar: true, eliminar: true },
             proveedores: { ver: true, crear: true, editar: true, eliminar: true },
@@ -31,14 +31,14 @@ const ROLES_CONFIG = {
         }
     },
     
-    // 📦 Administradora de Productos - Encargada de inventario
+    // 📦 Administradora de Productos - Encargada de stock
     [ROLES.ADMIN_PRODUCTOS]: {
         nombre: "📦 Administradora de Productos",
         color: "#4a90e2",
-        modulos_visibles: ['productos', 'inventario', 'compras', 'proveedores'],
+        modulos_visibles: ['productos', 'stock', 'compras', 'proveedores'],
         permisos: {
             productos: { ver: true, crear: true, editar: true, eliminar: true },
-            inventario: { ver: true, ajustar: true },
+            stock: { ver: true, ajustar: true },
             compras: { ver: true, crear: true, editar: false, eliminar: false },
             gastos: { ver: false, crear: false, editar: false, eliminar: false },
             proveedores: { ver: true, crear: true, editar: true, eliminar: false },
@@ -53,10 +53,10 @@ const ROLES_CONFIG = {
     [ROLES.ADMIN_VENTAS]: {
         nombre: "🛍️ Administradora de Ventas",
         color: "#27ae60",
-        modulos_visibles: ['productos', 'inventario', 'ventas'],
+        modulos_visibles: ['productos', 'stock', 'ventas'],
         permisos: {
             productos: { ver: true, crear: false, editar: false, eliminar: false },
-            inventario: { ver: true, ajustar: false },
+            stock: { ver: true, ajustar: false },
             compras: { ver: false, crear: false, editar: false, eliminar: false },
             gastos: { ver: false, crear: false, editar: false, eliminar: false },
             proveedores: { ver: false, crear: false, editar: false, eliminar: false },
@@ -74,7 +74,7 @@ const ROLES_CONFIG = {
         modulos_visibles: ['compras', 'gastos', 'proveedores', 'ventas', 'contabilidad'],
         permisos: {
             productos: { ver: true, crear: false, editar: false, eliminar: false },
-            inventario: { ver: true, ajustar: false },
+            stock: { ver: true, ajustar: false },
             compras: { ver: true, crear: true, editar: true, eliminar: false },
             gastos: { ver: true, crear: true, editar: true, eliminar: false },
             proveedores: { ver: true, crear: true, editar: true, eliminar: false },
@@ -92,7 +92,7 @@ const ROLES_CONFIG = {
         modulos_visibles: ['productos', 'ventas'],
         permisos: {
             productos: { ver: true, crear: false, editar: false, eliminar: false },
-            inventario: { ver: false, ajustar: false },
+            stock: { ver: false, ajustar: false },
             compras: { ver: false, crear: false, editar: false, eliminar: false },
             gastos: { ver: false, crear: false, editar: false, eliminar: false },
             proveedores: { ver: false, crear: false, editar: false, eliminar: false },
@@ -215,7 +215,7 @@ function filtrarModulosPorPermisos() {
         return;
     }
     
-    const todasSecciones = ['productos', 'inventario', 'compras', 'gastos', 'proveedores', 'ventas', 'perfiles', 'contabilidad'];
+    const todasSecciones = ['productos', 'stock', 'compras', 'gastos', 'proveedores', 'ventas', 'perfiles', 'contabilidad'];
     
     console.log('🔍 Filtrando secciones...');
     
