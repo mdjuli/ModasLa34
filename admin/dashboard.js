@@ -1703,15 +1703,49 @@ async function cargarContabilidad() {
     } catch(e) { console.error(e); }
 }
 
-// ===== UTILITARIOS =====
-function mostrarFormulario(tipo) { document.getElementById(`form-${tipo}`)?.classList.add('active'); }
+// ===== UTILITARIOS ACTUALIZADOS =====
+function mostrarFormulario(tipo) {
+    const form = document.getElementById(`form-${tipo}`);
+    if (form) {
+        form.classList.add('active');
+        form.style.display = 'block';  // ← FORZAR display block
+        console.log(`✅ Mostrando formulario: ${tipo}`);
+    } else {
+        console.error(`❌ No existe form-${tipo}`);
+    }
+}
+
 function cerrarFormulario(tipo) {
     const form = document.getElementById(`form-${tipo}`);
-    if (form) form.classList.remove('active');
+    if (form) {
+        form.classList.remove('active');
+        form.style.display = 'none';  // ← FORZAR display none
+        console.log(`✅ Cerrando formulario: ${tipo}`);
+    }
+    
+    // Limpieza específica por tipo
     if (tipo === 'producto') {
         delete document.getElementById('form-producto')?.dataset.editId;
         const btn = document.querySelector('#form-producto .submit-btn');
         if (btn) btn.textContent = 'Guardar Producto';
+        // Limpiar precio compra
+        const precioCompraInput = document.getElementById('producto-precio-compra');
+        if (precioCompraInput) precioCompraInput.value = '';
+    }
+    
+    if (tipo === 'venta') {
+        // Limpiar carrito al cerrar
+        carrito = [];
+        if (typeof actualizarCarritoUI === 'function') {
+            actualizarCarritoUI();
+        }
+        // Limpiar campos
+        const clienteInput = document.getElementById('venta-cliente');
+        if (clienteInput) clienteInput.value = '';
+        const buscador = document.getElementById('buscador-producto-venta');
+        if (buscador) buscador.value = '';
+        const resultados = document.getElementById('resultados-productos');
+        if (resultados) resultados.style.display = 'none';
     }
 }
 function mostrarAlerta(msg, tipo) {
