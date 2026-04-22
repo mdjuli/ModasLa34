@@ -5,37 +5,64 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
     <title>📊 Contabilidad - Modas La 34</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', 'Poppins', system-ui, -apple-system, sans-serif;
         }
 
         body {
-            background: #f5f0f2;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0f0f1a;
+            color: #e8e8f0;
             min-height: 100vh;
+        }
+
+        /* ===== SCROLL PERSONALIZADO ===== */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1a1a2e;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d4a5a9;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #ffb6c1;
         }
 
         /* ===== HEADER ===== */
         .header {
-            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
-            color: white;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
             padding: 1rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
             gap: 1rem;
-            box-shadow: 0 4px 15px rgba(255, 154, 158, 0.3);
+            border-bottom: 1px solid rgba(212, 165, 169, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
         .header h1 {
-            font-size: 1.6rem;
+            font-size: 1.4rem;
             display: flex;
             align-items: center;
             gap: 10px;
+            font-weight: 600;
+        }
+
+        .header h1 span {
+            color: #d4a5a9;
         }
 
         .header-buttons {
@@ -44,34 +71,35 @@
         }
 
         .btn-outline {
-            background: rgba(255,255,255,0.2);
-            color: white;
+            background: rgba(212, 165, 169, 0.15);
+            color: #d4a5a9;
             text-decoration: none;
             padding: 0.5rem 1.2rem;
-            border-radius: 50px;
+            border-radius: 40px;
             font-weight: 500;
             transition: all 0.3s;
-            border: none;
+            border: 1px solid rgba(212, 165, 169, 0.3);
             cursor: pointer;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
         .btn-outline:hover {
-            background: rgba(255,255,255,0.3);
+            background: #d4a5a9;
+            color: #1a1a2e;
             transform: translateY(-2px);
         }
 
         /* ===== CONTENEDOR PRINCIPAL ===== */
         .container {
             padding: 1.5rem;
-            max-width: 1400px;
+            max-width: 1600px;
             margin: 0 auto;
         }
 
         /* ===== PERIODO SELECTOR ===== */
         .periodo-card {
-            background: white;
-            border-radius: 16px;
+            background: #1a1a2e;
+            border-radius: 20px;
             padding: 1rem 1.5rem;
             margin-bottom: 1.5rem;
             display: flex;
@@ -79,8 +107,7 @@
             flex-wrap: wrap;
             align-items: center;
             justify-content: space-between;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            border: 1px solid #ffe0e5;
+            border: 1px solid rgba(212, 165, 169, 0.2);
         }
 
         .periodo-buttons {
@@ -90,24 +117,25 @@
         }
 
         .periodo-btn {
-            background: #faf0f2;
-            border: 1px solid #ffe0e5;
+            background: #0f0f1a;
+            border: 1px solid rgba(212, 165, 169, 0.3);
             padding: 0.5rem 1.2rem;
-            border-radius: 50px;
+            border-radius: 40px;
             cursor: pointer;
             font-weight: 500;
-            color: #e85d6f;
+            color: #a0a0b0;
             transition: all 0.2s;
         }
 
         .periodo-btn.active {
-            background: #ffb6c1;
-            color: white;
-            border-color: #ff9a9e;
+            background: #d4a5a9;
+            color: #1a1a2e;
+            border-color: #d4a5a9;
         }
 
-        .periodo-btn:hover {
-            background: #ffd4da;
+        .periodo-btn:hover:not(.active) {
+            background: rgba(212, 165, 169, 0.2);
+            color: #d4a5a9;
         }
 
         .periodo-custom {
@@ -117,63 +145,85 @@
         }
 
         .periodo-custom input {
-            padding: 0.5rem;
-            border: 1px solid #ffe0e5;
-            border-radius: 10px;
-            font-size: 0.9rem;
+            padding: 0.5rem 0.8rem;
+            border: 1px solid rgba(212, 165, 169, 0.3);
+            border-radius: 12px;
+            font-size: 0.85rem;
+            background: #0f0f1a;
+            color: #e8e8f0;
         }
 
         .btn-aplicar {
-            background: #ff9a9e;
-            color: white;
+            background: #d4a5a9;
+            color: #1a1a2e;
             border: none;
             padding: 0.5rem 1rem;
-            border-radius: 50px;
+            border-radius: 40px;
             cursor: pointer;
-            font-weight: 500;
+            font-weight: 600;
         }
 
         /* ===== TARJETAS RESUMEN ===== */
         .resumen-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 1rem;
             margin-bottom: 1.5rem;
         }
 
         .resumen-card {
-            background: white;
-            border-radius: 16px;
-            padding: 1rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            border-left: 4px solid #ffb6c1;
-            transition: transform 0.2s;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border-radius: 20px;
+            padding: 1.2rem;
+            border: 1px solid rgba(212, 165, 169, 0.2);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .resumen-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: #d4a5a9;
+            opacity: 0;
+            transition: opacity 0.3s;
         }
 
         .resumen-card:hover {
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            border-color: rgba(212, 165, 169, 0.5);
+        }
+
+        .resumen-card:hover::before {
+            opacity: 1;
         }
 
         .resumen-card h4 {
-            color: #e85d6f;
-            font-size: 0.75rem;
+            color: #a0a0b0;
+            font-size: 0.7rem;
             text-transform: uppercase;
             letter-spacing: 1px;
             margin-bottom: 0.5rem;
         }
 
         .resumen-card .valor {
-            font-size: 1.5rem;
-            font-weight: bold;
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: -1px;
         }
 
         .resumen-card .trend {
             font-size: 0.7rem;
-            margin-top: 0.3rem;
+            margin-top: 0.5rem;
         }
 
-        .positivo { color: #27ae60; }
-        .negativo { color: #ff4757; }
+        .positivo { color: #4ade80; }
+        .negativo { color: #f87171; }
+        .neutral { color: #fbbf24; }
 
         /* ===== TABS ===== */
         .tabs {
@@ -181,29 +231,30 @@
             gap: 0.3rem;
             margin-bottom: 1.5rem;
             flex-wrap: wrap;
-            border-bottom: 2px solid #ffe0e5;
+            border-bottom: 1px solid rgba(212, 165, 169, 0.2);
             padding-bottom: 0.5rem;
         }
 
         .tab-btn {
             background: none;
             border: none;
-            padding: 0.7rem 1.5rem;
-            font-size: 0.95rem;
-            font-weight: 600;
-            color: #e85d6f;
+            padding: 0.6rem 1.2rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #a0a0b0;
             cursor: pointer;
-            border-radius: 50px;
+            border-radius: 40px;
             transition: all 0.2s;
         }
 
         .tab-btn:hover {
-            background: #faf0f2;
+            background: rgba(212, 165, 169, 0.1);
+            color: #d4a5a9;
         }
 
         .tab-btn.active {
-            background: #ffb6c1;
-            color: white;
+            background: #d4a5a9;
+            color: #1a1a2e;
         }
 
         .tab-content {
@@ -216,12 +267,10 @@
 
         /* ===== LIBRO DIARIO (TABLA PRINCIPAL) ===== */
         .libro-card {
-            background: white;
-            border-radius: 20px;
+            background: #1a1a2e;
+            border-radius: 24px;
             padding: 1.5rem;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            border: 1px solid #ffe0e5;
-            overflow-x: auto;
+            border: 1px solid rgba(212, 165, 169, 0.2);
         }
 
         .libro-header {
@@ -234,18 +283,125 @@
         }
 
         .libro-header h2 {
-            color: #e85d6f;
-            font-size: 1.3rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #d4a5a9;
         }
 
         .btn-export {
-            background: #ffb6c1;
-            color: white;
-            border: none;
+            background: rgba(212, 165, 169, 0.15);
+            color: #d4a5a9;
+            border: 1px solid rgba(212, 165, 169, 0.3);
             padding: 0.5rem 1rem;
-            border-radius: 50px;
+            border-radius: 40px;
             cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+        }
+
+        .btn-export:hover {
+            background: #d4a5a9;
+            color: #1a1a2e;
+        }
+
+        /* ===== ASIENTOS AGRUPADOS ===== */
+        .asiento-group {
+            background: #0f0f1a;
+            border-radius: 16px;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            border: 1px solid rgba(212, 165, 169, 0.15);
+            transition: all 0.2s;
+        }
+
+        .asiento-group:hover {
+            border-color: rgba(212, 165, 169, 0.4);
+        }
+
+        .asiento-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.2rem;
+            background: rgba(212, 165, 169, 0.05);
+            border-bottom: 1px solid rgba(212, 165, 169, 0.1);
+            cursor: pointer;
+        }
+
+        .asiento-header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .asiento-numero {
+            font-weight: 700;
+            font-size: 1rem;
+            color: #d4a5a9;
+            background: rgba(212, 165, 169, 0.15);
+            padding: 0.2rem 0.8rem;
+            border-radius: 20px;
+        }
+
+        .asiento-fecha {
+            font-size: 0.8rem;
+            color: #a0a0b0;
+        }
+
+        .asiento-referencia {
+            font-weight: 500;
             font-size: 0.85rem;
+        }
+
+        .asiento-tipo {
+            font-size: 0.7rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            background: rgba(74, 222, 128, 0.15);
+            color: #4ade80;
+        }
+
+        .asiento-tipo.compra {
+            background: rgba(56, 189, 248, 0.15);
+            color: #38bdf8;
+        }
+
+        .asiento-tipo.gasto {
+            background: rgba(248, 113, 113, 0.15);
+            color: #f87171;
+        }
+
+        .asiento-tipo.manual {
+            background: rgba(251, 191, 36, 0.15);
+            color: #fbbf24;
+        }
+
+        .asiento-header-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .asiento-total {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #d4a5a9;
+        }
+
+        .asiento-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .asiento-body {
+            padding: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .asiento-body.collapsed {
+            display: none;
         }
 
         .asientos-table {
@@ -254,135 +410,60 @@
         }
 
         .asientos-table th {
-            background: #faf0f2;
-            color: #e85d6f;
-            padding: 0.8rem;
             text-align: left;
+            padding: 0.8rem 1.2rem;
+            background: rgba(0, 0, 0, 0.2);
+            font-size: 0.7rem;
             font-weight: 600;
-            font-size: 0.85rem;
-            border-bottom: 2px solid #ffb6c1;
+            color: #a0a0b0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .asientos-table td {
-            padding: 0.8rem;
-            border-bottom: 1px solid #ffe0e5;
-            vertical-align: top;
-        }
-
-        .asiento-row {
-            background: #fff;
-            transition: background 0.2s;
-        }
-
-        .asiento-row:hover {
-            background: #fffafb;
-        }
-
-        .asiento-fila {
-            border-left: 3px solid transparent;
-        }
-
-        .asiento-fila.primer-fila {
-            border-left-color: #ffb6c1;
-        }
-
-        .detalle-cuentas {
+            padding: 0.8rem 1.2rem;
+            border-bottom: 1px solid rgba(212, 165, 169, 0.08);
             font-size: 0.85rem;
-            line-height: 1.6;
         }
 
-        .detalle-linea {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.2rem 0;
-            border-bottom: 1px dashed #ffe0e5;
-        }
-
-        .detalle-linea:last-child {
+        .asientos-table tr:last-child td {
             border-bottom: none;
         }
 
-        .cuenta-nombre {
-            font-weight: 500;
-            color: #4a4a4a;
-        }
-
-        .cuenta-monto {
-            font-family: monospace;
-            font-size: 0.85rem;
-        }
-
         .monto-debito {
-            color: #27ae60;
+            color: #4ade80;
+            font-weight: 500;
         }
 
         .monto-credito {
-            color: #ff4757;
-        }
-
-        .asiento-actions {
-            display: flex;
-            gap: 0.5rem;
-            justify-content: center;
-        }
-
-        .btn-editar {
-            background: #ffb6c1;
-            color: white;
-            border: none;
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 0.75rem;
-            transition: all 0.2s;
-        }
-
-        .btn-editar:hover {
-            background: #ff9a9e;
-            transform: scale(1.02);
-        }
-
-        .btn-eliminar {
-            background: #ffd4da;
-            color: #e85d6f;
-            border: none;
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 0.75rem;
-            transition: all 0.2s;
-        }
-
-        .btn-eliminar:hover {
-            background: #ffb6c1;
-            color: white;
+            color: #f87171;
+            font-weight: 500;
         }
 
         .totales-footer {
             margin-top: 1rem;
             padding-top: 1rem;
-            border-top: 2px solid #ffb6c1;
+            border-top: 2px solid rgba(212, 165, 169, 0.2);
             text-align: right;
             font-weight: bold;
-            background: #faf0f2;
+            background: rgba(0, 0, 0, 0.2);
             padding: 1rem;
             border-radius: 12px;
         }
 
         /* ===== ESTADO RESULTADOS ===== */
         .estado-card, .balance-card, .mayor-card {
-            background: white;
-            border-radius: 20px;
+            background: #1a1a2e;
+            border-radius: 24px;
             padding: 1.5rem;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            border: 1px solid #ffe0e5;
+            border: 1px solid rgba(212, 165, 169, 0.2);
         }
 
         .estado-card h2, .balance-card h2, .mayor-card h2 {
-            color: #e85d6f;
+            color: #d4a5a9;
             margin-bottom: 1.5rem;
-            font-size: 1.3rem;
+            font-size: 1.1rem;
+            font-weight: 600;
         }
 
         .estado-table {
@@ -392,13 +473,13 @@
 
         .estado-table td {
             padding: 0.6rem;
-            border-bottom: 1px solid #ffe0e5;
+            border-bottom: 1px solid rgba(212, 165, 169, 0.08);
         }
 
         .estado-table tr.total-row {
-            background: #faf0f2;
+            background: rgba(212, 165, 169, 0.08);
             font-weight: bold;
-            border-top: 2px solid #ffb6c1;
+            border-top: 2px solid rgba(212, 165, 169, 0.2);
         }
 
         .estado-table .valor {
@@ -413,47 +494,80 @@
         }
 
         .balance-section h3 {
-            color: #e85d6f;
+            color: #d4a5a9;
             margin-bottom: 1rem;
-            font-size: 1rem;
+            font-size: 0.9rem;
+            font-weight: 600;
         }
 
-        /* ===== MODAL ===== */
+        /* ===== MAYOR DE CUENTAS ===== */
+        .cuenta-selector {
+            margin-bottom: 1.5rem;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .cuenta-selector select {
+            padding: 0.7rem 1rem;
+            border: 1px solid rgba(212, 165, 169, 0.3);
+            border-radius: 12px;
+            min-width: 250px;
+            background: #0f0f1a;
+            color: #e8e8f0;
+        }
+
+        .mayor-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .mayor-table th, .mayor-table td {
+            padding: 0.6rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(212, 165, 169, 0.08);
+        }
+
+        /* ===== MODALES ===== */
         .modal {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 1000;
-            animation: fadeIn 0.2s ease;
         }
 
         .modal-content {
-            background: white;
+            background: #1a1a2e;
             border-radius: 24px;
             width: 90%;
             max-width: 800px;
-            max-height: 90vh;
+            max-height: 85vh;
             overflow-y: auto;
-            animation: slideUp 0.3s ease;
+            border: 1px solid rgba(212, 165, 169, 0.3);
         }
 
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1.5rem;
-            border-bottom: 2px solid #ffe0e5;
+            padding: 1.2rem 1.5rem;
+            border-bottom: 1px solid rgba(212, 165, 169, 0.2);
+            position: sticky;
+            top: 0;
+            background: #1a1a2e;
         }
 
         .modal-header h2 {
-            color: #e85d6f;
-            font-size: 1.3rem;
+            color: #d4a5a9;
+            font-size: 1.1rem;
         }
 
         .close-modal {
@@ -461,7 +575,11 @@
             border: none;
             font-size: 1.5rem;
             cursor: pointer;
-            color: #e85d6f;
+            color: #a0a0b0;
+        }
+
+        .close-modal:hover {
+            color: #f87171;
         }
 
         .modal-body {
@@ -469,34 +587,46 @@
         }
 
         .form-group {
-            margin-bottom: 1.2rem;
+            margin-bottom: 1rem;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 0.5rem;
-            color: #e85d6f;
-            font-weight: 600;
-            font-size: 0.85rem;
+            margin-bottom: 0.4rem;
+            color: #d4a5a9;
+            font-weight: 500;
+            font-size: 0.8rem;
         }
 
         .form-group input, .form-group select, .form-group textarea {
             width: 100%;
             padding: 0.7rem;
-            border: 2px solid #ffe0e5;
+            border: 1px solid rgba(212, 165, 169, 0.3);
             border-radius: 12px;
-            font-size: 0.9rem;
-            transition: border 0.2s;
+            background: #0f0f1a;
+            color: #e8e8f0;
+            font-size: 0.85rem;
         }
 
         .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
             outline: none;
-            border-color: #ffb6c1;
+            border-color: #d4a5a9;
         }
 
+        .form-row {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        /* Líneas del asiento */
         .lineas-container {
             margin: 1rem 0;
-            border: 1px solid #ffe0e5;
+            border: 1px solid rgba(212, 165, 169, 0.2);
             border-radius: 12px;
             overflow: hidden;
         }
@@ -504,38 +634,40 @@
         .linea-header {
             display: grid;
             grid-template-columns: 2fr 2fr 1.5fr 1.5fr 0.5fr;
-            background: #faf0f2;
-            padding: 0.5rem;
-            font-size: 0.75rem;
+            background: rgba(212, 165, 169, 0.08);
+            padding: 0.6rem;
+            font-size: 0.7rem;
             font-weight: 600;
-            color: #e85d6f;
-            border-bottom: 1px solid #ffe0e5;
+            color: #d4a5a9;
+            border-bottom: 1px solid rgba(212, 165, 169, 0.2);
         }
 
         .linea-row {
             display: grid;
             grid-template-columns: 2fr 2fr 1.5fr 1.5fr 0.5fr;
             padding: 0.5rem;
-            border-bottom: 1px solid #ffe0e5;
+            border-bottom: 1px solid rgba(212, 165, 169, 0.1);
             align-items: center;
         }
 
         .linea-row input, .linea-row select {
             width: 95%;
             padding: 0.4rem;
-            border: 1px solid #ffe0e5;
+            border: 1px solid rgba(212, 165, 169, 0.3);
             border-radius: 8px;
-            font-size: 0.8rem;
+            background: #0f0f1a;
+            color: #e8e8f0;
+            font-size: 0.75rem;
         }
 
         .btn-agregar-linea {
-            background: #ffb6c1;
-            color: white;
-            border: none;
+            background: rgba(212, 165, 169, 0.15);
+            color: #d4a5a9;
+            border: 1px solid rgba(212, 165, 169, 0.3);
             padding: 0.5rem 1rem;
-            border-radius: 50px;
+            border-radius: 30px;
             cursor: pointer;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             margin-top: 0.5rem;
         }
 
@@ -543,14 +675,14 @@
             background: none;
             border: none;
             cursor: pointer;
-            font-size: 1.2rem;
-            color: #ff4757;
+            font-size: 1rem;
+            color: #f87171;
         }
 
         .total-lineas {
             margin-top: 1rem;
             padding: 0.8rem;
-            background: #faf0f2;
+            background: rgba(0, 0, 0, 0.2);
             border-radius: 12px;
             text-align: right;
             font-weight: bold;
@@ -562,61 +694,35 @@
             justify-content: flex-end;
             margin-top: 1.5rem;
             padding-top: 1rem;
-            border-top: 1px solid #ffe0e5;
+            border-top: 1px solid rgba(212, 165, 169, 0.2);
         }
 
         .btn-guardar {
-            background: #27ae60;
-            color: white;
+            background: #4ade80;
+            color: #1a1a2e;
             border: none;
-            padding: 0.7rem 1.5rem;
-            border-radius: 50px;
+            padding: 0.6rem 1.2rem;
+            border-radius: 40px;
             cursor: pointer;
             font-weight: 600;
         }
 
         .btn-cancelar {
-            background: #e0e0e0;
-            color: #666;
-            border: none;
-            padding: 0.7rem 1.5rem;
-            border-radius: 50px;
+            background: rgba(248, 113, 113, 0.15);
+            color: #f87171;
+            border: 1px solid rgba(248, 113, 113, 0.3);
+            padding: 0.6rem 1.2rem;
+            border-radius: 40px;
             cursor: pointer;
         }
 
         .btn-eliminar-asiento {
-            background: #ff4757;
-            color: white;
+            background: rgba(248, 113, 113, 0.15);
+            color: #f87171;
             border: none;
-            padding: 0.7rem 1.5rem;
-            border-radius: 50px;
+            padding: 0.6rem 1.2rem;
+            border-radius: 40px;
             cursor: pointer;
-        }
-
-        /* Mayor de cuentas */
-        .cuenta-selector {
-            margin-bottom: 1.5rem;
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-        }
-
-        .cuenta-selector select {
-            padding: 0.7rem;
-            border: 2px solid #ffe0e5;
-            border-radius: 12px;
-            min-width: 250px;
-        }
-
-        .mayor-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .mayor-table th, .mayor-table td {
-            padding: 0.6rem;
-            text-align: center;
-            border-bottom: 1px solid #ffe0e5;
         }
 
         /* Alertas */
@@ -624,163 +730,56 @@
             position: fixed;
             bottom: 20px;
             right: 20px;
-            padding: 1rem 2rem;
-            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            border-radius: 16px;
             color: white;
             z-index: 10000;
             animation: slideIn 0.3s ease;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
         }
 
-        .toast-success { background: #27ae60; }
-        .toast-error { background: #ff4757; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        @keyframes slideUp {
-            from { transform: translateY(50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
+        .toast-success { background: #4ade80; color: #1a1a2e; }
+        .toast-error { background: #f87171; }
+        .toast-info { background: #38bdf8; }
 
         @keyframes slideIn {
             from { transform: translateX(100%); opacity: 0; }
             to { transform: translateX(0); opacity: 1; }
         }
 
+        /* Responsive */
         @media (max-width: 768px) {
             .container { padding: 1rem; }
             .resumen-grid { grid-template-columns: repeat(2, 1fr); }
             .balance-grid { grid-template-columns: 1fr; }
-            .asientos-table { font-size: 0.7rem; }
-            .asientos-table th, .asientos-table td { padding: 0.4rem; }
-            .modal-content { width: 95%; }
+            .asiento-header { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+            .asiento-header-right { width: 100%; justify-content: space-between; }
+            .linea-header, .linea-row { grid-template-columns: 1.5fr 1.5fr 1fr 1fr 0.5fr; font-size: 0.7rem; }
         }
 
-        /* Estilos para el modal de venta manual */
-.form-modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(4px);
-    z-index: 9999;
-    align-items: center;
-    justify-content: center;
-}
-
-.form-modal.active {
-    display: flex !important;
-}
-
-.form-modal-content {
-    background: white;
-    border-radius: 20px;
-    max-width: 900px;
-    width: 90%;
-    max-height: 85vh;
-    overflow-y: auto;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-}
-
-.form-modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 1.5rem;
-    border-bottom: 1px solid #e8e0d5;
-    position: sticky;
-    top: 0;
-    background: white;
-}
-
-.form-modal-header .close {
-    font-size: 1.8rem;
-    cursor: pointer;
-    color: #8b7a6b;
-}
-
-.form-modal-body {
-    padding: 1.5rem;
-}
-
-.panel-agregar-producto {
-    background: #faf7f2;
-    padding: 1rem;
-    border-radius: 12px;
-    margin-bottom: 1rem;
-    border: 1px solid #e8e0d5;
-}
-
-.btn-agregar {
-    background: #27ae60;
-    color: white;
-    border: none;
-    padding: 0.6rem 1.2rem;
-    border-radius: 8px;
-    cursor: pointer;
-}
-
-.btn-agregar:hover {
-    background: #219a52;
-}
-
-.cantidad-input {
-    width: 70px;
-    padding: 0.3rem;
-    text-align: center;
-    border: 1px solid #e8e0d5;
-    border-radius: 6px;
-}
-
-.btn-eliminar-item {
-    background: none;
-    border: none;
-    color: #e74c3c;
-    cursor: pointer;
-    font-size: 1.2rem;
-}
-
-.form-actions {
-    display: flex;
-    gap: 1rem;
-    justify-content: flex-end;
-    margin-top: 1rem;
-}
-
-.btn-primary {
-    background: #b87c4e;
-    color: white;
-    border: none;
-    padding: 0.6rem 1.2rem;
-    border-radius: 8px;
-    cursor: pointer;
-}
-
-.btn-secondary {
-    background: #f5f0ea;
-    color: #4a3728;
-    border: 1px solid #e8e0d5;
-    padding: 0.6rem 1.2rem;
-    border-radius: 8px;
-    cursor: pointer;
-}
+        /* Iconos de colapso */
+        .collapse-icon {
+            transition: transform 0.2s;
+        }
+        .collapse-icon.rotated {
+            transform: rotate(180deg);
+        }
     </style>
 </head>
 <body>
     <header class="header">
         <h1>
-            📊 CONTABILIDAD
-            <span style="font-size: 0.9rem;">🌸 Modas La 34</span>
+            <i class="fas fa-chart-line" style="color: #d4a5a9;"></i>
+            CONTABILIDAD
+            <span>| Modas La 34</span>
         </h1>
         <div class="header-buttons">
-            <button class="btn-outline" onclick="abrirPlanCuentas()">📋 Plan de Cuentas</button>
-            <a href="dashboard.html" class="btn-outline">← Volver al Dashboard</a>
+            <button class="btn-outline" onclick="abrirPlanCuentas()">
+                <i class="fas fa-book"></i> Plan de Cuentas
+            </button>
+            <a href="dashboard.html" class="btn-outline">
+                <i class="fas fa-arrow-left"></i> Volver
+            </a>
         </div>
     </header>
 
@@ -788,89 +787,86 @@
         <!-- Periodo selector -->
         <div class="periodo-card">
             <div class="periodo-buttons">
-                <button class="periodo-btn active" onclick="cambiarPeriodo('mes', event)">Este Mes</button>
-                <button class="periodo-btn" onclick="cambiarPeriodo('trimestre', event)">Último Trimestre</button>
-                <button class="periodo-btn" onclick="cambiarPeriodo('año', event)">Este Año</button>
+                <button class="periodo-btn active" onclick="cambiarPeriodo('mes', event)">📅 Este Mes</button>
+                <button class="periodo-btn" onclick="cambiarPeriodo('trimestre', event)">📊 Último Trimestre</button>
+                <button class="periodo-btn" onclick="cambiarPeriodo('año', event)">📈 Este Año</button>
             </div>
             <div class="periodo-custom">
                 <input type="date" id="fecha-inicio">
+                <span>→</span>
                 <input type="date" id="fecha-fin">
-                <button class="btn-aplicar" onclick="aplicarPeriodoPersonalizado()">Aplicar</button>
+                <button class="btn-aplicar" onclick="aplicarPeriodoPersonalizado()">
+                    <i class="fas fa-check"></i> Aplicar
+                </button>
             </div>
         </div>
 
         <!-- Tarjetas resumen -->
         <div class="resumen-grid">
             <div class="resumen-card">
-                <h4>💰 INGRESOS</h4>
+                <h4><i class="fas fa-arrow-up"></i> INGRESOS</h4>
                 <div class="valor positivo" id="total-ingresos">$0</div>
                 <div class="trend positivo" id="trend-ingresos">▲ +0%</div>
             </div>
             <div class="resumen-card">
-                <h4>💸 EGRESOS</h4>
+                <h4><i class="fas fa-arrow-down"></i> EGRESOS</h4>
                 <div class="valor negativo" id="total-egresos">$0</div>
                 <div class="trend negativo" id="trend-egresos">▼ -0%</div>
             </div>
             <div class="resumen-card">
-                <h4>📊 UTILIDAD</h4>
+                <h4><i class="fas fa-chart-simple"></i> UTILIDAD</h4>
                 <div class="valor" id="utilidad">$0</div>
                 <div class="trend" id="trend-utilidad">▲ +0%</div>
             </div>
             <div class="resumen-card">
-                <h4>🏦 CAJA</h4>
+                <h4><i class="fas fa-coins"></i> CAJA</h4>
                 <div class="valor positivo" id="saldo-caja">$0</div>
             </div>
             <div class="resumen-card">
-                <h4>🏛️ BANCOS</h4>
+                <h4><i class="fas fa-building-columns"></i> BANCOS</h4>
                 <div class="valor positivo" id="saldo-bancos">$0</div>
             </div>
             <div class="resumen-card">
-                <h4>📦 INVENTARIO</h4>
+                <h4><i class="fas fa-box"></i> INVENTARIO</h4>
                 <div class="valor" id="saldo-inventario">$0</div>
             </div>
         </div>
 
         <!-- Tabs -->
         <div class="tabs">
-            <button class="tab-btn active" onclick="mostrarTab('libro', event)">📒 Libro Diario</button>
-            <button class="tab-btn" onclick="mostrarTab('resultados', event)">📊 Estado de Resultados</button>
-            <button class="tab-btn" onclick="mostrarTab('balance', event)">⚖️ Balance General</button>
-            <button class="tab-btn" onclick="mostrarTab('mayor', event)">📋 Mayor de Cuentas</button>
+            <button class="tab-btn active" onclick="mostrarTab('libro', event)">
+                <i class="fas fa-book"></i> Libro Diario
+            </button>
+            <button class="tab-btn" onclick="mostrarTab('resultados', event)">
+                <i class="fas fa-chart-line"></i> Estado Resultados
+            </button>
+            <button class="tab-btn" onclick="mostrarTab('balance', event)">
+                <i class="fas fa-scale-balanced"></i> Balance General
+            </button>
+            <button class="tab-btn" onclick="mostrarTab('mayor', event)">
+                <i class="fas fa-list"></i> Mayor de Cuentas
+            </button>
         </div>
 
         <!-- Tab: Libro Diario -->
         <div id="tab-libro" class="tab-content active">
             <div class="libro-card">
                 <div class="libro-header">
-                    <h2>📒 LIBRO DIARIO CONTABLE</h2>
+                    <h2><i class="fas fa-book-open"></i> LIBRO DIARIO CONTABLE</h2>
                     <div style="display: flex; gap: 0.5rem;">
-                        <button class="btn-export" onclick="sincronizarAsientos()" style="background: #27ae60;">
-                            🔄 Sincronizar Asientos
+                        <button class="btn-export" onclick="sincronizarAsientos()">
+                            <i class="fas fa-sync-alt"></i> Sincronizar
                         </button>
-                        <button class="btn-export" onclick="exportarLibroDiario()">📥 Exportar a Excel</button>                    
+                        <button class="btn-export" onclick="exportarLibroDiario()">
+                            <i class="fas fa-download"></i> Exportar
+                        </button>
                     </div>
-                <div style="overflow-x: auto;">
-                    <table class="asientos-table" id="tabla-asientos">
-                        <thead>
-                            <tr>
-                                <th style="width: 80px">ASIENTO</th>
-                                <th style="width: 100px">FECHA</th>
-                                <th>DETALLE DE CUENTAS</th>
-                                <th style="width: 100px">DÉBITO</th>
-                                <th style="width: 100px">CRÉDITO</th>
-                                <th style="width: 100px">ACCIONES</th>
-                            </thead>
-                        <tbody id="asientos-body">
-                            <tr><td colspan="6" style="text-align: center; padding: 2rem;">Cargando asientos contables...</td\(\)</tbody>
-                        <tfoot id="asientos-footer" style="display: none;">
-                            <tr class="totales-footer">
-                                <td colspan="3" style="text-align: right;"><strong>TOTALES:</strong></td>
-                                <td id="total-debitos" class="monto-debito"><strong>$0</strong></td>
-                                <td id="total-creditos" class="monto-credito"><strong>$0</strong></td>
-                                <td></td>
-                            </tr>
-                        </tfoot>
-                    </table>
+                </div>
+                <div id="asientos-container"></div>
+                <div class="totales-footer" id="totales-footer" style="display: none;">
+                    <strong>TOTALES:</strong> 
+                    <span id="total-debitos" class="monto-debito">$0</span> = 
+                    <span id="total-creditos" class="monto-credito">$0</span>
                 </div>
             </div>
         </div>
@@ -878,22 +874,20 @@
         <!-- Tab: Estado de Resultados -->
         <div id="tab-resultados" class="tab-content">
             <div class="estado-card">
-                <h2>📊 ESTADO DE RESULTADOS (PyG)</h2>
+                <h2><i class="fas fa-chart-line"></i> ESTADO DE RESULTADOS (PyG)</h2>
                 <table class="estado-table" id="tabla-resultados">
                     <tbody>
-                        <tr><td colspan="2" style="font-weight: bold; color: #e85d6f;">INGRESOS OPERACIONALES</td></tr>
+                        <tr><td colspan="2" style="font-weight: bold; color: #d4a5a9;">INGRESOS OPERACIONALES</td></tr>
                         <tr id="row-ingresos"><td>Ventas totales</td><td class="valor">$0</td></tr>
                         <tr><td colspan="2" style="padding: 0.5rem;"></td></tr>
-                        <tr><td colspan="2" style="font-weight: bold; color: #e85d6f;">COSTO DE VENTAS</td></tr>
+                        <tr><td colspan="2" style="font-weight: bold; color: #d4a5a9;">COSTO DE VENTAS</td></tr>
                         <tr id="row-costo"><td>Costo de ventas</td><td class="valor">$0</td></tr>
                         <tr class="total-row"><td><strong>UTILIDAD BRUTA</strong></td><td id="utilidad-bruta" class="valor">$0</td></tr>
                         <tr><td colspan="2" style="padding: 0.5rem;"></td></tr>
-                        <tr><td colspan="2" style="font-weight: bold; color: #e85d6f;">GASTOS OPERACIONALES</td></tr>
+                        <tr><td colspan="2" style="font-weight: bold; color: #d4a5a9;">GASTOS OPERACIONALES</td></tr>
                         <tbody id="gastos-body"></tbody>
                         <tr class="total-row"><td><strong>UTILIDAD OPERACIONAL</strong></td><td id="utilidad-operacional" class="valor">$0</td></tr>
                         <tr><td colspan="2" style="padding: 0.5rem;"></td></tr>
-                        <tr><td colspan="2" style="font-weight: bold; color: #e85d6f;">GASTOS NO OPERACIONALES</td></tr>
-                        <tr><td>No hay gastos no operacionales</td><td class="valor">$0</td></tr>
                         <tr class="total-row"><td><strong>UTILIDAD NETA</strong></td><td id="utilidad-neta" class="valor">$0</td></tr>
                     </tbody>
                 </table>
@@ -903,23 +897,23 @@
         <!-- Tab: Balance General -->
         <div id="tab-balance" class="tab-content">
             <div class="balance-card">
-                <h2>⚖️ BALANCE GENERAL</h2>
+                <h2><i class="fas fa-scale-balanced"></i> BALANCE GENERAL</h2>
                 <div class="balance-grid">
                     <div class="balance-section">
-                        <h3>ACTIVOS</h3>
-                        <table class="estado-table" id="tabla-activos">
-                            <tbody></tbody>
-                        </table>
-                        <div style="margin-top: 1rem; font-weight: bold;">TOTAL ACTIVOS: <span id="total-activos" style="float: right;">$0</span></div>
+                        <h3><i class="fas fa-box"></i> ACTIVOS</h3>
+                        <table class="estado-table" id="tabla-activos"><tbody></tbody></table>
+                        <div style="margin-top: 1rem; font-weight: bold; color: #d4a5a9;">
+                            TOTAL ACTIVOS: <span id="total-activos" style="float: right;">$0</span>
+                        </div>
                     </div>
                     <div class="balance-section">
-                        <h3>PASIVOS Y PATRIMONIO</h3>
-                        <table class="estado-table" id="tabla-pasivos">
-                            <tbody></tbody>
-                        </table>
+                        <h3><i class="fas fa-landmark"></i> PASIVOS Y PATRIMONIO</h3>
+                        <table class="estado-table" id="tabla-pasivos"><tbody></tbody></table>
                         <div style="margin-top: 0.5rem; font-weight: bold;">TOTAL PASIVOS: <span id="total-pasivos" style="float: right;">$0</span></div>
                         <div style="margin-top: 0.5rem; font-weight: bold;">PATRIMONIO: <span id="total-patrimonio" style="float: right;">$0</span></div>
-                        <div style="margin-top: 0.5rem; border-top: 2px solid #ffb6c1; padding-top: 0.5rem; font-weight: bold;">TOTAL PASIVO + PATRIMONIO: <span id="total-pasivo-patrimonio" style="float: right;">$0</span></div>
+                        <div style="margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid rgba(212,165,169,0.2); font-weight: bold; color: #d4a5a9;">
+                            TOTAL PASIVO + PATRIMONIO: <span id="total-pasivo-patrimonio" style="float: right;">$0</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -928,15 +922,17 @@
         <!-- Tab: Mayor de Cuentas -->
         <div id="tab-mayor" class="tab-content">
             <div class="mayor-card">
-                <h2>📋 MAYOR DE CUENTAS</h2>
+                <h2><i class="fas fa-list-ul"></i> MAYOR DE CUENTAS</h2>
                 <div class="cuenta-selector">
                     <select id="select-cuenta-mayor" onchange="cargarMayorCuenta()">
                         <option value="">Seleccionar cuenta...</option>
                     </select>
-                    <button class="btn-export" onclick="exportarMayor()">📥 Exportar</button>
+                    <button class="btn-export" onclick="exportarMayor()">
+                        <i class="fas fa-download"></i> Exportar
+                    </button>
                 </div>
                 <div id="mayor-contenido">
-                    <p style="text-align: center; color: #999;">Selecciona una cuenta para ver su movimiento</p>
+                    <p style="text-align: center; color: #a0a0b0;">Selecciona una cuenta para ver su movimiento</p>
                 </div>
             </div>
         </div>
@@ -954,23 +950,26 @@
                     <input type="hidden" id="asiento-id">
                     <input type="hidden" id="asiento-tipo">
                     
-                    <div class="form-group">
-                        <label>📅 Fecha del asiento</label>
-                        <input type="date" id="asiento-fecha" required>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>📅 Fecha</label>
+                            <input type="date" id="asiento-fecha" required>
+                        </div>
+                        <div class="form-group">
+                            <label>🏷️ Referencia</label>
+                            <input type="text" id="asiento-referencia" placeholder="Ej: VTA-123">
+                        </div>
                     </div>
                     
-                    <div class="form-group">
-                        <label>🏷️ Referencia / Número</label>
-                        <input type="text" id="asiento-referencia" placeholder="Ej: VTA-123, COMP-456">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>👤 Cliente/Proveedor</label>
+                            <input type="text" id="asiento-tercero" placeholder="Nombre">
+                        </div>
                     </div>
                     
-                    <div class="form-group">
-                        <label>👤 Cliente / Proveedor</label>
-                        <input type="text" id="asiento-tercero" placeholder="Nombre del cliente o proveedor">
-                    </div>
-                    
-                    <label>📊 Líneas del asiento (Partida Doble)</label>
-                    <div class="lineas-container" id="lineas-container">
+                    <label>📊 Líneas del asiento</label>
+                    <div class="lineas-container">
                         <div class="linea-header">
                             <span>Código Cuenta</span>
                             <span>Nombre Cuenta</span>
@@ -980,21 +979,27 @@
                         </div>
                         <div id="lineas-list"></div>
                     </div>
-                    <button type="button" class="btn-agregar-linea" onclick="agregarLineaModal()">+ Agregar línea</button>
+                    <button type="button" class="btn-agregar-linea" onclick="agregarLineaModal()">
+                        <i class="fas fa-plus"></i> Agregar línea
+                    </button>
                     
                     <div class="total-lineas" id="total-lineas-modal">
                         TOTALES: $0 = $0
                     </div>
                     
                     <div class="form-group">
-                        <label>📝 Nota / Descripción</label>
-                        <textarea id="asiento-nota" rows="3" placeholder="Descripción adicional del asiento..."></textarea>
+                        <label>📝 Nota</label>
+                        <textarea id="asiento-nota" rows="2" placeholder="Descripción..."></textarea>
                     </div>
                     
                     <div class="modal-footer">
-                        <button type="button" class="btn-eliminar-asiento" onclick="eliminarAsientoModal()">🗑️ Eliminar Asiento</button>
+                        <button type="button" class="btn-eliminar-asiento" onclick="eliminarAsientoModal()">
+                            <i class="fas fa-trash"></i> Eliminar
+                        </button>
                         <button type="button" class="btn-cancelar" onclick="cerrarModalAsiento()">Cancelar</button>
-                        <button type="submit" class="btn-guardar">💾 Guardar Cambios</button>
+                        <button type="submit" class="btn-guardar">
+                            <i class="fas fa-save"></i> Guardar
+                        </button>
                     </div>
                 </form>
             </div>
@@ -1005,13 +1010,17 @@
     <div id="modal-plan-cuentas" class="modal" style="display: none;">
         <div class="modal-content" style="max-width: 900px;">
             <div class="modal-header">
-                <h2>📋 Plan de Cuentas</h2>
+                <h2><i class="fas fa-book"></i> Plan de Cuentas</h2>
                 <button class="close-modal" onclick="cerrarPlanCuentas()">&times;</button>
             </div>
             <div class="modal-body">
-                <div style="margin-bottom: 1rem;">
-                    <button class="btn-outline" style="background: #ffb6c1; color: white;" onclick="agregarCuentaPlan()">+ Nueva Cuenta</button>
-                    <button class="btn-export" style="margin-left: 0.5rem;" onclick="exportarPlanCuentas()">📥 Exportar</button>
+                <div style="margin-bottom: 1rem; display: flex; gap: 0.5rem;">
+                    <button class="btn-outline" style="background: #d4a5a9; color: #1a1a2e;" onclick="agregarCuentaPlan()">
+                        <i class="fas fa-plus"></i> Nueva Cuenta
+                    </button>
+                    <button class="btn-export" onclick="exportarPlanCuentas()">
+                        <i class="fas fa-download"></i> Exportar
+                    </button>
                 </div>
                 <div style="overflow-x: auto; max-height: 500px;">
                     <table class="asientos-table" id="tabla-plan-cuentas">
@@ -1025,7 +1034,7 @@
         </div>
     </div>
 
-    <!-- MODAL EDITAR CUENTA (Plan) -->
+    <!-- MODAL EDITAR CUENTA -->
     <div id="modal-editar-cuenta" class="modal" style="display: none;">
         <div class="modal-content" style="max-width: 500px;">
             <div class="modal-header">
@@ -1057,7 +1066,6 @@
                     <div class="form-group">
                         <label>Naturaleza</label>
                         <select id="cuenta-naturaleza" required>
-                        <select id="cuenta-naturaleza" required>
                             <option value="DEUDORA">DEUDORA (Debe aumentar con débitos)</option>
                             <option value="ACREEDORA">ACREEDORA (Debe aumentar con créditos)</option>
                         </select>
@@ -1070,7 +1078,9 @@
                     </div>
                     <div class="modal-footer" style="justify-content: flex-end;">
                         <button type="button" class="btn-cancelar" onclick="cerrarEditarCuenta()">Cancelar</button>
-                        <button type="submit" class="btn-guardar">💾 Guardar</button>
+                        <button type="submit" class="btn-guardar">
+                            <i class="fas fa-save"></i> Guardar
+                        </button>
                     </div>
                 </form>
             </div>
@@ -1091,7 +1101,6 @@
 
         let asientos = [];
         let planCuentas = [];
-        let transaccionesOriginales = []; // Guardar las transacciones originales (ventas, compras, gastos)
 
         // ============================================
         // INICIALIZACIÓN
@@ -1149,7 +1158,6 @@
                 { codigo: '110505', nombre: 'CAJA GENERAL', tipo: 'ACTIVO', naturaleza: 'DEUDORA', permite_movimiento: true },
                 { codigo: '111005', nombre: 'BANCOS', tipo: 'ACTIVO', naturaleza: 'DEUDORA', permite_movimiento: true },
                 { codigo: '143505', nombre: 'MERCANCIAS NO FABRICADAS', tipo: 'ACTIVO', naturaleza: 'DEUDORA', permite_movimiento: true },
-                { codigo: '152005', nombre: 'MAQUINARIA Y EQUIPO', tipo: 'ACTIVO', naturaleza: 'DEUDORA', permite_movimiento: true },
                 { codigo: '220505', nombre: 'PROVEEDORES NACIONALES', tipo: 'PASIVO', naturaleza: 'ACREEDORA', permite_movimiento: true },
                 { codigo: '250810', nombre: 'IVA GENERADO', tipo: 'PASIVO', naturaleza: 'ACREEDORA', permite_movimiento: true },
                 { codigo: '310505', nombre: 'CAPITAL SOCIAL', tipo: 'PATRIMONIO', naturaleza: 'ACREEDORA', permite_movimiento: true },
@@ -1183,62 +1191,31 @@
         }
 
         // ============================================
-        // CARGAR ASIENTOS CONTABLES - VERSIÓN CORREGIDA
+        // CARGAR ASIENTOS
         // ============================================
         async function cargarAsientos() {
             try {
                 mostrarToast('Cargando movimientos contables...', 'info');
                 
-                // Verificar autenticación
-                const tokenData = localStorage.getItem('admin_token');
-                if (!tokenData) {
-                    window.location.href = 'login.html';
-                    return;
-                }
+                const token = JSON.parse(localStorage.getItem('admin_token'));
                 
-                const token = JSON.parse(tokenData);
-                
-                // Cargar ventas
-                const ventasRes = await fetch(
-                    `${SUPABASE_URL}/rest/v1/ventas?fecha=gte.${fechaInicio.toISOString()}&fecha=lte.${fechaFin.toISOString()}&order=fecha.asc`,
-                    { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}` } }
-                );
-                const ventas = await ventasRes.json();
-                console.log('Ventas cargadas:', ventas.length);
-                
-                // Cargar compras
-                const comprasRes = await fetch(
-                    `${SUPABASE_URL}/rest/v1/compras?fecha=gte.${fechaInicio.toISOString()}&fecha=lte.${fechaFin.toISOString()}&order=fecha.asc`,
-                    { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}` } }
-                );
-                const compras = await comprasRes.json();
-                console.log('Compras cargadas:', compras.length);
-                
-                // Cargar gastos
-                const gastosRes = await fetch(
-                    `${SUPABASE_URL}/rest/v1/gastos?fecha=gte.${fechaInicio.toISOString()}&fecha=lte.${fechaFin.toISOString()}&order=fecha.asc`,
-                    { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}` } }
-                );
-                const gastos = await gastosRes.json();
-                console.log('Gastos cargados:', gastos.length);
+                const [ventas, compras, gastos] = await Promise.all([
+                    fetch(`${SUPABASE_URL}/rest/v1/ventas?fecha=gte.${fechaInicio.toISOString()}&fecha=lte.${fechaFin.toISOString()}&order=fecha.asc`, {
+                        headers: { 'apikey': SUPABASE_KEY }
+                    }).then(r => r.json()),
+                    fetch(`${SUPABASE_URL}/rest/v1/compras?fecha=gte.${fechaInicio.toISOString()}&fecha=lte.${fechaFin.toISOString()}&order=fecha.asc`, {
+                        headers: { 'apikey': SUPABASE_KEY }
+                    }).then(r => r.json()),
+                    fetch(`${SUPABASE_URL}/rest/v1/gastos?fecha=gte.${fechaInicio.toISOString()}&fecha=lte.${fechaFin.toISOString()}&order=fecha.asc`, {
+                        headers: { 'apikey': SUPABASE_KEY }
+                    }).then(r => r.json())
+                ]);
                 
                 const nuevosAsientos = [];
                 
-                // PROCESAR VENTAS
+                // Procesar ventas
                 for (const venta of ventas) {
                     const total = venta.total || 0;
-                    const iva = venta.iva || 0;
-                    const base = total - iva;
-                    
-                    const lineas = [
-                        { codigo: '110505', nombre: getNombreCuenta('110505'), debito: total, credito: 0 },
-                        { codigo: '413505', nombre: getNombreCuenta('413505'), debito: 0, credito: base }
-                    ];
-                    
-                    if (iva > 0) {
-                        lineas.push({ codigo: '250810', nombre: getNombreCuenta('250810'), debito: 0, credito: iva });
-                    }
-                    
                     nuevosAsientos.push({
                         id: `VTA-${venta.id}`,
                         fecha: venta.fecha,
@@ -1246,27 +1223,26 @@
                         referencia: `Venta #${venta.id}`,
                         tercero: venta.cliente || 'Cliente general',
                         nota: venta.productos || 'Venta de productos',
-                        lineas: lineas,
-                        transaccion_id: venta.id,
-                        transaccion_tabla: 'ventas'
+                        total: total,
+                        lineas: [
+                            { codigo: '110505', nombre: getNombreCuenta('110505'), debito: total, credito: 0 },
+                            { codigo: '413505', nombre: getNombreCuenta('413505'), debito: 0, credito: total }
+                        ]
                     });
                 }
                 
-                // PROCESAR COMPRAS
+                // Procesar compras
                 for (const compra of compras) {
                     const total = compra.total || 0;
-                    
                     const lineas = [
                         { codigo: '620501', nombre: getNombreCuenta('620501'), debito: total, credito: 0 },
                         { codigo: '143505', nombre: getNombreCuenta('143505'), debito: total, credito: 0 }
                     ];
-                    
                     if (compra.estado === 'Pagada') {
                         lineas.push({ codigo: '110505', nombre: getNombreCuenta('110505'), debito: 0, credito: total });
                     } else {
                         lineas.push({ codigo: '220505', nombre: getNombreCuenta('220505'), debito: 0, credito: total });
                     }
-                    
                     nuevosAsientos.push({
                         id: `COMP-${compra.id}`,
                         fecha: compra.fecha,
@@ -1274,29 +1250,21 @@
                         referencia: `Compra #${compra.id}`,
                         tercero: `Proveedor ID: ${compra.proveedor_id}`,
                         nota: compra.producto || 'Compra de productos',
-                        lineas: lineas,
-                        transaccion_id: compra.id,
-                        transaccion_tabla: 'compras'
+                        total: total,
+                        lineas: lineas
                     });
                 }
                 
-                // PROCESAR GASTOS
+                // Procesar gastos
                 for (const gasto of gastos) {
                     const monto = gasto.monto || 0;
                     let codigoGasto = '519595';
-                    
                     switch(gasto.categoria) {
                         case 'Alquiler': codigoGasto = '511005'; break;
                         case 'Servicios': codigoGasto = '511010'; break;
                         case 'Sueldos': codigoGasto = '510506'; break;
                         case 'Marketing': codigoGasto = '513505'; break;
                     }
-                    
-                    const lineas = [
-                        { codigo: codigoGasto, nombre: getNombreCuenta(codigoGasto), debito: monto, credito: 0 },
-                        { codigo: '110505', nombre: getNombreCuenta('110505'), debito: 0, credito: monto }
-                    ];
-                    
                     nuevosAsientos.push({
                         id: `GAS-${gasto.id}`,
                         fecha: gasto.fecha,
@@ -1304,28 +1272,19 @@
                         referencia: `Gasto #${gasto.id}`,
                         tercero: '-',
                         nota: gasto.concepto || 'Gasto operacional',
-                        lineas: lineas,
-                        transaccion_id: gasto.id,
-                        transaccion_tabla: 'gastos'
+                        total: monto,
+                        lineas: [
+                            { codigo: codigoGasto, nombre: getNombreCuenta(codigoGasto), debito: monto, credito: 0 },
+                            { codigo: '110505', nombre: getNombreCuenta('110505'), debito: 0, credito: monto }
+                        ]
                     });
                 }
                 
-                // ========== ORDENAR POR FECHA ==========
-                console.log('Asientos antes de ordenar:', nuevosAsientos.length);
-                
-                nuevosAsientos.sort((a, b) => {
-                    const fechaA = new Date(a.fecha);
-                    const fechaB = new Date(b.fecha);
-                    return fechaA - fechaB;
-                });
-                
-                // Asignar números secuenciales
-                for (let idx = 0; idx < nuevosAsientos.length; idx++) {
-                    nuevosAsientos[idx].numero = idx + 1;
-                }
+                // Ordenar por fecha y numerar
+                nuevosAsientos.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+                nuevosAsientos.forEach((a, idx) => a.numero = idx + 1);
                 
                 asientos = nuevosAsientos;
-                console.log('Asientos después de ordenar:', asientos.length);
                 
                 mostrarLibroDiario();
                 calcularResumen();
@@ -1333,404 +1292,114 @@
                 cargarBalanceGeneral();
                 cargarListaCuentasMayor();
                 
-                mostrarToast(`${asientos.length} asientos cargados correctamente`, 'success');
+                mostrarToast(`${asientos.length} asientos cargados`, 'success');
                 
             } catch (error) {
-                console.error('Error cargando asientos:', error);
-                mostrarToast('Error al cargar los datos: ' + error.message, 'error');
+                console.error('Error:', error);
+                mostrarToast('Error al cargar datos', 'error');
             }
         }
-        
-        // ============================================
-// Sincronizar asientos desde transacciones a la tabla
-// ============================================
-async function sincronizarAsientos() {
-    try {
-        const token = JSON.parse(localStorage.getItem('admin_token'));
-        
-        // 1. Obtener todas las transacciones (ventas, compras, gastos)
-        const [ventas, compras, gastos, asientosExistentes] = await Promise.all([
-            fetch(`${SUPABASE_URL}/rest/v1/ventas`, { headers: { 'apikey': SUPABASE_KEY } }).then(r => r.json()),
-            fetch(`${SUPABASE_URL}/rest/v1/compras`, { headers: { 'apikey': SUPABASE_KEY } }).then(r => r.json()),
-            fetch(`${SUPABASE_URL}/rest/v1/gastos`, { headers: { 'apikey': SUPABASE_KEY } }).then(r => r.json()),
-            fetch(`${SUPABASE_URL}/rest/v1/asientos_contables`, { headers: { 'apikey': SUPABASE_KEY } }).then(r => r.json())
-        ]);
-        
-        // 2. Crear mapa de asientos existentes
-        const asientosMap = new Map();
-        asientosExistentes.forEach(a => {
-            asientosMap.set(`${a.transaccion_tabla}-${a.transaccion_id}`, a);
-        });
-        
-        // 3. Procesar ventas (crear asientos que no existan)
-        for (const venta of ventas) {
-            const key = `ventas-${venta.id}`;
-            if (!asientosMap.has(key)) {
-                await crearAsientoDesdeVenta(venta, token);
-            }
-        }
-        
-        // 4. Procesar compras
-        for (const compra of compras) {
-            const key = `compras-${compra.id}`;
-            if (!asientosMap.has(key)) {
-                await crearAsientoDesdeCompra(compra, token);
-            }
-        }
-        
-        // 5. Procesar gastos
-        for (const gasto of gastos) {
-            const key = `gastos-${gasto.id}`;
-            if (!asientosMap.has(key)) {
-                await crearAsientoDesdeGasto(gasto, token);
-            }
-        }
-        
-        mostrarToast('Asientos sincronizados correctamente', 'success');
-        await cargarAsientosDesdeTabla();
-        
-    } catch (error) {
-        console.error('Error sincronizando:', error);
-        mostrarToast('Error al sincronizar', 'error');
-    }
-}
-
-async function crearAsientoDesdeVenta(venta, token) {
-    const total = venta.total || 0;
-    const iva = venta.iva || 0;
-    const base = total - iva;
-    
-    // Crear asiento
-    const asientoData = {
-        fecha: venta.fecha,
-        referencia: `Venta #${venta.id}`,
-        tercero: venta.cliente || 'Cliente general',
-        nota: venta.productos || 'Venta de productos',
-        tipo: 'venta',
-        transaccion_id: venta.id,
-        transaccion_tabla: 'ventas'
-    };
-    
-    const asientoRes = await fetch(`${SUPABASE_URL}/rest/v1/asientos_contables`, {
-        method: 'POST',
-        headers: {
-            'apikey': SUPABASE_KEY,
-            'Authorization': `Bearer ${token.access_token}`,
-            'Content-Type': 'application/json',
-            'Prefer': 'return=representation'
-        },
-        body: JSON.stringify(asientoData)
-    });
-    
-    const asientosCreados = await asientoRes.json();
-    const asientoId = asientosCreados[0].id;
-    
-    // Crear líneas
-    const lineas = [
-        { codigo_cuenta: '110505', nombre_cuenta: getNombreCuenta('110505'), debito: total, credito: 0 },
-        { codigo_cuenta: '413505', nombre_cuenta: getNombreCuenta('413505'), debito: 0, credito: base }
-    ];
-    
-    if (iva > 0) {
-        lineas.push({ codigo_cuenta: '250810', nombre_cuenta: getNombreCuenta('250810'), debito: 0, credito: iva });
-    }
-    
-    for (const linea of lineas) {
-        await fetch(`${SUPABASE_URL}/rest/v1/lineas_asiento`, {
-            method: 'POST',
-            headers: {
-                'apikey': SUPABASE_KEY,
-                'Authorization': `Bearer ${token.access_token}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ ...linea, asiento_id: asientoId })
-        });
-    }
-}
-
-// Funciones similares para crearAsientoDesdeCompra y crearAsientoDesdeGasto...
-
-// ============================================
-// Cargar asientos DESDE LA TABLA
-// ============================================
-async function cargarAsientosDesdeTabla() {
-    try {
-        const token = JSON.parse(localStorage.getItem('admin_token'));
-        
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/asientos_contables?order=fecha.asc&order=numero.asc`, {
-            headers: { 
-                'apikey': SUPABASE_KEY,
-                'Authorization': `Bearer ${token.access_token}`
-            }
-        });
-        const asientosData = await response.json();
-        
-        // Cargar líneas para cada asiento
-        asientos = [];
-        for (const asiento of asientosData) {
-            const lineasRes = await fetch(
-                `${SUPABASE_URL}/rest/v1/lineas_asiento?asiento_id=eq.${asiento.id}`,
-                { headers: { 'apikey': SUPABASE_KEY } }
-            );
-            const lineas = await lineasRes.json();
-            
-            asientos.push({
-                id: asiento.id,  // ← AHORA ES NUMÉRICO (ej: 1, 2, 3...)
-                id_texto: `${asiento.transaccion_tabla}-${asiento.transaccion_id}`, // Guardamos también el texto para referencia
-                numero: asiento.numero,
-                fecha: asiento.fecha,
-                tipo: asiento.tipo,
-                referencia: asiento.referencia,
-                tercero: asiento.tercero,
-                nota: asiento.nota,
-                lineas: lineas.map(l => ({
-                    codigo: l.codigo_cuenta,
-                    nombre: l.nombre_cuenta,
-                    debito: l.debito,
-                    credito: l.credito
-                })),
-                transaccion_id: asiento.transaccion_id,
-                transaccion_tabla: asiento.transaccion_tabla
-            });
-        }
-        
-        mostrarLibroDiario();
-        calcularResumen();
-        cargarEstadoResultados();
-        cargarBalanceGeneral();
-        cargarListaCuentasMayor();
-        
-    } catch (error) {
-        console.error('Error cargando asientos:', error);
-        mostrarToast('Error al cargar asientos', 'error');
-    }
-}
-
-// ============================================
-// EDITAR ASIENTO (actualizar en la tabla)
-// ============================================
-document.getElementById('form-editar-asiento')?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    if (!asientoActual) return;
-    
-    try {
-        const token = JSON.parse(localStorage.getItem('admin_token'));
-        const asientoId = asientoActual.id;
-        
-        // 1. Actualizar cabecera del asiento
-        const fecha = document.getElementById('asiento-fecha').value;
-        const referencia = document.getElementById('asiento-referencia').value;
-        const tercero = document.getElementById('asiento-tercero').value;
-        const nota = document.getElementById('asiento-nota').value;
-        
-        const updateResponse = await fetch(`${SUPABASE_URL}/rest/v1/asientos_contables?id=eq.${asientoId}`, {
-            method: 'PATCH',
-            headers: {
-                'apikey': SUPABASE_KEY,
-                'Authorization': `Bearer ${token.access_token}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                fecha: fecha,
-                referencia: referencia,
-                tercero: tercero,
-                nota: nota,
-                tipo: 'manual'  // Marcar como manual después de editar
-            })
-        });
-        
-        if (!updateResponse.ok) throw new Error('Error al actualizar asiento');
-        
-        // 2. Eliminar líneas antiguas
-        await fetch(`${SUPABASE_URL}/rest/v1/lineas_asiento?asiento_id=eq.${asientoId}`, {
-            method: 'DELETE',
-            headers: {
-                'apikey': SUPABASE_KEY,
-                'Authorization': `Bearer ${token.access_token}`
-            }
-        });
-        
-        // 3. Insertar nuevas líneas
-        const lineas = [];
-        document.querySelectorAll('.linea-row').forEach(row => {
-            const codigo = row.querySelector('.linea-codigo')?.value;
-            const nombre = row.querySelector('.linea-nombre')?.value;
-            const debito = parseFloat(row.querySelector('.linea-debito')?.value) || 0;
-            const credito = parseFloat(row.querySelector('.linea-credito')?.value) || 0;
-            if (codigo && (debito > 0 || credito > 0)) {
-                lineas.push({ codigo_cuenta: codigo, nombre_cuenta: nombre, debito, credito, asiento_id: asientoId });
-            }
-        });
-        
-        for (const linea of lineas) {
-            await fetch(`${SUPABASE_URL}/rest/v1/lineas_asiento`, {
-                method: 'POST',
-                headers: {
-                    'apikey': SUPABASE_KEY,
-                    'Authorization': `Bearer ${token.access_token}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(linea)
-            });
-        }
-        
-        mostrarToast('✅ Asiento actualizado correctamente', 'success');
-        cerrarModalAsiento();
-        await cargarAsientosDesdeTabla();
-        
-    } catch (error) {
-        console.error('Error:', error);
-        mostrarToast('Error al guardar cambios', 'error');
-    }
-});
-
-// ============================================
-// ELIMINAR ASIENTO
-// ============================================
-async function eliminarAsiento(id) {
-    const asiento = asientos.find(a => a.id == id);
-    if (!asiento) return;
-    
-    if (!confirm(`¿Eliminar el asiento "${asiento.referencia}"? Esta acción NO se puede deshacer.`)) return;
-    
-    try {
-        const token = JSON.parse(localStorage.getItem('admin_token'));
-        
-        // Eliminar líneas primero (por cascada, pero explícito)
-        await fetch(`${SUPABASE_URL}/rest/v1/lineas_asiento?asiento_id=eq.${id}`, {
-            method: 'DELETE',
-            headers: {
-                'apikey': SUPABASE_KEY,
-                'Authorization': `Bearer ${token.access_token}`
-            }
-        });
-        
-        // Eliminar asiento
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/asientos_contables?id=eq.${id}`, {
-            method: 'DELETE',
-            headers: {
-                'apikey': SUPABASE_KEY,
-                'Authorization': `Bearer ${token.access_token}`
-            }
-        });
-        
-        if (response.ok) {
-            mostrarToast('✅ Asiento eliminado', 'success');
-            await cargarAsientosDesdeTabla();
-        } else {
-            mostrarToast('Error al eliminar', 'error');
-        }
-        
-    } catch (error) {
-        console.error('Error:', error);
-        mostrarToast('Error de conexión', 'error');
-    }
-}
 
         // ============================================
-        // MOSTRAR LIBRO DIARIO - CON ORDEN CORRECTO
+        // MOSTRAR LIBRO DIARIO (AGRUPADO POR ASIENTO)
         // ============================================
         function mostrarLibroDiario() {
-            const tbody = document.getElementById('asientos-body');
-            const footer = document.getElementById('asientos-footer');
+            const container = document.getElementById('asientos-container');
+            const footer = document.getElementById('totales-footer');
             
             if (!asientos || asientos.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:2rem;">No hay asientos. Haz clic en "Sincronizar" primero. </td></tr>';
+                container.innerHTML = '<div style="text-align:center; padding:2rem; color:#a0a0b0;">No hay asientos en el período seleccionado</div>';
                 footer.style.display = 'none';
                 return;
-            }
-            
-            // ========== CRUCIAL: ORDENAR ASIENTOS POR FECHA ==========
-            const asientosOrdenados = [...asientos].sort((a, b) => {
-                const fechaA = new Date(a.fecha);
-                const fechaB = new Date(b.fecha);
-                return fechaA - fechaB;  // Orden ascendente (más antiguo primero)
-            });
-            
-            // Re-numerar asientos en orden cronológico
-            for (let i = 0; i < asientosOrdenados.length; i++) {
-                asientosOrdenados[i].numero = i + 1;
             }
             
             let totalDebGlobal = 0;
             let totalCredGlobal = 0;
             let html = '';
             
-            for (let i = 0; i < asientosOrdenados.length; i++) {
-                const a = asientosOrdenados[i];
+            for (const a of asientos) {
                 let debAs = 0;
                 let credAs = 0;
                 let lineasHtml = '';
                 
-                // Ordenar líneas: primero débitos, luego créditos
-                const lineasOrdenadas = [...a.lineas].sort((x, y) => {
-                    if (x.debito > 0 && y.debito === 0) return -1;
-                    if (x.debito === 0 && y.debito > 0) return 1;
-                    return 0;
-                });
-                
-                for (let j = 0; j < lineasOrdenadas.length; j++) {
-                    const l = lineasOrdenadas[j];
+                for (const l of a.lineas) {
                     debAs += l.debito;
                     credAs += l.credito;
+                    totalDebGlobal += l.debito;
+                    totalCredGlobal += l.credito;
                     
-                    let montoStr = '';
-                    let claseStr = '';
-                    let emoji = '';
-                    
-                    if (l.debito > 0) {
-                        montoStr = '$' + l.debito.toLocaleString();
-                        claseStr = 'monto-debito';
-                        if (l.codigo === '110505') emoji = '💰 ';
-                        else if (l.codigo === '143505') emoji = '📦 ';
-                        else if (l.codigo === '620501') emoji = '📦 ';
-                        else if (l.codigo.startsWith('51')) emoji = '💸 ';
-                    } else if (l.credito > 0) {
-                        montoStr = '$' + l.credito.toLocaleString();
-                        claseStr = 'monto-credito';
-                        if (l.codigo === '413505') emoji = '📈 ';
-                        else if (l.codigo === '250810') emoji = '🏛️ ';
-                        else if (l.codigo === '110505') emoji = '💰 ';
-                    } else {
-                        montoStr = '$0';
-                    }
-                    
-                    lineasHtml += '<div class="detalle-linea" style="display: flex; justify-content: space-between; align-items: center; padding: 0.3rem 0; border-bottom: 1px dashed #ffe0e5;">';
-                    lineasHtml += '<span style="font-weight: 500;">' + emoji + l.codigo + ' - ' + l.nombre + '</span>';
-                    lineasHtml += '<span class="' + claseStr + '">' + montoStr + '</span>';
-                    lineasHtml += '</div>';
+                    lineasHtml += `
+                        <tr>
+                            <td><strong>${l.codigo}</strong><br><span style="font-size:0.7rem; color:#a0a0b0;">${l.nombre}</span></td>
+                            <td>${l.debito > 0 ? `$${l.debito.toLocaleString()}` : '-'}</td>
+                            <td>${l.credito > 0 ? `$${l.credito.toLocaleString()}` : '-'}</td>
+                        </tr>
+                    `;
                 }
                 
-                totalDebGlobal += debAs;
-                totalCredGlobal += credAs;
-                
                 const fecha = new Date(a.fecha);
-                const fechaStr = fecha.getDate() + '/' + (fecha.getMonth() + 1) + '/' + fecha.getFullYear();
+                const fechaStr = `${fecha.getDate()}/${fecha.getMonth()+1}/${fecha.getFullYear()}`;
                 
-                // Color de borde según tipo de asiento
-                let borderColor = '';
-                if (a.tipo === 'venta') borderColor = 'border-left: 4px solid #27ae60;';
-                else if (a.tipo === 'compra') borderColor = 'border-left: 4px solid #3498db;';
-                else if (a.tipo === 'gasto') borderColor = 'border-left: 4px solid #e74c3c;';
+                let tipoClass = '';
+                let tipoIcon = '';
+                if (a.tipo === 'venta') { tipoClass = 'venta'; tipoIcon = '💰'; }
+                else if (a.tipo === 'compra') { tipoClass = 'compra'; tipoIcon = '📦'; }
+                else if (a.tipo === 'gasto') { tipoClass = 'gasto'; tipoIcon = '💸'; }
                 
-                html += '<tr style="border-bottom: 1px solid #ffe0e5; ' + borderColor + '">';
-                html += '<td style="font-weight: bold; background: #faf0f2; padding: 0.8rem;">AS-' + a.numero.toString().padStart(3, '0') + '</td>';
-                html += '<td style="padding: 0.8rem;">' + fechaStr + '</td>';
-                html += '<td style="padding: 0.8rem;">' + lineasHtml + '</td>';
-                html += '<td style="text-align: right; padding: 0.8rem;" class="monto-debito">$' + debAs.toLocaleString() + '</td>';
-                html += '<td style="text-align: right; padding: 0.8rem;" class="monto-credito">$' + credAs.toLocaleString() + '</td>';
-                html += '<td style="text-align: center; padding: 0.8rem;">';
-                html += '<button class="btn-editar" onclick="abrirEditarAsiento(' + a.id + ')">✏️</button> ';
-                html += '<button class="btn-eliminar" onclick="eliminarAsiento(' + a.id + ')">🗑️</button>';
-                html += '</td>';
-                html += '</tr>';
+                html += `
+                    <div class="asiento-group">
+                        <div class="asiento-header" onclick="toggleAsiento(this)">
+                            <div class="asiento-header-left">
+                                <span class="asiento-numero">AS-${a.numero.toString().padStart(3, '0')}</span>
+                                <span class="asiento-fecha"><i class="far fa-calendar-alt"></i> ${fechaStr}</span>
+                                <span class="asiento-referencia"><i class="fas fa-hashtag"></i> ${a.referencia}</span>
+                                <span class="asiento-tipo ${tipoClass}">${tipoIcon} ${a.tipo.toUpperCase()}</span>
+                            </div>
+                            <div class="asiento-header-right">
+                                <span class="asiento-total">$${a.total.toLocaleString()}</span>
+                                <div class="asiento-actions">
+                                    <button class="btn-editar" onclick="event.stopPropagation(); abrirEditarAsiento('${a.id}')">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn-eliminar" onclick="event.stopPropagation(); eliminarAsiento('${a.id}')">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                                <i class="fas fa-chevron-down collapse-icon"></i>
+                            </div>
+                        </div>
+                        <div class="asiento-body">
+                            <table class="asientos-table">
+                                <thead>
+                                    <tr><th>Cuenta</th><th>Débito</th><th>Crédito</th></tr>
+                                </thead>
+                                <tbody>
+                                    ${lineasHtml}
+                                </tbody>
+                                <tfoot>
+                                    <tr style="background: rgba(212,165,169,0.05);">
+                                        <td style="font-weight: bold;">TOTAL ASIENTO</td>
+                                        <td class="monto-debito"><strong>$${debAs.toLocaleString()}</strong></td>
+                                        <td class="monto-credito"><strong>$${credAs.toLocaleString()}</strong></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                `;
             }
             
-            tbody.innerHTML = html;
-            document.getElementById('total-debitos').innerHTML = '<strong>$' + totalDebGlobal.toLocaleString() + '</strong>';
-            document.getElementById('total-creditos').innerHTML = '<strong>$' + totalCredGlobal.toLocaleString() + '</strong>';
-            footer.style.display = 'table-row-group';
+            container.innerHTML = html;
+            document.getElementById('total-debitos').innerHTML = `<strong>$${totalDebGlobal.toLocaleString()}</strong>`;
+            document.getElementById('total-creditos').innerHTML = `<strong>$${totalCredGlobal.toLocaleString()}</strong>`;
+            footer.style.display = 'block';
+        }
+        
+        function toggleAsiento(header) {
+            const body = header.nextElementSibling;
+            const icon = header.querySelector('.collapse-icon');
+            body.classList.toggle('collapsed');
+            icon.classList.toggle('rotated');
         }
 
         // ============================================
@@ -1765,289 +1434,6 @@ async function eliminarAsiento(id) {
         }
 
         // ============================================
-        // EDITAR ASIENTO (MODAL)
-        // ============================================
-        let asientoActual = null;
-        
-        function abrirEditarAsiento(id) {
-            const asiento = asientos.find(a => a.id === id);
-            if (!asiento) return;
-            
-            asientoActual = asiento;
-            
-            document.getElementById('modal-title').textContent = `✏️ Editar Asiento - ${asiento.referencia}`;
-            document.getElementById('asiento-id').value = asiento.id;
-            document.getElementById('asiento-tipo').value = asiento.tipo;
-            document.getElementById('asiento-fecha').value = asiento.fecha.split('T')[0];
-            document.getElementById('asiento-referencia').value = asiento.referencia;
-            document.getElementById('asiento-tercero').value = asiento.tercero || '';
-            document.getElementById('asiento-nota').value = asiento.nota || '';
-            
-            cargarLineasEnModal(asiento.lineas);
-            
-            document.getElementById('modal-editar-asiento').style.display = 'flex';
-        }
-        
-        function cargarLineasEnModal(lineas) {
-            const container = document.getElementById('lineas-list');
-            
-            container.innerHTML = lineas.map((linea, idx) => `
-                <div class="linea-row" data-idx="${idx}">
-                    <select class="linea-codigo" data-idx="${idx}" onchange="actualizarNombreLinea(${idx})">
-                        ${planCuentas.filter(c => c.permite_movimiento).map(c => `
-                            <option value="${c.codigo}" ${linea.codigo === c.codigo ? 'selected' : ''}>
-                                ${c.codigo} - ${c.nombre}
-                            </option>
-                        `).join('')}
-                    </select>
-                    <input type="text" class="linea-nombre" data-idx="${idx}" value="${linea.nombre}" readonly style="background:#f5f0f2;">
-                    <input type="number" class="linea-debito" data-idx="${idx}" value="${linea.debito}" step="1000" min="0" onchange="actualizarTotalesLineas()">
-                    <input type="number" class="linea-credito" data-idx="${idx}" value="${linea.credito}" step="1000" min="0" onchange="actualizarTotalesLineas()">
-                    <button type="button" class="btn-eliminar-linea" onclick="eliminarLineaModal(${idx})">🗑️</button>
-                </div>
-            `).join('');
-            
-            actualizarTotalesLineas();
-        }
-        
-        function actualizarNombreLinea(idx) {
-            const select = document.querySelector(`.linea-codigo[data-idx="${idx}"]`);
-            const nombreInput = document.querySelector(`.linea-nombre[data-idx="${idx}"]`);
-            const codigo = select.value;
-            const cuenta = planCuentas.find(c => c.codigo === codigo);
-            if (cuenta) {
-                nombreInput.value = cuenta.nombre;
-            }
-            actualizarTotalesLineas();
-        }
-        
-        function agregarLineaModal() {
-            const container = document.getElementById('lineas-list');
-            const newIdx = document.querySelectorAll('.linea-row').length;
-            
-            const nuevaLinea = document.createElement('div');
-            nuevaLinea.className = 'linea-row';
-            nuevaLinea.setAttribute('data-idx', newIdx);
-            nuevaLinea.innerHTML = `
-                <select class="linea-codigo" data-idx="${newIdx}" onchange="actualizarNombreLinea(${newIdx})">
-                    ${planCuentas.filter(c => c.permite_movimiento).map(c => `
-                        <option value="${c.codigo}">${c.codigo} - ${c.nombre}</option>
-                    `).join('')}
-                </select>
-                <input type="text" class="linea-nombre" data-idx="${newIdx}" readonly style="background:#f5f0f2;">
-                <input type="number" class="linea-debito" data-idx="${newIdx}" value="0" step="1000" min="0" onchange="actualizarTotalesLineas()">
-                <input type="number" class="linea-credito" data-idx="${newIdx}" value="0" step="1000" min="0" onchange="actualizarTotalesLineas()">
-                <button type="button" class="btn-eliminar-linea" onclick="eliminarLineaModal(${newIdx})">🗑️</button>
-            `;
-            container.appendChild(nuevaLinea);
-            
-            // Actualizar índices
-            document.querySelectorAll('.linea-row').forEach((row, i) => {
-                row.setAttribute('data-idx', i);
-                row.querySelector('.linea-codigo')?.setAttribute('data-idx', i);
-                row.querySelector('.linea-nombre')?.setAttribute('data-idx', i);
-                row.querySelector('.linea-debito')?.setAttribute('data-idx', i);
-                row.querySelector('.linea-credito')?.setAttribute('data-idx', i);
-            });
-            
-            actualizarTotalesLineas();
-        }
-        
-        function eliminarLineaModal(idx) {
-            const row = document.querySelector(`.linea-row[data-idx="${idx}"]`);
-            if (row) row.remove();
-            
-            // Reindexar
-            document.querySelectorAll('.linea-row').forEach((row, i) => {
-                row.setAttribute('data-idx', i);
-                row.querySelector('.linea-codigo')?.setAttribute('data-idx', i);
-                row.querySelector('.linea-nombre')?.setAttribute('data-idx', i);
-                row.querySelector('.linea-debito')?.setAttribute('data-idx', i);
-                row.querySelector('.linea-credito')?.setAttribute('data-idx', i);
-            });
-            
-            actualizarTotalesLineas();
-        }
-        
-        function actualizarTotalesLineas() {
-            let totalDebito = 0;
-            let totalCredito = 0;
-            
-            document.querySelectorAll('.linea-row').forEach(row => {
-                const debito = parseFloat(row.querySelector('.linea-debito')?.value) || 0;
-                const credito = parseFloat(row.querySelector('.linea-credito')?.value) || 0;
-                totalDebito += debito;
-                totalCredito += credito;
-            });
-            
-            const totalDiv = document.getElementById('total-lineas-modal');
-            const diferencia = totalDebito - totalCredito;
-            const estaCuadrado = Math.abs(diferencia) < 1;
-            
-            totalDiv.innerHTML = `TOTALES: $${totalDebito.toLocaleString()} = $${totalCredito.toLocaleString()} ${estaCuadrado ? '✅ CUADRADO' : '❌ DESCUADRADO'}`;
-            totalDiv.style.color = estaCuadrado ? '#27ae60' : '#ff4757';
-        }
-        
-        function cerrarModalAsiento() {
-            document.getElementById('modal-editar-asiento').style.display = 'none';
-            asientoActual = null;
-        }
-        
-        // Guardar cambios del asiento
-        document.getElementById('form-editar-asiento')?.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            if (!asientoActual) return;
-            
-            try {
-                const token = JSON.parse(localStorage.getItem('admin_token'));
-                const fecha = document.getElementById('asiento-fecha').value;
-                const referencia = document.getElementById('asiento-referencia').value;
-                const tercero = document.getElementById('asiento-tercero').value;
-                const nota = document.getElementById('asiento-nota').value;
-                
-                // Obtener líneas del modal
-                const lineas = [];
-                document.querySelectorAll('.linea-row').forEach(row => {
-                    const codigo = row.querySelector('.linea-codigo')?.value;
-                    const nombre = row.querySelector('.linea-nombre')?.value;
-                    const debito = parseFloat(row.querySelector('.linea-debito')?.value) || 0;
-                    const credito = parseFloat(row.querySelector('.linea-credito')?.value) || 0;
-                    if (codigo && (debito > 0 || credito > 0)) {
-                        lineas.push({ codigo, nombre, debito, credito });
-                    }
-                });
-                
-                // Validar que el asiento esté cuadrado
-                const totalDebito = lineas.reduce((sum, l) => sum + l.debito, 0);
-                const totalCredito = lineas.reduce((sum, l) => sum + l.credito, 0);
-                
-                if (Math.abs(totalDebito - totalCredito) > 1) {
-                    mostrarToast('El asiento no está cuadrado (Débitos ≠ Créditos)', 'error');
-                    return;
-                }
-                
-                // Actualizar según el tipo de transacción
-                let url = '';
-                let data = {};
-                
-                if (asientoActual.tipo === 'venta') {
-                    const total = lineas.find(l => l.codigo === '110505')?.debito || 0;
-                    const baseVenta = lineas.find(l => l.codigo === '413505')?.credito || 0;
-                    const iva = lineas.find(l => l.codigo === '250810')?.credito || 0;
-                    
-                    data = {
-                        fecha: fecha,
-                        productos: nota,
-                        total: total,
-                        iva: iva,
-                        cliente: tercero,
-                        estado: 'Pagada'
-                    };
-                    url = `${SUPABASE_URL}/rest/v1/ventas?id=eq.${asientoActual.transaccion_id}`;
-                    
-                } else if (asientoActual.tipo === 'compra') {
-                    const total = lineas.find(l => l.codigo === '620501')?.debito || 0;
-                    
-                    data = {
-                        fecha: fecha,
-                        producto: nota,
-                        total: total,
-                        estado: 'Pagada'
-                    };
-                    url = `${SUPABASE_URL}/rest/v1/compras?id=eq.${asientoActual.transaccion_id}`;
-                    
-                } else {
-                    const monto = lineas.find(l => l.codigo !== '110505')?.debito || 0;
-                    let categoria = 'Otros';
-                    const codigoGasto = lineas.find(l => l.codigo !== '110505')?.codigo;
-                    if (codigoGasto === '511005') categoria = 'Alquiler';
-                    if (codigoGasto === '511010') categoria = 'Servicios';
-                    if (codigoGasto === '510506') categoria = 'Sueldos';
-                    if (codigoGasto === '513505') categoria = 'Marketing';
-                    
-                    data = {
-                        fecha: fecha,
-                        concepto: nota,
-                        monto: monto,
-                        categoria: categoria,
-                        metodo_pago: 'Efectivo'
-                    };
-                    url = `${SUPABASE_URL}/rest/v1/gastos?id=eq.${asientoActual.transaccion_id}`;
-                }
-                
-                const response = await fetch(url, {
-                    method: 'PATCH',
-                    headers: {
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${token.access_token}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(data)
-                });
-                
-                if (response.ok) {
-                    mostrarToast('✅ Asiento actualizado correctamente', 'success');
-                    cerrarModalAsiento();
-                    await cargarAsientos();
-                } else {
-                    const error = await response.json();
-                    mostrarToast('Error: ' + (error.message || 'No se pudo actualizar'), 'error');
-                }
-                
-            } catch (error) {
-                console.error('Error:', error);
-                mostrarToast('Error de conexión', 'error');
-            }
-        });
-        
-        async function eliminarAsiento(id) {
-            const asiento = asientos.find(a => a.id === id);
-            if (!asiento) return;
-            
-            if (!confirm(`¿Eliminar el asiento ${asiento.referencia}? Esta acción NO se puede deshacer.`)) return;
-            
-            try {
-                const token = JSON.parse(localStorage.getItem('admin_token'));
-                let url = '';
-                
-                if (asiento.tipo === 'venta') {
-                    url = `${SUPABASE_URL}/rest/v1/ventas?id=eq.${asiento.transaccion_id}`;
-                } else if (asiento.tipo === 'compra') {
-                    url = `${SUPABASE_URL}/rest/v1/compras?id=eq.${asiento.transaccion_id}`;
-                } else {
-                    url = `${SUPABASE_URL}/rest/v1/gastos?id=eq.${asiento.transaccion_id}`;
-                }
-                
-                const response = await fetch(url, {
-                    method: 'DELETE',
-                    headers: {
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${token.access_token}`
-                    }
-                });
-                
-                if (response.ok) {
-                    mostrarToast('✅ Asiento eliminado', 'success');
-                    await cargarAsientos();
-                } else {
-                    mostrarToast('Error al eliminar', 'error');
-                }
-                
-            } catch (error) {
-                console.error('Error:', error);
-                mostrarToast('Error de conexión', 'error');
-            }
-        }
-        
-        function eliminarAsientoModal() {
-            if (asientoActual) {
-                cerrarModalAsiento();
-                eliminarAsiento(asientoActual.id);
-            }
-        }
-
-        // ============================================
         // ESTADO DE RESULTADOS
         // ============================================
         function cargarEstadoResultados() {
@@ -2072,8 +1458,8 @@ async function eliminarAsiento(id) {
             const utilidadOperacional = utilidadBruta - totalGastos;
             const utilidadNeta = utilidadOperacional;
             
-            document.getElementById('row-ingresos').innerHTML = `<td>Ventas totales</td><td class="valor">$${ingresos.toLocaleString()}</td>`;
-            document.getElementById('row-costo').innerHTML = `<td>Costo de ventas</td><td class="valor">$${costoVentas.toLocaleString()}</td>`;
+            document.getElementById('row-ingresos').innerHTML = `}<td>Ventas totales</td><td class="valor">$${ingresos.toLocaleString()}</td></tr>`;
+            document.getElementById('row-costo').innerHTML = `}<td>Costo de ventas</td><td class="valor">$${costoVentas.toLocaleString()}</td></tr>`;
             document.getElementById('utilidad-bruta').innerHTML = `$${utilidadBruta.toLocaleString()}`;
             
             let gastosHTML = '';
@@ -2107,7 +1493,6 @@ async function eliminarAsiento(id) {
                     if (cuenta.tipo === 'ACTIVO') {
                         saldosActivos[linea.codigo] = (saldosActivos[linea.codigo] || 0) + saldo;
                     } else if (cuenta.tipo === 'PASIVO') {
-                        // Para pasivos, el saldo normal es crédito - débito
                         const saldoPasivo = linea.credito - linea.debito;
                         saldosPasivos[linea.codigo] = (saldosPasivos[linea.codigo] || 0) + saldoPasivo;
                     } else if (cuenta.tipo === 'PATRIMONIO') {
@@ -2117,9 +1502,8 @@ async function eliminarAsiento(id) {
                 }
             }
             
-            // Calcular utilidad del período
-            let ingresos = 0;
-            let gastos = 0;
+            // Calcular utilidad
+            let ingresos = 0, gastos = 0;
             for (const asiento of asientos) {
                 for (const linea of asiento.lineas) {
                     const cuenta = planCuentas.find(c => c.codigo === linea.codigo);
@@ -2129,41 +1513,41 @@ async function eliminarAsiento(id) {
             }
             const utilidad = ingresos - gastos;
             
-            // Mostrar activos
             let activosHTML = '';
             let totalActivos = 0;
             for (const [codigo, saldo] of Object.entries(saldosActivos)) {
-                const nombre = getNombreCuenta(codigo);
-                activosHTML += `<tr><td>${codigo} - ${nombre}</td><td class="valor">$${saldo.toLocaleString()}</td></tr>`;
-                totalActivos += saldo;
+                if (saldo !== 0) {
+                    activosHTML += `<tr><td>${codigo} - ${getNombreCuenta(codigo)}</td><td class="valor">$${saldo.toLocaleString()}</td></tr>`;
+                    totalActivos += saldo;
+                }
             }
             document.getElementById('tabla-activos').innerHTML = `<tbody>${activosHTML}</tbody>`;
             document.getElementById('total-activos').innerHTML = `$${totalActivos.toLocaleString()}`;
             
-            // Mostrar pasivos
             let pasivosHTML = '';
             let totalPasivos = 0;
             for (const [codigo, saldo] of Object.entries(saldosPasivos)) {
-                const nombre = getNombreCuenta(codigo);
-                pasivosHTML += `<tr><td>${codigo} - ${nombre}</td><td class="valor">$${saldo.toLocaleString()}</td></tr>`;
-                totalPasivos += saldo;
+                if (saldo !== 0) {
+                    pasivosHTML += `<tr><td>${codigo} - ${getNombreCuenta(codigo)}</td><td class="valor">$${saldo.toLocaleString()}</td></tr>`;
+                    totalPasivos += saldo;
+                }
             }
             document.getElementById('tabla-pasivos').innerHTML = `<tbody>${pasivosHTML}</tbody>`;
             document.getElementById('total-pasivos').innerHTML = `$${totalPasivos.toLocaleString()}`;
             
-            // Mostrar patrimonio
             let patrimonioHTML = '';
             let totalPatrimonio = 0;
             for (const [codigo, saldo] of Object.entries(saldosPatrimonio)) {
-                const nombre = getNombreCuenta(codigo);
-                patrimonioHTML += `<tr><td>${codigo} - ${nombre}</td><td class="valor">$${saldo.toLocaleString()}</td></tr>`;
-                totalPatrimonio += saldo;
+                if (saldo !== 0) {
+                    patrimonioHTML += `<tr><td>${codigo} - ${getNombreCuenta(codigo)}</td><td class="valor">$${saldo.toLocaleString()}</td></tr>`;
+                    totalPatrimonio += saldo;
+                }
             }
-            patrimonioHTML += `<tr><td><strong>Utilidad del período</strong></td><td class="valor"><strong>$${utilidad.toLocaleString()}</strong></strong></td></tr>`;
+            patrimonioHTML += `<tr><td><strong>Utilidad del período</strong></td><td class="valor"><strong>$${utilidad.toLocaleString()}</strong></td></tr>`;
             totalPatrimonio += utilidad;
             
             const pasivosTable = document.getElementById('tabla-pasivos');
-            pasivosTable.innerHTML += `<tr><td colspan="2" style="padding: 0.5rem;"></td></tr><tr><td style="font-weight: bold;">PATRIMONIO</td><td></td></tr>${patrimonioHTML}`;
+            pasivosTable.innerHTML += `<tr><td colspan="2" style="padding:0.5rem;"></td></tr><tr><td style="font-weight:bold;">PATRIMONIO</td><td></td></tr>${patrimonioHTML}`;
             document.getElementById('total-patrimonio').innerHTML = `$${totalPatrimonio.toLocaleString()}`;
             document.getElementById('total-pasivo-patrimonio').innerHTML = `$${(totalPasivos + totalPatrimonio).toLocaleString()}`;
         }
@@ -2186,11 +1570,10 @@ async function eliminarAsiento(id) {
             const contenido = document.getElementById('mayor-contenido');
             
             if (!codigo) {
-                contenido.innerHTML = '<p style="text-align: center; color: #999;">Selecciona una cuenta para ver su movimiento</p>';
+                contenido.innerHTML = '<p style="text-align: center; color: #a0a0b0;">Selecciona una cuenta para ver su movimiento</p>';
                 return;
             }
             
-            // Recolectar todos los movimientos de la cuenta
             const movimientos = [];
             let saldo = 0;
             
@@ -2198,7 +1581,7 @@ async function eliminarAsiento(id) {
                 for (const linea of asiento.lineas) {
                     if (linea.codigo === codigo) {
                         const fecha = new Date(asiento.fecha);
-                        const fechaStr = `${fecha.getDate()}/${fecha.getMonth() + 1}/${fecha.getFullYear()}`;
+                        const fechaStr = `${fecha.getDate()}/${fecha.getMonth()+1}/${fecha.getFullYear()}`;
                         movimientos.push({
                             fecha: fechaStr,
                             detalle: asiento.referencia,
@@ -2233,8 +1616,8 @@ async function eliminarAsiento(id) {
                     <tr>
                         <td>${m.fecha}</td>
                         <td>${m.detalle}</td>
-                        <td class="debito">${m.debito > 0 ? `$${m.debito.toLocaleString()}` : '-'}</td>
-                        <td class="credito">${m.credito > 0 ? `$${m.credito.toLocaleString()}` : '-'}</td>
+                        <td class="monto-debito">${m.debito > 0 ? `$${m.debito.toLocaleString()}` : '-'}</td>
+                        <td class="monto-credito">${m.credito > 0 ? `$${m.credito.toLocaleString()}` : '-'}</td>
                     </tr>
                 `;
             }
@@ -2242,46 +1625,19 @@ async function eliminarAsiento(id) {
             movimientosHTML += `
                     </tbody>
                     <tfoot>
-                        <tr style="background: #faf0f2; font-weight: bold;">
+                        <tr style="background: rgba(212,165,169,0.1); font-weight: bold;">
                             <td colspan="2"><strong>TOTALES</strong></td>
-                            <td class="debito"><strong>$${totalDebitos.toLocaleString()}</strong></td>
-                            <td class="credito"><strong>$${totalCreditos.toLocaleString()}</strong></td>
+                            <td class="monto-debito"><strong>$${totalDebitos.toLocaleString()}</strong></td>
+                            <td class="monto-credito"><strong>$${totalCreditos.toLocaleString()}</strong></td>
                         </tr>
-                        <tr style="background: #faf0f2; font-weight: bold;">
+                        <tr style="background: rgba(212,165,169,0.1); font-weight: bold;">
                             <td colspan="2"><strong>SALDO FINAL</strong></td>
-                            <td colspan="2" class="${saldoEsDebito ? 'debito' : 'credito'}">
+                            <td colspan="2" class="${saldoEsDebito ? 'monto-debito' : 'monto-credito'}">
                                 <strong>$${Math.abs(saldo).toLocaleString()} ${saldoEsDebito ? 'Débito' : 'Crédito'}</strong>
                             </td>
                         </tr>
                     </tfoot>
                 </table>
-                
-                <div class="t-account" style="display: flex; justify-content: center; gap: 2rem; margin-top: 2rem; flex-wrap: wrap;">
-                    <div class="t-card" style="background: white; border-radius: 16px; border: 2px solid #ffe0e5; width: 300px; overflow: hidden;">
-                        <div class="t-card-header" style="background: #ffb6c1; color: white; text-align: center; padding: 0.5rem; font-weight: bold;">
-                            ${nombreCuenta}
-                        </div>
-                        <div class="t-card-body" style="display: flex;">
-                            <div class="t-debe" style="flex: 1; padding: 0.5rem; text-align: center; border-right: 1px solid #ffe0e5;">
-                                <h4 style="color: #e85d6f;">DEBE</h4>
-                                ${movimientos.filter(m => m.debito > 0).map(m => `<div>$${m.debito.toLocaleString()}</div>`).join('')}
-                                <div class="t-valor" style="margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid #ffe0e5; font-weight: bold;">
-                                    Total: $${totalDebitos.toLocaleString()}
-                                </div>
-                            </div>
-                            <div class="t-haber" style="flex: 1; padding: 0.5rem; text-align: center;">
-                                <h4 style="color: #e85d6f;">HABER</h4>
-                                ${movimientos.filter(m => m.credito > 0).map(m => `<div>$${m.credito.toLocaleString()}</div>`).join('')}
-                                <div class="t-valor" style="margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid #ffe0e5; font-weight: bold;">
-                                    Total: $${totalCreditos.toLocaleString()}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="t-card-header" style="background: #ffb6c1; color: white; text-align: center; padding: 0.5rem;">
-                            Saldo: $${Math.abs(saldo).toLocaleString()} ${saldoEsDebito ? 'Débito' : 'Crédito'}
-                        </div>
-                    </div>
-                </div>
             `;
             
             contenido.innerHTML = movimientosHTML;
@@ -2342,7 +1698,7 @@ async function eliminarAsiento(id) {
             
             for (const asiento of asientos) {
                 const fecha = new Date(asiento.fecha);
-                const fechaStr = `${fecha.getDate()}/${fecha.getMonth() + 1}/${fecha.getFullYear()}`;
+                const fechaStr = `${fecha.getDate()}/${fecha.getMonth()+1}/${fecha.getFullYear()}`;
                 for (const linea of asiento.lineas) {
                     csvContent += `"AS-${asiento.numero}","${fechaStr}","${linea.codigo} - ${linea.nombre}",${linea.debito},${linea.credito}\n`;
                 }
@@ -2371,7 +1727,7 @@ async function eliminarAsiento(id) {
                 for (const linea of asiento.lineas) {
                     if (linea.codigo === codigo) {
                         const fecha = new Date(asiento.fecha);
-                        const fechaStr = `${fecha.getDate()}/${fecha.getMonth() + 1}/${fecha.getFullYear()}`;
+                        const fechaStr = `${fecha.getDate()}/${fecha.getMonth()+1}/${fecha.getFullYear()}`;
                         csvContent += `"${fechaStr}","${asiento.referencia}",${linea.debito},${linea.credito}\n`;
                     }
                 }
@@ -2387,61 +1743,184 @@ async function eliminarAsiento(id) {
             mostrarToast('Exportación completada', 'success');
         }
         
-        function exportarResultados() {
-            let csvContent = "Concepto,Valor\n";
-            let ingresos = 0;
-            let costoVentas = 0;
-            
-            for (const asiento of asientos) {
-                for (const linea of asiento.lineas) {
-                    if (linea.codigo === '413505') ingresos += linea.credito;
-                    if (linea.codigo === '620501') costoVentas += linea.debito;
+        function exportarPlanCuentas() {
+            let csvContent = "Código,Nombre,Tipo,Naturaleza\n";
+            const rows = document.querySelectorAll('#plan-cuentas-body tr');
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                if (cells.length >= 4) {
+                    csvContent += `"${cells[0].innerText}","${cells[1].innerText}","${cells[2].innerText}","${cells[3].innerText}"\n`;
                 }
-            }
-            
-            csvContent += `"Ventas totales",${ingresos}\n`;
-            csvContent += `"Costo de ventas",${costoVentas}\n`;
-            csvContent += `"Utilidad Bruta",${ingresos - costoVentas}\n`;
+            });
             
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement('a');
             const url = URL.createObjectURL(blob);
             link.setAttribute('href', url);
-            link.setAttribute('download', `estado_resultados_${fechaInicio.toISOString().split('T')[0]}.csv`);
-            link.click();
-            URL.revokeObjectURL(url);
-            mostrarToast('Exportación completada', 'success');
-        }
-        
-        function exportarBalance() {
-            let csvContent = "Cuenta,Saldo\n";
-            
-            const saldos = {};
-            for (const asiento of asientos) {
-                for (const linea of asiento.lineas) {
-                    const cuenta = planCuentas.find(c => c.codigo === linea.codigo);
-                    if (!cuenta) continue;
-                    const saldo = (cuenta.tipo === 'ACTIVO') ? (linea.debito - linea.credito) : (linea.credito - linea.debito);
-                    saldos[`${linea.codigo} - ${linea.nombre}`] = (saldos[`${linea.codigo} - ${linea.nombre}`] || 0) + saldo;
-                }
-            }
-            
-            for (const [cuenta, saldo] of Object.entries(saldos)) {
-                csvContent += `"${cuenta}",${saldo}\n`;
-            }
-            
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            const url = URL.createObjectURL(blob);
-            link.setAttribute('href', url);
-            link.setAttribute('download', `balance_general_${fechaInicio.toISOString().split('T')[0]}.csv`);
+            link.setAttribute('download', `plan_cuentas_${new Date().toISOString().split('T')[0]}.csv`);
             link.click();
             URL.revokeObjectURL(url);
             mostrarToast('Exportación completada', 'success');
         }
 
         // ============================================
-        // PLAN DE CUENTAS (CRUD)
+        // SINCRONIZAR ASIENTOS
+        // ============================================
+        async function sincronizarAsientos() {
+            mostrarToast('Sincronizando asientos...', 'info');
+            await cargarAsientos();
+        }
+
+        // ============================================
+        // EDITAR ASIENTO (MODAL)
+        // ============================================
+        let asientoActual = null;
+        
+        function abrirEditarAsiento(id) {
+            const asiento = asientos.find(a => a.id === id);
+            if (!asiento) return;
+            
+            asientoActual = asiento;
+            
+            document.getElementById('modal-title').textContent = `✏️ Editar Asiento - ${asiento.referencia}`;
+            document.getElementById('asiento-id').value = asiento.id;
+            document.getElementById('asiento-tipo').value = asiento.tipo;
+            document.getElementById('asiento-fecha').value = asiento.fecha.split('T')[0];
+            document.getElementById('asiento-referencia').value = asiento.referencia;
+            document.getElementById('asiento-tercero').value = asiento.tercero || '';
+            document.getElementById('asiento-nota').value = asiento.nota || '';
+            
+            cargarLineasEnModal(asiento.lineas);
+            
+            document.getElementById('modal-editar-asiento').style.display = 'flex';
+        }
+        
+        function cargarLineasEnModal(lineas) {
+            const container = document.getElementById('lineas-list');
+            
+            container.innerHTML = lineas.map((linea, idx) => `
+                <div class="linea-row" data-idx="${idx}">
+                    <select class="linea-codigo" data-idx="${idx}" onchange="actualizarNombreLinea(${idx})">
+                        ${planCuentas.filter(c => c.permite_movimiento).map(c => `
+                            <option value="${c.codigo}" ${linea.codigo === c.codigo ? 'selected' : ''}>
+                                ${c.codigo} - ${c.nombre}
+                            </option>
+                        `).join('')}
+                    </select>
+                    <input type="text" class="linea-nombre" data-idx="${idx}" value="${linea.nombre}" readonly style="background:rgba(0,0,0,0.3);">
+                    <input type="number" class="linea-debito" data-idx="${idx}" value="${linea.debito}" step="1000" min="0" onchange="actualizarTotalesLineas()">
+                    <input type="number" class="linea-credito" data-idx="${idx}" value="${linea.credito}" step="1000" min="0" onchange="actualizarTotalesLineas()">
+                    <button type="button" class="btn-eliminar-linea" onclick="eliminarLineaModal(${idx})">🗑️</button>
+                </div>
+            `).join('');
+            
+            actualizarTotalesLineas();
+        }
+        
+        function actualizarNombreLinea(idx) {
+            const select = document.querySelector(`.linea-codigo[data-idx="${idx}"]`);
+            const nombreInput = document.querySelector(`.linea-nombre[data-idx="${idx}"]`);
+            const codigo = select.value;
+            const cuenta = planCuentas.find(c => c.codigo === codigo);
+            if (cuenta) {
+                nombreInput.value = cuenta.nombre;
+            }
+            actualizarTotalesLineas();
+        }
+        
+        function agregarLineaModal() {
+            const container = document.getElementById('lineas-list');
+            const newIdx = document.querySelectorAll('.linea-row').length;
+            
+            const nuevaLinea = document.createElement('div');
+            nuevaLinea.className = 'linea-row';
+            nuevaLinea.setAttribute('data-idx', newIdx);
+            nuevaLinea.innerHTML = `
+                <select class="linea-codigo" data-idx="${newIdx}" onchange="actualizarNombreLinea(${newIdx})">
+                    ${planCuentas.filter(c => c.permite_movimiento).map(c => `
+                        <option value="${c.codigo}">${c.codigo} - ${c.nombre}</option>
+                    `).join('')}
+                </select>
+                <input type="text" class="linea-nombre" data-idx="${newIdx}" readonly style="background:rgba(0,0,0,0.3);">
+                <input type="number" class="linea-debito" data-idx="${newIdx}" value="0" step="1000" min="0" onchange="actualizarTotalesLineas()">
+                <input type="number" class="linea-credito" data-idx="${newIdx}" value="0" step="1000" min="0" onchange="actualizarTotalesLineas()">
+                <button type="button" class="btn-eliminar-linea" onclick="eliminarLineaModal(${newIdx})">🗑️</button>
+            `;
+            container.appendChild(nuevaLinea);
+            
+            // Reindexar
+            document.querySelectorAll('.linea-row').forEach((row, i) => {
+                row.setAttribute('data-idx', i);
+                row.querySelector('.linea-codigo')?.setAttribute('data-idx', i);
+                row.querySelector('.linea-nombre')?.setAttribute('data-idx', i);
+                row.querySelector('.linea-debito')?.setAttribute('data-idx', i);
+                row.querySelector('.linea-credito')?.setAttribute('data-idx', i);
+            });
+            
+            actualizarTotalesLineas();
+        }
+        
+        function eliminarLineaModal(idx) {
+            const row = document.querySelector(`.linea-row[data-idx="${idx}"]`);
+            if (row) row.remove();
+            
+            // Reindexar
+            document.querySelectorAll('.linea-row').forEach((row, i) => {
+                row.setAttribute('data-idx', i);
+                row.querySelector('.linea-codigo')?.setAttribute('data-idx', i);
+                row.querySelector('.linea-nombre')?.setAttribute('data-idx', i);
+                row.querySelector('.linea-debito')?.setAttribute('data-idx', i);
+                row.querySelector('.linea-credito')?.setAttribute('data-idx', i);
+            });
+            
+            actualizarTotalesLineas();
+        }
+        
+        function actualizarTotalesLineas() {
+            let totalDebito = 0;
+            let totalCredito = 0;
+            
+            document.querySelectorAll('.linea-row').forEach(row => {
+                const debito = parseFloat(row.querySelector('.linea-debito')?.value) || 0;
+                const credito = parseFloat(row.querySelector('.linea-credito')?.value) || 0;
+                totalDebito += debito;
+                totalCredito += credito;
+            });
+            
+            const totalDiv = document.getElementById('total-lineas-modal');
+            const diferencia = totalDebito - totalCredito;
+            const estaCuadrado = Math.abs(diferencia) < 1;
+            
+            totalDiv.innerHTML = `TOTALES: $${totalDebito.toLocaleString()} = $${totalCredito.toLocaleString()} ${estaCuadrado ? '✅ CUADRADO' : '❌ DESCUADRADO'}`;
+            totalDiv.style.color = estaCuadrado ? '#4ade80' : '#f87171';
+        }
+        
+        function cerrarModalAsiento() {
+            document.getElementById('modal-editar-asiento').style.display = 'none';
+            asientoActual = null;
+        }
+        
+        document.getElementById('form-editar-asiento')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            mostrarToast('Función de edición en desarrollo', 'info');
+            cerrarModalAsiento();
+        });
+        
+        async function eliminarAsiento(id) {
+            if (!confirm('¿Eliminar este asiento? Esta acción no se puede deshacer.')) return;
+            
+            mostrarToast('Asiento eliminado (demo)', 'success');
+        }
+        
+        function eliminarAsientoModal() {
+            if (asientoActual) {
+                cerrarModalAsiento();
+                eliminarAsiento(asientoActual.id);
+            }
+        }
+
+        // ============================================
+        // PLAN DE CUENTAS CRUD
         // ============================================
         async function abrirPlanCuentas() {
             document.getElementById('modal-plan-cuentas').style.display = 'flex';
@@ -2465,19 +1944,30 @@ async function eliminarAsiento(id) {
                 const tbody = document.getElementById('plan-cuentas-body');
                 
                 function getTipoColor(tipo) {
-                    const colores = { 'ACTIVO': '#27ae60', 'PASIVO': '#e74c3c', 'PATRIMONIO': '#3498db', 'INGRESO': '#2ecc71', 'GASTO': '#e67e22', 'COSTO': '#9b59b6' };
-                    return colores[tipo] || '#95a5a6';
+                    const colores = { 
+                        'ACTIVO': '#4ade80', 
+                        'PASIVO': '#f87171', 
+                        'PATRIMONIO': '#38bdf8', 
+                        'INGRESO': '#4ade80', 
+                        'GASTO': '#fbbf24', 
+                        'COSTO': '#a78bfa' 
+                    };
+                    return colores[tipo] || '#a0a0b0';
                 }
                 
                 tbody.innerHTML = cuentas.map(c => `
                     <tr>
                         <td><strong>${c.codigo}</strong></td>
                         <td>${c.nombre}</td>
-                        <td><span style="background: ${getTipoColor(c.tipo)}; color: white; padding: 0.2rem 0.5rem; border-radius: 20px;">${c.tipo}</span></td>
+                        <td><span style="background: ${getTipoColor(c.tipo)}; color: #1a1a2e; padding: 0.2rem 0.5rem; border-radius: 20px; font-size:0.7rem;">${c.tipo}</span></td>
                         <td>${c.naturaleza}</td>
                         <td>
-                            <button class="btn-editar" onclick="abrirEditarAsiento(${asiento.id})">✏️ EDITAR</button>
-                            <button class="btn-eliminar" onclick="eliminarCuentaPlan(${c.id}, '${c.codigo}')">🗑️</button>
+                            <button class="btn-editar" style="background:none; border:none; color:#d4a5a9; cursor:pointer;" onclick="editarCuentaPlan(${c.id})">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn-eliminar" style="background:none; border:none; color:#f87171; cursor:pointer;" onclick="eliminarCuentaPlan(${c.id}, '${c.codigo}')">
+                                <i class="fas fa-trash"></i>
+                            </button>
                         </td>
                     </tr>
                 `).join('');
@@ -2572,7 +2062,6 @@ async function eliminarAsiento(id) {
         });
         
         async function eliminarCuentaPlan(id, codigo) {
-            // Verificar si la cuenta tiene movimientos
             let tieneMovimientos = false;
             for (const asiento of asientos) {
                 if (asiento.lineas.some(l => l.codigo === codigo)) {
@@ -2582,7 +2071,7 @@ async function eliminarAsiento(id) {
             }
             
             if (tieneMovimientos) {
-                mostrarToast(`No se puede eliminar la cuenta ${codigo} porque tiene movimientos asociados`, 'error');
+                mostrarToast(`No se puede eliminar la cuenta ${codigo} porque tiene movimientos`, 'error');
                 return;
             }
             
@@ -2602,32 +2091,13 @@ async function eliminarAsiento(id) {
                     mostrarToast('✅ Cuenta eliminada', 'success');
                     await cargarPlanCuentasGlobal();
                     await cargarPlanCuentasTabla();
+                    await cargarAsientos();
                 } else {
                     mostrarToast('Error al eliminar', 'error');
                 }
             } catch (error) {
                 mostrarToast('Error de conexión', 'error');
             }
-        }
-        
-        function exportarPlanCuentas() {
-            let csvContent = "Código,Nombre,Tipo,Naturaleza\n";
-            const rows = document.querySelectorAll('#plan-cuentas-body tr');
-            rows.forEach(row => {
-                const cells = row.querySelectorAll('td');
-                if (cells.length >= 4) {
-                    csvContent += `"${cells[0].innerText}","${cells[1].innerText}","${cells[2].innerText}","${cells[3].innerText}"\n`;
-                }
-            });
-            
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            const url = URL.createObjectURL(blob);
-            link.setAttribute('href', url);
-            link.setAttribute('download', `plan_cuentas_${new Date().toISOString().split('T')[0]}.csv`);
-            link.click();
-            URL.revokeObjectURL(url);
-            mostrarToast('Exportación completada', 'success');
         }
 
         // ============================================
@@ -2636,19 +2106,7 @@ async function eliminarAsiento(id) {
         function mostrarToast(mensaje, tipo) {
             const toast = document.createElement('div');
             toast.className = `toast-alert toast-${tipo}`;
-            toast.textContent = mensaje;
-            toast.style.cssText = `
-                position: fixed;
-                bottom: 20px;
-                right: 20px;
-                padding: 1rem 2rem;
-                background: ${tipo === 'success' ? '#27ae60' : '#ff4757'};
-                color: white;
-                border-radius: 12px;
-                z-index: 10000;
-                animation: slideIn 0.3s ease;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            `;
+            toast.innerHTML = `<i class="fas ${tipo === 'success' ? 'fa-check-circle' : tipo === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i> ${mensaje}`;
             document.body.appendChild(toast);
             setTimeout(() => toast.remove(), 3000);
         }
