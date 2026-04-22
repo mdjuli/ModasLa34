@@ -476,7 +476,7 @@ async function eliminarProducto(id) {
             method: 'DELETE',
             headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}` }
         });
-        mostrarAlerta('✅ Producto eliminado', 'success');
+        mostrarAlerta('<i class="fas fa-check-circle"></i> Producto eliminado', 'success');
         await cargarProductos();
     } catch(e) { mostrarAlerta('Error al eliminar', 'error'); }
 }
@@ -826,7 +826,7 @@ async function cargarPerfiles() {
         // Mapeo de roles a nombres legibles
         const rolNombres = {
             'admin_total': '👑 Dueña',
-            'admin_productos': '📦 Inventario',
+            'admin_productos': '<i class="fas fa-box"></i> Inventario',
             'admin_ventas': '🛍️ Vendedor',
             'admin_contabilidad': '💰 Contabilidad',
             'admin_caja': '💵 Cajero'
@@ -834,7 +834,7 @@ async function cargarPerfiles() {
         
         tbody.innerHTML = perfiles.map(p => {
             const rolUsuario = p.rol_usuario || p.rol || 'admin_productos';
-            const rolNombre = rolNombres[rolUsuario] || '📦 Inventario';
+            const rolNombre = rolNombres[rolUsuario] || '<i class="fas fa-box"></i> Inventario';
             
             return `
                 <tr>
@@ -1088,7 +1088,7 @@ async function eliminarPerfil(id) {
         });
         
         if (response.ok) {
-            mostrarAlerta('✅ Usuario eliminado', 'success');
+            mostrarAlerta('<i class="fas fa-check-circle"></i> Usuario eliminado', 'success');
             await cargarPerfiles();
         } else {
             mostrarAlerta('Error al eliminar', 'error');
@@ -1182,7 +1182,7 @@ async function cargarStock() {
         // Llenar tabla de stock bajo
         const stockBajoBody = document.getElementById('stock-bajo-body');
         if (productosStockBajo.length === 0) {
-            stockBajoBody.innerHTML = '<tr><td colspan="6" style="text-align: center;">✅ No hay productos con stock bajo</td></tr>';
+            stockBajoBody.innerHTML = '<tr><td colspan="6" style="text-align: center;"><i class="fas fa-check-circle"></i> No hay productos con stock bajo</td></tr>';
         } else {
             stockBajoBody.innerHTML = productosStockBajo.map(item => `
                 <tr class="stock-bajo-row">
@@ -1198,7 +1198,7 @@ async function cargarStock() {
                     <td>5</td>
                     <td>
                         <button class="action-btn" onclick="solicitarReposicion(${item.producto_id}, '${item.producto_nombre}', '${item.talla}', '${item.color}')" title="Solicitar reposición">
-                            📦 Pedir
+                            <i class="fas fa-box"></i> Pedir
                         </button>
                     </td>
                 </tr>
@@ -1223,7 +1223,7 @@ async function cargarStock() {
                     <td class="stock-agotado">AGOTADO</td>
                     <td>
                         <button class="action-btn" onclick="solicitarReposicion(${item.producto_id}, '${item.producto_nombre}', '${item.talla}', '${item.color}')" title="Solicitar reposición">
-                            📦 Solicitar
+                            <i class="fas fa-box"></i> Solicitar
                         </button>
                     </td>
                 </tr>
@@ -1241,7 +1241,7 @@ async function cargarStock() {
 
 // Función para solicitar reposición (opcional)
 function solicitarReposicion(productoId, nombre, talla, color) {
-    const mensaje = `📦 *REPOSICIÓN DE STOCK*\n\nProducto: ${nombre}\nTalla: ${talla}\nColor: ${color}\n\nPor favor, gestionar reposición.`;
+    const mensaje = `<i class="fas fa-box"></i> *REPOSICIÓN DE STOCK*\n\nProducto: ${nombre}\nTalla: ${talla}\nColor: ${color}\n\nPor favor, gestionar reposición.`;
     alert(`📋 Solicitud de reposición:\n\n${mensaje}\n\n(Próximamente: notificación a proveedores)`);
     
     // Aquí puedes agregar lógica para:
@@ -1293,11 +1293,11 @@ async function cargarVentas() {
             let estadoText = '';
             
             switch(venta.estado) {
-                case 'completada': estadoClass = 'estado-pagada'; estadoText = '✅ Completada'; break;
-                case 'pendiente': estadoClass = 'estado-pendiente'; estadoText = '⏳ Pendiente'; break;
-                case 'cambiado': estadoClass = 'estado-badge-cambiado'; estadoText = '🔄 Cambio solicitado'; break;
-                case 'devuelto': estadoClass = 'estado-badge-devuelto'; estadoText = '📦 Devuelto'; break;
-                default: estadoClass = 'estado-pagada'; estadoText = '✅ Completada';
+                case 'completada': estadoClass = 'estado-pagada'; estadoText = '<i class="fas fa-check-circle"></i> Completada'; break;
+                case 'pendiente': estadoClass = 'estado-pendiente'; estadoText = '<i class="fas fa-hourglass-half"></i> Pendiente'; break;
+                case 'cambiado': estadoClass = 'estado-badge-cambiado'; estadoText = '<i class="fas fa-exchange-alt"></i> Cambio solicitado'; break;
+                case 'devuelto': estadoClass = 'estado-badge-devuelto'; estadoText = '<i class="fas fa-box"></i> Devuelto'; break;
+                default: estadoClass = 'estado-pagada'; estadoText = '<i class="fas fa-check-circle"></i> Completada';
             }
             
             return `
@@ -1310,10 +1310,10 @@ async function cargarVentas() {
                     <td>${venta.metodo_pago || 'Efectivo'}</td>
                     <td><span class="estado-badge ${estadoClass}">${estadoText}</span></td>
                     <td>
-                        <button class="action-btn" onclick="verDetalleVenta(${venta.id})" title="Ver detalle">👁️</button>
-                        <button class="action-btn" onclick="editarVenta(${venta.id})" title="Editar">✏️</button>
-                        <button class="action-btn" onclick="solicitarCambio(${venta.id})" title="Solicitar cambio">🔄</button>
-                        <button class="action-btn delete-btn" onclick="eliminarVenta(${venta.id})" title="Eliminar">🗑️</button>
+                        <button class="action-btn" onclick="verDetalleVenta(${venta.id})" title="Ver detalle"><i class="fas fa-eye"></i></button>
+                        <button class="action-btn" onclick="editarVenta(${venta.id})" title="Editar"><i class="fas fa-edit"></i></button>
+                        <button class="action-btn" onclick="solicitarCambio(${venta.id})" title="Solicitar cambio"><i class="fas fa-exchange-alt"></i></button>
+                        <button class="action-btn delete-btn" onclick="eliminarVenta(${venta.id})" title="Eliminar"><i class="fas fa-trash-alt"></i></button>
                     </td>
                 </tr>
             `;
@@ -1512,7 +1512,7 @@ async function guardarVenta() {
         });
         
         if (response.ok) {
-            mostrarAlerta('✅ Venta registrada correctamente', 'success');
+            mostrarAlerta('<i class="fas fa-check-circle"></i> Venta registrada correctamente', 'success');
             cerrarFormulario('venta');
             carrito = [];
             await cargarVentas();
@@ -1540,7 +1540,7 @@ function abrirVentaRapida() {
 
 // Abrir Nueva Venta Manual (SIN catálogo - entrada libre)
 function abrirNuevaVenta() {
-    console.log('🟢 Abriendo nueva venta manual (sin catálogo)...');
+    console.log('<i class="fas fa-circle" style="color: #27ae60; font-size: 0.7rem;"></i> Activo Abriendo nueva venta manual (sin catálogo)...');
     
     // Limpiar carrito
     carrito = [];
@@ -1565,9 +1565,9 @@ function abrirNuevaVenta() {
         formVenta.style.display = 'flex';
         formVenta.classList.add('active');
         window.scrollTo({ top: 0, behavior: 'smooth' });
-        console.log('✅ Modal de venta manual abierto');
+        console.log('<i class="fas fa-check-circle"></i> Modal de venta manual abierto');
     } else {
-        console.error('❌ No se encontró form-venta');
+        console.error('<i class="fas fa-times-circle"></i> No se encontró form-venta');
         alert('Error: No se encuentra el formulario de venta');
     }
 }
@@ -1617,7 +1617,7 @@ async function actualizarVenta() {
         });
         
         if (response.ok) {
-            mostrarAlerta('✅ Venta actualizada correctamente', 'success');
+            mostrarAlerta('<i class="fas fa-check-circle"></i> Venta actualizada correctamente', 'success');
             cerrarModalEditarVenta();
             await cargarVentas();
         } else {
@@ -1644,7 +1644,7 @@ async function eliminarVenta(id = null) {
         });
         
         if (response.ok) {
-            mostrarAlerta('✅ Venta eliminada correctamente', 'success');
+            mostrarAlerta('<i class="fas fa-check-circle"></i> Venta eliminada correctamente', 'success');
             cerrarModalEditarVenta();
             await cargarVentas();
         } else {
@@ -1680,7 +1680,7 @@ async function registrarCambio(id, motivo) {
         });
         
         if (response.ok) {
-            mostrarAlerta(`🔄 Cambio registrado: ${motivo}`, 'success');
+            mostrarAlerta(`<i class="fas fa-exchange-alt"></i> Cambio registrado: ${motivo}`, 'success');
             await cargarVentas();
         }
     } catch (error) {
@@ -1727,9 +1727,9 @@ function mostrarFormulario(tipo) {
     if (form) {
         form.classList.add('active');
         form.style.display = 'block';  // ← FORZAR display block
-        console.log(`✅ Mostrando formulario: ${tipo}`);
+        console.log(`<i class="fas fa-check-circle"></i> Mostrando formulario: ${tipo}`);
     } else {
-        console.error(`❌ No existe form-${tipo}`);
+        console.error(`<i class="fas fa-times-circle"></i> No existe form-${tipo}`);
     }
 }
 
@@ -1738,7 +1738,7 @@ function cerrarFormulario(tipo) {
     if (form) {
         form.classList.remove('active');
         form.style.display = 'none';  // ← FORZAR display none
-        console.log(`✅ Cerrando formulario: ${tipo}`);
+        console.log(`<i class="fas fa-check-circle"></i> Cerrando formulario: ${tipo}`);
     }
     
     // Limpieza específica por tipo
@@ -1808,17 +1808,17 @@ function agregarProductoVentaManual() {
     
     // Validaciones
     if (!nombre) {
-        mostrarAlerta('❌ Escribe el nombre del producto', 'error');
+        mostrarAlerta('<i class="fas fa-times-circle"></i> Escribe el nombre del producto', 'error');
         return;
     }
     
     if (!precio || precio <= 0) {
-        mostrarAlerta('❌ Ingresa un precio válido', 'error');
+        mostrarAlerta('<i class="fas fa-times-circle"></i> Ingresa un precio válido', 'error');
         return;
     }
     
     if (!cantidad || cantidad < 1) {
-        mostrarAlerta('❌ Ingresa una cantidad válida', 'error');
+        mostrarAlerta('<i class="fas fa-times-circle"></i> Ingresa una cantidad válida', 'error');
         return;
     }
     
@@ -1840,7 +1840,7 @@ function agregarProductoVentaManual() {
         texto: textoMostrar
     });
     
-    mostrarAlerta(`✅ Agregado: ${textoMostrar} x${cantidad} - $${subtotal.toLocaleString()}`, 'success');
+    mostrarAlerta(`<i class="fas fa-check-circle"></i> Agregado: ${textoMostrar} x${cantidad} - $${subtotal.toLocaleString()}`, 'success');
     
     // Limpiar campos para el siguiente producto
     limpiarCamposProductoManual();
@@ -1911,7 +1911,7 @@ function eliminarItemCarritoManual(index) {
 async function guardarVentaManual() {
     // Validar que haya productos en el carrito
     if (carrito.length === 0) {
-        mostrarAlerta('❌ Agrega al menos un producto a la venta', 'error');
+        mostrarAlerta('<i class="fas fa-times-circle"></i> Agrega al menos un producto a la venta', 'error');
         return;
     }
     
@@ -1953,17 +1953,17 @@ async function guardarVentaManual() {
         });
         
         if (response.ok) {
-            mostrarAlerta(`✅ Venta registrada correctamente - Total: $${total.toLocaleString()}`, 'success');
+            mostrarAlerta(`<i class="fas fa-check-circle"></i> Venta registrada correctamente - Total: $${total.toLocaleString()}`, 'success');
             cerrarFormulario('venta');
             carrito = [];
             await cargarVentas(); // Recargar lista de ventas
         } else {
             const error = await response.json();
-            mostrarAlerta('❌ Error al registrar venta: ' + (error.message || ''), 'error');
+            mostrarAlerta('<i class="fas fa-times-circle"></i> Error al registrar venta: ' + (error.message || ''), 'error');
         }
     } catch (error) {
         console.error('Error:', error);
-        mostrarAlerta('❌ Error de conexión', 'error');
+        mostrarAlerta('<i class="fas fa-times-circle"></i> Error de conexión', 'error');
     }
 }
 
