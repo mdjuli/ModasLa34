@@ -1538,15 +1538,13 @@ function abrirVentaRapida() {
     // mostrarFormularioVentaRapida();
 }
 
-// Abrir Nueva Venta Manual (el sistema que creamos)
+// Abrir Nueva Venta Manual (SIN catálogo - entrada libre)
 function abrirNuevaVenta() {
-    console.log('🟢 Abriendo nueva venta...');
+    console.log('🟢 Abriendo nueva venta manual (sin catálogo)...');
     
     // Limpiar carrito
     carrito = [];
-    if (typeof actualizarCarritoUI === 'function') {
-        actualizarCarritoUI();
-    }
+    actualizarCarritoUI();
     
     // Establecer fecha actual
     const fechaInput = document.getElementById('venta-fecha');
@@ -1554,35 +1552,23 @@ function abrirNuevaVenta() {
         fechaInput.value = new Date().toISOString().split('T')[0];
     }
     
-    // Limpiar campos
+    // Limpiar campos del formulario
     const clienteInput = document.getElementById('venta-cliente');
     if (clienteInput) clienteInput.value = '';
     
-    const buscador = document.getElementById('buscador-producto-venta');
-    if (buscador) buscador.value = '';
+    // Limpiar campos de producto manual
+    limpiarCamposProductoManual();
     
-    // Ocultar resultados si existen
-    const resultados = document.getElementById('resultados-productos');
-    if (resultados) resultados.style.display = 'none';
-    
-    // Mostrar el modal (FORZADO)
+    // Mostrar el modal
     const formVenta = document.getElementById('form-venta');
     if (formVenta) {
         formVenta.style.display = 'flex';
         formVenta.classList.add('active');
-        
-        // Scroll al top de la página para ver el modal
         window.scrollTo({ top: 0, behavior: 'smooth' });
-        
-        console.log('✅ Modal de venta abierto');
+        console.log('✅ Modal de venta manual abierto');
     } else {
         console.error('❌ No se encontró form-venta');
         alert('Error: No se encuentra el formulario de venta');
-    }
-    
-    // Cargar productos para el buscador
-    if (typeof cargarProductosParaVenta === 'function') {
-        cargarProductosParaVenta();
     }
 }
 
@@ -1791,3 +1777,203 @@ function mostrarAlerta(msg, tipo) {
 }
 
 window.cargarContabilidad = cargarContabilidad;
+
+// ============================================
+// FUNCIONES PARA VENTA MANUAL (SIN CATÁLOGO)
+// ============================================
+
+// Limpiar campos de producto manual
+function limpiarCamposProductoManual() {
+    const nombreInput = document.getElementById('venta-producto-nombre');
+    const tallaInput = document.getElementById('venta-producto-talla');
+    const colorInput = document.getElementById('venta-producto-color');
+    const cantidadInput = document.getElementById('venta-producto-cantidad');
+    const precioInput = document.getElementById('venta-producto-precio');
+    
+    if (nombreInput) nombreInput.value = '';
+    if (tallaInput) tallaInput.value = '';
+    if (colorInput) colorInput.value = '';
+    if (cantidadInput) cantidadInput.value = '1';
+    if (precioInput) precioInput.value = '';
+}
+
+// Agregar producto manual al carrito (SIN depender del catálogo)
+function agregarProductoVentaManual() {
+    // Obtener valores del formulario
+    const nombre = document.getElementById('venta-producto-nombre')?.value.trim();
+    const talla = document.getElementById('venta-producto-talla')?.value.trim();
+    const color = document.getElementById('venta-producto-color')?.value.trim();
+    const cantidad = parseInt(document.getElementById('venta-producto-cantidad')?.value || '1');
+    const precio = parseFloat(document.getElementById('venta-producto-precio')?.value);
+    
+    // Validaciones
+    if (!nombre) {
+        mostrarAlerta('❌ Escribe el nombre del producto', 'error');
+        return;
+    }
+    
+    if (!precio || precio <= 0) {
+        mostrarAlerta('❌ Ingresa un precio válido', 'error');
+        return;
+    }
+    
+    if (!cantidad || cantidad < 1) {
+        mostrarAlerta('❌ Ingresa una cantidad válida', 'error');
+        return;
+    }
+    
+    const subtotal = cantidad * precio;
+    
+    // Crear texto para mostrar
+    let textoMostrar = nombre;
+    if (talla) textoMostrar += ` (Talla: ${talla})`;
+    if (color) textoMostrar += ` - ${color}`;
+    
+    // Agregar al carrito
+    carrito.push({
+        nombre: nombre,
+        talla: talla || 'N/A',
+        color: color || 'N/A',
+        cantidad: cantidad,
+        precio: precio,
+        subtotal: subtotal,
+        texto: textoMostrar
+    });
+    
+    mostrarAlerta(`✅ Agregado: ${textoMostrar} x${cantidad} - $${subtotal.toLocaleString()}`, 'success');
+    
+    // Limpiar campos para el siguiente producto
+    limpiarCamposProductoManual();
+    
+    // Enfocar en el campo de nombre
+    document.getElementById('venta-producto-nombre')?.focus();
+    
+    // Actualizar la tabla del carrito
+    actualizarCarritoUIManual();
+}
+
+// Actualizar UI del carrito (versión manual)
+function actualizarCarritoUIManual() {
+    const tbody = document.getElementById('carrito-body');
+    const total = carrito.reduce((sum, item) => sum + item.subtotal, 0);
+    
+    if (!tbody) return;
+    
+    if (carrito.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 2rem;">No hay productos agregados. Completa los campos arriba y haz clic en "Agregar".</td></tr>';
+        const totalElement = document.getElementById('carrito-total');
+        if (totalElement) totalElement.textContent = '$0';
+        return;
+    }
+    
+    tbody.innerHTML = carrito.map((item, idx) => `
+        <tr>
+            <td><strong>${escapeHtml(item.nombre)}</strong><br>
+                <small style="color: #888;">${item.talla !== 'N/A' ? `Talla: ${item.talla}` : ''} ${item.color !== 'N/A' ? `| Color: ${item.color}` : ''}</small>
+            </td>
+            <td>${item.talla !== 'N/A' ? escapeHtml(item.talla) : '-'}</td>
+            <td>${item.color !== 'N/A' ? escapeHtml(item.color) : '-'}</td>
+            <td>$${item.precio.toLocaleString()}</td>
+            <td>
+                <input type="number" class="cantidad-input" value="${item.cantidad}" min="1" 
+                       onchange="actualizarCantidadCarritoManual(${idx}, this.value)" style="width: 70px;">
+            </td>
+            <td>$${item.subtotal.toLocaleString()}</td>
+            <td>
+                <button class="btn-eliminar-item" onclick="eliminarItemCarritoManual(${idx})">🗑️</button>
+            </td>
+        </tr>
+    `).join('');
+    
+    const totalElement = document.getElementById('carrito-total');
+    if (totalElement) totalElement.textContent = `$${total.toLocaleString()}`;
+}
+
+// Actualizar cantidad en el carrito (versión manual)
+function actualizarCantidadCarritoManual(index, nuevaCantidad) {
+    const cantidad = parseInt(nuevaCantidad);
+    if (cantidad > 0 && carrito[index]) {
+        carrito[index].cantidad = cantidad;
+        carrito[index].subtotal = cantidad * carrito[index].precio;
+        actualizarCarritoUIManual();
+    }
+}
+
+// Eliminar item del carrito (versión manual)
+function eliminarItemCarritoManual(index) {
+    if (carrito[index]) {
+        carrito.splice(index, 1);
+        actualizarCarritoUIManual();
+    }
+}
+
+// Guardar venta manual
+async function guardarVentaManual() {
+    // Validar que haya productos en el carrito
+    if (carrito.length === 0) {
+        mostrarAlerta('❌ Agrega al menos un producto a la venta', 'error');
+        return;
+    }
+    
+    // Obtener datos de la venta
+    const fecha = document.getElementById('venta-fecha')?.value;
+    const cliente = document.getElementById('venta-cliente')?.value.trim() || 'Consumidor final';
+    const metodoPago = document.getElementById('venta-metodo')?.value || 'Efectivo';
+    const total = carrito.reduce((sum, item) => sum + item.subtotal, 0);
+    
+    // Crear texto resumen de productos
+    const productosTexto = carrito.map(item => {
+        let texto = `${item.nombre} x${item.cantidad}`;
+        if (item.talla && item.talla !== 'N/A') texto += ` (Talla: ${item.talla})`;
+        if (item.color && item.color !== 'N/A') texto += ` - ${item.color}`;
+        return texto;
+    }).join(', ');
+    
+    // Crear objeto de venta
+    const nuevaVenta = {
+        fecha: fecha,
+        cliente: cliente,
+        productos: productosTexto,
+        total: total,
+        metodo_pago: metodoPago,
+        estado: 'completada',
+        created_at: new Date().toISOString()
+    };
+    
+    try {
+        const token = JSON.parse(localStorage.getItem('admin_token'));
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/ventas`, {
+            method: 'POST',
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${token.access_token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(nuevaVenta)
+        });
+        
+        if (response.ok) {
+            mostrarAlerta(`✅ Venta registrada correctamente - Total: $${total.toLocaleString()}`, 'success');
+            cerrarFormulario('venta');
+            carrito = [];
+            await cargarVentas(); // Recargar lista de ventas
+        } else {
+            const error = await response.json();
+            mostrarAlerta('❌ Error al registrar venta: ' + (error.message || ''), 'error');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        mostrarAlerta('❌ Error de conexión', 'error');
+    }
+}
+
+// Función auxiliar para escapar HTML
+function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>]/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
+    });
+}
