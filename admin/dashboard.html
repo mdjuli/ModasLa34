@@ -874,7 +874,7 @@
             <div class="user-info">
                 <span id="userNameDisplay"></span>
                 <span id="userRolDisplay" class="user-rol-badge"></span>
-                <button onclick="logout()" class="logout-btn">🚪 Salir</button>
+                <button onclick="logout()" class="logout-btn"><i class="fas fa-door-open"></i> Salir</button>
             </div>
             <button class="logout-btn" onclick="logout()" title="Cerrar sesión">
                 <i class="fas fa-sign-out-alt"></i>
@@ -927,35 +927,35 @@
 
         <!-- PRODUCTOS -->
         <div id="modulo-productos" class="module-section">
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-header">
-                        <span class="stat-title">Total Productos</span>
-                        <i class="fas fa-box stat-icon"></i>
-                    </div>
-                    <div class="stat-value" id="stats-total-productos">0</div>
-                    <div class="stat-sub">en inventario</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-header">
-                        <span class="stat-title">Stock Bajo</span>
-                        <i class="fas fa-exclamation-triangle stat-icon"></i>
-                    </div>
-                    <div class="stat-value" id="stats-stock-bajo">0</div>
-                    <div class="stat-sub">productos por reabastecer</div>
-                </div>
-                <div class="stat-card" onclick="mostrarFormulario('producto')" style="cursor:pointer">
-                    <div class="stat-header">
-                        <span class="stat-title">Nuevo Producto</span>
-                        <i class="fas fa-plus-circle stat-icon"></i>
-                    </div>
-                    <div class="stat-value">+</div>
-                    <div class="stat-sub">agregar al catálogo</div>
-                </div>
-            </div>
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-header">
+            <span class="stat-title">Total Productos</span>
+            <i class="fas fa-box-open stat-icon"></i>
+        </div>
+        <div class="stat-value" id="stats-total-productos">0</div>
+        <div class="stat-sub">en inventario</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-header">
+            <span class="stat-title">Stock Bajo</span>
+            <i class="fas fa-exclamation-triangle stat-icon"></i>
+        </div>
+        <div class="stat-value" id="stats-stock-bajo">0</div>
+        <div class="stat-sub">por reabastecer</div>
+    </div>
+    <div class="stat-card" onclick="mostrarFormulario('producto')" style="cursor:pointer">
+        <div class="stat-header">
+            <span class="stat-title">Nuevo Producto</span>
+            <i class="fas fa-plus-circle stat-icon"></i>
+        </div>
+        <div class="stat-value">+</div>
+        <div class="stat-sub">agregar al catálogo</div>
+    </div>
+</div>
 
             <div id="form-producto" class="form-modal">
-                <h3 style="margin-bottom: 1rem; color:#333;">👗 Nuevo Producto</h3>
+                <h3 style="margin-bottom: 1rem; color:#333;"><i class="fas fa-dress"></i> Nuevo Producto</h3>
                 <form onsubmit="event.preventDefault(); guardarProductoBase()">
                     <div class="form-group">
                         <label>Código</label>
@@ -985,7 +985,7 @@
                         <label>URL imagen</label>
                         <input type="url" id="producto-imagen" placeholder="https://...">
                     </div>
-                    <h4 style="margin: 1rem 0 0.5rem; color:#555;">📦 Variantes</h4>
+                    <h4 style="margin: 1rem 0 0.5rem; color:#555;"><i class="fas fa-box"></i> Variantes</h4>
                     <div id="variantes-container"></div>
                     <button type="button" onclick="agregarVariante()" class="add-btn" style="margin: 0.5rem 0; background:#e0e0e0; color:#555;">+ Agregar talla</button>
                     <button type="submit" class="submit-btn">Guardar Producto</button>
@@ -1010,38 +1010,41 @@
 <!-- MÓDULO DE STOCK (Control de inventario bajo) -->
 <div id="modulo-stock" class="module-section" style="display: none;">
     <div class="module-header">
-        <h2>📊 Control de Stock</h2>
+        <h2><i class="fas fa-chart-line stat-icon"></i> Control de Stock</h2>
         <p>Productos con stock bajo o agotados</p>
     </div>
     
     <!-- Tarjetas de resumen -->
-    <div class="stock-cards">
-        <div class="stat-card">
-            <div class="stat-icon">⚠️</div>
-            <div class="stat-info">
-                <h3 id="stock-bajo-count">0</h3>
-                <p>Productos con stock bajo</p>
-            </div>
+<div class="stock-cards">
+    <div class="stat-card">
+        <div class="stat-header">
+            <span class="stat-title">Stock Bajo</span>
+            <i class="fas fa-exclamation-triangle stat-icon"></i>
         </div>
-        <div class="stat-card">
-            <div class="stat-icon">❌</div>
-            <div class="stat-info">
-                <h3 id="stock-agotado-count">0</h3>
-                <p>Productos agotados</p>
-            </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon">✅</div>
-            <div class="stat-info">
-                <h3 id="stock-normal-count">0</h3>
-                <p>Productos con stock normal</p>
-            </div>
-        </div>
+        <div class="stat-value" id="stock-bajo-count">0</div>
+        <div class="stat-sub">productos</div>
     </div>
+    <div class="stat-card">
+        <div class="stat-header">
+            <span class="stat-title">Agotados</span>
+            <i class="fas fa-times-circle stat-icon"></i>
+        </div>
+        <div class="stat-value" id="stock-agotado-count">0</div>
+        <div class="stat-sub">productos</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-header">
+            <span class="stat-title">Stock Normal</span>
+            <i class="fas fa-check-circle stat-icon"></i>
+        </div>
+        <div class="stat-value" id="stock-normal-count">0</div>
+        <div class="stat-sub">productos</div>
+    </div>
+</div>
     
     <!-- Tabla de productos con stock bajo -->
             <div class="table-container">
-                <h3>⚠️ Productos con stock bajo (menos de 5 unidades)</h3>
+                <h3><i class="fas fa-exclamation-triangle stat-icon"></i> Productos con stock bajo (menos de 5 unidades)</h3>
                 <table class="data-table" id="tabla-stock-bajo">
                     <thead>
                         <tr>
@@ -1061,7 +1064,7 @@
             
             <!-- Tabla de productos agotados -->
             <div class="table-container" style="margin-top: 2rem;">
-                <h3>❌ Productos agotados (stock 0)</h3>
+                <h3><i class="fas fa-times-circle stat-icon"></i> Productos agotados (stock 0)</h3>
                 <table class="data-table" id="tabla-stock-agotado">
                     <thead>
                         <tr>
@@ -1098,7 +1101,7 @@
                 <table id="tabla-compras"><thead><tr><th>Fecha</th><th>Proveedor</th><th>Producto</th><th>Total</th><th>Estado</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="6">Cargando...</td></tr></tbody></table>
             </div>
             <div id="form-compra" class="form-modal">
-                <h3>🛍️ Nueva Compra</h3>
+                <h3><i class="fas fa-shopping-bag"></i> Nueva Compra</h3>
                 <form onsubmit="event.preventDefault(); guardarCompra()">
                     <div class="form-group"><label>Proveedor</label><select id="compra-proveedor" required><option value="">Seleccionar</option></select></div>
                     <div class="form-group"><label>Fecha</label><input type="date" id="compra-fecha" required></div>
@@ -1149,7 +1152,7 @@
                 <table id="tabla-perfiles"><thead><tr><th>Nombre</th><th>Email</th><th>Rol</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="4">Cargando...</td></tr></tbody></table>
             </div>
             <div id="form-perfil" class="form-modal">
-                <h3>👥 Nuevo Usuario</h3>
+                <h3><i class="fas fa-users"></i> Nuevo Usuario</h3>
                 <form onsubmit="event.preventDefault(); guardarPerfil()">
                     <div class="form-group"><label>Nombre</label><input type="text" id="perfil-nombre" required></div>
                     <div class="form-group"><label>Email</label><input type="email" id="perfil-email" required></div>
@@ -1168,7 +1171,7 @@
                 <table id="tabla-proveedores"><thead><tr><th>Nombre</th><th>Contacto</th><th>Teléfono</th><th>Email</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="5">Cargando...</td></tr></tbody></table>
             </div>
             <div id="form-proveedor" class="form-modal">
-                <h3>📦 Nuevo Proveedor</h3>
+                <h3><i class="fas fa-box"></i> Nuevo Proveedor</h3>
                 <form onsubmit="event.preventDefault(); guardarProveedor()">
                     <div class="form-group"><label>Nombre</label><input type="text" id="proveedor-nombre" required></div>
                     <div class="form-group"><label>Contacto</label><input type="text" id="proveedor-contacto"></div>
@@ -1184,7 +1187,7 @@
 <!-- MÓDULO DE VENTAS - VERSIÓN MANUAL COMPLETA -->
 <div id="modulo-ventas" class="module-section" style="display: none;">
     <div class="module-header">
-        <h2>🛍️ Punto de Venta</h2>
+        <h2><i class="fas fa-shopping-bag"></i> Punto de Venta</h2>
         <p>Gestión completa de ventas</p>
     </div>
     
@@ -1192,7 +1195,7 @@
     <div class="ventas-cards">
         <!-- Botón Venta Rápida -->
         <div class="stat-card" onclick="abrirVentaRapida()" style="cursor: pointer;">
-            <div class="stat-icon">⚡</div>
+            <div class="stat-icon"><i class="fas fa-bolt stat-icon"></i></div>
             <div class="stat-info">
                 <h3>Venta Rápida</h3>
                 <p>Venta express sin tanto detalle</p>
@@ -1200,43 +1203,61 @@
         </div>
         
         <!-- Botón Nueva Venta Manual -->
-        <div class="stat-card" onclick="abrirNuevaVenta()" style="cursor: pointer;">
-            <div class="stat-icon">📝</div>
-            <div class="stat-info">
-                <h3>Nueva Venta</h3>
-                <p>Venta completa con detalles</p>
-            </div>
+<div class="ventas-cards">
+    <!-- Botón Venta Rápida -->
+    <div class="stat-card" onclick="abrirVentaRapida()" style="cursor: pointer;">
+        <div class="stat-header">
+            <span class="stat-title">Venta Rápida</span>
+            <i class="fas fa-bolt stat-icon"></i>
         </div>
-        
-        <div class="stat-card">
-            <div class="stat-icon">💰</div>
-            <div class="stat-info">
-                <h3 id="ventas-hoy-total">$0</h3>
-                <p>Ventas de hoy</p>
-            </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon">📊</div>
-            <div class="stat-info">
-                <h3 id="ventas-mes-total">$0</h3>
-                <p>Ventas del mes</p>
-            </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon">🔄</div>
-            <div class="stat-info">
-                <h3 id="ventas-cambios-count">0</h3>
-                <p>Cambios/Devoluciones</p>
-            </div>
-        </div>
+        <div class="stat-value">⚡</div>
+        <div class="stat-sub">Venta express sin detalles</div>
     </div>
+    
+    <!-- Botón Nueva Venta Manual -->
+    <div class="stat-card" onclick="abrirNuevaVenta()" style="cursor: pointer;">
+        <div class="stat-header">
+            <span class="stat-title">Nueva Venta</span>
+            <i class="fas fa-pen-alt stat-icon"></i>
+        </div>
+        <div class="stat-value"><i class="fas fa-edit"></i></div>
+        <div class="stat-sub">Venta completa con detalles</div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-header">
+            <span class="stat-title">Ventas Hoy</span>
+            <i class="fas fa-coins stat-icon"></i>
+        </div>
+        <div class="stat-value" id="ventas-hoy-total">$0</div>
+        <div class="stat-sub">del día</div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-header">
+            <span class="stat-title">Ventas Mes</span>
+            <i class="fas fa-chart-line stat-icon"></i>
+        </div>
+        <div class="stat-value" id="ventas-mes-total">$0</div>
+        <div class="stat-sub">del mes</div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-header">
+            <span class="stat-title">Cambios</span>
+            <i class="fas fa-exchange-alt stat-icon"></i>
+        </div>
+        <div class="stat-value" id="ventas-cambios-count">0</div>
+        <div class="stat-sub">solicitados</div>
+    </div>
+</div>
     
     <!-- Tabla de ventas recientes (resto igual) -->
     <div class="table-container">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
-            <h3>📋 Ventas recientes</h3>
+            <h3><i class="fas fa-clipboard-list"></i> Ventas recientes</h3>
             <div style="display: flex; gap: 0.5rem;">
-                <input type="text" id="buscador-ventas" placeholder="🔍 Buscar venta..." class="buscador-mini">
+                <input type="text" id="buscador-ventas" placeholder="<i class="fas fa-search"></i> Buscar venta..." class="buscador-mini">
                 <select id="filtro-estado-ventas" class="filtro-mini">
                     <option value="todos">Todas</option>
                     <option value="completada">Completadas</option>
@@ -1272,7 +1293,7 @@
 <div id="form-venta" class="form-modal" style="display: none;">
     <div class="form-modal-content" style="max-width: 900px;">
         <div class="form-modal-header">
-            <h3>📝 Venta Manual</h3>
+            <h3><i class="fas fa-pen-alt stat-icon"></i> Venta Manual</h3>
             <span class="close" onclick="cerrarFormulario('venta')">&times;</span>
         </div>
         <div class="form-modal-body">
@@ -1280,15 +1301,15 @@
                 <!-- Datos de la venta -->
                 <div class="form-row">
                     <div class="form-group">
-                        <label>📅 Fecha</label>
+                        <label><i class="fas fa-calendar-alt"></i> Fecha</label>
                         <input type="date" id="venta-fecha" required>
                     </div>
                     <div class="form-group">
-                        <label>👤 Cliente</label>
+                        <label><i class="fas fa-user"></i> Cliente</label>
                         <input type="text" id="venta-cliente" placeholder="Nombre del cliente">
                     </div>
                     <div class="form-group">
-                        <label>💵 Método de pago</label>
+                        <label><i class="fas fa-dollar-sign"></i> Método de pago</label>
                         <select id="venta-metodo" required>
                             <option value="Efectivo">Efectivo</option>
                             <option value="Tarjeta Débito">Tarjeta Débito</option>
@@ -1304,7 +1325,7 @@
                     <h4>➕ Agregar producto</h4>
                     <div class="form-row">
                         <div class="form-group" style="flex: 2;">
-                            <label>📦 Producto</label>
+                            <label><i class="fas fa-box"></i> Producto</label>
                             <input type="text" id="venta-producto-nombre" placeholder="Ej: Vestido Floral, Camisa Blanca..." class="form-control" required>
                         </div>
                         <div class="form-group">
@@ -1318,11 +1339,11 @@
                     </div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label>🔢 Cantidad</label>
+                            <label><i class="fas fa-sort-numeric-down"></i> Cantidad</label>
                             <input type="number" id="venta-producto-cantidad" value="1" min="1" class="form-control">
                         </div>
                         <div class="form-group">
-                            <label>💰 Precio unitario</label>
+                            <label><i class="fas fa-coins stat-icon"></i> Precio unitario</label>
                             <input type="number" id="venta-producto-precio" placeholder="0" min="0" step="100" class="form-control" required>
                         </div>
                         <div class="form-group" style="justify-content: flex-end;">
@@ -1359,7 +1380,7 @@
                 
                 <!-- Botones de acción -->
                 <div class="form-actions" style="margin-top: 1.5rem;">
-                    <button type="submit" class="btn-primary">✅ Registrar Venta</button>
+                    <button type="submit" class="btn-primary"><i class="fas fa-check-circle stat-icon"></i> Registrar Venta</button>
                     <button type="button" class="btn-secondary" onclick="cerrarFormulario('venta')">Cancelar</button>
                 </div>
             </form>
@@ -1371,7 +1392,7 @@
         <div id="modal-editar-venta" class="form-modal" style="display: none;">
             <div class="form-modal-content" style="max-width: 600px;">
                 <div class="form-modal-header">
-                    <h3>✏️ Editar Venta</h3>
+                    <h3><i class="fas fa-pencil-alt"></i> Editar Venta</h3>
                     <span class="close" onclick="cerrarModalEditarVenta()">&times;</span>
                 </div>
                 <div class="form-modal-body">
@@ -1379,15 +1400,15 @@
                         <input type="hidden" id="editar-venta-id">
                         <div class="form-row">
                             <div class="form-group">
-                                <label>📅 Fecha</label>
+                                <label><i class="fas fa-calendar-alt"></i> Fecha</label>
                                 <input type="date" id="editar-venta-fecha" required>
                             </div>
                             <div class="form-group">
-                                <label>👤 Cliente</label>
+                                <label><i class="fas fa-user"></i> Cliente</label>
                                 <input type="text" id="editar-venta-cliente">
                             </div>
                             <div class="form-group">
-                                <label>💵 Método de pago</label>
+                                <label><i class="fas fa-dollar-sign"></i> Método de pago</label>
                                 <select id="editar-venta-metodo" required>
                                     <option value="Efectivo">Efectivo</option>
                                     <option value="Tarjeta Débito">Tarjeta Débito</option>
@@ -1398,11 +1419,11 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label>📝 Notas</label>
+                            <label><i class="fas fa-pen-alt stat-icon"></i> Notas</label>
                             <textarea id="editar-venta-notas" rows="2" placeholder="Motivo del cambio, devolución, etc."></textarea>
                         </div>
                         <div class="form-group">
-                            <label>🔄 Estado</label>
+                            <label><i class="fas fa-exchange-alt stat-icon"></i> Estado</label>
                             <select id="editar-venta-estado">
                                 <option value="completada">Completada</option>
                                 <option value="pendiente">Pendiente</option>
@@ -1411,8 +1432,8 @@
                             </select>
                         </div>
                         <div class="form-actions">
-                            <button type="submit" class="btn-primary">💾 Guardar cambios</button>
-                            <button type="button" class="btn-danger" onclick="eliminarVenta()">🗑️ Eliminar venta</button>
+                            <button type="submit" class="btn-primary"><i class="fas fa-save"></i> Guardar cambios</button>
+                            <button type="button" class="btn-danger" onclick="eliminarVenta()"><i class="fas fa-trash-alt"></i> Eliminar venta</button>
                             <button type="button" class="btn-secondary" onclick="cerrarModalEditarVenta()">Cancelar</button>
                         </div>
                     </form>
@@ -1427,7 +1448,7 @@
                 <div class="stat-card"><div class="stat-header"><span class="stat-title">Egresos</span><i class="fas fa-arrow-down stat-icon"></i></div><div class="stat-value" id="stats-egresos">$0</div></div>
                 <div class="stat-card" onclick="window.open('contabilidad.html', '_blank')" style="cursor:pointer">
                     <div class="stat-header"><span class="stat-title">Reportes</span><i class="fas fa-chart-pie stat-icon"></i></div>
-                    <div class="stat-value">📊</div>
+                    <div class="stat-value"><i class="fas fa-chart-line stat-icon"></i></div>
                 </div>
             </div>
         </div>
