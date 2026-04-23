@@ -21,24 +21,12 @@
             min-height: 100vh;
         }
 
-        /* ===== SCROLL PERSONALIZADO ===== */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #1a1a2e;
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #d4a5a9;
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #ffb6c1;
-        }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #1a1a2e; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #d4a5a9; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #ffb6c1; }
 
-        /* ===== HEADER ===== */
+        /* Header */
         .header {
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
             padding: 1rem 2rem;
@@ -53,22 +41,9 @@
             z-index: 100;
         }
 
-        .header h1 {
-            font-size: 1.4rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 600;
-        }
-
-        .header h1 span {
-            color: #d4a5a9;
-        }
-
-        .header-buttons {
-            display: flex;
-            gap: 1rem;
-        }
+        .header h1 { font-size: 1.4rem; display: flex; align-items: center; gap: 10px; font-weight: 600; }
+        .header h1 span { color: #d4a5a9; }
+        .header-buttons { display: flex; gap: 1rem; }
 
         .btn-outline {
             background: rgba(212, 165, 169, 0.15);
@@ -82,21 +57,12 @@
             cursor: pointer;
             font-size: 0.85rem;
         }
+        .btn-outline:hover { background: #d4a5a9; color: #1a1a2e; transform: translateY(-2px); }
 
-        .btn-outline:hover {
-            background: #d4a5a9;
-            color: #1a1a2e;
-            transform: translateY(-2px);
-        }
+        /* Contenedor */
+        .container { padding: 1.5rem; max-width: 1600px; margin: 0 auto; }
 
-        /* ===== CONTENEDOR PRINCIPAL ===== */
-        .container {
-            padding: 1.5rem;
-            max-width: 1600px;
-            margin: 0 auto;
-        }
-
-        /* ===== PERIODO SELECTOR ===== */
+        /* Periodo selector */
         .periodo-card {
             background: #1a1a2e;
             border-radius: 20px;
@@ -110,12 +76,7 @@
             border: 1px solid rgba(212, 165, 169, 0.2);
         }
 
-        .periodo-buttons {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-
+        .periodo-buttons { display: flex; gap: 0.5rem; flex-wrap: wrap; }
         .periodo-btn {
             background: #0f0f1a;
             border: 1px solid rgba(212, 165, 169, 0.3);
@@ -126,24 +87,10 @@
             color: #a0a0b0;
             transition: all 0.2s;
         }
+        .periodo-btn.active { background: #d4a5a9; color: #1a1a2e; border-color: #d4a5a9; }
+        .periodo-btn:hover:not(.active) { background: rgba(212, 165, 169, 0.2); color: #d4a5a9; }
 
-        .periodo-btn.active {
-            background: #d4a5a9;
-            color: #1a1a2e;
-            border-color: #d4a5a9;
-        }
-
-        .periodo-btn:hover:not(.active) {
-            background: rgba(212, 165, 169, 0.2);
-            color: #d4a5a9;
-        }
-
-        .periodo-custom {
-            display: flex;
-            gap: 0.5rem;
-            align-items: center;
-        }
-
+        .periodo-custom { display: flex; gap: 0.5rem; align-items: center; }
         .periodo-custom input {
             padding: 0.5rem 0.8rem;
             border: 1px solid rgba(212, 165, 169, 0.3);
@@ -152,18 +99,9 @@
             background: #0f0f1a;
             color: #e8e8f0;
         }
+        .btn-aplicar { background: #d4a5a9; color: #1a1a2e; border: none; padding: 0.5rem 1rem; border-radius: 40px; cursor: pointer; font-weight: 600; }
 
-        .btn-aplicar {
-            background: #d4a5a9;
-            color: #1a1a2e;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 40px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        /* ===== TARJETAS RESUMEN ===== */
+        /* Tarjetas resumen */
         .resumen-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -180,7 +118,6 @@
             position: relative;
             overflow: hidden;
         }
-
         .resumen-card::before {
             content: '';
             position: absolute;
@@ -192,40 +129,15 @@
             opacity: 0;
             transition: opacity 0.3s;
         }
-
-        .resumen-card:hover {
-            transform: translateY(-3px);
-            border-color: rgba(212, 165, 169, 0.5);
-        }
-
-        .resumen-card:hover::before {
-            opacity: 1;
-        }
-
-        .resumen-card h4 {
-            color: #a0a0b0;
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 0.5rem;
-        }
-
-        .resumen-card .valor {
-            font-size: 1.8rem;
-            font-weight: 700;
-            letter-spacing: -1px;
-        }
-
-        .resumen-card .trend {
-            font-size: 0.7rem;
-            margin-top: 0.5rem;
-        }
-
+        .resumen-card:hover { transform: translateY(-3px); border-color: rgba(212, 165, 169, 0.5); }
+        .resumen-card:hover::before { opacity: 1; }
+        .resumen-card h4 { color: #a0a0b0; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem; }
+        .resumen-card .valor { font-size: 1.8rem; font-weight: 700; letter-spacing: -1px; }
+        .resumen-card .trend { font-size: 0.7rem; margin-top: 0.5rem; }
         .positivo { color: #4ade80; }
         .negativo { color: #f87171; }
-        .neutral { color: #fbbf24; }
 
-        /* ===== TABS ===== */
+        /* Tabs */
         .tabs {
             display: flex;
             gap: 0.3rem;
@@ -234,7 +146,6 @@
             border-bottom: 1px solid rgba(212, 165, 169, 0.2);
             padding-bottom: 0.5rem;
         }
-
         .tab-btn {
             background: none;
             border: none;
@@ -246,33 +157,18 @@
             border-radius: 40px;
             transition: all 0.2s;
         }
+        .tab-btn:hover { background: rgba(212, 165, 169, 0.1); color: #d4a5a9; }
+        .tab-btn.active { background: #d4a5a9; color: #1a1a2e; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
 
-        .tab-btn:hover {
-            background: rgba(212, 165, 169, 0.1);
-            color: #d4a5a9;
-        }
-
-        .tab-btn.active {
-            background: #d4a5a9;
-            color: #1a1a2e;
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        /* ===== LIBRO DIARIO (TABLA PRINCIPAL) ===== */
+        /* Libro Diario */
         .libro-card {
             background: #1a1a2e;
             border-radius: 24px;
             padding: 1.5rem;
             border: 1px solid rgba(212, 165, 169, 0.2);
         }
-
         .libro-header {
             display: flex;
             justify-content: space-between;
@@ -281,13 +177,7 @@
             gap: 1rem;
             margin-bottom: 1.5rem;
         }
-
-        .libro-header h2 {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #d4a5a9;
-        }
-
+        .libro-header h2 { font-size: 1.1rem; font-weight: 600; color: #d4a5a9; }
         .btn-export {
             background: rgba(212, 165, 169, 0.15);
             color: #d4a5a9;
@@ -298,26 +188,16 @@
             font-size: 0.8rem;
             transition: all 0.2s;
         }
+        .btn-export:hover { background: #d4a5a9; color: #1a1a2e; }
 
-        .btn-export:hover {
-            background: #d4a5a9;
-            color: #1a1a2e;
-        }
-
-        /* ===== ASIENTOS AGRUPADOS ===== */
+        /* Asientos agrupados */
         .asiento-group {
             background: #0f0f1a;
             border-radius: 16px;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
             overflow: hidden;
             border: 1px solid rgba(212, 165, 169, 0.15);
-            transition: all 0.2s;
         }
-
-        .asiento-group:hover {
-            border-color: rgba(212, 165, 169, 0.4);
-        }
-
         .asiento-header {
             display: flex;
             justify-content: space-between;
@@ -327,88 +207,48 @@
             border-bottom: 1px solid rgba(212, 165, 169, 0.1);
             cursor: pointer;
         }
-
-        .asiento-header-left {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-
+        .asiento-header-left { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
         .asiento-numero {
             font-weight: 700;
-            font-size: 1rem;
+            font-size: 0.9rem;
             color: #d4a5a9;
             background: rgba(212, 165, 169, 0.15);
             padding: 0.2rem 0.8rem;
             border-radius: 20px;
         }
-
-        .asiento-fecha {
-            font-size: 0.8rem;
-            color: #a0a0b0;
-        }
-
-        .asiento-referencia {
-            font-weight: 500;
-            font-size: 0.85rem;
-        }
-
+        .asiento-fecha { font-size: 0.8rem; color: #a0a0b0; }
+        .asiento-referencia { font-weight: 500; font-size: 0.85rem; }
         .asiento-tipo {
             font-size: 0.7rem;
             padding: 0.2rem 0.6rem;
             border-radius: 20px;
-            background: rgba(74, 222, 128, 0.15);
-            color: #4ade80;
         }
-
-        .asiento-tipo.compra {
-            background: rgba(56, 189, 248, 0.15);
-            color: #38bdf8;
+        .asiento-tipo.venta { background: rgba(74, 222, 128, 0.15); color: #4ade80; }
+        .asiento-tipo.compra { background: rgba(56, 189, 248, 0.15); color: #38bdf8; }
+        .asiento-tipo.gasto { background: rgba(248, 113, 113, 0.15); color: #f87171; }
+        .asiento-tipo.manual { background: rgba(251, 191, 36, 0.15); color: #fbbf24; }
+        .asiento-header-right { display: flex; align-items: center; gap: 1rem; }
+        .asiento-total { font-size: 0.85rem; font-weight: 600; color: #d4a5a9; }
+        .asiento-actions { display: flex; gap: 0.5rem; }
+        .btn-editar, .btn-eliminar {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+            padding: 0.3rem;
+            border-radius: 8px;
+            transition: all 0.2s;
         }
+        .btn-editar { color: #38bdf8; }
+        .btn-editar:hover { background: rgba(56, 189, 248, 0.2); }
+        .btn-eliminar { color: #f87171; }
+        .btn-eliminar:hover { background: rgba(248, 113, 113, 0.2); }
+        .collapse-icon { transition: transform 0.2s; color: #a0a0b0; }
+        .collapse-icon.rotated { transform: rotate(180deg); }
+        .asiento-body { padding: 0; overflow: hidden; }
+        .asiento-body.collapsed { display: none; }
 
-        .asiento-tipo.gasto {
-            background: rgba(248, 113, 113, 0.15);
-            color: #f87171;
-        }
-
-        .asiento-tipo.manual {
-            background: rgba(251, 191, 36, 0.15);
-            color: #fbbf24;
-        }
-
-        .asiento-header-right {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .asiento-total {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #d4a5a9;
-        }
-
-        .asiento-actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .asiento-body {
-            padding: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease;
-        }
-
-        .asiento-body.collapsed {
-            display: none;
-        }
-
-        .asientos-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
+        .asientos-table { width: 100%; border-collapse: collapse; }
         .asientos-table th {
             text-align: left;
             padding: 0.8rem 1.2rem;
@@ -417,98 +257,37 @@
             font-weight: 600;
             color: #a0a0b0;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
-
-        .asientos-table td {
-            padding: 0.8rem 1.2rem;
-            border-bottom: 1px solid rgba(212, 165, 169, 0.08);
-            font-size: 0.85rem;
-        }
-
-        .asientos-table tr:last-child td {
-            border-bottom: none;
-        }
-
-        .monto-debito {
-            color: #4ade80;
-            font-weight: 500;
-        }
-
-        .monto-credito {
-            color: #f87171;
-            font-weight: 500;
-        }
+        .asientos-table td { padding: 0.8rem 1.2rem; border-bottom: 1px solid rgba(212, 165, 169, 0.08); font-size: 0.85rem; }
+        .monto-debito { color: #4ade80; font-weight: 500; }
+        .monto-credito { color: #f87171; font-weight: 500; }
 
         .totales-footer {
             margin-top: 1rem;
-            padding-top: 1rem;
-            border-top: 2px solid rgba(212, 165, 169, 0.2);
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
             text-align: right;
             font-weight: bold;
-            background: rgba(0, 0, 0, 0.2);
-            padding: 1rem;
-            border-radius: 12px;
         }
 
-        /* ===== ESTADO RESULTADOS ===== */
+        /* Estado Resultados y Balance */
         .estado-card, .balance-card, .mayor-card {
             background: #1a1a2e;
             border-radius: 24px;
             padding: 1.5rem;
             border: 1px solid rgba(212, 165, 169, 0.2);
         }
+        .estado-card h2, .balance-card h2, .mayor-card h2 { color: #d4a5a9; margin-bottom: 1.5rem; font-size: 1.1rem; }
+        .estado-table { width: 100%; border-collapse: collapse; }
+        .estado-table td { padding: 0.6rem; border-bottom: 1px solid rgba(212, 165, 169, 0.08); }
+        .estado-table tr.total-row { background: rgba(212, 165, 169, 0.08); font-weight: bold; }
+        .estado-table .valor { text-align: right; font-weight: bold; }
+        .balance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+        .balance-section h3 { color: #d4a5a9; margin-bottom: 1rem; font-size: 0.9rem; }
 
-        .estado-card h2, .balance-card h2, .mayor-card h2 {
-            color: #d4a5a9;
-            margin-bottom: 1.5rem;
-            font-size: 1.1rem;
-            font-weight: 600;
-        }
-
-        .estado-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .estado-table td {
-            padding: 0.6rem;
-            border-bottom: 1px solid rgba(212, 165, 169, 0.08);
-        }
-
-        .estado-table tr.total-row {
-            background: rgba(212, 165, 169, 0.08);
-            font-weight: bold;
-            border-top: 2px solid rgba(212, 165, 169, 0.2);
-        }
-
-        .estado-table .valor {
-            text-align: right;
-            font-weight: bold;
-        }
-
-        .balance-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-        }
-
-        .balance-section h3 {
-            color: #d4a5a9;
-            margin-bottom: 1rem;
-            font-size: 0.9rem;
-            font-weight: 600;
-        }
-
-        /* ===== MAYOR DE CUENTAS ===== */
-        .cuenta-selector {
-            margin-bottom: 1.5rem;
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
+        /* Mayor de cuentas */
+        .cuenta-selector { margin-bottom: 1.5rem; display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
         .cuenta-selector select {
             padding: 0.7rem 1rem;
             border: 1px solid rgba(212, 165, 169, 0.3);
@@ -517,19 +296,10 @@
             background: #0f0f1a;
             color: #e8e8f0;
         }
+        .mayor-table { width: 100%; border-collapse: collapse; }
+        .mayor-table th, .mayor-table td { padding: 0.6rem; text-align: center; border-bottom: 1px solid rgba(212, 165, 169, 0.08); }
 
-        .mayor-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .mayor-table th, .mayor-table td {
-            padding: 0.6rem;
-            text-align: center;
-            border-bottom: 1px solid rgba(212, 165, 169, 0.08);
-        }
-
-        /* ===== MODALES ===== */
+        /* Modales */
         .modal {
             position: fixed;
             top: 0;
@@ -543,7 +313,6 @@
             justify-content: center;
             z-index: 1000;
         }
-
         .modal-content {
             background: #1a1a2e;
             border-radius: 24px;
@@ -553,7 +322,6 @@
             overflow-y: auto;
             border: 1px solid rgba(212, 165, 169, 0.3);
         }
-
         .modal-header {
             display: flex;
             justify-content: space-between;
@@ -564,40 +332,13 @@
             top: 0;
             background: #1a1a2e;
         }
+        .modal-header h2 { color: #d4a5a9; font-size: 1.1rem; }
+        .close-modal { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #a0a0b0; }
+        .close-modal:hover { color: #f87171; }
+        .modal-body { padding: 1.5rem; }
 
-        .modal-header h2 {
-            color: #d4a5a9;
-            font-size: 1.1rem;
-        }
-
-        .close-modal {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: #a0a0b0;
-        }
-
-        .close-modal:hover {
-            color: #f87171;
-        }
-
-        .modal-body {
-            padding: 1.5rem;
-        }
-
-        .form-group {
-            margin-bottom: 1rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.4rem;
-            color: #d4a5a9;
-            font-weight: 500;
-            font-size: 0.8rem;
-        }
-
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; margin-bottom: 0.4rem; color: #d4a5a9; font-weight: 500; font-size: 0.8rem; }
         .form-group input, .form-group select, .form-group textarea {
             width: 100%;
             padding: 0.7rem;
@@ -607,21 +348,9 @@
             color: #e8e8f0;
             font-size: 0.85rem;
         }
-
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-            outline: none;
-            border-color: #d4a5a9;
-        }
-
-        .form-row {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .form-row .form-group {
-            flex: 1;
-        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #d4a5a9; }
+        .form-row { display: flex; gap: 1rem; flex-wrap: wrap; }
+        .form-row .form-group { flex: 1; }
 
         /* Líneas del asiento */
         .lineas-container {
@@ -630,7 +359,6 @@
             border-radius: 12px;
             overflow: hidden;
         }
-
         .linea-header {
             display: grid;
             grid-template-columns: 2fr 2fr 1.5fr 1.5fr 0.5fr;
@@ -641,7 +369,6 @@
             color: #d4a5a9;
             border-bottom: 1px solid rgba(212, 165, 169, 0.2);
         }
-
         .linea-row {
             display: grid;
             grid-template-columns: 2fr 2fr 1.5fr 1.5fr 0.5fr;
@@ -649,7 +376,6 @@
             border-bottom: 1px solid rgba(212, 165, 169, 0.1);
             align-items: center;
         }
-
         .linea-row input, .linea-row select {
             width: 95%;
             padding: 0.4rem;
@@ -659,7 +385,6 @@
             color: #e8e8f0;
             font-size: 0.75rem;
         }
-
         .btn-agregar-linea {
             background: rgba(212, 165, 169, 0.15);
             color: #d4a5a9;
@@ -670,23 +395,8 @@
             font-size: 0.75rem;
             margin-top: 0.5rem;
         }
-
-        .btn-eliminar-linea {
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 1rem;
-            color: #f87171;
-        }
-
-        .total-lineas {
-            margin-top: 1rem;
-            padding: 0.8rem;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 12px;
-            text-align: right;
-            font-weight: bold;
-        }
+        .btn-eliminar-linea { background: none; border: none; cursor: pointer; font-size: 1rem; color: #f87171; }
+        .total-lineas { margin-top: 1rem; padding: 0.8rem; background: rgba(0, 0, 0, 0.2); border-radius: 12px; text-align: right; font-weight: bold; }
 
         .modal-footer {
             display: flex;
@@ -696,36 +406,11 @@
             padding-top: 1rem;
             border-top: 1px solid rgba(212, 165, 169, 0.2);
         }
+        .btn-guardar { background: #4ade80; color: #1a1a2e; border: none; padding: 0.6rem 1.2rem; border-radius: 40px; cursor: pointer; font-weight: 600; }
+        .btn-cancelar { background: rgba(248, 113, 113, 0.15); color: #f87171; border: 1px solid rgba(248, 113, 113, 0.3); padding: 0.6rem 1.2rem; border-radius: 40px; cursor: pointer; }
+        .btn-eliminar-asiento { background: rgba(248, 113, 113, 0.15); color: #f87171; border: none; padding: 0.6rem 1.2rem; border-radius: 40px; cursor: pointer; }
+        .btn-crear { background: #d4a5a9; color: #1a1a2e; border: none; padding: 0.6rem 1.2rem; border-radius: 40px; cursor: pointer; font-weight: 600; }
 
-        .btn-guardar {
-            background: #4ade80;
-            color: #1a1a2e;
-            border: none;
-            padding: 0.6rem 1.2rem;
-            border-radius: 40px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        .btn-cancelar {
-            background: rgba(248, 113, 113, 0.15);
-            color: #f87171;
-            border: 1px solid rgba(248, 113, 113, 0.3);
-            padding: 0.6rem 1.2rem;
-            border-radius: 40px;
-            cursor: pointer;
-        }
-
-        .btn-eliminar-asiento {
-            background: rgba(248, 113, 113, 0.15);
-            color: #f87171;
-            border: none;
-            padding: 0.6rem 1.2rem;
-            border-radius: 40px;
-            cursor: pointer;
-        }
-
-        /* Alertas */
         .toast-alert {
             position: fixed;
             bottom: 20px;
@@ -737,7 +422,6 @@
             animation: slideIn 0.3s ease;
             box-shadow: 0 4px 20px rgba(0,0,0,0.3);
         }
-
         .toast-success { background: #4ade80; color: #1a1a2e; }
         .toast-error { background: #f87171; }
         .toast-info { background: #38bdf8; }
@@ -747,7 +431,6 @@
             to { transform: translateX(0); opacity: 1; }
         }
 
-        /* Responsive */
         @media (max-width: 768px) {
             .container { padding: 1rem; }
             .resumen-grid { grid-template-columns: repeat(2, 1fr); }
@@ -756,30 +439,15 @@
             .asiento-header-right { width: 100%; justify-content: space-between; }
             .linea-header, .linea-row { grid-template-columns: 1.5fr 1.5fr 1fr 1fr 0.5fr; font-size: 0.7rem; }
         }
-
-        /* Iconos de colapso */
-        .collapse-icon {
-            transition: transform 0.2s;
-        }
-        .collapse-icon.rotated {
-            transform: rotate(180deg);
-        }
     </style>
 </head>
 <body>
     <header class="header">
-        <h1>
-            <i class="fas fa-chart-line" style="color: #d4a5a9;"></i>
-            CONTABILIDAD
-            <span>| Modas La 34</span>
-        </h1>
+        <h1><i class="fas fa-chart-line" style="color: #d4a5a9;"></i> CONTABILIDAD <span>| Modas La 34</span></h1>
         <div class="header-buttons">
-            <button class="btn-outline" onclick="abrirPlanCuentas()">
-                <i class="fas fa-book"></i> Plan de Cuentas
-            </button>
-            <a href="dashboard.html" class="btn-outline">
-                <i class="fas fa-arrow-left"></i> Volver
-            </a>
+            <button class="btn-outline" onclick="abrirNuevoAsiento()"><i class="fas fa-plus"></i> Nuevo Asiento</button>
+            <button class="btn-outline" onclick="abrirPlanCuentas()"><i class="fas fa-book"></i> Plan de Cuentas</button>
+            <a href="dashboard.html" class="btn-outline"><i class="fas fa-arrow-left"></i> Volver</a>
         </div>
     </header>
 
@@ -795,57 +463,26 @@
                 <input type="date" id="fecha-inicio">
                 <span>→</span>
                 <input type="date" id="fecha-fin">
-                <button class="btn-aplicar" onclick="aplicarPeriodoPersonalizado()">
-                    <i class="fas fa-check"></i> Aplicar
-                </button>
+                <button class="btn-aplicar" onclick="aplicarPeriodoPersonalizado()"><i class="fas fa-check"></i> Aplicar</button>
             </div>
         </div>
 
         <!-- Tarjetas resumen -->
         <div class="resumen-grid">
-            <div class="resumen-card">
-                <h4><i class="fas fa-arrow-up"></i> INGRESOS</h4>
-                <div class="valor positivo" id="total-ingresos">$0</div>
-                <div class="trend positivo" id="trend-ingresos">▲ +0%</div>
-            </div>
-            <div class="resumen-card">
-                <h4><i class="fas fa-arrow-down"></i> EGRESOS</h4>
-                <div class="valor negativo" id="total-egresos">$0</div>
-                <div class="trend negativo" id="trend-egresos">▼ -0%</div>
-            </div>
-            <div class="resumen-card">
-                <h4><i class="fas fa-chart-simple"></i> UTILIDAD</h4>
-                <div class="valor" id="utilidad">$0</div>
-                <div class="trend" id="trend-utilidad">▲ +0%</div>
-            </div>
-            <div class="resumen-card">
-                <h4><i class="fas fa-coins"></i> CAJA</h4>
-                <div class="valor positivo" id="saldo-caja">$0</div>
-            </div>
-            <div class="resumen-card">
-                <h4><i class="fas fa-building-columns"></i> BANCOS</h4>
-                <div class="valor positivo" id="saldo-bancos">$0</div>
-            </div>
-            <div class="resumen-card">
-                <h4><i class="fas fa-box"></i> INVENTARIO</h4>
-                <div class="valor" id="saldo-inventario">$0</div>
-            </div>
+            <div class="resumen-card"><h4><i class="fas fa-arrow-up"></i> INGRESOS</h4><div class="valor positivo" id="total-ingresos">$0</div><div class="trend positivo" id="trend-ingresos">▲ +0%</div></div>
+            <div class="resumen-card"><h4><i class="fas fa-arrow-down"></i> EGRESOS</h4><div class="valor negativo" id="total-egresos">$0</div><div class="trend negativo" id="trend-egresos">▼ -0%</div></div>
+            <div class="resumen-card"><h4><i class="fas fa-chart-simple"></i> UTILIDAD</h4><div class="valor" id="utilidad">$0</div><div class="trend" id="trend-utilidad">▲ +0%</div></div>
+            <div class="resumen-card"><h4><i class="fas fa-coins"></i> CAJA</h4><div class="valor positivo" id="saldo-caja">$0</div></div>
+            <div class="resumen-card"><h4><i class="fas fa-building-columns"></i> BANCOS</h4><div class="valor positivo" id="saldo-bancos">$0</div></div>
+            <div class="resumen-card"><h4><i class="fas fa-box"></i> INVENTARIO</h4><div class="valor" id="saldo-inventario">$0</div></div>
         </div>
 
         <!-- Tabs -->
         <div class="tabs">
-            <button class="tab-btn active" onclick="mostrarTab('libro', event)">
-                <i class="fas fa-book"></i> Libro Diario
-            </button>
-            <button class="tab-btn" onclick="mostrarTab('resultados', event)">
-                <i class="fas fa-chart-line"></i> Estado Resultados
-            </button>
-            <button class="tab-btn" onclick="mostrarTab('balance', event)">
-                <i class="fas fa-scale-balanced"></i> Balance General
-            </button>
-            <button class="tab-btn" onclick="mostrarTab('mayor', event)">
-                <i class="fas fa-list"></i> Mayor de Cuentas
-            </button>
+            <button class="tab-btn active" onclick="mostrarTab('libro', event)"><i class="fas fa-book"></i> Libro Diario</button>
+            <button class="tab-btn" onclick="mostrarTab('resultados', event)"><i class="fas fa-chart-line"></i> Estado Resultados</button>
+            <button class="tab-btn" onclick="mostrarTab('balance', event)"><i class="fas fa-scale-balanced"></i> Balance General</button>
+            <button class="tab-btn" onclick="mostrarTab('mayor', event)"><i class="fas fa-list"></i> Mayor de Cuentas</button>
         </div>
 
         <!-- Tab: Libro Diario -->
@@ -854,19 +491,13 @@
                 <div class="libro-header">
                     <h2><i class="fas fa-book-open"></i> LIBRO DIARIO CONTABLE</h2>
                     <div style="display: flex; gap: 0.5rem;">
-                        <button class="btn-export" onclick="sincronizarAsientos()">
-                            <i class="fas fa-sync-alt"></i> Sincronizar
-                        </button>
-                        <button class="btn-export" onclick="exportarLibroDiario()">
-                            <i class="fas fa-download"></i> Exportar
-                        </button>
+                        <button class="btn-export" onclick="sincronizarAsientos()"><i class="fas fa-sync-alt"></i> Sincronizar</button>
+                        <button class="btn-export" onclick="exportarLibroDiario()"><i class="fas fa-download"></i> Exportar</button>
                     </div>
                 </div>
                 <div id="asientos-container"></div>
                 <div class="totales-footer" id="totales-footer" style="display: none;">
-                    <strong>TOTALES:</strong> 
-                    <span id="total-debitos" class="monto-debito">$0</span> = 
-                    <span id="total-creditos" class="monto-credito">$0</span>
+                    <strong>TOTALES:</strong> <span id="total-debitos" class="monto-debito">$0</span> = <span id="total-creditos" class="monto-credito">$0</span>
                 </div>
             </div>
         </div>
@@ -899,22 +530,8 @@
             <div class="balance-card">
                 <h2><i class="fas fa-scale-balanced"></i> BALANCE GENERAL</h2>
                 <div class="balance-grid">
-                    <div class="balance-section">
-                        <h3><i class="fas fa-box"></i> ACTIVOS</h3>
-                        <table class="estado-table" id="tabla-activos"><tbody></tbody></table>
-                        <div style="margin-top: 1rem; font-weight: bold; color: #d4a5a9;">
-                            TOTAL ACTIVOS: <span id="total-activos" style="float: right;">$0</span>
-                        </div>
-                    </div>
-                    <div class="balance-section">
-                        <h3><i class="fas fa-landmark"></i> PASIVOS Y PATRIMONIO</h3>
-                        <table class="estado-table" id="tabla-pasivos"><tbody></tbody></table>
-                        <div style="margin-top: 0.5rem; font-weight: bold;">TOTAL PASIVOS: <span id="total-pasivos" style="float: right;">$0</span></div>
-                        <div style="margin-top: 0.5rem; font-weight: bold;">PATRIMONIO: <span id="total-patrimonio" style="float: right;">$0</span></div>
-                        <div style="margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid rgba(212,165,169,0.2); font-weight: bold; color: #d4a5a9;">
-                            TOTAL PASIVO + PATRIMONIO: <span id="total-pasivo-patrimonio" style="float: right;">$0</span>
-                        </div>
-                    </div>
+                    <div class="balance-section"><h3><i class="fas fa-box"></i> ACTIVOS</h3><table class="estado-table" id="tabla-activos"><tbody></tbody></table><div style="margin-top: 1rem; font-weight: bold; color: #d4a5a9;">TOTAL ACTIVOS: <span id="total-activos" style="float: right;">$0</span></div></div>
+                    <div class="balance-section"><h3><i class="fas fa-landmark"></i> PASIVOS Y PATRIMONIO</h3><table class="estado-table" id="tabla-pasivos"><tbody></tbody></table><div style="margin-top: 0.5rem; font-weight: bold;">TOTAL PASIVOS: <span id="total-pasivos" style="float: right;">$0</span></div><div style="margin-top: 0.5rem; font-weight: bold;">PATRIMONIO: <span id="total-patrimonio" style="float: right;">$0</span></div><div style="margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid rgba(212,165,169,0.2); font-weight: bold; color: #d4a5a9;">TOTAL PASIVO + PATRIMONIO: <span id="total-pasivo-patrimonio" style="float: right;">$0</span></div></div>
                 </div>
             </div>
         </div>
@@ -924,16 +541,10 @@
             <div class="mayor-card">
                 <h2><i class="fas fa-list-ul"></i> MAYOR DE CUENTAS</h2>
                 <div class="cuenta-selector">
-                    <select id="select-cuenta-mayor" onchange="cargarMayorCuenta()">
-                        <option value="">Seleccionar cuenta...</option>
-                    </select>
-                    <button class="btn-export" onclick="exportarMayor()">
-                        <i class="fas fa-download"></i> Exportar
-                    </button>
+                    <select id="select-cuenta-mayor" onchange="cargarMayorCuenta()"><option value="">Seleccionar cuenta...</option></select>
+                    <button class="btn-export" onclick="exportarMayor()"><i class="fas fa-download"></i> Exportar</button>
                 </div>
-                <div id="mayor-contenido">
-                    <p style="text-align: center; color: #a0a0b0;">Selecciona una cuenta para ver su movimiento</p>
-                </div>
+                <div id="mayor-contenido"><p style="text-align: center; color: #a0a0b0;">Selecciona una cuenta para ver su movimiento</p></div>
             </div>
         </div>
     </div>
@@ -941,65 +552,60 @@
     <!-- MODAL EDITAR ASIENTO -->
     <div id="modal-editar-asiento" class="modal" style="display: none;">
         <div class="modal-content">
-            <div class="modal-header">
-                <h2 id="modal-title">✏️ Editar Asiento Contable</h2>
-                <button class="close-modal" onclick="cerrarModalAsiento()">&times;</button>
-            </div>
+            <div class="modal-header"><h2 id="modal-title">✏️ Editar Asiento Contable</h2><button class="close-modal" onclick="cerrarModalAsiento()">&times;</button></div>
             <div class="modal-body">
                 <form id="form-editar-asiento">
-                    <input type="hidden" id="asiento-id">
-                    <input type="hidden" id="asiento-tipo">
-                    
+                    <input type="hidden" id="asiento-id"><input type="hidden" id="asiento-tipo"><input type="hidden" id="asiento-original-id">
                     <div class="form-row">
-                        <div class="form-group">
-                            <label>📅 Fecha</label>
-                            <input type="date" id="asiento-fecha" required>
-                        </div>
-                        <div class="form-group">
-                            <label>🏷️ Referencia</label>
-                            <input type="text" id="asiento-referencia" placeholder="Ej: VTA-123">
-                        </div>
+                        <div class="form-group"><label>📅 Fecha</label><input type="date" id="asiento-fecha" required></div>
+                        <div class="form-group"><label>🏷️ Referencia</label><input type="text" id="asiento-referencia" placeholder="Ej: VTA-123"></div>
                     </div>
-                    
                     <div class="form-row">
-                        <div class="form-group">
-                            <label>👤 Cliente/Proveedor</label>
-                            <input type="text" id="asiento-tercero" placeholder="Nombre">
-                        </div>
+                        <div class="form-group"><label>👤 Cliente/Proveedor</label><input type="text" id="asiento-tercero" placeholder="Nombre"></div>
                     </div>
-                    
                     <label>📊 Líneas del asiento</label>
                     <div class="lineas-container">
-                        <div class="linea-header">
-                            <span>Código Cuenta</span>
-                            <span>Nombre Cuenta</span>
-                            <span>Débito</span>
-                            <span>Crédito</span>
-                            <span></span>
-                        </div>
+                        <div class="linea-header"><span>Código Cuenta</span><span>Nombre Cuenta</span><span>Débito</span><
+                                                                                                                                                     <span>Crédito</span><span></span></div>
                         <div id="lineas-list"></div>
                     </div>
-                    <button type="button" class="btn-agregar-linea" onclick="agregarLineaModal()">
-                        <i class="fas fa-plus"></i> Agregar línea
-                    </button>
-                    
-                    <div class="total-lineas" id="total-lineas-modal">
-                        TOTALES: $0 = $0
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>📝 Nota</label>
-                        <textarea id="asiento-nota" rows="2" placeholder="Descripción..."></textarea>
-                    </div>
-                    
+                    <button type="button" class="btn-agregar-linea" onclick="agregarLineaModal()"><i class="fas fa-plus"></i> Agregar línea</button>
+                    <div class="total-lineas" id="total-lineas-modal">TOTALES: $0 = $0</div>
+                    <div class="form-group"><label>📝 Nota</label><textarea id="asiento-nota" rows="2" placeholder="Descripción..."></textarea></div>
                     <div class="modal-footer">
-                        <button type="button" class="btn-eliminar-asiento" onclick="eliminarAsientoModal()">
-                            <i class="fas fa-trash"></i> Eliminar
-                        </button>
+                        <button type="button" class="btn-eliminar-asiento" onclick="eliminarAsientoModal()"><i class="fas fa-trash"></i> Eliminar</button>
                         <button type="button" class="btn-cancelar" onclick="cerrarModalAsiento()">Cancelar</button>
-                        <button type="submit" class="btn-guardar">
-                            <i class="fas fa-save"></i> Guardar
-                        </button>
+                        <button type="submit" class="btn-guardar"><i class="fas fa-save"></i> Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL NUEVO ASIENTO MANUAL -->
+    <div id="modal-nuevo-asiento" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header"><h2><i class="fas fa-plus-circle"></i> Nuevo Asiento Manual</h2><button class="close-modal" onclick="cerrarNuevoAsiento()">&times;</button></div>
+            <div class="modal-body">
+                <form id="form-nuevo-asiento">
+                    <div class="form-row">
+                        <div class="form-group"><label>📅 Fecha</label><input type="date" id="nuevo-fecha" required></div>
+                        <div class="form-group"><label>🏷️ Referencia</label><input type="text" id="nuevo-referencia" placeholder="Ej: AJ-001"></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>👤 Cliente/Proveedor</label><input type="text" id="nuevo-tercero" placeholder="Opcional"></div>
+                    </div>
+                    <label>📊 Líneas del asiento</label>
+                    <div class="lineas-container">
+                        <div class="linea-header"><span>Código Cuenta</span><span>Nombre Cuenta</span><span>Débito</span><span>Crédito</span><span></span></div>
+                        <div id="nuevo-lineas-list"></div>
+                    </div>
+                    <button type="button" class="btn-agregar-linea" onclick="agregarLineaNuevo()"><i class="fas fa-plus"></i> Agregar línea</button>
+                    <div class="total-lineas" id="nuevo-total-lineas">TOTALES: $0 = $0</div>
+                    <div class="form-group"><label>📝 Nota</label><textarea id="nuevo-nota" rows="2" placeholder="Descripción..."></textarea></div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn-cancelar" onclick="cerrarNuevoAsiento()">Cancelar</button>
+                        <button type="submit" class="btn-guardar"><i class="fas fa-save"></i> Guardar Asiento</button>
                     </div>
                 </form>
             </div>
@@ -1009,26 +615,14 @@
     <!-- MODAL PLAN DE CUENTAS -->
     <div id="modal-plan-cuentas" class="modal" style="display: none;">
         <div class="modal-content" style="max-width: 900px;">
-            <div class="modal-header">
-                <h2><i class="fas fa-book"></i> Plan de Cuentas</h2>
-                <button class="close-modal" onclick="cerrarPlanCuentas()">&times;</button>
-            </div>
+            <div class="modal-header"><h2><i class="fas fa-book"></i> Plan de Cuentas</h2><button class="close-modal" onclick="cerrarPlanCuentas()">&times;</button></div>
             <div class="modal-body">
                 <div style="margin-bottom: 1rem; display: flex; gap: 0.5rem;">
-                    <button class="btn-outline" style="background: #d4a5a9; color: #1a1a2e;" onclick="agregarCuentaPlan()">
-                        <i class="fas fa-plus"></i> Nueva Cuenta
-                    </button>
-                    <button class="btn-export" onclick="exportarPlanCuentas()">
-                        <i class="fas fa-download"></i> Exportar
-                    </button>
+                    <button class="btn-outline" style="background: #d4a5a9; color: #1a1a2e;" onclick="agregarCuentaPlan()"><i class="fas fa-plus"></i> Nueva Cuenta</button>
+                    <button class="btn-export" onclick="exportarPlanCuentas()"><i class="fas fa-download"></i> Exportar</button>
                 </div>
                 <div style="overflow-x: auto; max-height: 500px;">
-                    <table class="asientos-table" id="tabla-plan-cuentas">
-                        <thead>
-                            <tr><th>Código</th><th>Nombre</th><th>Tipo</th><th>Naturaleza</th><th>Acciones</th></tr>
-                        </thead>
-                        <tbody id="plan-cuentas-body"></tbody>
-                    </table>
+                    <table class="asientos-table" id="tabla-plan-cuentas"><thead><tr><th>Código</th><th>Nombre</th><th>Tipo</th><th>Naturaleza</th><th>Acciones</th></tr></thead><tbody id="plan-cuentas-body"></tbody></table>
                 </div>
             </div>
         </div>
@@ -1037,51 +631,16 @@
     <!-- MODAL EDITAR CUENTA -->
     <div id="modal-editar-cuenta" class="modal" style="display: none;">
         <div class="modal-content" style="max-width: 500px;">
-            <div class="modal-header">
-                <h2 id="modal-cuenta-title">✏️ Editar Cuenta</h2>
-                <button class="close-modal" onclick="cerrarEditarCuenta()">&times;</button>
-            </div>
+            <div class="modal-header"><h2 id="modal-cuenta-title">✏️ Editar Cuenta</h2><button class="close-modal" onclick="cerrarEditarCuenta()">&times;</button></div>
             <div class="modal-body">
                 <form id="form-cuenta-plan">
                     <input type="hidden" id="cuenta-plan-id">
-                    <div class="form-group">
-                        <label>Código</label>
-                        <input type="text" id="cuenta-codigo" required placeholder="Ej: 110505">
-                    </div>
-                    <div class="form-group">
-                        <label>Nombre</label>
-                        <input type="text" id="cuenta-nombre" required placeholder="Ej: CAJA GENERAL">
-                    </div>
-                    <div class="form-group">
-                        <label>Tipo</label>
-                        <select id="cuenta-tipo" required>
-                            <option value="ACTIVO">ACTIVO</option>
-                            <option value="PASIVO">PASIVO</option>
-                            <option value="PATRIMONIO">PATRIMONIO</option>
-                            <option value="INGRESO">INGRESO</option>
-                            <option value="GASTO">GASTO</option>
-                            <option value="COSTO">COSTO</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Naturaleza</label>
-                        <select id="cuenta-naturaleza" required>
-                            <option value="DEUDORA">DEUDORA (Debe aumentar con débitos)</option>
-                            <option value="ACREEDORA">ACREEDORA (Debe aumentar con créditos)</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>
-                            <input type="checkbox" id="cuenta-permite-movimiento" checked>
-                            ¿Permite movimientos contables?
-                        </label>
-                    </div>
-                    <div class="modal-footer" style="justify-content: flex-end;">
-                        <button type="button" class="btn-cancelar" onclick="cerrarEditarCuenta()">Cancelar</button>
-                        <button type="submit" class="btn-guardar">
-                            <i class="fas fa-save"></i> Guardar
-                        </button>
-                    </div>
+                    <div class="form-group"><label>Código</label><input type="text" id="cuenta-codigo" required placeholder="Ej: 110505"></div>
+                    <div class="form-group"><label>Nombre</label><input type="text" id="cuenta-nombre" required placeholder="Ej: CAJA GENERAL"></div>
+                    <div class="form-group"><label>Tipo</label><select id="cuenta-tipo" required><option value="ACTIVO">ACTIVO</option><option value="PASIVO">PASIVO</option><option value="PATRIMONIO">PATRIMONIO</option><option value="INGRESO">INGRESO</option><option value="GASTO">GASTO</option><option value="COSTO">COSTO</option></select></div>
+                    <div class="form-group"><label>Naturaleza</label><select id="cuenta-naturaleza" required><option value="DEUDORA">DEUDORA (Debe aumentar con débitos)</option><option value="ACREEDORA">ACREEDORA (Debe aumentar con créditos)</option></select></div>
+                    <div class="form-group"><label><input type="checkbox" id="cuenta-permite-movimiento" checked> ¿Permite movimientos contables?</label></div>
+                    <div class="modal-footer" style="justify-content: flex-end;"><button type="button" class="btn-cancelar" onclick="cerrarEditarCuenta()">Cancelar</button><button type="submit" class="btn-guardar"><i class="fas fa-save"></i> Guardar</button></div>
                 </form>
             </div>
         </div>
@@ -1095,12 +654,11 @@
         let fechaInicio = new Date();
         fechaInicio.setDate(1);
         fechaInicio.setHours(0, 0, 0, 0);
-        
         let fechaFin = new Date();
         fechaFin.setHours(23, 59, 59, 999);
-
         let asientos = [];
         let planCuentas = [];
+        let asientosGuardados = []; // Para asientos manuales
 
         // ============================================
         // INICIALIZACIÓN
@@ -1108,20 +666,44 @@
         document.addEventListener('DOMContentLoaded', async () => {
             await verificarSesion();
             await cargarPlanCuentasGlobal();
+            await cargarAsientosGuardados();
             cargarFechasIniciales();
             await cargarAsientos();
         });
 
         async function verificarSesion() {
             const tokenData = localStorage.getItem('admin_token');
-            if (!tokenData) {
-                window.location.href = 'login.html';
-            }
+            if (!tokenData) window.location.href = 'login.html';
         }
 
         function cargarFechasIniciales() {
             document.getElementById('fecha-inicio').value = fechaInicio.toISOString().split('T')[0];
             document.getElementById('fecha-fin').value = fechaFin.toISOString().split('T')[0];
+        }
+
+        // ============================================
+        // CARGAR ASIENTOS GUARDADOS (TABLA asientos_contables)
+        // ============================================
+        async function cargarAsientosGuardados() {
+            try {
+                const token = JSON.parse(localStorage.getItem('admin_token'));
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/asientos_contables?order=numero.asc`, {
+                    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}` }
+                });
+                if (response.ok) {
+                    asientosGuardados = await response.json();
+                    // Cargar líneas para cada asiento guardado
+                    for (let i = 0; i < asientosGuardados.length; i++) {
+                        const lineasRes = await fetch(`${SUPABASE_URL}/rest/v1/lineas_asiento?asiento_id=eq.${asientosGuardados[i].id}`, {
+                            headers: { 'apikey': SUPABASE_KEY }
+                        });
+                        const lineas = await lineasRes.json();
+                        asientosGuardados[i].lineas = lineas;
+                    }
+                }
+            } catch (error) {
+                console.log('Tabla asientos_contables no existe aún, se creará al guardar');
+            }
         }
 
         // ============================================
@@ -1131,26 +713,11 @@
             try {
                 const token = JSON.parse(localStorage.getItem('admin_token'));
                 const response = await fetch(`${SUPABASE_URL}/rest/v1/plan_cuentas?order=codigo.asc`, {
-                    headers: {
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${token.access_token}`
-                    }
+                    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}` }
                 });
                 planCuentas = await response.json();
-                
-                if (planCuentas.length === 0) {
-                    await crearPlanCuentasDefault();
-                    const response2 = await fetch(`${SUPABASE_URL}/rest/v1/plan_cuentas?order=codigo.asc`, {
-                        headers: {
-                            'apikey': SUPABASE_KEY,
-                            'Authorization': `Bearer ${token.access_token}`
-                        }
-                    });
-                    planCuentas = await response2.json();
-                }
-            } catch (error) {
-                console.error('Error cargando plan de cuentas:', error);
-            }
+                if (planCuentas.length === 0) await crearPlanCuentasDefault();
+            } catch (error) { console.error('Error cargando plan de cuentas:', error); }
         }
 
         async function crearPlanCuentasDefault() {
@@ -1161,7 +728,6 @@
                 { codigo: '220505', nombre: 'PROVEEDORES NACIONALES', tipo: 'PASIVO', naturaleza: 'ACREEDORA', permite_movimiento: true },
                 { codigo: '250810', nombre: 'IVA GENERADO', tipo: 'PASIVO', naturaleza: 'ACREEDORA', permite_movimiento: true },
                 { codigo: '310505', nombre: 'CAPITAL SOCIAL', tipo: 'PATRIMONIO', naturaleza: 'ACREEDORA', permite_movimiento: true },
-                { codigo: '320505', nombre: 'UTILIDADES ACUMULADAS', tipo: 'PATRIMONIO', naturaleza: 'ACREEDORA', permite_movimiento: true },
                 { codigo: '413505', nombre: 'VENTAS', tipo: 'INGRESO', naturaleza: 'ACREEDORA', permite_movimiento: true },
                 { codigo: '620501', nombre: 'COMPRAS', tipo: 'COSTO', naturaleza: 'DEUDORA', permite_movimiento: true },
                 { codigo: '510506', nombre: 'SUELDOS', tipo: 'GASTO', naturaleza: 'DEUDORA', permite_movimiento: true },
@@ -1170,19 +736,18 @@
                 { codigo: '513505', nombre: 'PUBLICIDAD', tipo: 'GASTO', naturaleza: 'DEUDORA', permite_movimiento: true },
                 { codigo: '519595', nombre: 'OTROS GASTOS', tipo: 'GASTO', naturaleza: 'DEUDORA', permite_movimiento: true }
             ];
-            
             const token = JSON.parse(localStorage.getItem('admin_token'));
             for (const cuenta of cuentasDefault) {
                 await fetch(`${SUPABASE_URL}/rest/v1/plan_cuentas`, {
                     method: 'POST',
-                    headers: {
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${token.access_token}`,
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}`, 'Content-Type': 'application/json' },
                     body: JSON.stringify(cuenta)
                 });
             }
+            const response = await fetch(`${SUPABASE_URL}/rest/v1/plan_cuentas?order=codigo.asc`, {
+                headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}` }
+            });
+            planCuentas = await response.json();
         }
 
         function getNombreCuenta(codigo) {
@@ -1191,24 +756,16 @@
         }
 
         // ============================================
-        // CARGAR ASIENTOS
+        // CARGAR ASIENTOS (VENTAS, COMPRAS, GASTOS + GUARDADOS)
         // ============================================
         async function cargarAsientos() {
             try {
                 mostrarToast('Cargando movimientos contables...', 'info');
-                
                 const token = JSON.parse(localStorage.getItem('admin_token'));
-                
                 const [ventas, compras, gastos] = await Promise.all([
-                    fetch(`${SUPABASE_URL}/rest/v1/ventas?fecha=gte.${fechaInicio.toISOString()}&fecha=lte.${fechaFin.toISOString()}&order=fecha.asc`, {
-                        headers: { 'apikey': SUPABASE_KEY }
-                    }).then(r => r.json()),
-                    fetch(`${SUPABASE_URL}/rest/v1/compras?fecha=gte.${fechaInicio.toISOString()}&fecha=lte.${fechaFin.toISOString()}&order=fecha.asc`, {
-                        headers: { 'apikey': SUPABASE_KEY }
-                    }).then(r => r.json()),
-                    fetch(`${SUPABASE_URL}/rest/v1/gastos?fecha=gte.${fechaInicio.toISOString()}&fecha=lte.${fechaFin.toISOString()}&order=fecha.asc`, {
-                        headers: { 'apikey': SUPABASE_KEY }
-                    }).then(r => r.json())
+                    fetch(`${SUPABASE_URL}/rest/v1/ventas?fecha=gte.${fechaInicio.toISOString()}&fecha=lte.${fechaFin.toISOString()}&order=fecha.asc`, { headers: { 'apikey': SUPABASE_KEY } }).then(r => r.json()),
+                    fetch(`${SUPABASE_URL}/rest/v1/compras?fecha=gte.${fechaInicio.toISOString()}&fecha=lte.${fechaFin.toISOString()}&order=fecha.asc`, { headers: { 'apikey': SUPABASE_KEY } }).then(r => r.json()),
+                    fetch(`${SUPABASE_URL}/rest/v1/gastos?fecha=gte.${fechaInicio.toISOString()}&fecha=lte.${fechaFin.toISOString()}&order=fecha.asc`, { headers: { 'apikey': SUPABASE_KEY } }).then(r => r.json())
                 ]);
                 
                 const nuevosAsientos = [];
@@ -1217,20 +774,14 @@
                 for (const venta of ventas) {
                     const total = venta.total || 0;
                     nuevosAsientos.push({
-                        id: `VTA-${venta.id}`,
-                        fecha: venta.fecha,
-                        tipo: 'venta',
-                        referencia: `Venta #${venta.id}`,
-                        tercero: venta.cliente || 'Cliente general',
-                        nota: venta.productos || 'Venta de productos',
-                        total: total,
+                        id: `VTA-${venta.id}`, id_num: null, fecha: venta.fecha, tipo: 'venta', referencia: `Venta #${venta.id}`,
+                        tercero: venta.cliente || 'Cliente general', nota: venta.productos || 'Venta de productos', total: total,
                         lineas: [
                             { codigo: '110505', nombre: getNombreCuenta('110505'), debito: total, credito: 0 },
                             { codigo: '413505', nombre: getNombreCuenta('413505'), debito: 0, credito: total }
                         ]
                     });
                 }
-                
                 // Procesar compras
                 for (const compra of compras) {
                     const total = compra.total || 0;
@@ -1238,23 +789,13 @@
                         { codigo: '620501', nombre: getNombreCuenta('620501'), debito: total, credito: 0 },
                         { codigo: '143505', nombre: getNombreCuenta('143505'), debito: total, credito: 0 }
                     ];
-                    if (compra.estado === 'Pagada') {
-                        lineas.push({ codigo: '110505', nombre: getNombreCuenta('110505'), debito: 0, credito: total });
-                    } else {
-                        lineas.push({ codigo: '220505', nombre: getNombreCuenta('220505'), debito: 0, credito: total });
-                    }
+                    if (compra.estado === 'Pagada') lineas.push({ codigo: '110505', nombre: getNombreCuenta('110505'), debito: 0, credito: total });
+                    else lineas.push({ codigo: '220505', nombre: getNombreCuenta('220505'), debito: 0, credito: total });
                     nuevosAsientos.push({
-                        id: `COMP-${compra.id}`,
-                        fecha: compra.fecha,
-                        tipo: 'compra',
-                        referencia: `Compra #${compra.id}`,
-                        tercero: `Proveedor ID: ${compra.proveedor_id}`,
-                        nota: compra.producto || 'Compra de productos',
-                        total: total,
-                        lineas: lineas
+                        id: `COMP-${compra.id}`, id_num: null, fecha: compra.fecha, tipo: 'compra', referencia: `Compra #${compra.id}`,
+                        tercero: `Proveedor ID: ${compra.proveedor_id}`, nota: compra.producto || 'Compra de productos', total: total, lineas: lineas
                     });
                 }
-                
                 // Procesar gastos
                 for (const gasto of gastos) {
                     const monto = gasto.monto || 0;
@@ -1266,24 +807,27 @@
                         case 'Marketing': codigoGasto = '513505'; break;
                     }
                     nuevosAsientos.push({
-                        id: `GAS-${gasto.id}`,
-                        fecha: gasto.fecha,
-                        tipo: 'gasto',
-                        referencia: `Gasto #${gasto.id}`,
-                        tercero: '-',
-                        nota: gasto.concepto || 'Gasto operacional',
-                        total: monto,
+                        id: `GAS-${gasto.id}`, id_num: null, fecha: gasto.fecha, tipo: 'gasto', referencia: `Gasto #${gasto.id}`,
+                        tercero: '-', nota: gasto.concepto || 'Gasto operacional', total: monto,
                         lineas: [
                             { codigo: codigoGasto, nombre: getNombreCuenta(codigoGasto), debito: monto, credito: 0 },
                             { codigo: '110505', nombre: getNombreCuenta('110505'), debito: 0, credito: monto }
                         ]
                     });
                 }
-                
+                // Agregar asientos manuales guardados
+                for (const as of asientosGuardados) {
+                    if (new Date(as.fecha) >= fechaInicio && new Date(as.fecha) <= fechaFin) {
+                        nuevosAsientos.push({
+                            id: `MAN-${as.id}`, id_num: as.id, fecha: as.fecha, tipo: 'manual', referencia: as.referencia,
+                            tercero: as.tercero, nota: as.nota, total: as.total || as.lineas.reduce((s,l)=>s+l.debito,0),
+                            lineas: as.lineas || []
+                        });
+                    }
+                }
                 // Ordenar por fecha y numerar
                 nuevosAsientos.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
                 nuevosAsientos.forEach((a, idx) => a.numero = idx + 1);
-                
                 asientos = nuevosAsientos;
                 
                 mostrarLibroDiario();
@@ -1291,127 +835,50 @@
                 cargarEstadoResultados();
                 cargarBalanceGeneral();
                 cargarListaCuentasMayor();
-                
                 mostrarToast(`${asientos.length} asientos cargados`, 'success');
-                
-            } catch (error) {
-                console.error('Error:', error);
-                mostrarToast('Error al cargar datos', 'error');
-            }
+            } catch (error) { console.error('Error:', error); mostrarToast('Error al cargar datos', 'error'); }
         }
 
         // ============================================
-        // MOSTRAR LIBRO DIARIO (AGRUPADO POR ASIENTO)
+        // MOSTRAR LIBRO DIARIO
         // ============================================
         function mostrarLibroDiario() {
             const container = document.getElementById('asientos-container');
             const footer = document.getElementById('totales-footer');
-            
             if (!asientos || asientos.length === 0) {
                 container.innerHTML = '<div style="text-align:center; padding:2rem; color:#a0a0b0;">No hay asientos en el período seleccionado</div>';
-                footer.style.display = 'none';
-                return;
+                footer.style.display = 'none'; return;
             }
-            
-            let totalDebGlobal = 0;
-            let totalCredGlobal = 0;
-            let html = '';
-            
+            let totalDebGlobal = 0, totalCredGlobal = 0, html = '';
             for (const a of asientos) {
-                let debAs = 0;
-                let credAs = 0;
-                let lineasHtml = '';
-                
+                let debAs = 0, credAs = 0, lineasHtml = '';
                 for (const l of a.lineas) {
-                    debAs += l.debito;
-                    credAs += l.credito;
-                    totalDebGlobal += l.debito;
-                    totalCredGlobal += l.credito;
-                    
-                    lineasHtml += `
-                        <tr>
-                            <td><strong>${l.codigo}</strong><br><span style="font-size:0.7rem; color:#a0a0b0;">${l.nombre}</span></td>
-                            <td>${l.debito > 0 ? `$${l.debito.toLocaleString()}` : '-'}</td>
-                            <td>${l.credito > 0 ? `$${l.credito.toLocaleString()}` : '-'}</td>
-                        </tr>
-                    `;
+                    debAs += l.debito; credAs += l.credito;
+                    totalDebGlobal += l.debito; totalCredGlobal += l.credito;
+                    lineasHtml += `<tr><td><strong>${l.codigo}</strong><br><span style="font-size:0.7rem; color:#a0a0b0;">${l.nombre}</span></td><td class="monto-debito">${l.debito > 0 ? `$${l.debito.toLocaleString()}` : '-'}</td><td class="monto-credito">${l.credito > 0 ? `$${l.credito.toLocaleString()}` : '-'}</td></tr>`;
                 }
-                
                 const fecha = new Date(a.fecha);
                 const fechaStr = `${fecha.getDate()}/${fecha.getMonth()+1}/${fecha.getFullYear()}`;
-                
-                let tipoClass = '';
-                let tipoIcon = '';
+                let tipoClass = '', tipoIcon = '';
                 if (a.tipo === 'venta') { tipoClass = 'venta'; tipoIcon = '💰'; }
                 else if (a.tipo === 'compra') { tipoClass = 'compra'; tipoIcon = '📦'; }
                 else if (a.tipo === 'gasto') { tipoClass = 'gasto'; tipoIcon = '💸'; }
-                
-                html += `
-                    <div class="asiento-group">
-                        <div class="asiento-header" onclick="toggleAsiento(this)">
-                            <div class="asiento-header-left">
-                                <span class="asiento-numero">AS-${a.numero.toString().padStart(3, '0')}</span>
-                                <span class="asiento-fecha"><i class="far fa-calendar-alt"></i> ${fechaStr}</span>
-                                <span class="asiento-referencia"><i class="fas fa-hashtag"></i> ${a.referencia}</span>
-                                <span class="asiento-tipo ${tipoClass}">${tipoIcon} ${a.tipo.toUpperCase()}</span>
-                            </div>
-                            <div class="asiento-header-right">
-                                <span class="asiento-total">$${a.total.toLocaleString()}</span>
-                                <div class="asiento-actions">
-                                    <button class="btn-editar" onclick="event.stopPropagation(); abrirEditarAsiento('${a.id}')">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="btn-eliminar" onclick="event.stopPropagation(); eliminarAsiento('${a.id}')">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                                <i class="fas fa-chevron-down collapse-icon"></i>
-                            </div>
-                        </div>
-                        <div class="asiento-body">
-                            <table class="asientos-table">
-                                <thead>
-                                    <tr><th>Cuenta</th><th>Débito</th><th>Crédito</th></tr>
-                                </thead>
-                                <tbody>
-                                    ${lineasHtml}
-                                </tbody>
-                                <tfoot>
-                                    <tr style="background: rgba(212,165,169,0.05);">
-                                        <td style="font-weight: bold;">TOTAL ASIENTO</td>
-                                        <td class="monto-debito"><strong>$${debAs.toLocaleString()}</strong></td>
-                                        <td class="monto-credito"><strong>$${credAs.toLocaleString()}</strong></td>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </div>
-                    </div>
-                `;
+                else if (a.tipo === 'manual') { tipoClass = 'manual'; tipoIcon = '✏️'; }
+                html += `<div class="asiento-group"><div class="asiento-header" onclick="toggleAsiento(this)"><div class="asiento-header-left"><span class="asiento-numero">AS-${a.numero.toString().padStart(3,'0')}</span><span class="asiento-fecha"><i class="far fa-calendar-alt"></i> ${fechaStr}</span><span class="asiento-referencia"><i class="fas fa-hashtag"></i> ${a.referencia}</span><span class="asiento-tipo ${tipoClass}">${tipoIcon} ${a.tipo.toUpperCase()}</span></div><div class="asiento-header-right"><span class="asiento-total">$${a.total.toLocaleString()}</span><div class="asiento-actions"><button class="btn-editar" onclick="event.stopPropagation(); abrirEditarAsiento('${a.id}', ${a.id_num || 'null'})"><i class="fas fa-edit"></i></button><button class="btn-eliminar" onclick="event.stopPropagation(); eliminarAsiento('${a.id}', ${a.id_num || 'null'})"><i class="fas fa-trash"></i></button></div><i class="fas fa-chevron-down collapse-icon"></i></div></div><div class="asiento-body"><table class="asientos-table"><thead><tr><th>Cuenta</th><th>Débito</th><th>Crédito</th></tr></thead><tbody>${lineasHtml}</tbody><tfoot><tr style="background:rgba(212,165,169,0.05);"><td style="font-weight:bold;">TOTAL ASIENTO</td><td class="monto-debito"><strong>$${debAs.toLocaleString()}</strong></td><td class="monto-credito"><strong>$${credAs.toLocaleString()}</strong></td></tr></tfoot></table></div></div>`;
             }
-            
             container.innerHTML = html;
             document.getElementById('total-debitos').innerHTML = `<strong>$${totalDebGlobal.toLocaleString()}</strong>`;
             document.getElementById('total-creditos').innerHTML = `<strong>$${totalCredGlobal.toLocaleString()}</strong>`;
             footer.style.display = 'block';
         }
         
-        function toggleAsiento(header) {
-            const body = header.nextElementSibling;
-            const icon = header.querySelector('.collapse-icon');
-            body.classList.toggle('collapsed');
-            icon.classList.toggle('rotated');
-        }
+        function toggleAsiento(header) { const body = header.nextElementSibling; const icon = header.querySelector('.collapse-icon'); body.classList.toggle('collapsed'); icon.classList.toggle('rotated'); }
 
         // ============================================
         // CALCULAR RESUMEN
         // ============================================
         function calcularResumen() {
-            let ingresos = 0;
-            let egresos = 0;
-            let saldoCaja = 0;
-            let saldoBancos = 0;
-            let saldoInventario = 0;
-            
+            let ingresos = 0, egresos = 0, saldoCaja = 0, saldoBancos = 0, saldoInventario = 0;
             for (const asiento of asientos) {
                 for (const linea of asiento.lineas) {
                     if (linea.codigo === '413505') ingresos += linea.credito;
@@ -1421,9 +888,7 @@
                     if (linea.codigo === '143505') saldoInventario += (linea.debito - linea.credito);
                 }
             }
-            
             const utilidad = ingresos - egresos;
-            
             document.getElementById('total-ingresos').innerHTML = `$${ingresos.toLocaleString()}`;
             document.getElementById('total-egresos').innerHTML = `$${egresos.toLocaleString()}`;
             document.getElementById('utilidad').innerHTML = `$${utilidad.toLocaleString()}`;
@@ -1437,10 +902,7 @@
         // ESTADO DE RESULTADOS
         // ============================================
         function cargarEstadoResultados() {
-            let ingresos = 0;
-            let costoVentas = 0;
-            let gastos = {};
-            
+            let ingresos = 0, costoVentas = 0, gastos = {};
             for (const asiento of asientos) {
                 for (const linea of asiento.lineas) {
                     if (linea.codigo === '413505') ingresos += linea.credito;
@@ -1452,16 +914,12 @@
                     if (linea.codigo === '519595') gastos.otros = (gastos.otros || 0) + linea.debito;
                 }
             }
-            
-            const totalGastos = (gastos.alquiler || 0) + (gastos.servicios || 0) + (gastos.sueldos || 0) + (gastos.publicidad || 0) + (gastos.otros || 0);
+            const totalGastos = (gastos.alquiler||0)+(gastos.servicios||0)+(gastos.sueldos||0)+(gastos.publicidad||0)+(gastos.otros||0);
             const utilidadBruta = ingresos - costoVentas;
             const utilidadOperacional = utilidadBruta - totalGastos;
-            const utilidadNeta = utilidadOperacional;
-            
-            document.getElementById('row-ingresos').innerHTML = `}<td>Ventas totales</td><td class="valor">$${ingresos.toLocaleString()}</td></tr>`;
-            document.getElementById('row-costo').innerHTML = `}<td>Costo de ventas</td><td class="valor">$${costoVentas.toLocaleString()}</td></tr>`;
+            document.getElementById('row-ingresos').innerHTML = `<td>Ventas totales</td><td class="valor">$${ingresos.toLocaleString()}</td>`;
+            document.getElementById('row-costo').innerHTML = `<td>Costo de ventas</td><td class="valor">$${costoVentas.toLocaleString()}</td>`;
             document.getElementById('utilidad-bruta').innerHTML = `$${utilidadBruta.toLocaleString()}`;
-            
             let gastosHTML = '';
             if (gastos.alquiler) gastosHTML += `<tr><td>Alquileres</td><td class="valor">$${gastos.alquiler.toLocaleString()}</td></tr>`;
             if (gastos.servicios) gastosHTML += `<tr><td>Servicios públicos</td><td class="valor">$${gastos.servicios.toLocaleString()}</td></tr>`;
@@ -1469,40 +927,26 @@
             if (gastos.publicidad) gastosHTML += `<tr><td>Publicidad</td><td class="valor">$${gastos.publicidad.toLocaleString()}</td></tr>`;
             if (gastos.otros) gastosHTML += `<tr><td>Otros gastos</td><td class="valor">$${gastos.otros.toLocaleString()}</td></tr>`;
             gastosHTML += `<tr class="total-row"><td><strong>Total gastos operacionales</strong></td><td class="valor"><strong>$${totalGastos.toLocaleString()}</strong></td></tr>`;
-            
             document.getElementById('gastos-body').innerHTML = gastosHTML;
             document.getElementById('utilidad-operacional').innerHTML = `$${utilidadOperacional.toLocaleString()}`;
-            document.getElementById('utilidad-neta').innerHTML = `$${utilidadNeta.toLocaleString()}`;
+            document.getElementById('utilidad-neta').innerHTML = `$${utilidadOperacional.toLocaleString()}`;
         }
 
         // ============================================
         // BALANCE GENERAL
         // ============================================
         function cargarBalanceGeneral() {
-            const saldosActivos = {};
-            const saldosPasivos = {};
-            const saldosPatrimonio = {};
-            
+            const saldosActivos = {}, saldosPasivos = {}, saldosPatrimonio = {};
             for (const asiento of asientos) {
                 for (const linea of asiento.lineas) {
                     const cuenta = planCuentas.find(c => c.codigo === linea.codigo);
                     if (!cuenta) continue;
-                    
                     const saldo = linea.debito - linea.credito;
-                    
-                    if (cuenta.tipo === 'ACTIVO') {
-                        saldosActivos[linea.codigo] = (saldosActivos[linea.codigo] || 0) + saldo;
-                    } else if (cuenta.tipo === 'PASIVO') {
-                        const saldoPasivo = linea.credito - linea.debito;
-                        saldosPasivos[linea.codigo] = (saldosPasivos[linea.codigo] || 0) + saldoPasivo;
-                    } else if (cuenta.tipo === 'PATRIMONIO') {
-                        const saldoPatrimonio = linea.credito - linea.debito;
-                        saldosPatrimonio[linea.codigo] = (saldosPatrimonio[linea.codigo] || 0) + saldoPatrimonio;
-                    }
+                    if (cuenta.tipo === 'ACTIVO') saldosActivos[linea.codigo] = (saldosActivos[linea.codigo] || 0) + saldo;
+                    else if (cuenta.tipo === 'PASIVO') saldosPasivos[linea.codigo] = (saldosPasivos[linea.codigo] || 0) + (linea.credito - linea.debito);
+                    else if (cuenta.tipo === 'PATRIMONIO') saldosPatrimonio[linea.codigo] = (saldosPatrimonio[linea.codigo] || 0) + (linea.credito - linea.debito);
                 }
             }
-            
-            // Calcular utilidad
             let ingresos = 0, gastos = 0;
             for (const asiento of asientos) {
                 for (const linea of asiento.lineas) {
@@ -1512,42 +956,25 @@
                 }
             }
             const utilidad = ingresos - gastos;
-            
-            let activosHTML = '';
-            let totalActivos = 0;
+            let activosHTML = '', totalActivos = 0;
             for (const [codigo, saldo] of Object.entries(saldosActivos)) {
-                if (saldo !== 0) {
-                    activosHTML += `<tr><td>${codigo} - ${getNombreCuenta(codigo)}</td><td class="valor">$${saldo.toLocaleString()}</td></tr>`;
-                    totalActivos += saldo;
-                }
+                if (saldo !== 0) { activosHTML += `<tr><td>${codigo} - ${getNombreCuenta(codigo)}</td><td class="valor">$${saldo.toLocaleString()}</td></tr>`; totalActivos += saldo; }
             }
             document.getElementById('tabla-activos').innerHTML = `<tbody>${activosHTML}</tbody>`;
             document.getElementById('total-activos').innerHTML = `$${totalActivos.toLocaleString()}`;
-            
-            let pasivosHTML = '';
-            let totalPasivos = 0;
+            let pasivosHTML = '', totalPasivos = 0;
             for (const [codigo, saldo] of Object.entries(saldosPasivos)) {
-                if (saldo !== 0) {
-                    pasivosHTML += `<tr><td>${codigo} - ${getNombreCuenta(codigo)}</td><td class="valor">$${saldo.toLocaleString()}</td></tr>`;
-                    totalPasivos += saldo;
-                }
+                if (saldo !== 0) { pasivosHTML += `<tr><td>${codigo} - ${getNombreCuenta(codigo)}</td><td class="valor">$${saldo.toLocaleString()}</td></tr>`; totalPasivos += saldo; }
             }
             document.getElementById('tabla-pasivos').innerHTML = `<tbody>${pasivosHTML}</tbody>`;
             document.getElementById('total-pasivos').innerHTML = `$${totalPasivos.toLocaleString()}`;
-            
-            let patrimonioHTML = '';
-            let totalPatrimonio = 0;
+            let patrimonioHTML = '', totalPatrimonio = 0;
             for (const [codigo, saldo] of Object.entries(saldosPatrimonio)) {
-                if (saldo !== 0) {
-                    patrimonioHTML += `<tr><td>${codigo} - ${getNombreCuenta(codigo)}</td><td class="valor">$${saldo.toLocaleString()}</td></tr>`;
-                    totalPatrimonio += saldo;
-                }
+                if (saldo !== 0) { patrimonioHTML += `<tr><td>${codigo} - ${getNombreCuenta(codigo)}</td><td class="valor">$${saldo.toLocaleString()}</td></tr>`; totalPatrimonio += saldo; }
             }
             patrimonioHTML += `<tr><td><strong>Utilidad del período</strong></td><td class="valor"><strong>$${utilidad.toLocaleString()}</strong></td></tr>`;
             totalPatrimonio += utilidad;
-            
-            const pasivosTable = document.getElementById('tabla-pasivos');
-            pasivosTable.innerHTML += `<tr><td colspan="2" style="padding:0.5rem;"></td></tr><tr><td style="font-weight:bold;">PATRIMONIO</td><td></td></tr>${patrimonioHTML}`;
+            document.getElementById('tabla-pasivos').innerHTML += `<tr><td colspan="2" style="padding:0.5rem;"></td></tr><tr><td style="font-weight:bold;">PATRIMONIO</td><td></td></tr>${patrimonioHTML}`;
             document.getElementById('total-patrimonio').innerHTML = `$${totalPatrimonio.toLocaleString()}`;
             document.getElementById('total-pasivo-patrimonio').innerHTML = `$${(totalPasivos + totalPatrimonio).toLocaleString()}`;
         }
@@ -1558,88 +985,33 @@
         function cargarListaCuentasMayor() {
             const select = document.getElementById('select-cuenta-mayor');
             select.innerHTML = '<option value="">Seleccionar cuenta...</option>';
-            for (const cuenta of planCuentas) {
-                if (cuenta.permite_movimiento) {
-                    select.innerHTML += `<option value="${cuenta.codigo}">${cuenta.codigo} - ${cuenta.nombre}</option>`;
-                }
-            }
+            for (const cuenta of planCuentas) if (cuenta.permite_movimiento) select.innerHTML += `<option value="${cuenta.codigo}">${cuenta.codigo} - ${cuenta.nombre}</option>`;
         }
         
         function cargarMayorCuenta() {
             const codigo = document.getElementById('select-cuenta-mayor').value;
             const contenido = document.getElementById('mayor-contenido');
-            
-            if (!codigo) {
-                contenido.innerHTML = '<p style="text-align: center; color: #a0a0b0;">Selecciona una cuenta para ver su movimiento</p>';
-                return;
-            }
-            
+            if (!codigo) { contenido.innerHTML = '<p style="text-align:center; color:#a0a0b0;">Selecciona una cuenta para ver su movimiento</p>'; return; }
             const movimientos = [];
             let saldo = 0;
-            
             for (const asiento of asientos) {
                 for (const linea of asiento.lineas) {
                     if (linea.codigo === codigo) {
                         const fecha = new Date(asiento.fecha);
-                        const fechaStr = `${fecha.getDate()}/${fecha.getMonth()+1}/${fecha.getFullYear()}`;
-                        movimientos.push({
-                            fecha: fechaStr,
-                            detalle: asiento.referencia,
-                            debito: linea.debito,
-                            credito: linea.credito
-                        });
+                        movimientos.push({ fecha: `${fecha.getDate()}/${fecha.getMonth()+1}/${fecha.getFullYear()}`, detalle: asiento.referencia, debito: linea.debito, credito: linea.credito });
                         saldo += linea.debito - linea.credito;
                     }
                 }
             }
-            
             const cuenta = planCuentas.find(c => c.codigo === codigo);
-            const nombreCuenta = cuenta?.nombre || codigo;
-            const naturaleza = cuenta?.naturaleza || 'DEUDORA';
-            const saldoEsDebito = (naturaleza === 'DEUDORA' && saldo >= 0) || (naturaleza === 'ACREEDORA' && saldo <= 0);
-            
-            let totalDebitos = 0;
-            let totalCreditos = 0;
-            
-            let movimientosHTML = `
-                <table class="mayor-table">
-                    <thead>
-                        <tr><th>Fecha</th><th>Detalle</th><th>Débito</th><th>Crédito</th></tr>
-                    </thead>
-                    <tbody>
-            `;
-            
+            const saldoEsDebito = (cuenta?.naturaleza === 'DEUDORA' && saldo >= 0) || (cuenta?.naturaleza === 'ACREEDORA' && saldo <= 0);
+            let totalDebitos = 0, totalCreditos = 0;
+            let movimientosHTML = `<table class="mayor-table"><thead><tr><th>Fecha</th><th>Detalle</th><th>Débito</th><th>Crédito</th></tr></thead><tbody>`;
             for (const m of movimientos) {
-                totalDebitos += m.debito;
-                totalCreditos += m.credito;
-                movimientosHTML += `
-                    <tr>
-                        <td>${m.fecha}</td>
-                        <td>${m.detalle}</td>
-                        <td class="monto-debito">${m.debito > 0 ? `$${m.debito.toLocaleString()}` : '-'}</td>
-                        <td class="monto-credito">${m.credito > 0 ? `$${m.credito.toLocaleString()}` : '-'}</td>
-                    </tr>
-                `;
+                totalDebitos += m.debito; totalCreditos += m.credito;
+                movimientosHTML += `<tr><td>${m.fecha}</td><td>${m.detalle}</td><td class="monto-debito">${m.debito > 0 ? `$${m.debito.toLocaleString()}` : '-'}</td><td class="monto-credito">${m.credito > 0 ? `$${m.credito.toLocaleString()}` : '-'}</td></tr>`;
             }
-            
-            movimientosHTML += `
-                    </tbody>
-                    <tfoot>
-                        <tr style="background: rgba(212,165,169,0.1); font-weight: bold;">
-                            <td colspan="2"><strong>TOTALES</strong></td>
-                            <td class="monto-debito"><strong>$${totalDebitos.toLocaleString()}</strong></td>
-                            <td class="monto-credito"><strong>$${totalCreditos.toLocaleString()}</strong></td>
-                        </tr>
-                        <tr style="background: rgba(212,165,169,0.1); font-weight: bold;">
-                            <td colspan="2"><strong>SALDO FINAL</strong></td>
-                            <td colspan="2" class="${saldoEsDebito ? 'monto-debito' : 'monto-credito'}">
-                                <strong>$${Math.abs(saldo).toLocaleString()} ${saldoEsDebito ? 'Débito' : 'Crédito'}</strong>
-                            </td>
-                        </tr>
-                    </tfoot>
-                </table>
-            `;
-            
+            movimientosHTML += `</tbody><tfoot><tr style="background:rgba(212,165,169,0.1); font-weight:bold;"><td colspan="2"><strong>TOTALES</strong></td><td class="monto-debito"><strong>$${totalDebitos.toLocaleString()}</strong></td><td class="monto-credito"><strong>$${totalCreditos.toLocaleString()}</strong></td></tr><tr style="background:rgba(212,165,169,0.1); font-weight:bold;"><td colspan="2"><strong>SALDO FINAL</strong></td><td colspan="2" class="${saldoEsDebito ? 'monto-debito' : 'monto-credito'}"><strong>$${Math.abs(saldo).toLocaleString()} ${saldoEsDebito ? 'Débito' : 'Crédito'}</strong></td></tr></tfoot></table>`;
             contenido.innerHTML = movimientosHTML;
         }
 
@@ -1648,28 +1020,13 @@
         // ============================================
         function cambiarPeriodo(periodo, event) {
             const hoy = new Date();
-            
-            switch(periodo) {
-                case 'mes':
-                    fechaInicio = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
-                    fechaFin = new Date(hoy.getFullYear(), hoy.getMonth() + 1, 0, 23, 59, 59);
-                    break;
-                case 'trimestre':
-                    fechaInicio = new Date(hoy.getFullYear(), hoy.getMonth() - 2, 1);
-                    fechaFin = new Date(hoy.getFullYear(), hoy.getMonth() + 1, 0, 23, 59, 59);
-                    break;
-                case 'año':
-                    fechaInicio = new Date(hoy.getFullYear(), 0, 1);
-                    fechaFin = new Date(hoy.getFullYear(), 11, 31, 23, 59, 59);
-                    break;
-            }
-            
+            if (periodo === 'mes') { fechaInicio = new Date(hoy.getFullYear(), hoy.getMonth(), 1); fechaFin = new Date(hoy.getFullYear(), hoy.getMonth() + 1, 0, 23, 59, 59); }
+            else if (periodo === 'trimestre') { fechaInicio = new Date(hoy.getFullYear(), hoy.getMonth() - 2, 1); fechaFin = new Date(hoy.getFullYear(), hoy.getMonth() + 1, 0, 23, 59, 59); }
+            else if (periodo === 'año') { fechaInicio = new Date(hoy.getFullYear(), 0, 1); fechaFin = new Date(hoy.getFullYear(), 11, 31, 23, 59, 59); }
             document.querySelectorAll('.periodo-btn').forEach(btn => btn.classList.remove('active'));
             if (event && event.target) event.target.classList.add('active');
-            
             document.getElementById('fecha-inicio').value = fechaInicio.toISOString().split('T')[0];
             document.getElementById('fecha-fin').value = fechaFin.toISOString().split('T')[0];
-            
             cargarAsientos();
         }
         
@@ -1677,7 +1034,6 @@
             fechaInicio = new Date(document.getElementById('fecha-inicio').value);
             fechaFin = new Date(document.getElementById('fecha-fin').value);
             fechaFin.setHours(23, 59, 59, 999);
-            
             document.querySelectorAll('.periodo-btn').forEach(btn => btn.classList.remove('active'));
             cargarAsientos();
         }
@@ -1685,7 +1041,6 @@
         function mostrarTab(tabId, event) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.getElementById(`tab-${tabId}`).classList.add('active');
-            
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             if (event && event.target) event.target.classList.add('active');
         }
@@ -1695,15 +1050,11 @@
         // ============================================
         function exportarLibroDiario() {
             let csvContent = "Asiento,Fecha,Cuenta,Débito,Crédito\n";
-            
             for (const asiento of asientos) {
                 const fecha = new Date(asiento.fecha);
                 const fechaStr = `${fecha.getDate()}/${fecha.getMonth()+1}/${fecha.getFullYear()}`;
-                for (const linea of asiento.lineas) {
-                    csvContent += `"AS-${asiento.numero}","${fechaStr}","${linea.codigo} - ${linea.nombre}",${linea.debito},${linea.credito}\n`;
-                }
+                for (const linea of asiento.lineas) csvContent += `"AS-${asiento.numero}","${fechaStr}","${linea.codigo} - ${linea.nombre}",${linea.debito},${linea.credito}\n`;
             }
-            
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement('a');
             const url = URL.createObjectURL(blob);
@@ -1716,23 +1067,16 @@
         
         function exportarMayor() {
             const codigo = document.getElementById('select-cuenta-mayor').value;
-            if (!codigo) {
-                mostrarToast('Selecciona una cuenta primero', 'error');
-                return;
-            }
-            
+            if (!codigo) { mostrarToast('Selecciona una cuenta primero', 'error'); return; }
             let csvContent = "Fecha,Detalle,Débito,Crédito\n";
-            
             for (const asiento of asientos) {
                 for (const linea of asiento.lineas) {
                     if (linea.codigo === codigo) {
                         const fecha = new Date(asiento.fecha);
-                        const fechaStr = `${fecha.getDate()}/${fecha.getMonth()+1}/${fecha.getFullYear()}`;
-                        csvContent += `"${fechaStr}","${asiento.referencia}",${linea.debito},${linea.credito}\n`;
+                        csvContent += `"${fecha.getDate()}/${fecha.getMonth()+1}/${fecha.getFullYear()}","${asiento.referencia}",${linea.debito},${linea.credito}\n`;
                     }
                 }
             }
-            
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement('a');
             const url = URL.createObjectURL(blob);
@@ -1745,14 +1089,10 @@
         
         function exportarPlanCuentas() {
             let csvContent = "Código,Nombre,Tipo,Naturaleza\n";
-            const rows = document.querySelectorAll('#plan-cuentas-body tr');
-            rows.forEach(row => {
+            document.querySelectorAll('#plan-cuentas-body tr').forEach(row => {
                 const cells = row.querySelectorAll('td');
-                if (cells.length >= 4) {
-                    csvContent += `"${cells[0].innerText}","${cells[1].innerText}","${cells[2].innerText}","${cells[3].innerText}"\n`;
-                }
+                if (cells.length >= 4) csvContent += `"${cells[0].innerText}","${cells[1].innerText}","${cells[2].innerText}","${cells[3].innerText}"\n`;
             });
-            
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement('a');
             const url = URL.createObjectURL(blob);
@@ -1768,212 +1108,303 @@
         // ============================================
         async function sincronizarAsientos() {
             mostrarToast('Sincronizando asientos...', 'info');
+            await cargarAsientosGuardados();
             await cargarAsientos();
         }
 
         // ============================================
-        // EDITAR ASIENTO (MODAL)
+        // NUEVO ASIENTO MANUAL
         // ============================================
-        let asientoActual = null;
+        function abrirNuevoAsiento() {
+            document.getElementById('nuevo-fecha').value = new Date().toISOString().split('T')[0];
+            document.getElementById('nuevo-referencia').value = '';
+            document.getElementById('nuevo-tercero').value = '';
+            document.getElementById('nuevo-nota').value = '';
+            document.getElementById('nuevo-lineas-list').innerHTML = '';
+            agregarLineaNuevo(); // Agregar primera línea vacía
+            document.getElementById('modal-nuevo-asiento').style.display = 'flex';
+        }
         
-        function abrirEditarAsiento(id) {
+        function cerrarNuevoAsiento() { document.getElementById('modal-nuevo-asiento').style.display = 'none'; }
+        
+        function agregarLineaNuevo() {
+            const container = document.getElementById('nuevo-lineas-list');
+            const idx = container.children.length;
+            const div = document.createElement('div');
+            div.className = 'linea-row';
+            div.setAttribute('data-idx', idx);
+            div.innerHTML = `
+                <select class="linea-codigo" data-idx="${idx}" onchange="actualizarNombreLineaNuevo(${idx})">
+                    <option value="">Seleccionar cuenta</option>
+                    ${planCuentas.filter(c => c.permite_movimiento).map(c => `<option value="${c.codigo}">${c.codigo} - ${c.nombre}</option>`).join('')}
+                </select>
+                <input type="text" class="linea-nombre" data-idx="${idx}" readonly style="background:rgba(0,0,0,0.3);">
+                <input type="number" class="linea-debito" data-idx="${idx}" value="0" step="1000" min="0" onchange="actualizarTotalesNuevo()">
+                <input type="number" class="linea-credito" data-idx="${idx}" value="0" step="1000" min="0" onchange="actualizarTotalesNuevo()">
+                <button type="button" class="btn-eliminar-linea" onclick="eliminarLineaNuevo(${idx})">🗑️</button>
+            `;
+            container.appendChild(div);
+            actualizarTotalesNuevo();
+        }
+        
+        function actualizarNombreLineaNuevo(idx) {
+            const select = document.querySelector(`#nuevo-lineas-list .linea-row[data-idx="${idx}"] .linea-codigo`);
+            const nombreInput = document.querySelector(`#nuevo-lineas-list .linea-row[data-idx="${idx}"] .linea-nombre`);
+            if (select && select.value) {
+                const cuenta = planCuentas.find(c => c.codigo === select.value);
+                if (cuenta) nombreInput.value = cuenta.nombre;
+            }
+            actualizarTotalesNuevo();
+        }
+        
+        function eliminarLineaNuevo(idx) {
+            const row = document.querySelector(`#nuevo-lineas-list .linea-row[data-idx="${idx}"]`);
+            if (row) row.remove();
+            document.querySelectorAll('#nuevo-lineas-list .linea-row').forEach((row, i) => row.setAttribute('data-idx', i));
+            actualizarTotalesNuevo();
+        }
+        
+        function actualizarTotalesNuevo() {
+            let totalDebito = 0, totalCredito = 0;
+            document.querySelectorAll('#nuevo-lineas-list .linea-row').forEach(row => {
+                const debito = parseFloat(row.querySelector('.linea-debito')?.value) || 0;
+                const credito = parseFloat(row.querySelector('.linea-credito')?.value) || 0;
+                totalDebito += debito; totalCredito += credito;
+            });
+            const totalDiv = document.getElementById('nuevo-total-lineas');
+            const estaCuadrado = Math.abs(totalDebito - totalCredito) < 1;
+            totalDiv.innerHTML = `TOTALES: $${totalDebito.toLocaleString()} = $${totalCredito.toLocaleString()} ${estaCuadrado ? '✅ CUADRADO' : '❌ DESCUADRADO'}`;
+            totalDiv.style.color = estaCuadrado ? '#4ade80' : '#f87171';
+        }
+        
+        document.getElementById('form-nuevo-asiento')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const lineas = [];
+            document.querySelectorAll('#nuevo-lineas-list .linea-row').forEach(row => {
+                const codigo = row.querySelector('.linea-codigo')?.value;
+                const nombre = row.querySelector('.linea-nombre')?.value;
+                const debito = parseFloat(row.querySelector('.linea-debito')?.value) || 0;
+                const credito = parseFloat(row.querySelector('.linea-credito')?.value) || 0;
+                if (codigo && (debito > 0 || credito > 0)) lineas.push({ codigo_cuenta: codigo, nombre_cuenta: nombre, debito, credito });
+            });
+            const totalDebito = lineas.reduce((s,l)=>s+l.debito,0);
+            const totalCredito = lineas.reduce((s,l)=>s+l.credito,0);
+            if (Math.abs(totalDebito - totalCredito) > 1) {
+                mostrarToast('El asiento no está cuadrado (Débitos ≠ Créditos)', 'error');
+                return;
+            }
+            try {
+                const token = JSON.parse(localStorage.getItem('admin_token'));
+                // Crear asiento
+                const asientoData = {
+                    fecha: document.getElementById('nuevo-fecha').value,
+                    referencia: document.getElementById('nuevo-referencia').value || 'AJ Manual',
+                    tercero: document.getElementById('nuevo-tercero').value || null,
+                    nota: document.getElementById('nuevo-nota').value || null,
+                    tipo: 'manual'
+                };
+                const asientoRes = await fetch(`${SUPABASE_URL}/rest/v1/asientos_contables`, {
+                    method: 'POST',
+                    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}`, 'Content-Type': 'application/json', 'Prefer': 'return=representation' },
+                    body: JSON.stringify(asientoData)
+                });
+                const asientoCreado = await asientoRes.json();
+                const asientoId = asientoCreado[0].id;
+                // Crear líneas
+                for (const linea of lineas) {
+                    await fetch(`${SUPABASE_URL}/rest/v1/lineas_asiento`, {
+                        method: 'POST',
+                        headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}`, 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ ...linea, asiento_id: asientoId })
+                    });
+                }
+                mostrarToast('✅ Asiento creado correctamente', 'success');
+                cerrarNuevoAsiento();
+                await cargarAsientosGuardados();
+                await cargarAsientos();
+            } catch (error) { console.error('Error:', error); mostrarToast('Error al crear asiento', 'error'); }
+        });
+
+        // ============================================
+        // EDITAR ASIENTO
+        // ============================================
+        let asientoEditando = null;
+        let asientoEditandoId = null;
+        
+        function abrirEditarAsiento(id, idNum) {
             const asiento = asientos.find(a => a.id === id);
             if (!asiento) return;
-            
-            asientoActual = asiento;
-            
-            document.getElementById('modal-title').textContent = `✏️ Editar Asiento - ${asiento.referencia}`;
-            document.getElementById('asiento-id').value = asiento.id;
+            asientoEditando = asiento;
+            asientoEditandoId = idNum;
+            document.getElementById('asiento-id').value = id;
+            document.getElementById('asiento-original-id').value = idNum || '';
             document.getElementById('asiento-tipo').value = asiento.tipo;
             document.getElementById('asiento-fecha').value = asiento.fecha.split('T')[0];
             document.getElementById('asiento-referencia').value = asiento.referencia;
             document.getElementById('asiento-tercero').value = asiento.tercero || '';
             document.getElementById('asiento-nota').value = asiento.nota || '';
-            
-            cargarLineasEnModal(asiento.lineas);
-            
+            document.getElementById('lineas-list').innerHTML = '';
+            asiento.lineas.forEach((linea, idx) => {
+                const container = document.getElementById('lineas-list');
+                const div = document.createElement('div');
+                div.className = 'linea-row';
+                div.setAttribute('data-idx', idx);
+                div.innerHTML = `
+                    <select class="linea-codigo" data-idx="${idx}" onchange="actualizarNombreLineaModal(${idx})">
+                        ${planCuentas.filter(c => c.permite_movimiento).map(c => `<option value="${c.codigo}" ${linea.codigo === c.codigo ? 'selected' : ''}>${c.codigo} - ${c.nombre}</option>`).join('')}
+                    </select>
+                    <input type="text" class="linea-nombre" data-idx="${idx}" value="${linea.nombre}" readonly style="background:rgba(0,0,0,0.3);">
+                    <input type="number" class="linea-debito" data-idx="${idx}" value="${linea.debito}" step="1000" min="0" onchange="actualizarTotalesModal()">
+                    <input type="number" class="linea-credito" data-idx="${idx}" value="${linea.credito}" step="1000" min="0" onchange="actualizarTotalesModal()">
+                    <button type="button" class="btn-eliminar-linea" onclick="eliminarLineaModal(${idx})">🗑️</button>
+                `;
+                container.appendChild(div);
+            });
+            actualizarTotalesModal();
             document.getElementById('modal-editar-asiento').style.display = 'flex';
         }
         
-        function cargarLineasEnModal(lineas) {
-            const container = document.getElementById('lineas-list');
-            
-            container.innerHTML = lineas.map((linea, idx) => `
-                <div class="linea-row" data-idx="${idx}">
-                    <select class="linea-codigo" data-idx="${idx}" onchange="actualizarNombreLinea(${idx})">
-                        ${planCuentas.filter(c => c.permite_movimiento).map(c => `
-                            <option value="${c.codigo}" ${linea.codigo === c.codigo ? 'selected' : ''}>
-                                ${c.codigo} - ${c.nombre}
-                            </option>
-                        `).join('')}
-                    </select>
-                    <input type="text" class="linea-nombre" data-idx="${idx}" value="${linea.nombre}" readonly style="background:rgba(0,0,0,0.3);">
-                    <input type="number" class="linea-debito" data-idx="${idx}" value="${linea.debito}" step="1000" min="0" onchange="actualizarTotalesLineas()">
-                    <input type="number" class="linea-credito" data-idx="${idx}" value="${linea.credito}" step="1000" min="0" onchange="actualizarTotalesLineas()">
-                    <button type="button" class="btn-eliminar-linea" onclick="eliminarLineaModal(${idx})">🗑️</button>
-                </div>
-            `).join('');
-            
-            actualizarTotalesLineas();
-        }
-        
-        function actualizarNombreLinea(idx) {
-            const select = document.querySelector(`.linea-codigo[data-idx="${idx}"]`);
-            const nombreInput = document.querySelector(`.linea-nombre[data-idx="${idx}"]`);
-            const codigo = select.value;
-            const cuenta = planCuentas.find(c => c.codigo === codigo);
-            if (cuenta) {
-                nombreInput.value = cuenta.nombre;
+        function actualizarNombreLineaModal(idx) {
+            const select = document.querySelector(`#lineas-list .linea-row[data-idx="${idx}"] .linea-codigo`);
+            const nombreInput = document.querySelector(`#lineas-list .linea-row[data-idx="${idx}"] .linea-nombre`);
+            if (select && select.value) {
+                const cuenta = planCuentas.find(c => c.codigo === select.value);
+                if (cuenta) nombreInput.value = cuenta.nombre;
             }
-            actualizarTotalesLineas();
+            actualizarTotalesModal();
         }
         
         function agregarLineaModal() {
             const container = document.getElementById('lineas-list');
-            const newIdx = document.querySelectorAll('.linea-row').length;
-            
-            const nuevaLinea = document.createElement('div');
-            nuevaLinea.className = 'linea-row';
-            nuevaLinea.setAttribute('data-idx', newIdx);
-            nuevaLinea.innerHTML = `
-                <select class="linea-codigo" data-idx="${newIdx}" onchange="actualizarNombreLinea(${newIdx})">
-                    ${planCuentas.filter(c => c.permite_movimiento).map(c => `
-                        <option value="${c.codigo}">${c.codigo} - ${c.nombre}</option>
-                    `).join('')}
+            const idx = container.children.length;
+            const div = document.createElement('div');
+            div.className = 'linea-row';
+            div.setAttribute('data-idx', idx);
+            div.innerHTML = `
+                <select class="linea-codigo" data-idx="${idx}" onchange="actualizarNombreLineaModal(${idx})">
+                    <option value="">Seleccionar cuenta</option>
+                    ${planCuentas.filter(c => c.permite_movimiento).map(c => `<option value="${c.codigo}">${c.codigo} - ${c.nombre}</option>`).join('')}
                 </select>
-                <input type="text" class="linea-nombre" data-idx="${newIdx}" readonly style="background:rgba(0,0,0,0.3);">
-                <input type="number" class="linea-debito" data-idx="${newIdx}" value="0" step="1000" min="0" onchange="actualizarTotalesLineas()">
-                <input type="number" class="linea-credito" data-idx="${newIdx}" value="0" step="1000" min="0" onchange="actualizarTotalesLineas()">
-                <button type="button" class="btn-eliminar-linea" onclick="eliminarLineaModal(${newIdx})">🗑️</button>
+                <input type="text" class="linea-nombre" data-idx="${idx}" readonly style="background:rgba(0,0,0,0.3);">
+                <input type="number" class="linea-debito" data-idx="${idx}" value="0" step="1000" min="0" onchange="actualizarTotalesModal()">
+                <input type="number" class="linea-credito" data-idx="${idx}" value="0" step="1000" min="0" onchange="actualizarTotalesModal()">
+                <button type="button" class="btn-eliminar-linea" onclick="eliminarLineaModal(${idx})">🗑️</button>
             `;
-            container.appendChild(nuevaLinea);
-            
-            // Reindexar
-            document.querySelectorAll('.linea-row').forEach((row, i) => {
-                row.setAttribute('data-idx', i);
-                row.querySelector('.linea-codigo')?.setAttribute('data-idx', i);
-                row.querySelector('.linea-nombre')?.setAttribute('data-idx', i);
-                row.querySelector('.linea-debito')?.setAttribute('data-idx', i);
-                row.querySelector('.linea-credito')?.setAttribute('data-idx', i);
-            });
-            
-            actualizarTotalesLineas();
+            container.appendChild(div);
+            actualizarTotalesModal();
         }
         
         function eliminarLineaModal(idx) {
-            const row = document.querySelector(`.linea-row[data-idx="${idx}"]`);
+            const row = document.querySelector(`#lineas-list .linea-row[data-idx="${idx}"]`);
             if (row) row.remove();
-            
-            // Reindexar
-            document.querySelectorAll('.linea-row').forEach((row, i) => {
-                row.setAttribute('data-idx', i);
-                row.querySelector('.linea-codigo')?.setAttribute('data-idx', i);
-                row.querySelector('.linea-nombre')?.setAttribute('data-idx', i);
-                row.querySelector('.linea-debito')?.setAttribute('data-idx', i);
-                row.querySelector('.linea-credito')?.setAttribute('data-idx', i);
-            });
-            
-            actualizarTotalesLineas();
+            document.querySelectorAll('#lineas-list .linea-row').forEach((row, i) => row.setAttribute('data-idx', i));
+            actualizarTotalesModal();
         }
         
-        function actualizarTotalesLineas() {
-            let totalDebito = 0;
-            let totalCredito = 0;
-            
-            document.querySelectorAll('.linea-row').forEach(row => {
-                const debito = parseFloat(row.querySelector('.linea-debito')?.value) || 0;
-                const credito = parseFloat(row.querySelector('.linea-credito')?.value) || 0;
-                totalDebito += debito;
-                totalCredito += credito;
+        function actualizarTotalesModal() {
+            let totalDebito = 0, totalCredito = 0;
+            document.querySelectorAll('#lineas-list .linea-row').forEach(row => {
+                totalDebito += parseFloat(row.querySelector('.linea-debito')?.value) || 0;
+                totalCredito += parseFloat(row.querySelector('.linea-credito')?.value) || 0;
             });
-            
             const totalDiv = document.getElementById('total-lineas-modal');
-            const diferencia = totalDebito - totalCredito;
-            const estaCuadrado = Math.abs(diferencia) < 1;
-            
+            const estaCuadrado = Math.abs(totalDebito - totalCredito) < 1;
             totalDiv.innerHTML = `TOTALES: $${totalDebito.toLocaleString()} = $${totalCredito.toLocaleString()} ${estaCuadrado ? '✅ CUADRADO' : '❌ DESCUADRADO'}`;
             totalDiv.style.color = estaCuadrado ? '#4ade80' : '#f87171';
         }
         
-        function cerrarModalAsiento() {
-            document.getElementById('modal-editar-asiento').style.display = 'none';
-            asientoActual = null;
-        }
+        function cerrarModalAsiento() { document.getElementById('modal-editar-asiento').style.display = 'none'; asientoEditando = null; }
         
         document.getElementById('form-editar-asiento')?.addEventListener('submit', async (e) => {
             e.preventDefault();
-            mostrarToast('Función de edición en desarrollo', 'info');
-            cerrarModalAsiento();
+            if (!asientoEditando) return;
+            const lineas = [];
+            document.querySelectorAll('#lineas-list .linea-row').forEach(row => {
+                const codigo = row.querySelector('.linea-codigo')?.value;
+                const nombre = row.querySelector('.linea-nombre')?.value;
+                const debito = parseFloat(row.querySelector('.linea-debito')?.value) || 0;
+                const credito = parseFloat(row.querySelector('.linea-credito')?.value) || 0;
+                if (codigo && (debito > 0 || credito > 0)) lineas.push({ codigo_cuenta: codigo, nombre_cuenta: nombre, debito, credito });
+            });
+            const totalDebito = lineas.reduce((s,l)=>s+l.debito,0);
+            const totalCredito = lineas.reduce((s,l)=>s+l.credito,0);
+            if (Math.abs(totalDebito - totalCredito) > 1) {
+                mostrarToast('El asiento no está cuadrado (Débitos ≠ Créditos)', 'error');
+                return;
+            }
+            try {
+                const token = JSON.parse(localStorage.getItem('admin_token'));
+                const asientoId = asientoEditando.id_num;
+                if (asientoId) {
+                    // Actualizar asiento existente
+                    await fetch(`${SUPABASE_URL}/rest/v1/asientos_contables?id=eq.${asientoId}`, {
+                        method: 'PATCH',
+                        headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}`, 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            fecha: document.getElementById('asiento-fecha').value,
+                            referencia: document.getElementById('asiento-referencia').value,
+                            tercero: document.getElementById('asiento-tercero').value,
+                            nota: document.getElementById('asiento-nota').value
+                        })
+                    });
+                    await fetch(`${SUPABASE_URL}/rest/v1/lineas_asiento?asiento_id=eq.${asientoId}`, {
+                        method: 'DELETE',
+                        headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}` }
+                    });
+                    for (const linea of lineas) {
+                        await fetch(`${SUPABASE_URL}/rest/v1/lineas_asiento`, {
+                            method: 'POST',
+                            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}`, 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ ...linea, asiento_id: asientoId })
+                        });
+                    }
+                    mostrarToast('✅ Asiento actualizado', 'success');
+                }
+                cerrarModalAsiento();
+                await cargarAsientosGuardados();
+                await cargarAsientos();
+            } catch (error) { console.error('Error:', error); mostrarToast('Error al guardar', 'error'); }
         });
         
-        async function eliminarAsiento(id) {
+        async function eliminarAsiento(id, idNum) {
             if (!confirm('¿Eliminar este asiento? Esta acción no se puede deshacer.')) return;
-            
-            mostrarToast('Asiento eliminado (demo)', 'success');
+            try {
+                if (idNum) {
+                    const token = JSON.parse(localStorage.getItem('admin_token'));
+                    await fetch(`${SUPABASE_URL}/rest/v1/lineas_asiento?asiento_id=eq.${idNum}`, {
+                        method: 'DELETE',
+                        headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}` }
+                    });
+                    await fetch(`${SUPABASE_URL}/rest/v1/asientos_contables?id=eq.${idNum}`, {
+                        method: 'DELETE',
+                        headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}` }
+                    });
+                    mostrarToast('✅ Asiento eliminado', 'success');
+                    await cargarAsientosGuardados();
+                    await cargarAsientos();
+                } else {
+                    mostrarToast('No se puede eliminar asientos automáticos desde aquí', 'error');
+                }
+            } catch (error) { console.error('Error:', error); mostrarToast('Error al eliminar', 'error'); }
         }
         
-        function eliminarAsientoModal() {
-            if (asientoActual) {
-                cerrarModalAsiento();
-                eliminarAsiento(asientoActual.id);
-            }
-        }
+        function eliminarAsientoModal() { if (asientoEditando) eliminarAsiento(asientoEditando.id, asientoEditandoId); }
 
         // ============================================
         // PLAN DE CUENTAS CRUD
         // ============================================
-        async function abrirPlanCuentas() {
-            document.getElementById('modal-plan-cuentas').style.display = 'flex';
-            await cargarPlanCuentasTabla();
-        }
-        
-        function cerrarPlanCuentas() {
-            document.getElementById('modal-plan-cuentas').style.display = 'none';
-        }
+        async function abrirPlanCuentas() { document.getElementById('modal-plan-cuentas').style.display = 'flex'; await cargarPlanCuentasTabla(); }
+        function cerrarPlanCuentas() { document.getElementById('modal-plan-cuentas').style.display = 'none'; }
         
         async function cargarPlanCuentasTabla() {
             try {
                 const token = JSON.parse(localStorage.getItem('admin_token'));
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/plan_cuentas?order=codigo.asc`, {
-                    headers: {
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${token.access_token}`
-                    }
-                });
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/plan_cuentas?order=codigo.asc`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}` } });
                 const cuentas = await response.json();
                 const tbody = document.getElementById('plan-cuentas-body');
-                
-                function getTipoColor(tipo) {
-                    const colores = { 
-                        'ACTIVO': '#4ade80', 
-                        'PASIVO': '#f87171', 
-                        'PATRIMONIO': '#38bdf8', 
-                        'INGRESO': '#4ade80', 
-                        'GASTO': '#fbbf24', 
-                        'COSTO': '#a78bfa' 
-                    };
-                    return colores[tipo] || '#a0a0b0';
-                }
-                
-                tbody.innerHTML = cuentas.map(c => `
-                    <tr>
-                        <td><strong>${c.codigo}</strong></td>
-                        <td>${c.nombre}</td>
-                        <td><span style="background: ${getTipoColor(c.tipo)}; color: #1a1a2e; padding: 0.2rem 0.5rem; border-radius: 20px; font-size:0.7rem;">${c.tipo}</span></td>
-                        <td>${c.naturaleza}</td>
-                        <td>
-                            <button class="btn-editar" style="background:none; border:none; color:#d4a5a9; cursor:pointer;" onclick="editarCuentaPlan(${c.id})">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button class="btn-eliminar" style="background:none; border:none; color:#f87171; cursor:pointer;" onclick="eliminarCuentaPlan(${c.id}, '${c.codigo}')">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
-                `).join('');
-            } catch (error) {
-                console.error('Error:', error);
-            }
+                function getTipoColor(tipo) { const colores = { 'ACTIVO': '#4ade80', 'PASIVO': '#f87171', 'PATRIMONIO': '#38bdf8', 'INGRESO': '#4ade80', 'GASTO': '#fbbf24', 'COSTO': '#a78bfa' }; return colores[tipo] || '#a0a0b0'; }
+                tbody.innerHTML = cuentas.map(c => `<tr><td><strong>${c.codigo}</strong></td><td>${c.nombre}</td><td><span style="background:${getTipoColor(c.tipo)}; color:#1a1a2e; padding:0.2rem 0.5rem; border-radius:20px; font-size:0.7rem;">${c.tipo}</span></td><td>${c.naturaleza}</td><td><button class="btn-editar" style="background:none; border:none; color:#d4a5a9; cursor:pointer;" onclick="editarCuentaPlan(${c.id})"><i class="fas fa-edit"></i></button> <button class="btn-eliminar" style="background:none; border:none; color:#f87171; cursor:pointer;" onclick="eliminarCuentaPlan(${c.id}, '${c.codigo}')"><i class="fas fa-trash"></i></button></td></tr>`).join('');
+            } catch (error) { console.error('Error:', error); }
         }
         
         function agregarCuentaPlan() {
@@ -1990,15 +1421,9 @@
         async function editarCuentaPlan(id) {
             try {
                 const token = JSON.parse(localStorage.getItem('admin_token'));
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/plan_cuentas?id=eq.${id}`, {
-                    headers: {
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${token.access_token}`
-                    }
-                });
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/plan_cuentas?id=eq.${id}`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}` } });
                 const cuentas = await response.json();
                 const cuenta = cuentas[0];
-                
                 document.getElementById('modal-cuenta-title').textContent = `✏️ Editar: ${cuenta.codigo}`;
                 document.getElementById('cuenta-plan-id').value = cuenta.id;
                 document.getElementById('cuenta-codigo').value = cuenta.codigo;
@@ -2007,18 +1432,13 @@
                 document.getElementById('cuenta-naturaleza').value = cuenta.naturaleza;
                 document.getElementById('cuenta-permite-movimiento').checked = cuenta.permite_movimiento;
                 document.getElementById('modal-editar-cuenta').style.display = 'flex';
-            } catch (error) {
-                mostrarToast('Error al cargar la cuenta', 'error');
-            }
+            } catch (error) { mostrarToast('Error al cargar la cuenta', 'error'); }
         }
         
-        function cerrarEditarCuenta() {
-            document.getElementById('modal-editar-cuenta').style.display = 'none';
-        }
+        function cerrarEditarCuenta() { document.getElementById('modal-editar-cuenta').style.display = 'none'; }
         
         document.getElementById('form-cuenta-plan')?.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
             try {
                 const token = JSON.parse(localStorage.getItem('admin_token'));
                 const id = document.getElementById('cuenta-plan-id').value;
@@ -2029,75 +1449,34 @@
                     naturaleza: document.getElementById('cuenta-naturaleza').value,
                     permite_movimiento: document.getElementById('cuenta-permite-movimiento').checked
                 };
-                
-                let url = `${SUPABASE_URL}/rest/v1/plan_cuentas`;
-                let method = 'POST';
-                if (id) {
-                    url += `?id=eq.${id}`;
-                    method = 'PATCH';
-                }
-                
-                const response = await fetch(url, {
-                    method: method,
-                    headers: {
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${token.access_token}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(cuentaData)
-                });
-                
+                let url = `${SUPABASE_URL}/rest/v1/plan_cuentas`, method = 'POST';
+                if (id) { url += `?id=eq.${id}`; method = 'PATCH'; }
+                const response = await fetch(url, { method, headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}`, 'Content-Type': 'application/json' }, body: JSON.stringify(cuentaData) });
                 if (response.ok) {
                     mostrarToast(id ? '✅ Cuenta actualizada' : '✅ Cuenta creada', 'success');
                     cerrarEditarCuenta();
                     await cargarPlanCuentasGlobal();
                     await cargarPlanCuentasTabla();
                     await cargarAsientos();
-                } else {
-                    mostrarToast('Error al guardar', 'error');
-                }
-            } catch (error) {
-                mostrarToast('Error de conexión', 'error');
-            }
+                } else mostrarToast('Error al guardar', 'error');
+            } catch (error) { mostrarToast('Error de conexión', 'error'); }
         });
         
         async function eliminarCuentaPlan(id, codigo) {
             let tieneMovimientos = false;
-            for (const asiento of asientos) {
-                if (asiento.lineas.some(l => l.codigo === codigo)) {
-                    tieneMovimientos = true;
-                    break;
-                }
-            }
-            
-            if (tieneMovimientos) {
-                mostrarToast(`No se puede eliminar la cuenta ${codigo} porque tiene movimientos`, 'error');
-                return;
-            }
-            
+            for (const asiento of asientos) if (asiento.lineas.some(l => l.codigo === codigo)) { tieneMovimientos = true; break; }
+            if (tieneMovimientos) { mostrarToast(`No se puede eliminar la cuenta ${codigo} porque tiene movimientos`, 'error'); return; }
             if (!confirm(`¿Eliminar la cuenta ${codigo}?`)) return;
-            
             try {
                 const token = JSON.parse(localStorage.getItem('admin_token'));
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/plan_cuentas?id=eq.${id}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${token.access_token}`
-                    }
-                });
-                
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/plan_cuentas?id=eq.${id}`, { method: 'DELETE', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}` } });
                 if (response.ok) {
                     mostrarToast('✅ Cuenta eliminada', 'success');
                     await cargarPlanCuentasGlobal();
                     await cargarPlanCuentasTabla();
                     await cargarAsientos();
-                } else {
-                    mostrarToast('Error al eliminar', 'error');
-                }
-            } catch (error) {
-                mostrarToast('Error de conexión', 'error');
-            }
+                } else mostrarToast('Error al eliminar', 'error');
+            } catch (error) { mostrarToast('Error de conexión', 'error'); }
         }
 
         // ============================================
