@@ -854,6 +854,125 @@
                 display: none;
             }
         }
+
+        /* ===== FILTROS Y BUSCADORES ===== */
+.filters-section {
+    background: white;
+    border-radius: 20px;
+    padding: 1rem 1.5rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid #f0e4d8;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.search-box {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #fefaf5;
+    border: 1px solid #f0e4d8;
+    border-radius: 40px;
+    padding: 0.3rem 1rem;
+    flex: 1;
+    min-width: 200px;
+}
+
+.search-box i {
+    color: #d4a5a9;
+    font-size: 1rem;
+}
+
+.search-box input {
+    border: none;
+    background: none;
+    padding: 0.6rem 0;
+    font-size: 0.85rem;
+    width: 100%;
+    outline: none;
+    color: #4a3728;
+}
+
+.search-box input::placeholder {
+    color: #c4a68a;
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #fefaf5;
+    border: 1px solid #f0e4d8;
+    border-radius: 40px;
+    padding: 0.3rem 1rem;
+}
+
+.filter-group i {
+    color: #d4a5a9;
+    font-size: 0.9rem;
+}
+
+.filter-group select, 
+.filter-group input {
+    border: none;
+    background: none;
+    padding: 0.6rem 0;
+    font-size: 0.85rem;
+    outline: none;
+    color: #4a3728;
+    cursor: pointer;
+}
+
+.filter-group select option {
+    background: white;
+    color: #4a3728;
+}
+
+.filter-badge {
+    background: #d4a5a9;
+    color: white;
+    padding: 0.2rem 0.6rem;
+    border-radius: 30px;
+    font-size: 0.7rem;
+    font-weight: 500;
+}
+
+.btn-clear-filters {
+    background: none;
+    border: 1px solid #f0e4d8;
+    padding: 0.5rem 1rem;
+    border-radius: 40px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    color: #b87c4e;
+    transition: all 0.2s;
+}
+
+.btn-clear-filters:hover {
+    background: #fef5ef;
+    border-color: #d4a5a9;
+}
+
+.filter-stats {
+    font-size: 0.75rem;
+    color: #b8a38e;
+    margin-left: 0.5rem;
+}
+
+/* Responsive filters */
+@media (max-width: 768px) {
+    .filters-section {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .search-box, .filter-group {
+        width: 100%;
+    }
+}
         
     </style>
 </head>
@@ -1005,6 +1124,37 @@
                     <tbody><tr><td colspan="6">Cargando...</td></tr></tbody>
                 </table>
             </div>
+            <!-- Filtros para PRODUCTOS -->
+<div class="filters-section">
+    <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" id="search-productos" placeholder="Buscar por nombre, código o categoría...">
+    </div>
+    <div class="filter-group">
+        <i class="fas fa-tag"></i>
+        <select id="filter-categoria-productos">
+            <option value="">Todas las categorías</option>
+            <option value="vestidos">👗 Vestidos</option>
+            <option value="blusas">👚 Blusas</option>
+            <option value="pantalones">👖 Pantalones</option>
+            <option value="deportivo">⚽ Deportivo</option>
+            <option value="caballero">👔 Caballero</option>
+            <option value="accesorios">🎀 Accesorios</option>
+        </select>
+    </div>
+    <div class="filter-group">
+        <i class="fas fa-chart-line"></i>
+        <select id="filter-stock-productos">
+            <option value="">Todos</option>
+            <option value="bajo">Stock bajo (<5)</option>
+            <option value="agotado">Agotados (0)</option>
+            <option value="normal">Stock normal</option>
+        </select>
+    </div>
+    <button class="btn-clear-filters" onclick="limpiarFiltrosProductos()">
+        <i class="fas fa-eraser"></i> Limpiar
+    </button>
+</div>
         </div>
 
 <!-- MÓDULO DE STOCK (Control de inventario bajo) -->
@@ -1275,6 +1425,45 @@
             </table>
         </div>
     </div>
+    <!-- Filtros para VENTAS -->
+<div class="filters-section">
+    <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" id="search-ventas" placeholder="Buscar por ID, cliente o producto...">
+    </div>
+    <div class="filter-group">
+        <i class="fas fa-calendar"></i>
+        <input type="date" id="filter-fecha-inicio" placeholder="Fecha inicio">
+    </div>
+    <div class="filter-group">
+        <i class="fas fa-calendar"></i>
+        <input type="date" id="filter-fecha-fin" placeholder="Fecha fin">
+    </div>
+    <div class="filter-group">
+        <i class="fas fa-chart-simple"></i>
+        <select id="filter-estado-ventas">
+            <option value="">Todos los estados</option>
+            <option value="completada">✅ Completada</option>
+            <option value="pendiente">⏳ Pendiente</option>
+            <option value="cambiado">🔄 Cambio solicitado</option>
+            <option value="devuelto">📦 Devuelto</option>
+        </select>
+    </div>
+    <div class="filter-group">
+        <i class="fas fa-money-bill"></i>
+        <select id="filter-metodo-ventas">
+            <option value="">Todos los métodos</option>
+            <option value="Efectivo">Efectivo</option>
+            <option value="Tarjeta Débito">Tarjeta Débito</option>
+            <option value="Tarjeta Crédito">Tarjeta Crédito</option>
+            <option value="Transferencia">Transferencia</option>
+            <option value="QR">QR</option>
+        </select>
+    </div>
+    <button class="btn-clear-filters" onclick="limpiarFiltrosVentas()">
+        <i class="fas fa-eraser"></i> Limpiar
+    </button>
+</div>
 </div>
         
 <!-- FORMULARIO DE VENTA MANUAL (LIBRE, SIN CATÁLOGO) -->
