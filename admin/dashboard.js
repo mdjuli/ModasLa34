@@ -1977,3 +1977,305 @@ function escapeHtml(str) {
         return m;
     });
 }
+
+
+// ============================================
+// FILTROS Y BUSCADORES PARA PRODUCTOS
+// ============================================
+
+let productosOriginales = [];
+let productosFiltrados = [];
+
+function configurarFiltrosProductos() {
+    const searchInput = document.getElementById('search-productos');
+    const categoriaSelect = document.getElementById('filter-categoria-productos');
+    const stockSelect = document.getElementById('filter-stock-productos');
+    
+    if (searchInput) searchInput.addEventListener('input', () => aplicarFiltrosProductos());
+    if (categoriaSelect) categoriaSelect.addEventListener('change', () => aplicarFiltrosProductos());
+    if (stockSelect) stockSelect.addEventListener('change', () => aplicarFiltrosProductos());
+}
+
+async function aplicarFiltrosProductos() {
+    // Obtener productos actuales de la tabla
+    const rows = document.querySelectorAll('#tabla-productos tbody tr');
+    if (rows.length === 0) return;
+    
+    const searchTerm = document.getElementById('search-productos')?.value.toLowerCase() || '';
+    const categoria = document.getElementById('filter-categoria-productos')?.value || '';
+    const stockFilter = document.getElementById('filter-stock-productos')?.value || '';
+    
+    let visibleCount = 0;
+    
+    rows.forEach(row => {
+        let mostrar = true;
+        
+        // Obtener datos de la fila
+        const nombre = row.cells[2]?.textContent.toLowerCase() || '';
+        const codigo = row.cells[1]?.textContent.toLowerCase() || '';
+        const categoriaTexto = row.cells[3]?.textContent.toLowerCase() || '';
+        const stockTexto = row.cells[5]?.textContent || '0';
+        const stock = parseInt(stockTexto) || 0;
+        
+        // Filtrar por búsqueda
+        if (searchTerm && !nombre.includes(searchTerm) && !codigo.includes(searchTerm)) {
+            mostrar = false;
+        }
+        
+        // Filtrar por categoría
+        if (mostrar && categoria && !categoriaTexto.includes(categoria)) {
+            mostrar = false;
+        }
+        
+        // Filtrar por stock
+        if (mostrar && stockFilter) {
+            if (stockFilter === 'bajo' && stock >= 5) mostrar = false;
+            if (stockFilter === 'agotado' && stock > 0) mostrar = false;
+            if (stockFilter === 'normal' && stock < 5) mostrar = false;
+        }
+        
+        row.style.display = mostrar ? '' : 'none';
+        if (mostrar) visibleCount++;
+    });
+    
+    // Actualizar contador
+    const filterStats = document.querySelector('#modulo-productos .filter-stats');
+    if (filterStats) {
+        filterStats.textContent = `${visibleCount} productos`;
+    }
+}
+
+function limpiarFiltrosProductos() {
+    const searchInput = document.getElementById('search-productos');
+    const categoriaSelect = document.getElementById('filter-categoria-productos');
+    const stockSelect = document.getElementById('filter-stock-productos');
+    
+    if (searchInput) searchInput.value = '';
+    if (categoriaSelect) categoriaSelect.value = '';
+    if (stockSelect) stockSelect.value = '';
+    
+    aplicarFiltrosProductos();
+}
+
+// ============================================
+// FILTROS Y BUSCADORES PARA VENTAS
+// ============================================
+
+let ventasOriginales = [];
+
+function configurarFiltrosVentas() {
+    const searchInput = document.getElementById('search-ventas');
+    const fechaInicio = document.getElementById('filter-fecha-inicio');
+    const fechaFin = document.getElementById('filter-fecha-fin');
+    const estadoSelect = document.getElementById('filter-estado-ventas');
+    const metodoSelect = document.getElementById('filter-metodo-ventas');
+    
+    if (searchInput) searchInput.addEventListener('input', () => aplicarFiltrosVentas());
+    if (fechaInicio) fechaInicio.addEventListener('change', () => aplicarFiltrosVentas());
+    if (fechaFin) fechaFin.addEventListener('change', () => aplicarFiltrosVentas());
+    if (estadoSelect) estadoSelect.addEventListener('change', () => aplicarFiltrosVentas());
+    if (metodoSelect) metodoSelect.addEventListener('change', () => aplicarFiltrosVentas());
+}
+
+function aplicarFiltrosVentas() {
+    const rows = document.querySelectorAll('#tabla-ventas tbody tr');
+    if (rows.length === 0) return;
+    
+    const searchTerm = document.getElementById('search-ventas')?.value.toLowerCase() || '';
+    const fechaInicio = document.getElementById('filter-fecha-inicio')?.value;
+    const fechaFin = document.getElementById('filter-fecha-fin')?.value;
+    const estado = document.getElementById('filter-estado-ventas')?.value || '';
+    const metodo = document.getElementById('filter-metodo-ventas')?.value || '';
+    
+    let visibleCount = 0;
+    
+    rows.forEach(row => {
+        let mostrar = true;
+        
+        // Obtener datos de la fila
+        const id = row.cells[0]?.textContent || '';
+        const cliente = row.cells[2]?.textContent.toLowerCase() || '';
+        const productos = row.cells[3]?.textContent.toLowerCase() || '';
+        const fechaTexto = row.cells[1]?.textContent || '';
+        const estadoTexto = row.cells[6]?.textContent.toLowerCase() || '';
+        const metodoTexto = row.cells[5]?.textContent || '';
+        
+        // Filtrar por búsqueda
+        if (searchTerm && !id.includes(searchTerm) && !cliente.includes(searchTerm) && !productos.includes(searchTerm)) {
+            mostrar = false;
+        }
+        
+        // Filtrar por fecha
+        if (mostrar && fechaInicio) {
+            const fechaRow = new Date(fechaTexto);
+            const fechaInicioObj = new Date(fechaInicio);
+            if (fechaRow < fechaInicioObj) mostrar = false;
+        }
+        if (mostrar && fechaFin) {
+            const fechaRow = new Date(fechaTexto);
+            const fechaFinObj = new Date(fechaFin);
+            fechaFinObj.setHours(23, 59, 59);
+            if (fechaRow > fechaFinObj) mostrar = false;
+        }
+        
+        // Filtrar por estado
+        if (mostrar && estado && !estadoTexto.includes(estado.toLowerCase())) {
+            mostrar = false;
+        }
+        
+        // Filtrar por método de pago
+        if (mostrar && metodo && metodoTexto !== metodo) {
+            mostrar = false;
+        }
+        
+        row.style.display = mostrar ? '' : 'none';
+        if (mostrar) visibleCount++;
+    });
+    
+    // Actualizar contador
+    const filterStats = document.querySelector('#modulo-ventas .filter-stats');
+    if (filterStats) {
+        filterStats.textContent = `${visibleCount} ventas`;
+    }
+}
+
+function limpiarFiltrosVentas() {
+    const searchInput = document.getElementById('search-ventas');
+    const fechaInicio = document.getElementById('filter-fecha-inicio');
+    const fechaFin = document.getElementById('filter-fecha-fin');
+    const estadoSelect = document.getElementById('filter-estado-ventas');
+    const metodoSelect = document.getElementById('filter-metodo-ventas');
+    
+    if (searchInput) searchInput.value = '';
+    if (fechaInicio) fechaInicio.value = '';
+    if (fechaFin) fechaFin.value = '';
+    if (estadoSelect) estadoSelect.value = '';
+    if (metodoSelect) metodoSelect.value = '';
+    
+    aplicarFiltrosVentas();
+}
+
+// ============================================
+// FILTROS PARA COMPRAS
+// ============================================
+
+function configurarFiltrosCompras() {
+    const searchInput = document.getElementById('search-compras');
+    const fechaInicio = document.getElementById('filter-compra-fecha-inicio');
+    const fechaFin = document.getElementById('filter-compra-fecha-fin');
+    const estadoSelect = document.getElementById('filter-compra-estado');
+    
+    if (searchInput) searchInput.addEventListener('input', () => aplicarFiltrosCompras());
+    if (fechaInicio) fechaInicio.addEventListener('change', () => aplicarFiltrosCompras());
+    if (fechaFin) fechaFin.addEventListener('change', () => aplicarFiltrosCompras());
+    if (estadoSelect) estadoSelect.addEventListener('change', () => aplicarFiltrosCompras());
+}
+
+function aplicarFiltrosCompras() {
+    const rows = document.querySelectorAll('#tabla-compras tbody tr');
+    if (rows.length === 0) return;
+    
+    const searchTerm = document.getElementById('search-compras')?.value.toLowerCase() || '';
+    const fechaInicio = document.getElementById('filter-compra-fecha-inicio')?.value;
+    const fechaFin = document.getElementById('filter-compra-fecha-fin')?.value;
+    const estado = document.getElementById('filter-compra-estado')?.value || '';
+    
+    let visibleCount = 0;
+    
+    rows.forEach(row => {
+        let mostrar = true;
+        
+        const proveedor = row.cells[1]?.textContent.toLowerCase() || '';
+        const producto = row.cells[2]?.textContent.toLowerCase() || '';
+        const fechaTexto = row.cells[0]?.textContent || '';
+        const estadoTexto = row.cells[5]?.textContent.toLowerCase() || '';
+        
+        if (searchTerm && !proveedor.includes(searchTerm) && !producto.includes(searchTerm)) mostrar = false;
+        
+        if (mostrar && fechaInicio) {
+            const fechaRow = new Date(fechaTexto);
+            if (fechaRow < new Date(fechaInicio)) mostrar = false;
+        }
+        if (mostrar && fechaFin) {
+            const fechaRow = new Date(fechaTexto);
+            const fechaFinObj = new Date(fechaFin);
+            fechaFinObj.setHours(23, 59, 59);
+            if (fechaRow > fechaFinObj) mostrar = false;
+        }
+        
+        if (mostrar && estado && !estadoTexto.includes(estado.toLowerCase())) mostrar = false;
+        
+        row.style.display = mostrar ? '' : 'none';
+        if (mostrar) visibleCount++;
+    });
+}
+
+function limpiarFiltrosCompras() {
+    document.getElementById('search-compras').value = '';
+    document.getElementById('filter-compra-fecha-inicio').value = '';
+    document.getElementById('filter-compra-fecha-fin').value = '';
+    document.getElementById('filter-compra-estado').value = '';
+    aplicarFiltrosCompras();
+}
+
+// ============================================
+// FILTROS PARA GASTOS
+// ============================================
+
+function configurarFiltrosGastos() {
+    const searchInput = document.getElementById('search-gastos');
+    const fechaInicio = document.getElementById('filter-gasto-fecha-inicio');
+    const fechaFin = document.getElementById('filter-gasto-fecha-fin');
+    const categoriaSelect = document.getElementById('filter-gasto-categoria');
+    
+    if (searchInput) searchInput.addEventListener('input', () => aplicarFiltrosGastos());
+    if (fechaInicio) fechaInicio.addEventListener('change', () => aplicarFiltrosGastos());
+    if (fechaFin) fechaFin.addEventListener('change', () => aplicarFiltrosGastos());
+    if (categoriaSelect) categoriaSelect.addEventListener('change', () => aplicarFiltrosGastos());
+}
+
+function aplicarFiltrosGastos() {
+    const rows = document.querySelectorAll('#tabla-gastos tbody tr');
+    if (rows.length === 0) return;
+    
+    const searchTerm = document.getElementById('search-gastos')?.value.toLowerCase() || '';
+    const fechaInicio = document.getElementById('filter-gasto-fecha-inicio')?.value;
+    const fechaFin = document.getElementById('filter-gasto-fecha-fin')?.value;
+    const categoria = document.getElementById('filter-gasto-categoria')?.value || '';
+    
+    let visibleCount = 0;
+    
+    rows.forEach(row => {
+        let mostrar = true;
+        
+        const concepto = row.cells[1]?.textContent.toLowerCase() || '';
+        const fechaTexto = row.cells[0]?.textContent || '';
+        const categoriaTexto = row.cells[2]?.textContent.toLowerCase() || '';
+        
+        if (searchTerm && !concepto.includes(searchTerm)) mostrar = false;
+        
+        if (mostrar && fechaInicio) {
+            const fechaRow = new Date(fechaTexto);
+            if (fechaRow < new Date(fechaInicio)) mostrar = false;
+        }
+        if (mostrar && fechaFin) {
+            const fechaRow = new Date(fechaTexto);
+            const fechaFinObj = new Date(fechaFin);
+            fechaFinObj.setHours(23, 59, 59);
+            if (fechaRow > fechaFinObj) mostrar = false;
+        }
+        
+        if (mostrar && categoria && !categoriaTexto.includes(categoria.toLowerCase())) mostrar = false;
+        
+        row.style.display = mostrar ? '' : 'none';
+        if (mostrar) visibleCount++;
+    });
+}
+
+function limpiarFiltrosGastos() {
+    document.getElementById('search-gastos').value = '';
+    document.getElementById('filter-gasto-fecha-inicio').value = '';
+    document.getElementById('filter-gasto-fecha-fin').value = '';
+    document.getElementById('filter-gasto-categoria').value = '';
+    aplicarFiltrosGastos();
+}
