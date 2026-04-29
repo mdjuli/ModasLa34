@@ -441,13 +441,53 @@ async function guardarProductoBase() {
             productoId = productoGuardado[0].id;
         }
         
+        // ========== NUEVA FUNCIÓN PARA GENERAR SKU LEGIBLE ==========
+        
+        // Mapa de tallas a códigos de 1 letra/número
+        const mapaTallas = {
+            'XS': 'A', 'S': 'B', 'M': 'C', 'L': 'D', 'XL': 'E',
+            'XXL': 'F', 'XXXL': 'G', '2XL': 'F', '3XL': 'G',
+            '6': '6', '7': '7', '8': '8', '9': '9', '10': '0', 
+            '11': '1', '12': '2', '34': 'a', '35': 'b', '36': 'c', 
+            '37': 'd', '38': 'e', '39': 'f', '40': 'g', '41': 'h', 
+            '42': 'i', '43': 'j', '44': 'k'
+        };
+        
         let variantesGuardadas = 0;
         
         for (const variante of variantes) {
-            const timestamp = Date.now();
-            const randomPart = Math.random().toString(36).substring(2, 10);
-            const skuBase = `${codigo}-${variante.talla}`.toUpperCase().replace(/[^A-Z0-9-]/g, '');
-            const skuUnico = `${skuBase}-${timestamp}-${randomPart}`;
+            // Obtener código de talla (1 carácter)
+            const tallaCode = mapaTallas[variante.talla] || variante.talla.charAt(0);
+            
+            // Obtener código de color (si existe)
+            let colorCode = '';
+            if (variante.colores && variante.colores.length > 0) {
+                const primerColor = variante.colores[0];
+                if (primerColor.nombre && primerColor.nombre !== 'Sin color') {
+                    colorCode = primerColor.nombre.charAt(0).toUpperCase();
+                }
+            }
+            
+            // Generar SKU base: MODA-{IDproducto}{talla}{color}
+            const skuBase = `MODA-${productoId}${tallaCode}${colorCode}`;
+            
+            // Verificar si el SKU ya existe (para evitar duplicados en variantes múltiples)
+            let skuFinal = skuBase;
+            let contador = 2;
+            
+            const existeRes = await fetch(`${SUPABASE_URL}/rest/v1/variantes_producto?sku=eq.${skuFinal}`, {
+                headers: { 'apikey': SUPABASE_KEY }
+            });
+            let existe = await existeRes.json();
+            
+            while (existe.length > 0) {
+                skuFinal = `${skuBase}${contador}`;
+                const resNuevo = await fetch(`${SUPABASE_URL}/rest/v1/variantes_producto?sku=eq.${skuFinal}`, {
+                    headers: { 'apikey': SUPABASE_KEY }
+                });
+                existe = await resNuevo.json();
+                contador++;
+            }
             
             const varianteData = {
                 producto_id: productoId,
@@ -456,7 +496,7 @@ async function guardarProductoBase() {
                 stock_total: variante.stock_total,
                 precio_venta: variante.precio_venta,
                 precio_compra: variante.precio_compra,
-                sku: skuUnico
+                sku: skuFinal  // ← SKU LEGIBLE (ej: MODA-15C)
             };
             
             const varResponse = await fetch(`${SUPABASE_URL}/rest/v1/variantes_producto`, {
@@ -469,7 +509,11 @@ async function guardarProductoBase() {
                 body: JSON.stringify(varianteData)
             });
             
-            if (varResponse.ok) variantesGuardadas++;
+            if (varResponse.ok) {
+                variantesGuardadas++;
+                console.log(`✅ Variante ${variante.talla} guardada con SKU: ${skuFinal}`);
+            }
+            
             await new Promise(resolve => setTimeout(resolve, 100));
         }
         
@@ -2249,6 +2293,167 @@ window.cargarDatosModulo = async function(modulo) {
 
 function getPrimerModuloVisible() {
     return 'productos';
+}
+
+// ============================================
+// IMPRESIÓN DE ETIQUETAS (Para impresora normal)
+// ============================================
+
+async function imprimirEtiquetasProducto(productoId) {
+    try {
+        // Obtener producto y sus variantes
+        const productoRes = await fetch(`${SUPABASE_URL}/rest/v1/productos_base?id=eq.${productoId}`, {
+            headers: { 'apikey': SUPABASE_KEY }
+        });
+        const producto = await productoRes.json();
+        
+        const variantesRes = await fetch(`${SUPABASE_URL}/rest/v1/variantes_producto?producto_id=eq.${productoId}`, {
+            headers: { 'apikey': SUPABASE_KEY }
+        });
+        const variantes = await variantesRes.json();
+        
+        if (variantes.length === 0) {
+            mostrarAlerta('Este producto no tiene variantes para imprimir', 'error');
+            return;
+        }
+        
+        // Generar HTML para impresión
+        const etiquetasHTML = generarHTMLParaImpresion(producto[0], variantes);
+        
+        // Abrir ventana de impresión
+        const ventana = window.open('', '_blank');
+        ventana.document.write(etiquetasHTML);
+        ventana.document.close();
+        
+        // Opcional: imprimir automáticamente
+        ventana.print();
+        
+    } catch (error) {
+        console.error('Error:', error);
+        mostrarAlerta('Error al generar etiquetas', 'error');
+    }
+}
+
+function generarHTMLParaImpresion(producto, variantes) {
+    // Formato papel: tamaño etiqueta (Avery 3473 o similar)
+    return `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Etiquetas - ${producto.nombre}</title>
+            <meta charset="UTF-8">
+            <style>
+                * { margin: 0; padding: 0; box-sizing: border-box; }
+                
+                body { 
+                    background: white; 
+                    font-family: 'Arial', sans-serif;
+                    padding: 20px;
+                }
+                
+                /* Grid de etiquetas - 2x4 por página */
+                .etiquetas-grid {
+                    display: grid;
+                    grid-template-columns: repeat(2, 1fr);
+                    gap: 20px;
+                    max-width: 800px;
+                    margin: 0 auto;
+                }
+                
+                .etiqueta {
+                    border: 1px dashed #ccc;
+                    padding: 15px;
+                    border-radius: 8px;
+                    text-align: center;
+                    background: white;
+                    break-inside: avoid;
+                    page-break-inside: avoid;
+                }
+                
+                .etiqueta-tienda {
+                    font-size: 10px;
+                    color: #d4a5a9;
+                    letter-spacing: 2px;
+                    margin-bottom: 5px;
+                }
+                
+                .etiqueta-nombre {
+                    font-size: 14px;
+                    font-weight: bold;
+                    margin: 5px 0;
+                    color: #4a3728;
+                }
+                
+                .etiqueta-detalle {
+                    font-size: 20px;
+                    font-weight: bold;
+                    color: #b87c4e;
+                    margin: 5px 0;
+                }
+                
+                .etiqueta-codigo {
+                    font-family: 'Courier New', monospace;
+                    font-size: 10px;
+                    color: #666;
+                    margin: 10px 0;
+                    letter-spacing: 1px;
+                }
+                
+                .etiqueta-precio {
+                    font-size: 18px;
+                    font-weight: bold;
+                    color: #27ae60;
+                    margin-top: 10px;
+                }
+                
+                /* Código de barras usando font (sin librerías) */
+                .barcode-simple {
+                    font-family: 'Courier New', monospace;
+                    font-size: 24px;
+                    letter-spacing: 2px;
+                    margin: 10px 0;
+                    background: white;
+                    padding: 5px;
+                    border: 1px solid #eee;
+                }
+                
+                @media print {
+                    body { margin: 0; padding: 0; }
+                    .etiquetas-grid { gap: 15px; }
+                    .etiqueta { border: 1px dashed #aaa; }
+                }
+            </style>
+        </head>
+        <body>
+            <div class="etiquetas-grid">
+                ${variantes.map(v => `
+                    <div class="etiqueta">
+                        <div class="etiqueta-tienda">🌸 MODAS LA 34</div>
+                        <div class="etiqueta-nombre">${producto.nombre}</div>
+                        <div class="etiqueta-detalle">Talla: ${v.talla}</div>
+                        <div class="barcode-simple">${generarBarraSimple(v.sku)}</div>
+                        <div class="etiqueta-codigo">${v.sku}</div>
+                        <div class="etiqueta-precio">$${(v.precio_venta || 0).toLocaleString()}</div>
+                    </div>
+                `).join('')}
+            </div>
+            <div style="text-align: center; margin-top: 30px; font-size: 10px; color: #999;">
+                ${producto.nombre} - Etiquetas generadas el ${new Date().toLocaleDateString()}
+            </div>
+        </body>
+        </html>
+    `;
+}
+
+// Generar barra simple con caracteres (funciona sin fuentes especiales)
+function generarBarraSimple(texto) {
+    // Simular código de barras con caracteres
+    return texto.split('').map(char => char.repeat(3)).join('');
+}
+
+// Botón en la tabla de productos (agregar columna)
+function agregarBotonImpresion() {
+    // Esto se agregará automáticamente en mostrarProductosOrdenados
 }
 
 // Exportar funciones al scope global
