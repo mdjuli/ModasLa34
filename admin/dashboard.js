@@ -2456,6 +2456,147 @@ function agregarBotonImpresion() {
     // Esto se agregará automáticamente en mostrarProductosOrdenados
 }
 
+// ============================================
+// LECTOR DE CÓDIGOS DE BARRAS CON CÁMARA
+// ============================================
+
+let streamLector = null;
+let codigoDetectado = null;
+
+function abrirEscannerCamara() {
+    const modal = document.getElementById('modal-camara-lector');
+    modal.style.display = 'flex';
+    iniciarCamaraLector();
+}
+
+function cerrarEscannerCamara() {
+    if (streamLector) {
+        streamLector.getTracks().forEach(track => track.stop());
+        streamLector = null;
+    }
+    const modal = document.getElementById('modal-camara-lector');
+    modal.style.display = 'none';
+    const video = document.getElementById('video-lector');
+    if (video) video.srcObject = null;
+}
+
+async function iniciarCamaraLector() {
+    try {
+        // Intentar cámara trasera (si es móvil)
+        let constraints = { video: { facingMode: { exact: "environment" } } };
+        
+        let stream;
+        try {
+            stream = await navigator.mediaDevices.getUserMedia(constraints);
+        } catch (err) {
+            // Si no hay cámara trasera, usar cualquier cámara
+            stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        }
+        
+        const video = document.getElementById('video-lector');
+        video.srcObject = stream;
+        streamLector = stream;
+        
+    } catch (error) {
+        console.error('Error al iniciar cámara:', error);
+        alert('No se pudo acceder a la cámara. Verifica los permisos.');
+        cerrarEscannerCamara();
+    }
+}
+
+function capturarYBuscar() {
+    const video = document.getElementById('video-lector');
+    const canvas = document.getElementById('canvas-lector');
+    const context = canvas.getContext('2d');
+    
+    // Capturar frame actual
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    
+    // Mostrar prompt para ingresar código (por ahora manual)
+    // En una versión avanzada, aquí se procesaría la imagen para extraer el código
+    const codigo = prompt('🔍 Escribe el código que ves en la etiqueta (SKU):');
+    
+    if (codigo && codigo.trim()) {
+        buscarProductoPorSKU(codigo.trim());
+    }
+    
+    cerrarEscannerCamara();
+}
+
+async function buscarProductoPorSKU(sku) {
+    try {
+        // Buscar por SKU en la tabla variantes_producto
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/variantes_producto?sku=eq.${sku}`, {
+            headers: { 'apikey': SUPABASE_KEY }
+        });
+        
+        const variantes = await response.json();
+        
+        if (variantes.length === 0) {
+            mostrarAlerta(`❌ No se encontró producto con SKU: ${sku}`, 'error');
+            return;
+        }
+        
+        const variante = variantes[0];
+        
+        // Obtener producto base
+        const productoRes = await fetch(`${SUPABASE_URL}/rest/v1/productos_base?id=eq.${variante.producto_id}`, {
+            headers: { 'apikey': SUPABASE_KEY }
+        });
+        const productos = await productoRes.json();
+        const producto = productos[0];
+        
+        // Verificar si ya está en el carrito
+        const existe = carrito.findIndex(item => 
+            item.producto_id === producto.id && 
+            item.talla === variante.talla
+        );
+        
+        if (existe !== -1) {
+            carrito[existe].cantidad++;
+            carrito[existe].subtotal = carrito[existe].cantidad * carrito[existe].precio;
+            mostrarAlerta(`✅ Cantidad actualizada: ${producto.nombre} (${variante.talla})`, 'success');
+        } else {
+            // Agregar al carrito
+            carrito.push({
+                producto_id: producto.id,
+                producto_nombre: producto.nombre,
+                talla: variante.talla,
+                color: 'N/A',
+                precio: variante.precio_venta,
+                cantidad: 1,
+                subtotal: variante.precio_venta
+            });
+            mostrarAlerta(`✅ Agregado: ${producto.nombre} (${variante.talla})`, 'success');
+        }
+        
+        actualizarCarritoUIManual();
+        
+        // Limpiar input
+        const inputManual = document.getElementById('input-codigo-manual');
+        if (inputManual) inputManual.value = '';
+        
+    } catch (error) {
+        console.error('Error:', error);
+        mostrarAlerta('Error al buscar producto', 'error');
+    }
+}
+
+// Buscar cuando escriben manualmente
+document.addEventListener('DOMContentLoaded', () => {
+    const inputManual = document.getElementById('input-codigo-manual');
+    if (inputManual) {
+        inputManual.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                buscarProductoPorSKU(inputManual.value.trim());
+                inputManual.value = '';
+            }
+        });
+    }
+});
+
 // Exportar funciones al scope global
 window.cargarProductos = cargarProductos;
 window.cargarStock = cargarStock;
