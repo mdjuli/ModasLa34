@@ -8,7 +8,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-
         * {
             margin: 0;
             padding: 0;
@@ -23,21 +22,10 @@
         }
 
         /* ===== SCROLL PERSONALIZADO ===== */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #f0ebe4;
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #d4a5a9;
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #b87c4e;
-        }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #f0ebe4; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #d4a5a9; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #b87c4e; }
 
         /* ===== HEADER MODERNO ===== */
         .header {
@@ -56,12 +44,7 @@
             box-shadow: 0 2px 20px rgba(0,0,0,0.02);
         }
 
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 1.2rem;
-        }
-
+        .header-left { display: flex; align-items: center; gap: 1.2rem; }
         .menu-btn {
             background: #f5ede8;
             border: none;
@@ -76,22 +59,9 @@
             align-items: center;
             justify-content: center;
         }
-
-        .menu-btn:hover {
-            background: #d4a5a9;
-            color: white;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-        }
-
-        .logo-icon {
-            font-size: 1.6rem;
-        }
-
+        .menu-btn:hover { background: #d4a5a9; color: white; }
+        .logo { display: flex; align-items: center; gap: 0.6rem; }
+        .logo-icon { font-size: 1.6rem; }
         .logo-text {
             font-weight: 600;
             font-size: 1.2rem;
@@ -100,7 +70,6 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-
         .logo-badge {
             background: #f0e4d8;
             padding: 0.2rem 0.6rem;
@@ -109,13 +78,7 @@
             font-weight: 500;
             color: #b87c4e;
         }
-
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
+        .header-right { display: flex; align-items: center; gap: 1rem; }
         .user-info {
             display: flex;
             align-items: center;
@@ -124,7 +87,6 @@
             padding: 0.3rem 1rem 0.3rem 0.8rem;
             border-radius: 40px;
         }
-
         .user-avatar {
             width: 34px;
             height: 34px;
@@ -136,13 +98,7 @@
             color: white;
             font-size: 0.9rem;
         }
-
-        #userNameDisplay {
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: #4a3728;
-        }
-
+        #userNameDisplay { font-size: 0.85rem; font-weight: 500; color: #4a3728; }
         .user-rol-badge {
             background: #e8ddd2;
             padding: 0.2rem 0.7rem;
@@ -151,22 +107,19 @@
             font-weight: 500;
             color: #b87c4e;
         }
-
         .logout-btn {
             background: none;
             border: none;
             color: #c4a68a;
             cursor: pointer;
-            font-size: 1.1rem;
+            font-size: 1rem;
             padding: 0.5rem;
             border-radius: 10px;
             transition: all 0.2s;
         }
-
-        .logout-btn:hover {
-            background: #f5ede8;
-            color: #e74c3c;
-        }
+        .logout-btn:hover { background: #f5ede8; color: #e74c3c; }
+        .header-right .logout-btn { background: none; color: #c4a68a; }
+        .header-right .logout-btn:hover { background: #f5ede8; color: #e74c3c; }
 
         /* ===== SIDEBAR ===== */
         .sidebar {
@@ -182,15 +135,8 @@
             z-index: 90;
             overflow-y: auto;
         }
-
-        .sidebar.open {
-            transform: translateX(0);
-        }
-
-        .sidebar-nav {
-            padding: 1.5rem 1rem;
-        }
-
+        .sidebar.open { transform: translateX(0); }
+        .sidebar-nav { padding: 1.5rem 1rem; }
         .nav-item {
             display: flex;
             align-items: center;
@@ -208,32 +154,11 @@
             border: none;
             margin-bottom: 0.3rem;
         }
-
-        .nav-item i {
-            width: 24px;
-            font-size: 1.1rem;
-            color: #c4a68a;
-            transition: all 0.2s;
-        }
-
-        .nav-item:hover {
-            background: #fef5ef;
-            color: #b87c4e;
-        }
-
-        .nav-item:hover i {
-            color: #d4a5a9;
-        }
-
-        .nav-item.active {
-            background: linear-gradient(135deg, #fef5ef, #fae9e0);
-            color: #b87c4e;
-        }
-
-        .nav-item.active i {
-            color: #d4a5a9;
-        }
-
+        .nav-item i { width: 24px; font-size: 1.1rem; color: #c4a68a; transition: all 0.2s; }
+        .nav-item:hover { background: #fef5ef; color: #b87c4e; }
+        .nav-item:hover i { color: #d4a5a9; }
+        .nav-item.active { background: linear-gradient(135deg, #fef5ef, #fae9e0); color: #b87c4e; }
+        .nav-item.active i { color: #d4a5a9; }
         .sidebar-overlay {
             position: fixed;
             top: 65px;
@@ -245,10 +170,7 @@
             z-index: 85;
             display: none;
         }
-
-        .sidebar-overlay.active {
-            display: block;
-        }
+        .sidebar-overlay.active { display: block; }
 
         /* ===== MAIN CONTENT ===== */
         .main-content {
@@ -260,14 +182,13 @@
             margin-right: auto;
         }
 
-        /* ===== TARJETAS MODERNAS ===== */
+        /* ===== TARJETAS ===== */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
             gap: 1.2rem;
             margin-bottom: 2rem;
         }
-
         .stat-card {
             background: white;
             border-radius: 24px;
@@ -278,7 +199,6 @@
             position: relative;
             overflow: hidden;
         }
-
         .stat-card::before {
             content: '';
             position: absolute;
@@ -290,52 +210,16 @@
             opacity: 0;
             transition: opacity 0.3s;
         }
-
-        .stat-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 35px rgba(184, 124, 78, 0.08);
-            border-color: #e8d5c8;
-        }
-
-        .stat-card:hover::before {
-            opacity: 1;
-        }
-
-        .stat-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.8rem;
-        }
-
-        .stat-title {
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: #b8a38e;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .stat-icon {
-            font-size: 1.6rem;
-            color: #d4a5a9;
-        }
-
-        .stat-value {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #4a3728;
-            letter-spacing: -0.5px;
-        }
-
-        .stat-sub {
-            font-size: 0.7rem;
-            color: #b8a38e;
-            margin-top: 0.5rem;
-        }
+        .stat-card:hover { transform: translateY(-3px); box-shadow: 0 15px 35px rgba(184,124,78,0.08); border-color: #e8d5c8; }
+        .stat-card:hover::before { opacity: 1; }
+        .stat-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; }
+        .stat-title { font-size: 0.75rem; font-weight: 600; color: #b8a38e; text-transform: uppercase; letter-spacing: 0.5px; }
+        .stat-icon { font-size: 1.6rem; color: #d4a5a9; }
+        .stat-value { font-size: 2rem; font-weight: 700; color: #4a3728; letter-spacing: -0.5px; }
+        .stat-sub { font-size: 0.7rem; color: #b8a38e; margin-top: 0.5rem; }
 
         /* ===== FILTROS ===== */
-        .filters-bar {
+        .filters-section {
             background: white;
             border-radius: 20px;
             padding: 1rem 1.5rem;
@@ -344,39 +228,61 @@
             display: flex;
             flex-wrap: wrap;
             align-items: center;
+            justify-content: space-between;
             gap: 1rem;
         }
-
-        .filters-bar label {
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: #b8a38e;
-            text-transform: uppercase;
-        }
-
-        .filters-bar input {
-            padding: 0.5rem 0.8rem;
+        .search-box {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #fefaf5;
             border: 1px solid #f0e4d8;
-            border-radius: 12px;
-            font-size: 0.85rem;
-            background: white;
+            border-radius: 40px;
+            padding: 0.3rem 1rem;
+            flex: 1;
+            min-width: 200px;
         }
-
-        .filter-btn {
-            background: #f5ede8;
+        .search-box i { color: #d4a5a9; font-size: 1rem; }
+        .search-box input {
             border: none;
+            background: none;
+            padding: 0.6rem 0;
+            font-size: 0.85rem;
+            width: 100%;
+            outline: none;
+            color: #4a3728;
+        }
+        .search-box input::placeholder { color: #c4a68a; }
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #fefaf5;
+            border: 1px solid #f0e4d8;
+            border-radius: 40px;
+            padding: 0.3rem 1rem;
+        }
+        .filter-group i { color: #d4a5a9; font-size: 0.9rem; }
+        .filter-group select, .filter-group input {
+            border: none;
+            background: none;
+            padding: 0.6rem 0;
+            font-size: 0.85rem;
+            outline: none;
+            color: #4a3728;
+            cursor: pointer;
+        }
+        .btn-clear-filters {
+            background: none;
+            border: 1px solid #f0e4d8;
             padding: 0.5rem 1rem;
-            border-radius: 12px;
+            border-radius: 40px;
             font-size: 0.8rem;
             cursor: pointer;
+            color: #b87c4e;
             transition: all 0.2s;
-            color: #5c4b3a;
         }
-
-        .filter-btn:hover {
-            background: #d4a5a9;
-            color: white;
-        }
+        .btn-clear-filters:hover { background: #fef5ef; border-color: #d4a5a9; }
 
         /* ===== TABLAS ===== */
         .data-card {
@@ -386,7 +292,6 @@
             overflow: hidden;
             margin-top: 1rem;
         }
-
         .data-header {
             padding: 1.2rem 1.5rem;
             border-bottom: 1px solid #f0e4d8;
@@ -396,18 +301,8 @@
             flex-wrap: wrap;
             gap: 1rem;
         }
-
-        .data-header h2 {
-            font-size: 1rem;
-            font-weight: 600;
-            color: #4a3728;
-        }
-
-        .data-header h2 i {
-            color: #d4a5a9;
-            margin-right: 0.5rem;
-        }
-
+        .data-header h2 { font-size: 1rem; font-weight: 600; color: #4a3728; }
+        .data-header h2 i { color: #d4a5a9; margin-right: 0.5rem; }
         .add-btn {
             background: linear-gradient(135deg, #d4a5a9, #c49498);
             color: white;
@@ -419,19 +314,14 @@
             cursor: pointer;
             transition: all 0.2s;
         }
-
-        .add-btn:hover {
-            background: linear-gradient(135deg, #c49498, #b87c4e);
-            transform: scale(1.02);
-        }
-
-        table {
+        .add-btn:hover { background: linear-gradient(135deg, #c49498, #b87c4e); transform: scale(1.02); }
+        .table-responsive { overflow-x: auto; }
+        .data-table {
             width: 100%;
             border-collapse: collapse;
             font-size: 0.85rem;
         }
-
-        th {
+        .data-table th {
             text-align: left;
             padding: 1rem 1.2rem;
             background: #fefaf5;
@@ -439,16 +329,23 @@
             color: #5c4b3a;
             border-bottom: 1px solid #f0e4d8;
         }
-
-        td {
+        .data-table td {
             padding: 1rem 1.2rem;
             border-bottom: 1px solid #f8f0ea;
             color: #6b5a48;
         }
+        .data-table tr:hover { background: #fefaf5; }
 
-        tr:hover {
-            background: #fefaf5;
+        /* Ordenamiento */
+        .sortable-header {
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.2s;
         }
+        .sortable-header:hover { background: rgba(212, 165, 169, 0.1); }
+        .sortable-header i { margin-left: 0.5rem; font-size: 0.7rem; color: #d4a5a9; opacity: 0.5; }
+        .sortable-header.sort-asc i { opacity: 1; transform: rotate(0deg); }
+        .sortable-header.sort-desc i { opacity: 1; transform: rotate(180deg); }
 
         .action-btn {
             background: none;
@@ -461,17 +358,21 @@
             padding: 0.3rem 0.5rem;
             border-radius: 8px;
         }
+        .action-btn:hover { background: #f5ede8; color: #d4a5a9; }
+        .delete-btn:hover { color: #e74c3c; }
 
-        .action-btn:hover {
-            background: #f5ede8;
-            color: #d4a5a9;
+        .estado-badge {
+            padding: 0.2rem 0.7rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            display: inline-block;
         }
+        .estado-pagada { background: #e8f5e9; color: #2e7d32; }
+        .estado-pendiente { background: #fff3e0; color: #ef6c00; }
+        .estado-recibida { background: #e3f2fd; color: #1565c0; }
 
-        .delete-btn:hover {
-            color: #e74c3c;
-        }
-
-        /* ===== FORMULARIOS MODALES ===== */
+        /* Formularios modales */
         .form-modal {
             display: none;
             position: fixed;
@@ -480,38 +381,21 @@
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(4px);
             z-index: 9999;
             align-items: center;
             justify-content: center;
         }
-        
-        .form-modal.active {
-            display: flex !important;
-        }
-        
+        .form-modal.active { display: flex !important; }
         .form-modal-content {
             background: white;
-            border-radius: 28px;
+            border-radius: 24px;
             max-width: 900px;
             width: 90%;
             max-height: 85vh;
             overflow-y: auto;
-            box-shadow: 0 30px 50px rgba(0,0,0,0.15);
-            animation: modalFadeIn 0.3s ease;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
         }
-
-        @keyframes modalFadeIn {
-            from {
-                opacity: 0;
-                transform: scale(0.95);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
         .form-modal-header {
             display: flex;
             justify-content: space-between;
@@ -521,15 +405,9 @@
             position: sticky;
             top: 0;
             background: white;
-            border-radius: 28px 28px 0 0;
+            border-radius: 24px 24px 0 0;
         }
-
-        .form-modal-header h3 {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: #4a3728;
-        }
-
+        .form-modal-header h3 { font-size: 1.2rem; font-weight: 600; color: #4a3728; }
         .form-modal-header .close {
             font-size: 1.8rem;
             cursor: pointer;
@@ -537,30 +415,11 @@
             transition: all 0.2s;
             line-height: 1;
         }
-
-        .form-modal-header .close:hover {
-            color: #e74c3c;
-        }
-
-        .form-modal-body {
-            padding: 1.5rem;
-        }
-
-        .form-group {
-            margin-bottom: 1.2rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.4rem;
-            font-size: 0.8rem;
-            font-weight: 500;
-            color: #5c4b3a;
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
+        .form-modal-header .close:hover { color: #e74c3c; }
+        .form-modal-body { padding: 1.5rem; }
+        .form-group { margin-bottom: 1.2rem; }
+        .form-group label { display: block; margin-bottom: 0.4rem; font-size: 0.8rem; font-weight: 500; color: #5c4b3a; }
+        .form-group input, .form-group select, .form-group textarea {
             width: 100%;
             padding: 0.75rem 1rem;
             border: 1.5px solid #f0e4d8;
@@ -569,25 +428,13 @@
             transition: all 0.2s;
             background: white;
         }
-
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
             outline: none;
             border-color: #d4a5a9;
-            box-shadow: 0 0 0 3px rgba(212, 165, 169, 0.1);
+            box-shadow: 0 0 0 3px rgba(212,165,169,0.1);
         }
-
-        .form-row {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .form-row .form-group {
-            flex: 1;
-        }
-
+        .form-row { display: flex; gap: 1rem; flex-wrap: wrap; }
+        .form-row .form-group { flex: 1; }
         .submit-btn {
             background: linear-gradient(135deg, #d4a5a9, #b87c4e);
             color: white;
@@ -600,12 +447,7 @@
             cursor: pointer;
             transition: all 0.2s;
         }
-
-        .submit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(184, 124, 78, 0.3);
-        }
-
+        .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(184,124,78,0.3); }
         .cancel-btn {
             background: #f5ede8;
             color: #5c4b3a;
@@ -618,12 +460,8 @@
             cursor: pointer;
             transition: all 0.2s;
         }
+        .cancel-btn:hover { background: #e8ddd2; }
 
-        .cancel-btn:hover {
-            background: #e8ddd2;
-        }
-
-        /* ===== ALERTAS ===== */
         .alert {
             padding: 0.8rem 1.2rem;
             border-radius: 16px;
@@ -632,33 +470,10 @@
             font-size: 0.85rem;
             font-weight: 500;
         }
+        .alert.success { background: #e8f5e9; color: #2e7d32; border-left: 4px solid #2e7d32; }
+        .alert.error { background: #ffebee; color: #c62828; border-left: 4px solid #c62828; }
 
-        .alert.success {
-            background: #e8f5e9;
-            color: #2e7d32;
-            border-left: 4px solid #2e7d32;
-        }
-
-        .alert.error {
-            background: #ffebee;
-            color: #c62828;
-            border-left: 4px solid #c62828;
-        }
-
-        /* ===== BADGES ===== */
-        .badge {
-            padding: 0.2rem 0.7rem;
-            border-radius: 20px;
-            font-size: 0.7rem;
-            font-weight: 500;
-            display: inline-block;
-        }
-
-        .badge-pagada { background: #e8f5e9; color: #2e7d32; }
-        .badge-pendiente { background: #fff3e0; color: #ef6c00; }
-        .badge-recibida { background: #e3f2fd; color: #1565c0; }
-
-        /* ===== VARIANTES ===== */
+        /* Variantes */
         .variante-card {
             background: #fefaf5;
             border: 1px solid #f0e4d8;
@@ -666,7 +481,6 @@
             padding: 1rem;
             margin-bottom: 1rem;
         }
-
         .variante-header {
             display: flex;
             justify-content: space-between;
@@ -675,7 +489,6 @@
             flex-wrap: wrap;
             gap: 1rem;
         }
-
         .btn-agregar-color, .btn-sin-color, .btn-eliminar-talla {
             background: #f5ede8;
             color: #5c4b3a;
@@ -686,12 +499,10 @@
             cursor: pointer;
             transition: all 0.2s;
         }
-
         .btn-agregar-color:hover, .btn-sin-color:hover, .btn-eliminar-talla:hover {
             background: #d4a5a9;
             color: white;
         }
-
         .color-row {
             display: flex;
             gap: 0.5rem;
@@ -702,20 +513,21 @@
             border-radius: 12px;
             flex-wrap: wrap;
         }
+        .color-picker { width: 40px; height: 40px; border: 1px solid #f0e4d8; border-radius: 8px; cursor: pointer; }
+        .color-nombre-input { flex: 2; min-width: 120px; padding: 0.5rem; border: 1px solid #f0e4d8; border-radius: 8px; }
+        .color-stock-input { width: 80px; padding: 0.5rem; border: 1px solid #f0e4d8; border-radius: 8px; text-align: center; }
 
-        /* ===== ESTILOS PARA STOCK ===== */
+        /* Stock cards */
         .stock-cards {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 1.5rem;
             margin-bottom: 2rem;
         }
-        
         .stock-critico { color: #e67e22; font-weight: bold; }
         .stock-agotado { color: #e74c3c; font-weight: bold; }
         .stock-bajo-row { background: #fff8f0; }
         .stock-agotado-row { background: #fef0f0; }
-        
         .table-container {
             background: white;
             border-radius: 24px;
@@ -723,266 +535,33 @@
             margin-bottom: 1.5rem;
             border: 1px solid #f0e4d8;
         }
-        
-        .table-container h3 {
-            margin-bottom: 1rem;
-            color: #4a3728;
-            font-size: 0.95rem;
-            font-weight: 600;
-        }
+        .table-container h3 { margin-bottom: 1rem; color: #4a3728; font-size: 0.95rem; font-weight: 600; }
 
-        /* ===== ESTILOS PARA VENTAS ===== */
+        /* Ventas */
         .ventas-cards {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 1rem;
             margin-bottom: 2rem;
         }
-        
-        .buscador-mini, .filtro-mini {
-            padding: 0.5rem 1rem;
-            border: 1.5px solid #f0e4d8;
-            border-radius: 30px;
-            font-size: 0.85rem;
-        }
-        
-        .panel-agregar-producto {
-            background: #fefaf5;
-            padding: 1.2rem;
-            border-radius: 20px;
-            margin-bottom: 1rem;
-            border: 1px solid #f0e4d8;
-        }
-        
-        .panel-agregar-producto h4 {
-            margin-bottom: 1rem;
-            color: #4a3728;
-            font-size: 0.9rem;
-        }
-        
-        .btn-agregar {
-            background: linear-gradient(135deg, #27ae60, #219a52);
-            color: white;
-            border: none;
-            padding: 0.6rem 1.2rem;
-            border-radius: 30px;
-            cursor: pointer;
-            font-weight: 500;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, #d4a5a9, #b87c4e);
-            color: white;
-            border: none;
-            padding: 0.7rem 1.5rem;
-            border-radius: 40px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-        
-        .btn-secondary {
-            background: #f5ede8;
-            color: #5c4b3a;
-            border: 1px solid #f0e4d8;
-            padding: 0.7rem 1.5rem;
-            border-radius: 40px;
-            cursor: pointer;
-        }
-        
-        .btn-danger {
-            background: #ffebee;
-            color: #e74c3c;
-            border: none;
-            padding: 0.7rem 1.5rem;
-            border-radius: 40px;
-            cursor: pointer;
-        }
-        
-        .form-actions {
-            display: flex;
-            gap: 1rem;
-            justify-content: flex-end;
-            margin-top: 1.5rem;
-        }
-        
-        .cantidad-input {
-            width: 70px;
-            padding: 0.4rem;
-            text-align: center;
-            border: 1.5px solid #f0e4d8;
-            border-radius: 12px;
-        }
+        .cantidad-input { width: 70px; padding: 0.4rem; text-align: center; border: 1.5px solid #f0e4d8; border-radius: 12px; }
 
-        /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
-            .main-content {
-                padding: 1rem;
-            }
-            
-            .stats-grid, .stock-cards, .ventas-cards {
-                grid-template-columns: 1fr;
-            }
-            
-            .filters-bar {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            
-            .data-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .form-actions {
-                flex-direction: column;
-            }
-            
-            .form-modal-content {
-                width: 95%;
-                margin: 1rem;
-            }
-            
-            .logo-text {
-                display: none;
-            }
-            
-            .user-info {
-                padding: 0.3rem 0.8rem;
-            }
-            
-            #userNameDisplay {
-                display: none;
-            }
+            .main-content { padding: 1rem; }
+            .stats-grid, .stock-cards, .ventas-cards { grid-template-columns: 1fr; }
+            .filters-section { flex-direction: column; align-items: stretch; }
+            .search-box, .filter-group { width: 100%; }
+            .data-header { flex-direction: column; align-items: flex-start; }
+            .logo-text { display: none; }
+            .user-info { padding: 0.3rem 0.8rem; }
+            #userNameDisplay { display: none; }
         }
-
-        /* ===== FILTROS Y BUSCADORES ===== */
-.filters-section {
-    background: white;
-    border-radius: 20px;
-    padding: 1rem 1.5rem;
-    margin-bottom: 1.5rem;
-    border: 1px solid #f0e4d8;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-}
-
-.search-box {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    background: #fefaf5;
-    border: 1px solid #f0e4d8;
-    border-radius: 40px;
-    padding: 0.3rem 1rem;
-    flex: 1;
-    min-width: 200px;
-}
-
-.search-box i {
-    color: #d4a5a9;
-    font-size: 1rem;
-}
-
-.search-box input {
-    border: none;
-    background: none;
-    padding: 0.6rem 0;
-    font-size: 0.85rem;
-    width: 100%;
-    outline: none;
-    color: #4a3728;
-}
-
-.search-box input::placeholder {
-    color: #c4a68a;
-}
-
-.filter-group {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    background: #fefaf5;
-    border: 1px solid #f0e4d8;
-    border-radius: 40px;
-    padding: 0.3rem 1rem;
-}
-
-.filter-group i {
-    color: #d4a5a9;
-    font-size: 0.9rem;
-}
-
-.filter-group select, 
-.filter-group input {
-    border: none;
-    background: none;
-    padding: 0.6rem 0;
-    font-size: 0.85rem;
-    outline: none;
-    color: #4a3728;
-    cursor: pointer;
-}
-
-.filter-group select option {
-    background: white;
-    color: #4a3728;
-}
-
-.filter-badge {
-    background: #d4a5a9;
-    color: white;
-    padding: 0.2rem 0.6rem;
-    border-radius: 30px;
-    font-size: 0.7rem;
-    font-weight: 500;
-}
-
-.btn-clear-filters {
-    background: none;
-    border: 1px solid #f0e4d8;
-    padding: 0.5rem 1rem;
-    border-radius: 40px;
-    font-size: 0.8rem;
-    cursor: pointer;
-    color: #b87c4e;
-    transition: all 0.2s;
-}
-
-.btn-clear-filters:hover {
-    background: #fef5ef;
-    border-color: #d4a5a9;
-}
-
-.filter-stats {
-    font-size: 0.75rem;
-    color: #b8a38e;
-    margin-left: 0.5rem;
-}
-
-/* Responsive filters */
-@media (max-width: 768px) {
-    .filters-section {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    
-    .search-box, .filter-group {
-        width: 100%;
-    }
-}
-        
     </style>
 </head>
 <body>
-    <!-- Header -->
     <header class="header">
         <div class="header-left">
-            <button class="menu-btn" onclick="toggleMenu()">
-                <i class="fas fa-bars"></i>
-            </button>
+            <button class="menu-btn" onclick="toggleMenu()"><i class="fas fa-bars"></i></button>
             <div class="logo">
                 <span class="logo-icon">🌸</span>
                 <span class="logo-text">Modas La 34</span>
@@ -993,628 +572,99 @@
             <div class="user-info">
                 <span id="userNameDisplay"></span>
                 <span id="userRolDisplay" class="user-rol-badge"></span>
-                <button onclick="logout()" class="logout-btn"><i class="fas fa-door-open"></i> Salir</button>
             </div>
-            <button class="logout-btn" onclick="logout()" title="Cerrar sesión">
-                <i class="fas fa-sign-out-alt"></i>
-            </button>
+            <button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i></button>
         </div>
     </header>
 
-    <!-- Sidebar -->
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMenu()"></div>
     <div class="sidebar" id="sidebar">
         <nav class="sidebar-nav">
-            <button class="nav-item" onclick="cambiarModulo('productos', event); toggleMenu()">
-                <i class="fas fa-tag"></i>
-                <span>Productos</span>
-            </button>
-            <button class="nav-item" onclick="cambiarModulo('stock', event); toggleMenu()">
-                <i class="fas fa-chart-simple"></i>
-                <span>Stock</span>
-            </button>
-            <button class="nav-item" onclick="cambiarModulo('compras', event); toggleMenu()">
-                <i class="fas fa-shopping-cart"></i>
-                <span>Compras</span>
-            </button>
-            <button class="nav-item" onclick="cambiarModulo('gastos', event); toggleMenu()">
-                <i class="fas fa-receipt"></i>
-                <span>Gastos</span>
-            </button>
-            <button class="nav-item" onclick="cambiarModulo('perfiles', event); toggleMenu()">
-                <i class="fas fa-users"></i>
-                <span>Usuarios</span>
-            </button>
-            <button class="nav-item" onclick="cambiarModulo('proveedores', event); toggleMenu()">
-                <i class="fas fa-truck"></i>
-                <span>Proveedores</span>
-            </button>
-            <button class="nav-item" onclick="cambiarModulo('ventas', event); toggleMenu()">
-                <i class="fas fa-chart-line"></i>
-                <span>Ventas</span>
-            </button>
-            <button class="nav-item" onclick="cambiarModulo('contabilidad', event); toggleMenu()">
-                <i class="fas fa-calculator"></i>
-                <span>Contabilidad</span>
-            </button>
+            <button class="nav-item" onclick="cambiarModulo('productos', event); toggleMenu()"><i class="fas fa-tag"></i><span>Productos</span></button>
+            <button class="nav-item" onclick="cambiarModulo('stock', event); toggleMenu()"><i class="fas fa-chart-simple"></i><span>Stock</span></button>
+            <button class="nav-item" onclick="cambiarModulo('compras', event); toggleMenu()"><i class="fas fa-shopping-cart"></i><span>Compras</span></button>
+            <button class="nav-item" onclick="cambiarModulo('gastos', event); toggleMenu()"><i class="fas fa-receipt"></i><span>Gastos</span></button>
+            <button class="nav-item" onclick="cambiarModulo('perfiles', event); toggleMenu()"><i class="fas fa-users"></i><span>Usuarios</span></button>
+            <button class="nav-item" onclick="cambiarModulo('proveedores', event); toggleMenu()"><i class="fas fa-truck"></i><span>Proveedores</span></button>
+            <button class="nav-item" onclick="cambiarModulo('ventas', event); toggleMenu()"><i class="fas fa-chart-line"></i><span>Ventas</span></button>
+            <button class="nav-item" onclick="cambiarModulo('contabilidad', event); toggleMenu()"><i class="fas fa-calculator"></i><span>Contabilidad</span></button>
         </nav>
     </div>
 
-    <!-- Main Content -->
     <main class="main-content">
         <div id="alertMessage" class="alert"></div>
 
         <!-- PRODUCTOS -->
         <div id="modulo-productos" class="module-section">
-<div class="stats-grid">
-    <div class="stat-card">
-        <div class="stat-header">
-            <span class="stat-title">Total Productos</span>
-            <i class="fas fa-box-open stat-icon"></i>
-        </div>
-        <div class="stat-value" id="stats-total-productos">0</div>
-        <div class="stat-sub">en inventario</div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-header">
-            <span class="stat-title">Stock Bajo</span>
-            <i class="fas fa-exclamation-triangle stat-icon"></i>
-        </div>
-        <div class="stat-value" id="stats-stock-bajo">0</div>
-        <div class="stat-sub">por reabastecer</div>
-    </div>
-    <div class="stat-card" onclick="mostrarFormulario('producto')" style="cursor:pointer">
-        <div class="stat-header">
-            <span class="stat-title">Nuevo Producto</span>
-            <i class="fas fa-plus-circle stat-icon"></i>
-        </div>
-        <div class="stat-value">+</div>
-        <div class="stat-sub">agregar al catálogo</div>
-    </div>
-</div>
-
-            <div id="form-producto" class="form-modal">
-                <h3 style="margin-bottom: 1rem; color:#333;"><i class="fas fa-dress"></i> Nuevo Producto</h3>
-                <form onsubmit="event.preventDefault(); guardarProductoBase()">
-                    <div class="form-group">
-                        <label>Código</label>
-                        <input type="text" id="producto-codigo" placeholder="Ej: PANT001" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Categoría</label>
-                        <select id="producto-categoria" required>
-                            <option value="">Seleccionar</option>
-                            <option value="vestidos">Vestidos</option>
-                            <option value="blusas">Blusas</option>
-                            <option value="pantalones">Pantalones</option>
-                            <option value="deportivo">Deportivo</option>
-                            <option value="caballero">Caballero</option>
-                            <option value="accesorios">Accesorios</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Nombre</label>
-                        <input type="text" id="producto-nombre" placeholder="Ej: Pantalón Jean" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Precio compra (base)</label>
-                        <input type="number" id="producto-precio-compra" placeholder="25000" step="1000">
-                    </div>
-                    <div class="form-group">
-                        <label>URL imagen</label>
-                        <input type="url" id="producto-imagen" placeholder="https://...">
-                    </div>
-                    <h4 style="margin: 1rem 0 0.5rem; color:#555;"><i class="fas fa-box"></i> Variantes</h4>
-                    <div id="variantes-container"></div>
-                    <button type="button" onclick="agregarVariante()" class="add-btn" style="margin: 0.5rem 0; background:#e0e0e0; color:#555;">+ Agregar talla</button>
-                    <button type="submit" class="submit-btn">Guardar Producto</button>
-                    <button type="button" class="cancel-btn" onclick="cerrarFormulario('producto')">Cancelar</button>
-                </form>
+            <div class="stats-grid">
+                <div class="stat-card"><div class="stat-header"><span class="stat-title">Total Productos</span><i class="fas fa-box stat-icon"></i></div><div class="stat-value" id="stats-total-productos">0</div><div class="stat-sub">en inventario</div></div>
+                <div class="stat-card"><div class="stat-header"><span class="stat-title">Stock Bajo</span><i class="fas fa-exclamation-triangle stat-icon"></i></div><div class="stat-value" id="stats-stock-bajo">0</div><div class="stat-sub">productos por reabastecer</div></div>
+                <div class="stat-card" onclick="mostrarFormulario('producto')" style="cursor:pointer"><div class="stat-header"><span class="stat-title">Nuevo Producto</span><i class="fas fa-plus-circle stat-icon"></i></div><div class="stat-value">+</div><div class="stat-sub">agregar al catálogo</div></div>
             </div>
-
+            <div class="filters-section">
+                <div class="search-box"><i class="fas fa-search"></i><input type="text" id="search-productos" placeholder="Buscar por nombre, código o categoría..."></div>
+                <div class="filter-group"><i class="fas fa-tag"></i><select id="filter-categoria-productos"><option value="">Todas las categorías</option><option value="vestidos">👗 Vestidos</option><option value="blusas">👚 Blusas</option><option value="pantalones">👖 Pantalones</option><option value="deportivo">⚽ Deportivo</option><option value="caballero">👔 Caballero</option><option value="accesorios">🎀 Accesorios</option></select></div>
+                <div class="filter-group"><i class="fas fa-chart-line"></i><select id="filter-stock-productos"><option value="">Todos</option><option value="bajo">Stock bajo (&lt;5)</option><option value="agotado">Agotados (0)</option><option value="normal">Stock normal</option></select></div>
+                <button class="btn-clear-filters" onclick="limpiarFiltrosProductos()"><i class="fas fa-eraser"></i> Limpiar</button>
+            </div>
             <div class="data-card">
-                <div class="data-header">
-                    <h2><i class="fas fa-list"></i> Productos Registrados</h2>
-                    <button class="add-btn" onclick="mostrarFormulario('producto')">+ Nuevo Producto</button>
-                </div>
-                <table id="tabla-productos">
-                    <thead>
-                        <tr><th>Producto</th><th>Código</th><th>Categoría</th><th>Stock</th><th>Precio</th><th>Acciones</th></tr>
-                    </thead>
-                    <tbody><tr><td colspan="6">Cargando...</td></tr></tbody>
-                </table>
+                <div class="data-header"><h2><i class="fas fa-list"></i> Productos Registrados</h2><button class="add-btn" onclick="mostrarFormulario('producto')">+ Nuevo Producto</button></div>
+                <div class="table-responsive"><table class="data-table" id="tabla-productos"><thead><tr><th class="sortable-header" data-sort="imagen" onclick="ordenarProductos('imagen')">Producto <i class="fas fa-sort"></i></th><th class="sortable-header" data-sort="codigo" onclick="ordenarProductos('codigo')">Código <i class="fas fa-sort"></i></th><th class="sortable-header" data-sort="nombre" onclick="ordenarProductos('nombre')">Nombre <i class="fas fa-sort"></i></th><th class="sortable-header" data-sort="categoria" onclick="ordenarProductos('categoria')">Categoría <i class="fas fa-sort"></i></th><th>Tallas</th><th class="sortable-header" data-sort="stock" onclick="ordenarProductos('stock')">Stock <i class="fas fa-sort"></i></th><th class="sortable-header" data-sort="precio" onclick="ordenarProductos('precio')">Precio <i class="fas fa-sort"></i></th><th>Acciones</th></tr></thead><tbody><tr><td colspan="8">Cargando...</td></tr></tbody></table></div>
             </div>
-            <!-- Filtros para PRODUCTOS -->
-<div class="filters-section">
-    <div class="search-box">
-        <i class="fas fa-search"></i>
-        <input type="text" id="search-productos" placeholder="Buscar por nombre, código o categoría...">
-    </div>
-    <div class="filter-group">
-        <i class="fas fa-tag"></i>
-        <select id="filter-categoria-productos">
-            <option value="">Todas las categorías</option>
-            <option value="vestidos">👗 Vestidos</option>
-            <option value="blusas">👚 Blusas</option>
-            <option value="pantalones">👖 Pantalones</option>
-            <option value="deportivo">⚽ Deportivo</option>
-            <option value="caballero">👔 Caballero</option>
-            <option value="accesorios">🎀 Accesorios</option>
-        </select>
-    </div>
-    <div class="filter-group">
-        <i class="fas fa-chart-line"></i>
-        <select id="filter-stock-productos">
-            <option value="">Todos</option>
-            <option value="bajo">Stock bajo (<5)</option>
-            <option value="agotado">Agotados (0)</option>
-            <option value="normal">Stock normal</option>
-        </select>
-    </div>
-    <button class="btn-clear-filters" onclick="limpiarFiltrosProductos()">
-        <i class="fas fa-eraser"></i> Limpiar
-    </button>
-</div>
         </div>
 
-<!-- MÓDULO DE STOCK (Control de inventario bajo) -->
-<div id="modulo-stock" class="module-section" style="display: none;">
-    <div class="module-header">
-        <h2><i class="fas fa-chart-line stat-icon"></i> Control de Stock</h2>
-        <p>Productos con stock bajo o agotados</p>
-    </div>
-    
-    <!-- Tarjetas de resumen -->
-<div class="stock-cards">
-    <div class="stat-card">
-        <div class="stat-header">
-            <span class="stat-title">Stock Bajo</span>
-            <i class="fas fa-exclamation-triangle stat-icon"></i>
-        </div>
-        <div class="stat-value" id="stock-bajo-count">0</div>
-        <div class="stat-sub">productos</div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-header">
-            <span class="stat-title">Agotados</span>
-            <i class="fas fa-times-circle stat-icon"></i>
-        </div>
-        <div class="stat-value" id="stock-agotado-count">0</div>
-        <div class="stat-sub">productos</div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-header">
-            <span class="stat-title">Stock Normal</span>
-            <i class="fas fa-check-circle stat-icon"></i>
-        </div>
-        <div class="stat-value" id="stock-normal-count">0</div>
-        <div class="stat-sub">productos</div>
-    </div>
-</div>
-    
-    <!-- Tabla de productos con stock bajo -->
-            <div class="table-container">
-                <h3><i class="fas fa-exclamation-triangle stat-icon"></i> Productos con stock bajo (menos de 5 unidades)</h3>
-                <table class="data-table" id="tabla-stock-bajo">
-                    <thead>
-                        <tr>
-                            <th>Producto</th>
-                            <th>Talla</th>
-                            <th>Color</th>
-                            <th>Stock actual</th>
-                            <th>Stock mínimo</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody id="stock-bajo-body">
-                        <tr><td colspan="6" style="text-align: center;">Cargando...</td></tr>
-                    </tbody>
-                </table>
-            </div>
-            
-            <!-- Tabla de productos agotados -->
-            <div class="table-container" style="margin-top: 2rem;">
-                <h3><i class="fas fa-times-circle stat-icon"></i> Productos agotados (stock 0)</h3>
-                <table class="data-table" id="tabla-stock-agotado">
-                    <thead>
-                        <tr>
-                            <th>Producto</th>
-                            <th>Talla</th>
-                            <th>Color</th>
-                            <th>Stock actual</th>
-                            <th>Estado</th>
-                        </tr>
-                    </thead>
-                    <tbody id="stock-agotado-body">
-                        <tr><td colspan="5" style="text-align: center;">Cargando...</td></tr>
-                    </tbody>
-                </table>
-            </div>
+        <!-- STOCK -->
+        <div id="modulo-stock" class="module-section" style="display: none;">
+            <div class="stock-cards"><div class="stat-card"><div class="stat-icon">⚠️</div><div class="stat-info"><h3 id="stock-bajo-count">0</h3><p>Productos con stock bajo</p></div></div><div class="stat-card"><div class="stat-icon">❌</div><div class="stat-info"><h3 id="stock-agotado-count">0</h3><p>Productos agotados</p></div></div><div class="stat-card"><div class="stat-icon">✅</div><div class="stat-info"><h3 id="stock-normal-count">0</h3><p>Productos con stock normal</p></div></div></div>
+            <div class="table-container"><h3>⚠️ Productos con stock bajo (menos de 5 unidades)</h3><table class="data-table" id="tabla-stock-bajo"><thead><tr><th>Producto</th><th>Talla</th><th>Color</th><th>Stock actual</th><th>Stock mínimo</th><th>Acciones</th></tr></thead><tbody id="stock-bajo-body"><tr><td colspan="6">Cargando...</td></tr></tbody></table></div>
+            <div class="table-container"><h3>❌ Productos agotados (stock 0)</h3><table class="data-table" id="tabla-stock-agotado"><thead><tr><th>Producto</th><th>Talla</th><th>Color</th><th>Stock actual</th><th>Estado</th></tr></thead><tbody id="stock-agotado-body"><tr><td colspan="5">Cargando...</td></tr></tbody></table></div>
         </div>
 
         <!-- COMPRAS -->
         <div id="modulo-compras" class="module-section" style="display: none;">
-            <div class="stats-grid">
-                <div class="stat-card"><div class="stat-header"><span class="stat-title">Compras del Mes</span><i class="fas fa-calendar stat-icon"></i></div><div class="stat-value" id="stats-compras-mes">$0</div></div>
-                <div class="stat-card"><div class="stat-header"><span class="stat-title">Pendientes</span><i class="fas fa-clock stat-icon"></i></div><div class="stat-value" id="stats-compras-pendientes">0</div></div>
-            </div>
-            <div class="filters-bar">
-                <label>Filtrar por fecha:</label>
-                <input type="date" id="compras-fecha-inicio">
-                <span>a</span>
-                <input type="date" id="compras-fecha-fin">
-                <button onclick="aplicarFiltroCompras()" class="filter-btn">Filtrar</button>
-                <button onclick="limpiarFiltroCompras()" class="filter-btn">Limpiar</button>
-            </div>
-            <div class="data-card">
-                <div class="data-header"><h2>Historial de Compras</h2><button class="add-btn" onclick="mostrarFormulario('compra')">+ Nueva Compra</button></div>
-                <table id="tabla-compras"><thead><tr><th>Fecha</th><th>Proveedor</th><th>Producto</th><th>Total</th><th>Estado</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="6">Cargando...</td></tr></tbody></table>
-            </div>
-            <div id="form-compra" class="form-modal">
-                <h3><i class="fas fa-shopping-bag"></i> Nueva Compra</h3>
-                <form onsubmit="event.preventDefault(); guardarCompra()">
-                    <div class="form-group"><label>Proveedor</label><select id="compra-proveedor" required><option value="">Seleccionar</option></select></div>
-                    <div class="form-group"><label>Fecha</label><input type="date" id="compra-fecha" required></div>
-                    <div class="form-group"><label>Producto</label><input type="text" id="compra-producto" required></div>
-                    <div class="form-row"><div class="form-group"><label>Cantidad</label><input type="number" id="compra-cantidad" min="1" required></div><div class="form-group"><label>Precio unitario</label><input type="number" id="compra-precio" min="0" required></div></div>
-                    <div class="form-group"><label>Estado</label><select id="compra-estado"><option value="Pendiente">Pendiente</option><option value="Recibida">Recibida</option><option value="Pagada">Pagada</option></select></div>
-                    <button type="submit" class="submit-btn">Guardar</button>
-                    <button type="button" class="cancel-btn" onclick="cerrarFormulario('compra')">Cancelar</button>
-                </form>
+            <div class="stats-grid"><div class="stat-card"><div class="stat-header"><span class="stat-title">Compras del Mes</span><i class="fas fa-calendar stat-icon"></i></div><div class="stat-value" id="stats-compras-mes">$0</div></div><div class="stat-card"><div class="stat-header"><span class="stat-title">Pendientes</span><i class="fas fa-clock stat-icon"></i></div><div class="stat-value" id="stats-compras-pendientes">0</div></div></div>
+            <div class="filters-section"><div class="search-box"><i class="fas fa-search"></i><input type="text" id="search-compras" placeholder="Buscar por proveedor o producto..."></div><div class="filter-group"><i class="fas fa-calendar"></i><input type="date" id="filter-compra-fecha-inicio" placeholder="Fecha inicio"></div><div class="filter-group"><i class="fas fa-calendar"></i><input type="date" id="filter-compra-fecha-fin" placeholder="Fecha fin"></div><div class="filter-group"><i class="fas fa-chart-simple"></i><select id="filter-compra-estado"><option value="">Todos los estados</option><option value="Pendiente">Pendiente</option><option value="Recibida">Recibida</option><option value="Pagada">Pagada</option></select></div><button class="btn-clear-filters" onclick="limpiarFiltrosCompras()"><i class="fas fa-eraser"></i> Limpiar</button></div>
+                <div class="table-responsive"><table class="data-table" id="tabla-compras"><thead><tr><th>Fecha</th><th>Proveedor</th><th>Producto</th><th>Cantidad</th><th>Total</th><th>Estado</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="7">Cargando...</td></tr></tbody></table></div>
             </div>
         </div>
 
         <!-- GASTOS -->
         <div id="modulo-gastos" class="module-section" style="display: none;">
-            <div class="stats-grid">
-                <div class="stat-card"><div class="stat-header"><span class="stat-title">Gastos del Mes</span><i class="fas fa-coins stat-icon"></i></div><div class="stat-value" id="stats-gastos-mes">$0</div></div>
-            </div>
-            <div class="filters-bar">
-                <label>Filtrar por fecha:</label>
-                <input type="date" id="gastos-fecha-inicio">
-                <span>a</span>
-                <input type="date" id="gastos-fecha-fin">
-                <button onclick="aplicarFiltroGastos()" class="filter-btn">Filtrar</button>
-                <button onclick="limpiarFiltroGastos()" class="filter-btn">Limpiar</button>
-            </div>
-            <div class="data-card">
-                <div class="data-header"><h2>Historial de Gastos</h2><button class="add-btn" onclick="mostrarFormulario('gasto')">+ Nuevo Gasto</button></div>
-                <table id="tabla-gastos"><thead><tr><th>Fecha</th><th>Concepto</th><th>Categoría</th><th>Monto</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="5">Cargando...</td></tr></tbody></table>
-            </div>
-            <div id="form-gasto" class="form-modal">
-                <h3>💸 Nuevo Gasto</h3>
-                <form onsubmit="event.preventDefault(); guardarGasto()">
-                    <div class="form-group"><label>Fecha</label><input type="date" id="gasto-fecha" required></div>
-                    <div class="form-group"><label>Concepto</label><input type="text" id="gasto-concepto" required></div>
-                    <div class="form-group"><label>Categoría</label><select id="gasto-categoria"><option value="Alquiler">Alquiler</option><option value="Servicios">Servicios</option><option value="Sueldos">Sueldos</option><option value="Otros">Otros</option></select></div>
-                    <div class="form-group"><label>Monto</label><input type="number" id="gasto-monto" min="0" required></div>
-                    <div class="form-group"><label>Método</label><select id="gasto-metodo"><option value="Efectivo">Efectivo</option><option value="Transferencia">Transferencia</option><option value="Tarjeta">Tarjeta</option></select></div>
-                    <button type="submit" class="submit-btn">Guardar</button>
-                    <button type="button" class="cancel-btn" onclick="cerrarFormulario('gasto')">Cancelar</button>
-                </form>
-            </div>
+            <div class="stats-grid"><div class="stat-card"><div class="stat-header"><span class="stat-title">Gastos del Mes</span><i class="fas fa-coins stat-icon"></i></div><div class="stat-value" id="stats-gastos-mes">$0</div></div></div>
+            <div class="filters-section"><div class="search-box"><i class="fas fa-search"></i><input type="text" id="search-gastos" placeholder="Buscar por concepto..."></div><div class="filter-group"><i class="fas fa-calendar"></i><input type="date" id="filter-gasto-fecha-inicio" placeholder="Fecha inicio"></div><div class="filter-group"><i class="fas fa-calendar"></i><input type="date" id="filter-gasto-fecha-fin" placeholder="Fecha fin"></div><div class="filter-group"><i class="fas fa-tag"></i><select id="filter-gasto-categoria"><option value="">Todas las categorías</option><option value="Alquiler">Alquiler</option><option value="Servicios">Servicios</option><option value="Sueldos">Sueldos</option><option value="Marketing">Marketing</option><option value="Otros">Otros</option></select></div><button class="btn-clear-filters" onclick="limpiarFiltrosGastos()"><i class="fas fa-eraser"></i> Limpiar</button></div>
+            <div class="data-card"><div class="data-header"><h2>Historial de Gastos</h2><button class="add-btn" onclick="mostrarFormulario('gasto')">+ Nuevo Gasto</button></div><div class="table-responsive"><table class="data-table" id="tabla-gastos"><thead><tr><th>Fecha</th><th>Concepto</th><th>Categoría</th><th>Monto</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="5">Cargando...</td></tr></tbody></table></div></div>
         </div>
 
         <!-- PERFILES -->
         <div id="modulo-perfiles" class="module-section" style="display: none;">
-            <div class="data-card">
-                <div class="data-header"><h2>Usuarios del Sistema</h2><button class="add-btn" onclick="mostrarFormulario('perfil')">+ Nuevo Usuario</button></div>
-                <table id="tabla-perfiles"><thead><tr><th>Nombre</th><th>Email</th><th>Rol</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="4">Cargando...</td></tr></tbody></table>
-            </div>
-            <div id="form-perfil" class="form-modal">
-                <h3><i class="fas fa-users"></i> Nuevo Usuario</h3>
-                <form onsubmit="event.preventDefault(); guardarPerfil()">
-                    <div class="form-group"><label>Nombre</label><input type="text" id="perfil-nombre" required></div>
-                    <div class="form-group"><label>Email</label><input type="email" id="perfil-email" required></div>
-                    <div class="form-group"><label>Contraseña</label><input type="password" id="perfil-password" minlength="6" required></div>
-                    <div class="form-group"><label>Rol</label><select id="perfil-rol"><option value="empleado">Empleado</option><option value="admin">Administrador</option></select></div>
-                    <button type="submit" class="submit-btn">Crear</button>
-                    <button type="button" class="cancel-btn" onclick="cerrarFormulario('perfil')">Cancelar</button>
-                </form>
-            </div>
+            <div class="data-card"><div class="data-header"><h2>Usuarios del Sistema</h2><button class="add-btn" onclick="mostrarFormulario('perfil')">+ Nuevo Usuario</button></div><div class="table-responsive"><table class="data-table" id="tabla-perfiles"><thead><tr><th>Nombre</th><th>Email</th><th>Rol</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="4">Cargando...</td></tr></tbody></table></div></div>
         </div>
 
         <!-- PROVEEDORES -->
         <div id="modulo-proveedores" class="module-section" style="display: none;">
-            <div class="data-card">
-                <div class="data-header"><h2>Proveedores</h2><button class="add-btn" onclick="mostrarFormulario('proveedor')">+ Nuevo Proveedor</button></div>
-                <table id="tabla-proveedores"><thead><tr><th>Nombre</th><th>Contacto</th><th>Teléfono</th><th>Email</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="5">Cargando...</td></tr></tbody></table>
-            </div>
-            <div id="form-proveedor" class="form-modal">
-                <h3><i class="fas fa-box"></i> Nuevo Proveedor</h3>
-                <form onsubmit="event.preventDefault(); guardarProveedor()">
-                    <div class="form-group"><label>Nombre</label><input type="text" id="proveedor-nombre" required></div>
-                    <div class="form-group"><label>Contacto</label><input type="text" id="proveedor-contacto"></div>
-                    <div class="form-row"><div class="form-group"><label>Teléfono</label><input type="tel" id="proveedor-telefono"></div><div class="form-group"><label>Email</label><input type="email" id="proveedor-email"></div></div>
-                    <div class="form-group"><label>Dirección</label><textarea id="proveedor-direccion" rows="2"></textarea></div>
-                    <button type="submit" class="submit-btn">Guardar</button>
-                    <button type="button" class="cancel-btn" onclick="cerrarFormulario('proveedor')">Cancelar</button>
-                </form>
-            </div>
+            <div class="data-card"><div class="data-header"><h2>Proveedores</h2><button class="add-btn" onclick="mostrarFormulario('proveedor')">+ Nuevo Proveedor</button></div><div class="table-responsive"><table class="data-table" id="tabla-proveedores"><thead><tr><th>Nombre</th><th>Contacto</th><th>Teléfono</th><th>Email</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="5">Cargando...</td></tr></tbody></table></div></div>
         </div>
 
         <!-- VENTAS -->
-<div id="modulo-ventas" class="module-section" style="display: none;">
-    <div class="module-header">
-        <h2><i class="fas fa-shopping-bag"></i> Punto de Venta</h2>
-        <p>Gestión completa de ventas</p>
-    </div>
-    
-    <!-- Tarjetas de resumen -->
-    <div class="ventas-cards">
-        <!-- Botón Venta Rápida -->
-        <div class="stat-card" onclick="abrirVentaRapida()" style="cursor: pointer;">
-            <div class="stat-header">
-                <span class="stat-title">Venta Rápida</span>
-                <i class="fas fa-bolt stat-icon"></i>
+        <div id="modulo-ventas" class="module-section" style="display: none;">
+            <div class="ventas-cards">
+                <div class="stat-card" onclick="abrirVentaRapida()" style="cursor:pointer"><div class="stat-icon">⚡</div><div class="stat-info"><h3>Venta Rápida</h3><p>Venta express sin tanto detalle</p></div></div>
+                <div class="stat-card" onclick="abrirNuevaVenta()" style="cursor:pointer"><div class="stat-icon">📝</div><div class="stat-info"><h3>Nueva Venta</h3><p>Venta completa con detalles</p></div></div>
+                <div class="stat-card"><div class="stat-icon">💰</div><div class="stat-info"><h3 id="ventas-hoy-total">$0</h3><p>Ventas de hoy</p></div></div>
+                <div class="stat-card"><div class="stat-icon">📊</div><div class="stat-info"><h3 id="ventas-mes-total">$0</h3><p>Ventas del mes</p></div></div>
+                <div class="stat-card"><div class="stat-icon">🔄</div><div class="stat-info"><h3 id="ventas-cambios-count">0</h3><p>Cambios/Devoluciones</p></div></div>
             </div>
-            <div class="stat-value"><i class="fas fa-bolt"></i></div>
-            <div class="stat-sub">Venta express sin detalles</div>
-        </div>
-        
-        <!-- Botón Nueva Venta Manual -->
-        <div class="stat-card" onclick="abrirNuevaVenta()" style="cursor: pointer;">
-            <div class="stat-header">
-                <span class="stat-title">Nueva Venta</span>
-                <i class="fas fa-pen-alt stat-icon"></i>
+            <div class="filters-section">
+                <div class="search-box"><i class="fas fa-search"></i><input type="text" id="search-ventas" placeholder="Buscar por ID, cliente o producto..."></div>
+                <div class="filter-group"><i class="fas fa-calendar"></i><input type="date" id="filter-fecha-inicio" placeholder="Fecha inicio"></div>
+                <div class="filter-group"><i class="fas fa-calendar"></i><input type="date" id="filter-fecha-fin" placeholder="Fecha fin"></div>
+                <div class="filter-group"><i class="fas fa-chart-simple"></i><select id="filter-estado-ventas"><option value="">Todos los estados</option><option value="completada">✅ Completada</option><option value="pendiente">⏳ Pendiente</option><option value="cambiado">🔄 Cambio solicitado</option><option value="devuelto">📦 Devuelto</option></select></div>
+                <div class="filter-group"><i class="fas fa-money-bill"></i><select id="filter-metodo-ventas"><option value="">Todos los métodos</option><option value="Efectivo">Efectivo</option><option value="Tarjeta Débito">Tarjeta Débito</option><option value="Tarjeta Crédito">Tarjeta Crédito</option><option value="Transferencia">Transferencia</option><option value="QR">QR</option></select></div>
+                <button class="btn-clear-filters" onclick="limpiarFiltrosVentas()"><i class="fas fa-eraser"></i> Limpiar</button>
             </div>
-            <div class="stat-value"><i class="fas fa-pen-alt"></i></div>
-            <div class="stat-sub">Venta completa con detalles</div>
-        </div>
-        
-        <div class="stat-card">
-            <div class="stat-header">
-                <span class="stat-title">Ventas Hoy</span>
-                <i class="fas fa-coins stat-icon"></i>
-            </div>
-            <div class="stat-value" id="ventas-hoy-total">$0</div>
-            <div class="stat-sub">del día</div>
-        </div>
-        
-        <div class="stat-card">
-            <div class="stat-header">
-                <span class="stat-title">Ventas Mes</span>
-                <i class="fas fa-chart-line stat-icon"></i>
-            </div>
-            <div class="stat-value" id="ventas-mes-total">$0</div>
-            <div class="stat-sub">del mes</div>
-        </div>
-        
-        <div class="stat-card">
-            <div class="stat-header">
-                <span class="stat-title">Cambios</span>
-                <i class="fas fa-exchange-alt stat-icon"></i>
-            </div>
-            <div class="stat-value" id="ventas-cambios-count">0</div>
-            <div class="stat-sub">solicitados</div>
-        </div>
-    </div>
-    
-    <!-- Tabla de ventas recientes -->
-    <div class="table-container">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
-            <h3><i class="fas fa-clipboard-list"></i> Ventas recientes</h3>
-            <div style="display: flex; gap: 0.5rem;">
-                <input type="text" id="buscador-ventas" placeholder="🔍 Buscar venta..." class="buscador-mini">
-                <select id="filtro-estado-ventas" class="filtro-mini">
-                    <option value="todos">Todas</option>
-                    <option value="completada">Completadas</option>
-                    <option value="pendiente">Pendientes</option>
-                    <option value="cambiado">Con cambios</option>
-                    <option value="devuelto">Devueltas</option>
-                </select>
-            </div>
-        </div>
-        <div class="table-responsive">
-            <table class="data-table" id="tabla-ventas">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Fecha</th>
-                        <th>Cliente</th>
-                        <th>Productos</th>
-                        <th>Total</th>
-                        <th>Método</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody id="ventas-body">
-                    <tr><td colspan="8" style="text-align: center;">Cargando...<\/td></tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <!-- Filtros para VENTAS -->
-<div class="filters-section">
-    <div class="search-box">
-        <i class="fas fa-search"></i>
-        <input type="text" id="search-ventas" placeholder="Buscar por ID, cliente o producto...">
-    </div>
-    <div class="filter-group">
-        <i class="fas fa-calendar"></i>
-        <input type="date" id="filter-fecha-inicio" placeholder="Fecha inicio">
-    </div>
-    <div class="filter-group">
-        <i class="fas fa-calendar"></i>
-        <input type="date" id="filter-fecha-fin" placeholder="Fecha fin">
-    </div>
-    <div class="filter-group">
-        <i class="fas fa-chart-simple"></i>
-        <select id="filter-estado-ventas">
-            <option value="">Todos los estados</option>
-            <option value="completada">✅ Completada</option>
-            <option value="pendiente">⏳ Pendiente</option>
-            <option value="cambiado">🔄 Cambio solicitado</option>
-            <option value="devuelto">📦 Devuelto</option>
-        </select>
-    </div>
-    <div class="filter-group">
-        <i class="fas fa-money-bill"></i>
-        <select id="filter-metodo-ventas">
-            <option value="">Todos los métodos</option>
-            <option value="Efectivo">Efectivo</option>
-            <option value="Tarjeta Débito">Tarjeta Débito</option>
-            <option value="Tarjeta Crédito">Tarjeta Crédito</option>
-            <option value="Transferencia">Transferencia</option>
-            <option value="QR">QR</option>
-        </select>
-    </div>
-    <button class="btn-clear-filters" onclick="limpiarFiltrosVentas()">
-        <i class="fas fa-eraser"></i> Limpiar
-    </button>
-</div>
-</div>
-        
-<!-- FORMULARIO DE VENTA MANUAL (LIBRE, SIN CATÁLOGO) -->
-<div id="form-venta" class="form-modal" style="display: none;">
-    <div class="form-modal-content" style="max-width: 900px;">
-        <div class="form-modal-header">
-            <h3><i class="fas fa-pen-alt"></i> Venta Manual</h3>
-            <span class="close" onclick="cerrarFormulario('venta')">&times;</span>
-        </div>
-        <div class="form-modal-body">
-            <form id="venta-form" onsubmit="event.preventDefault(); guardarVentaManual();">
-                <!-- Datos de la venta -->
-                <div class="form-row">
-                    <div class="form-group">
-                        <label><i class="fas fa-calendar-alt"></i> Fecha</label>
-                        <input type="date" id="venta-fecha" required>
-                    </div>
-                    <div class="form-group">
-                        <label><i class="fas fa-user"></i> Cliente</label>
-                        <input type="text" id="venta-cliente" placeholder="Nombre del cliente">
-                    </div>
-                    <div class="form-group">
-                        <label><i class="fas fa-dollar-sign"></i> Método de pago</label>
-                        <select id="venta-metodo" required>
-                            <option value="Efectivo">Efectivo</option>
-                            <option value="Tarjeta Débito">Tarjeta Débito</option>
-                            <option value="Tarjeta Crédito">Tarjeta Crédito</option>
-                            <option value="Transferencia">Transferencia</option>
-                            <option value="QR">QR (Nequi/Daviplata)</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <!-- Panel para agregar producto manualmente -->
-                <div class="panel-agregar-producto">
-                    <h4><i class="fas fa-plus-circle"></i> Agregar producto</h4>
-                    <div class="form-row">
-                        <div class="form-group" style="flex: 2;">
-                            <label><i class="fas fa-box"></i> Producto</label>
-                            <input type="text" id="venta-producto-nombre" placeholder="Ej: Vestido Floral, Camisa Blanca..." class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label><i class="fas fa-ruler"></i> Talla</label>
-                            <input type="text" id="venta-producto-talla" placeholder="Ej: S, M, L, 6, 8..." class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <label><i class="fas fa-palette"></i> Color</label>
-                            <input type="text" id="venta-producto-color" placeholder="Ej: Rojo, Azul..." class="form-control">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label><i class="fas fa-sort-numeric-down"></i> Cantidad</label>
-                            <input type="number" id="venta-producto-cantidad" value="1" min="1" class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <label><i class="fas fa-tag"></i> Precio unitario</label>
-                            <input type="number" id="venta-producto-precio" placeholder="0" min="0" step="100" class="form-control" required>
-                        </div>
-                        <div class="form-group" style="justify-content: flex-end;">
-                            <button type="button" class="btn-agregar" onclick="agregarProductoVentaManual()" style="margin-top: 24px;"><i class="fas fa-cart-plus"></i> Agregar</button>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Tabla del carrito -->
-                <div class="table-responsive" style="margin-top: 1.5rem;">
-                    <table class="data-table" id="tabla-carrito">
-                        <thead>
-                            <tr>
-                                <th>Producto</th>
-                                <th>Talla</th>
-                                <th>Color</th>
-                                <th>Precio</th>
-                                <th>Cantidad</th>
-                                <th>Subtotal</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody id="carrito-body">
-                            <tr><td colspan="7" style="text-align: center; padding: 2rem;"><i class="fas fa-shopping-cart"></i> No hay productos agregados. Completa los campos arriba y haz clic en "Agregar".<\/td></tr>
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <td colspan="5" style="text-align: right;"><strong>Total:</strong></td>
-                                <td colspan="2"><strong id="carrito-total">$0</strong><\/td>
-                            </tr>
-                        </tfoot>
-                    </table>
-                </div>
-                
-                <!-- Botones de acción -->
-                <div class="form-actions" style="margin-top: 1.5rem;">
-                    <button type="submit" class="btn-primary"><i class="fas fa-check-circle"></i> Registrar Venta</button>
-                    <button type="button" class="btn-secondary" onclick="cerrarFormulario('venta')"><i class="fas fa-times"></i> Cancelar</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-        
-        <!-- MODAL PARA EDITAR VENTA -->
-        <div id="modal-editar-venta" class="form-modal" style="display: none;">
-            <div class="form-modal-content" style="max-width: 600px;">
-                <div class="form-modal-header">
-                    <h3><i class="fas fa-pencil-alt"></i> Editar Venta</h3>
-                    <span class="close" onclick="cerrarModalEditarVenta()">&times;</span>
-                </div>
-                <div class="form-modal-body">
-                    <form id="editar-venta-form" onsubmit="event.preventDefault(); actualizarVenta();">
-                        <input type="hidden" id="editar-venta-id">
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label><i class="fas fa-calendar-alt"></i> Fecha</label>
-                                <input type="date" id="editar-venta-fecha" required>
-                            </div>
-                            <div class="form-group">
-                                <label><i class="fas fa-user"></i> Cliente</label>
-                                <input type="text" id="editar-venta-cliente">
-                            </div>
-                            <div class="form-group">
-                                <label><i class="fas fa-dollar-sign"></i> Método de pago</label>
-                                <select id="editar-venta-metodo" required>
-                                    <option value="Efectivo">Efectivo</option>
-                                    <option value="Tarjeta Débito">Tarjeta Débito</option>
-                                    <option value="Tarjeta Crédito">Tarjeta Crédito</option>
-                                    <option value="Transferencia">Transferencia</option>
-                                    <option value="QR">QR</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label><i class="fas fa-pen-alt stat-icon"></i> Notas</label>
-                            <textarea id="editar-venta-notas" rows="2" placeholder="Motivo del cambio, devolución, etc."></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label><i class="fas fa-exchange-alt stat-icon"></i> Estado</label>
-                            <select id="editar-venta-estado">
-                                <option value="completada">Completada</option>
-                                <option value="pendiente">Pendiente</option>
-                                <option value="cambiado">Cambio solicitado</option>
-                                <option value="devuelto">Devuelto</option>
-                            </select>
-                        </div>
-                        <div class="form-actions">
-                            <button type="submit" class="btn-primary"><i class="fas fa-save"></i> Guardar cambios</button>
-                            <button type="button" class="btn-danger" onclick="eliminarVenta()"><i class="fas fa-trash-alt"></i> Eliminar venta</button>
-                            <button type="button" class="btn-secondary" onclick="cerrarModalEditarVenta()">Cancelar</button>
-                        </div>
-                    </form>
-                </div>
+            <div class="data-card">
+                <div class="data-header"><h2><i class="fas fa-list"></i> Ventas Recientes</h2></div>
+                <div class="table-responsive"><table class="data-table" id="tabla-ventas"><thead><tr><th class="sortable-header" data-sort="id" onclick="ordenarVentas('id')">ID <i class="fas fa-sort"></i></th><th class="sortable-header" data-sort="fecha" onclick="ordenarVentas('fecha')">Fecha <i class="fas fa-sort"></i></th><th class="sortable-header" data-sort="cliente" onclick="ordenarVentas('cliente')">Cliente <i class="fas fa-sort"></i></th><th>Productos</th><th class="sortable-header" data-sort="total" onclick="ordenarVentas('total')">Total <i class="fas fa-sort"></i></th><th class="sortable-header" data-sort="metodo" onclick="ordenarVentas('metodo')">Método <i class="fas fa-sort"></i></th><th class="sortable-header" data-sort="estado" onclick="ordenarVentas('estado')">Estado <i class="fas fa-sort"></i></th><th>Acciones</th></tr></thead><tbody id="ventas-body"><tr><td colspan="8">Cargando...</td></tr></tbody></table></div>
             </div>
         </div>
 
@@ -1623,17 +673,37 @@
             <div class="stats-grid">
                 <div class="stat-card"><div class="stat-header"><span class="stat-title">Ingresos</span><i class="fas fa-arrow-up stat-icon"></i></div><div class="stat-value" id="stats-ingresos">$0</div></div>
                 <div class="stat-card"><div class="stat-header"><span class="stat-title">Egresos</span><i class="fas fa-arrow-down stat-icon"></i></div><div class="stat-value" id="stats-egresos">$0</div></div>
-                <div class="stat-card" onclick="window.open('contabilidad.html', '_blank')" style="cursor:pointer">
-                    <div class="stat-header"><span class="stat-title">Reportes</span><i class="fas fa-chart-pie stat-icon"></i></div>
-                    <div class="stat-value"><i class="fas fa-chart-line stat-icon"></i></div>
-                </div>
+                <div class="stat-card" onclick="window.open('contabilidad.html', '_blank')" style="cursor:pointer"><div class="stat-header"><span class="stat-title">Reportes</span><i class="fas fa-chart-pie stat-icon"></i></div><div class="stat-value">📊</div></div>
             </div>
         </div>
     </main>
 
+    <!-- FORMULARIOS MODALES -->
+    <div id="form-producto" class="form-modal"><div class="form-modal-content"><div class="form-modal-header"><h3>👗 Nuevo Producto</h3><span class="close" onclick="cerrarFormulario('producto')">&times;</span></div><div class="form-modal-body"><form onsubmit="event.preventDefault(); guardarProductoBase()"><div class="form-group"><label>Código</label><input type="text" id="producto-codigo" required></div><div class="form-group"><label>Categoría</label><select id="producto-categoria" required><option value="">Seleccionar</option><option value="vestidos">Vestidos</option><option value="blusas">Blusas</option><option value="pantalones">Pantalones</option><option value="deportivo">Deportivo</option><option value="caballero">Caballero</option><option value="accesorios">Accesorios</option></select></div><div class="form-group"><label>Nombre</label><input type="text" id="producto-nombre" required></div><div class="form-group"><label>Precio compra</label><input type="number" id="producto-precio-compra" placeholder="25000" step="1000"></div><div class="form-group"><label>URL imagen</label><input type="url" id="producto-imagen" placeholder="https://..."></div><h4>📦 Variantes</h4><div id="variantes-container"></div><button type="button" onclick="agregarVariante()" class="add-btn">+ Agregar talla</button><button type="submit" class="submit-btn">Guardar Producto</button><button type="button" class="cancel-btn" onclick="cerrarFormulario('producto')">Cancelar</button></form></div></div></div>
+
+    <div id="form-compra" class="form-modal"><div class="form-modal-content"><div class="form-modal-header"><h3>🛍️ Nueva Compra</h3><span class="close" onclick="cerrarFormulario('compra')">&times;</span></div><div class="form-modal-body"><form onsubmit="event.preventDefault(); guardarCompra()"><div class="form-group"><label>Proveedor</label><select id="compra-proveedor" required><option value="">Seleccionar</option></select></div><div class="form-group"><label>Fecha</label><input type="date" id="compra-fecha" required></div><div class="form-group"><label>Producto</label><input type="text" id="compra-producto" required></div><div class="form-row"><div class="form-group"><label>Cantidad</label><input type="number" id="compra-cantidad" min="1" required></div><div class="form-group"><label>Precio unitario</label><input type="number" id="compra-precio" min="0" required></div></div><div class="form-group"><label>Estado</label><select id="compra-estado"><option value="Pendiente">Pendiente</option><option value="Recibida">Recibida</option><option value="Pagada">Pagada</option></select></div><button type="submit" class="submit-btn">Guardar</button><button type="button" class="cancel-btn" onclick="cerrarFormulario('compra')">Cancelar</button></form></div></div></div>
+
+    <div id="form-gasto" class="form-modal"><div class="form-modal-content"><div class="form-modal-header"><h3>💸 Nuevo Gasto</h3><span class="close" onclick="cerrarFormulario('gasto')">&times;</span></div><div class="form-modal-body"><form onsubmit="event.preventDefault(); guardarGasto()"><div class="form-group"><label>Fecha</label><input type="date" id="gasto-fecha" required></div><div class="form-group"><label>Concepto</label><input type="text" id="gasto-concepto" required></div><div class="form-group"><label>Categoría</label><select id="gasto-categoria"><option value="Alquiler">Alquiler</option><option value="Servicios">Servicios</option><option value="Sueldos">Sueldos</option><option value="Marketing">Marketing</option><option value="Otros">Otros</option></select></div><div class="form-group"><label>Monto</label><input type="number" id="gasto-monto" min="0" required></div><div class="form-group"><label>Método</label><select id="gasto-metodo"><option value="Efectivo">Efectivo</option><option value="Transferencia">Transferencia</option><option value="Tarjeta">Tarjeta</option></select></div><button type="submit" class="submit-btn">Guardar</button><button type="button" class="cancel-btn" onclick="cerrarFormulario('gasto')">Cancelar</button></form></div></div></div>
+
+    <div id="form-perfil" class="form-modal"><div class="form-modal-content"><div class="form-modal-header"><h3>👥 Nuevo Usuario</h3><span class="close" onclick="cerrarFormulario('perfil')">&times;</span></div><div class="form-modal-body"><form onsubmit="event.preventDefault(); guardarPerfil()"><div class="form-group"><label>Nombre</label><input type="text" id="perfil-nombre" required></div><div class="form-group"><label>Email</label><input type="email" id="perfil-email" required></div><div class="form-group"><label>Contraseña</label><input type="password" id="perfil-password" minlength="6" required></div><div class="form-group"><label>Rol</label><select id="perfil-rol"><option value="empleado">Empleado</option><option value="admin">Administrador</option></select></div><button type="submit" class="submit-btn">Crear</button><button type="button" class="cancel-btn" onclick="cerrarFormulario('perfil')">Cancelar</button></form></div></div></div>
+
+    <div id="form-proveedor" class="form-modal"><div class="form-modal-content"><div class="form-modal-header"><h3>📦 Nuevo Proveedor</h3><span class="close" onclick="cerrarFormulario('proveedor')">&times;</span></div><div class="form-modal-body"><form onsubmit="event.preventDefault(); guardarProveedor()"><div class="form-group"><label>Nombre</label><input type="text" id="proveedor-nombre" required></div><div class="form-group"><label>Contacto</label><input type="text" id="proveedor-contacto"></div><div class="form-row"><div class="form-group"><label>Teléfono</label><input type="tel" id="proveedor-telefono"></div><div class="form-group"><label>Email</label><input type="email" id="proveedor-email"></div></div><div class="form-group"><label>Dirección</label><textarea id="proveedor-direccion" rows="2"></textarea></div><button type="submit" class="submit-btn">Guardar</button><button type="button" class="cancel-btn" onclick="cerrarFormulario('proveedor')">Cancelar</button></form></div></div></div>
+
+    <div id="form-venta" class="form-modal"><div class="form-modal-content" style="max-width:900px"><div class="form-modal-header"><h3>📝 Venta Manual</h3><span class="close" onclick="cerrarFormulario('venta')">&times;</span></div><div class="form-modal-body"><form id="venta-form" onsubmit="event.preventDefault(); guardarVenta();"><div class="form-row"><div class="form-group"><label>📅 Fecha</label><input type="date" id="venta-fecha" required></div><div class="form-group"><label>👤 Cliente</label><input type="text" id="venta-cliente" placeholder="Nombre del cliente"></div><div class="form-group"><label>💵 Método de pago</label><select id="venta-metodo" required><option value="Efectivo">Efectivo</option><option value="Tarjeta Débito">Tarjeta Débito</option><option value="Tarjeta Crédito">Tarjeta Crédito</option><option value="Transferencia">Transferencia</option><option value="QR">QR</option></select></div></div><div class="panel-agregar-producto" style="background:#fefaf5;padding:1rem;border-radius:12px;margin-bottom:1rem;border:1px solid #f0e4d8"><h4>➕ Agregar producto</h4><div class="form-row"><div class="form-group" style="flex:2"><label>📦 Producto</label><input type="text" id="venta-producto-nombre" placeholder="Ej: Vestido Floral" class="form-control" required></div><div class="form-group"><label>📏 Talla</label><input type="text" id="venta-producto-talla" placeholder="Ej: S, M, L" class="form-control"></div><div class="form-group"><label>🎨 Color</label><input type="text" id="venta-producto-color" placeholder="Ej: Rojo" class="form-control"></div></div><div class="form-row"><div class="form-group"><label>🔢 Cantidad</label><input type="number" id="venta-producto-cantidad" value="1" min="1" class="form-control"></div><div class="form-group"><label>💰 Precio unitario</label><input type="number" id="venta-producto-precio" placeholder="0" min="0" step="100" class="form-control" required></div><div class="form-group"><button type="button" class="btn-agregar" onclick="agregarProductoVentaManual()" style="margin-top:24px;background:#27ae60;color:white;border:none;padding:0.6rem 1.2rem;border-radius:30px">➕ Agregar</button></div></div></div><div class="table-responsive"><table class="data-table" id="tabla-carrito"><thead><tr><th>Producto</th><th>Talla</th><th>Color</th><th>Precio</th><th>Cantidad</th><th>Subtotal</th><th></th></tr></thead><tbody id="carrito-body"><tr><td colspan="7">No hay productos agregados</td></tr></tbody><tfoot><tr><td colspan="5"><strong>Total:</strong></td><td colspan="2"><strong id="carrito-total">$0</strong></td></tr></tfoot></table></div><div class="form-actions" style="display:flex;gap:1rem;justify-content:flex-end;margin-top:1rem"><button type="submit" class="btn-primary" style="background:#b87c4e;color:white;border:none;padding:0.6rem 1.2rem;border-radius:30px">✅ Registrar Venta</button><button type="button" class="btn-secondary" onclick="cerrarFormulario('venta')" style="background:#f5ede8;color:#4a3728;border:1px solid #f0e4d8;padding:0.6rem 1.2rem;border-radius:30px">Cancelar</button></div></form></div></div></div>
+
+    <div id="modal-editar-venta" class="form-modal"><div class="form-modal-content"><div class="form-modal-header"><h3>✏️ Editar Venta</h3><span class="close" onclick="cerrarModalEditarVenta()">&times;</span></div><div class="form-modal-body"><form id="editar-venta-form" onsubmit="event.preventDefault(); actualizarVenta();"><input type="hidden" id="editar-venta-id"><div class="form-row"><div class="form-group"><label>📅 Fecha</label><input type="date" id="editar-venta-fecha" required></div><div class="form-group"><label>👤 Cliente</label><input type="text" id="editar-venta-cliente"></div><div class="form-group"><label>💵 Método de pago</label><select id="editar-venta-metodo" required><option value="Efectivo">Efectivo</option><option value="Tarjeta Débito">Tarjeta Débito</option><option value="Tarjeta Crédito">Tarjeta Crédito</option><option value="Transferencia">Transferencia</option><option value="QR">QR</option></select></div></div><div class="form-group"><label>📝 Notas</label><textarea id="editar-venta-notas" rows="2" placeholder="Motivo del cambio, devolución, etc."></textarea></div><div class="form-group"><label>🔄 Estado</label><select id="editar-venta-estado"><option value="completada">Completada</option><option value="pendiente">Pendiente</option><option value="cambiado">Cambio solicitado</option><option value="devuelto">Devuelto</option></select></div><div class="form-actions" style="display:flex;gap:1rem;justify-content:flex-end;margin-top:1rem"><button type="submit" class="btn-primary" style="background:#b87c4e;color:white;border:none;padding:0.6rem 1.2rem;border-radius:30px">💾 Guardar cambios</button><button type="button" class="btn-danger" onclick="eliminarVenta()" style="background:#e74c3c;color:white;border:none;padding:0.6rem 1.2rem;border-radius:30px">🗑️ Eliminar venta</button><button type="button" class="btn-secondary" onclick="cerrarModalEditarVenta()" style="background:#f5ede8;color:#4a3728;border:1px solid #f0e4d8;padding:0.6rem 1.2rem;border-radius:30px">Cancelar</button></div></form></div></div></div>
+
     <script src="../js/supabase-config.js"></script>
     <script src="../js/permisos.js"></script>
     <script src="dashboard.js"></script>
-    
+    <script>
+        // Funciones auxiliares para el menú
+        function toggleMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
+        }
+    </script>
 </body>
 </html>
