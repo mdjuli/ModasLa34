@@ -1,37 +1,56 @@
 // ============================================
-// DASHBOARD ADMIN - MODAS LA 34
+// 🌸 DASHBOARD ADMIN - MODAS LA 34
+// VERSIÓN COMPLETA CON FILTROS Y ORDENAMIENTO
 // ============================================
 
+// ===== VARIABLES GLOBALES =====
 let currentUser = null;
 let currentModule = 'productos';
 let varianteCount = 0;
+let carrito = [];
+let productosData = [];
+let ventasData = [];
 
-let fechaInicioCompras = null;
-let fechaFinCompras = null;
-let fechaInicioGastos = null;
-let fechaFinGastos = null;
-let fechaInicioVentas = null;
-let fechaFinVentas = null;
+// Variables para ordenamiento
+let sortColumn = 'fecha';
+let sortDirection = 'desc';
+let sortProductosColumn = 'nombre';
+let sortProductosDirection = 'asc';
 
-// ===== FUNCIONES DE MENÚ =====
-function toggleMenu() {
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('sidebarOverlay');
-    if (sidebar) sidebar.classList.toggle('open');
-    if (overlay) overlay.classList.toggle('active');
-}
-
-// ===== INICIALIZACIÓN =====
+// ===== FUNCIONES DE INICIALIZACIÓN =====
 document.addEventListener('DOMContentLoaded', async () => {
+    console.log('Dashboard iniciado');
     await verificarSesion();
     await cargarDatosIniciales();
-    cambiarModulo('productos', null);
+    
+    // Configurar eventos de teclado para cerrar modales con ESC
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            cerrarTodosModales();
+        }
+    });
+    
+    // Cargar primer módulo permitido
+    const primerModulo = getPrimerModuloVisible();
+    cambiarModulo(primerModulo, null);
+    
+    // Inicializar variantes si el formulario existe
     setTimeout(() => {
-        if (document.getElementById('variantes-container')) agregarVariante();
+        if (document.getElementById('variantes-container')) {
+            agregarVariante();
+        }
     }, 500);
 });
 
-// ===== AUTENTICACIÓN =====
+function cerrarTodosModales() {
+    const modales = document.querySelectorAll('.form-modal, .modal');
+    modales.forEach(modal => {
+        modal.style.display = 'none';
+        modal.classList.remove('active');
+    });
+}
+
+// ===== FUNCIONES DE AUTENTICACIÓN =====
 async function verificarSesion() {
     const tokenData = localStorage.getItem('admin_token');
     if (!tokenData) {
@@ -53,29 +72,23 @@ async function verificarSesion() {
         const user = await response.json();
         currentUser = user;
         
-        // Cargar perfil
         const perfilRes = await fetch(`${SUPABASE_URL}/rest/v1/perfiles?id=eq.${user.id}`, {
             headers: { 'apikey': SUPABASE_KEY }
         });
         const perfil = await perfilRes.json();
         
-        // 🔑 Cargar permisos del usuario
-        await cargarPermisosUsuario(user.id);
-        
         // Mostrar nombre
-        document.getElementById('userNameDisplay').textContent = 
-            perfil[0]?.nombre || user.email || 'Administradora';
+        const userNameSpan = document.getElementById('userNameDisplay');
+        if (userNameSpan) {
+            userNameSpan.textContent = perfil[0]?.nombre || user.email || 'Administradora';
+        }
         
-        // Aplicar permisos a la interfaz
-        aplicarPermisosUI();
-        filtrarModulosPorPermisos();
-        
-        // Cargar el primer módulo permitido
-        const primerModulo = getPrimerModuloVisible();
-        cambiarModulo(primerModulo, null);
-        
-        // Cargar datos iniciales
-        await cargarDatosIniciales();
+        // Cargar permisos (desde permisos.js)
+        if (typeof cargarPermisosUsuario === 'function') {
+            await cargarPermisosUsuario(user.id);
+            if (typeof aplicarPermisosUI === 'function') aplicarPermisosUI();
+            if (typeof filtrarModulosPorPermisos === 'function') filtrarModulosPorPermisos();
+        }
         
     } catch (error) {
         console.error('Error de sesión:', error);
@@ -85,235 +98,387 @@ async function verificarSesion() {
 }
 
 function logout() {
-    if (confirm('¿Cerrar sesión?')) {
+    if (confirm('¿Estás segura de cerrar sesión?')) {
         localStorage.removeItem('admin_token');
         window.location.href = 'login.html';
     }
 }
 
-// ===== NAVEGACIÓN =====
+// ===== FUNCIONES DE NAVEGACIÓN =====
 function cambiarModulo(modulo, event = null) {
-    document.querySelectorAll('.module-section').forEach(s => s.style.display = 'none');
-    const el = document.getElementById(`modulo-${modulo}`);
-    if (el) el.style.display = 'block';
-    if (event) {
-        document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
-        if (event.target.classList) event.target.classList.add('active');
-        else if (event.target.parentElement) event.target.parentElement.classList.add('active');
+    document.querySelectorAll('.module-section').forEach(section => {
+        section.style.display = 'none';
+    });
+    
+    const seccionActiva = document.getElementById(`modulo-${modulo}`);
+    if (seccionActiva) {
+        seccionActiva.style.display = 'block';
     }
+    
+    if (event) {
+        document.querySelectorAll('.nav-item').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        event.currentTarget.classList.add('active');
+    }
+    
     currentModule = modulo;
+    
+    // Cargar datos del módulo
     cargarDatosModulo(modulo);
 }
 
 async function cargarDatosModulo(modulo) {
     switch(modulo) {
-        case 'productos': await cargarProductos(); break;
-        case 'stock': await cargarstock(); break;
-        case 'compras': await cargarProveedoresSelect('compra'); await cargarCompras(); break;
-        case 'gastos': await cargarGastos(); break;
-        case 'perfiles': await cargarPerfiles(); break;
-        case 'proveedores': await cargarProveedores(); break;
-        case 'ventas': await cargarVentas(); break;
-        case 'contabilidad': await cargarContabilidad(); break;
+        case 'productos':
+            await cargarProductos();
+            break;
+        case 'stock':
+            await cargarStock();
+            break;
+        case 'compras':
+            await cargarCompras();
+            await cargarProveedoresSelect('compra');
+            break;
+        case 'gastos':
+            await cargarGastos();
+            break;
+        case 'perfiles':
+            await cargarPerfiles();
+            break;
+        case 'proveedores':
+            await cargarProveedores();
+            break;
+        case 'ventas':
+            await cargarVentas();
+            break;
+        case 'contabilidad':
+            if (typeof cargarContabilidad === 'function') cargarContabilidad();
+            break;
     }
 }
 
+// ===== FUNCIONES DE DATOS INICIALES =====
 async function cargarDatosIniciales() {
     try {
-        const prodRes = await fetch(`${SUPABASE_URL}/rest/v1/productos_base`, { headers: { 'apikey': SUPABASE_KEY } });
+        const prodRes = await fetch(`${SUPABASE_URL}/rest/v1/productos_base`, {
+            headers: { 'apikey': SUPABASE_KEY }
+        });
         const productos = await prodRes.json();
-        if (document.getElementById('stats-total-productos')) document.getElementById('stats-total-productos').textContent = productos.length;
-        const varRes = await fetch(`${SUPABASE_URL}/rest/v1/variantes_producto?stock_total.lt.5`, { headers: { 'apikey': SUPABASE_KEY } });
+        const totalProductos = document.getElementById('stats-total-productos');
+        if (totalProductos) totalProductos.textContent = productos.length;
+        
+        const varRes = await fetch(`${SUPABASE_URL}/rest/v1/variantes_producto?stock_total.lt.5`, {
+            headers: { 'apikey': SUPABASE_KEY }
+        });
         const variantes = await varRes.json();
-        if (document.getElementById('stats-stock-bajo')) document.getElementById('stats-stock-bajo').textContent = variantes.length;
-    } catch(e) { console.error(e); }
+        const stockBajo = document.getElementById('stats-stock-bajo');
+        if (stockBajo) stockBajo.textContent = variantes.length;
+        
+    } catch (error) {
+        console.error('Error:', error);
+    }
 }
 
-// ===== FILTROS =====
-function aplicarFiltroCompras() {
-    const inicio = document.getElementById('compras-fecha-inicio')?.value;
-    const fin = document.getElementById('compras-fecha-fin')?.value;
-    fechaInicioCompras = inicio ? new Date(inicio) : null;
-    fechaFinCompras = fin ? new Date(fin) : null;
-    if (fechaFinCompras) fechaFinCompras.setHours(23,59,59,999);
-    cargarCompras();
-}
-function limpiarFiltroCompras() {
-    if (document.getElementById('compras-fecha-inicio')) document.getElementById('compras-fecha-inicio').value = '';
-    if (document.getElementById('compras-fecha-fin')) document.getElementById('compras-fecha-fin').value = '';
-    fechaInicioCompras = null; fechaFinCompras = null;
-    cargarCompras();
-}
-function aplicarFiltroGastos() {
-    const inicio = document.getElementById('gastos-fecha-inicio')?.value;
-    const fin = document.getElementById('gastos-fecha-fin')?.value;
-    fechaInicioGastos = inicio ? new Date(inicio) : null;
-    fechaFinGastos = fin ? new Date(fin) : null;
-    if (fechaFinGastos) fechaFinGastos.setHours(23,59,59,999);
-    cargarGastos();
-}
-function limpiarFiltroGastos() {
-    if (document.getElementById('gastos-fecha-inicio')) document.getElementById('gastos-fecha-inicio').value = '';
-    if (document.getElementById('gastos-fecha-fin')) document.getElementById('gastos-fecha-fin').value = '';
-    fechaInicioGastos = null; fechaFinGastos = null;
-    cargarGastos();
-}
-function aplicarFiltroVentas() {
-    const inicio = document.getElementById('ventas-fecha-inicio')?.value;
-    const fin = document.getElementById('ventas-fecha-fin')?.value;
-    fechaInicioVentas = inicio ? new Date(inicio) : null;
-    fechaFinVentas = fin ? new Date(fin) : null;
-    if (fechaFinVentas) fechaFinVentas.setHours(23,59,59,999);
-    cargarVentas();
-}
-function limpiarFiltroVentas() {
-    if (document.getElementById('ventas-fecha-inicio')) document.getElementById('ventas-fecha-inicio').value = '';
-    if (document.getElementById('ventas-fecha-fin')) document.getElementById('ventas-fecha-fin').value = '';
-    fechaInicioVentas = null; fechaFinVentas = null;
-    cargarVentas();
-}
+// ============================================
+// FUNCIONES PARA PRODUCTOS
+// ============================================
 
-// ===== VARIANTES =====
 function agregarVariante() {
     const container = document.getElementById('variantes-container');
     if (!container) return;
-    const vid = varianteCount;
-    const html = `
-        <div class="variante-card" id="variante-${vid}" style="background:#f9f9f9; border-radius:12px; padding:1rem; margin-bottom:1rem;">
-            <div style="display:flex; gap:0.8rem; flex-wrap:wrap; margin-bottom:0.8rem;">
-                <input type="text" id="variante-${vid}-talla" placeholder="Talla" style="padding:0.5rem; border:1px solid #ddd; border-radius:8px; width:100px;">
-                <input type="number" id="variante-${vid}-precio" placeholder="Precio venta" style="padding:0.5rem; border:1px solid #ddd; border-radius:8px; width:120px;">
-                ${vid > 0 ? `<button type="button" onclick="eliminarVariante(${vid})" style="background:#f0f0f0; border:none; padding:0.5rem 1rem; border-radius:8px;">🗑️</button>` : ''}
+    
+    const varianteId = varianteCount;
+    
+    const varianteHTML = `
+        <div class="variante-card" id="variante-${varianteId}">
+            <div class="variante-header">
+                <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+                    <div>
+                        <label style="color: #ff6b6b;">📏 Talla:</label>
+                        <input type="text" id="variante-${varianteId}-talla" placeholder="Ej: S, M, L, 6, 8..." required>
+                    </div>
+                    <div>
+                        <label style="color: #ff6b6b;">💰 Precio de venta:</label>
+                        <input type="number" id="variante-${varianteId}-precio" placeholder="Ej: 45000" min="0" step="1000" required style="width: 120px;">
+                    </div>
+                </div>
+                ${varianteId > 0 ? `<button type="button" onclick="eliminarVariante(${varianteId})" class="btn-eliminar-talla">✖️ Eliminar talla</button>` : ''}
             </div>
-            <div id="colores-${vid}-container"></div>
-            <div style="margin-top:0.5rem;">
-                <button type="button" onclick="agregarColorAVariante(${vid})" style="background:#e0e0e0; border:none; padding:0.3rem 0.8rem; border-radius:20px; font-size:0.75rem;">+ Color</button>
-                <button type="button" onclick="agregarSinColor(${vid})" style="background:#e0e0e0; border:none; padding:0.3rem 0.8rem; border-radius:20px; font-size:0.75rem;">⚪ Sin color</button>
+            
+            <div style="margin-top: 1rem;">
+                <label style="color: #ff6b6b;">🎨 Colores y stock:</label>
+                <div id="colores-${varianteId}-container" class="colores-container"></div>
+                <div>
+                    <button type="button" onclick="agregarColorAVariante(${varianteId})" class="btn-agregar-color">➕ Agregar color</button>
+                    <button type="button" onclick="agregarSinColor(${varianteId})" class="btn-sin-color">⚪ Sin color (stock único)</button>
+                </div>
             </div>
         </div>
     `;
-    container.insertAdjacentHTML('beforeend', html);
-    agregarColorAVariante(vid);
+    
+    container.insertAdjacentHTML('beforeend', varianteHTML);
+    agregarColorAVariante(varianteId);
     varianteCount++;
 }
 
-function agregarColorAVariante(vid) {
-    const container = document.getElementById(`colores-${vid}-container`);
+function agregarColorAVariante(varianteId) {
+    const container = document.getElementById(`colores-${varianteId}-container`);
     if (!container) return;
-    const cid = `${vid}-${Date.now()}`;
-    const html = `
-        <div class="color-row" id="color-${cid}" style="display:flex; gap:0.5rem; align-items:center; margin-top:0.5rem; flex-wrap:wrap;">
-            <input type="color" id="color-hex-${cid}" value="#ff0000" style="width:35px; height:35px; border-radius:8px;">
-            <input type="text" id="color-hex-text-${cid}" value="#ff0000" placeholder="Hex" style="width:80px; padding:0.3rem; border:1px solid #ddd; border-radius:6px;">
-            <input type="text" id="color-nombre-${cid}" placeholder="Nombre" style="flex:1; min-width:100px; padding:0.3rem; border:1px solid #ddd; border-radius:6px;">
-            <input type="number" id="color-stock-${cid}" placeholder="Stock" min="0" value="0" style="width:70px; padding:0.3rem; border:1px solid #ddd; border-radius:6px;">
-            <button type="button" onclick="eliminarColor('${cid}')" style="background:none; border:none;">🗑️</button>
+    
+    const colorId = `${varianteId}-${Date.now()}-${Math.random()}`;
+    
+    const colorHTML = `
+        <div class="color-row" id="color-${colorId}">
+            <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; width: 100%;">
+                <input type="color" id="color-hex-${colorId}" value="#ff0000" class="color-picker" style="width: 50px; height: 40px;">
+                <input type="text" id="color-hex-text-${colorId}" value="#ff0000" placeholder="Código hex" class="color-hex-text" style="flex: 1; min-width: 100px;">
+                <input type="text" id="color-nombre-${colorId}" placeholder="Nombre del color" class="color-nombre-input" style="flex: 2; min-width: 120px;">
+                <input type="number" id="color-stock-${colorId}" placeholder="Stock" min="0" value="0" class="color-stock-input" style="width: 80px;">
+                <button type="button" onclick="eliminarColor('${colorId}')" class="btn-eliminar-color">🗑️</button>
+            </div>
         </div>
     `;
-    container.insertAdjacentHTML('beforeend', html);
-    const picker = document.getElementById(`color-hex-${cid}`);
-    const text = document.getElementById(`color-hex-text-${cid}`);
-    if (picker && text) {
-        picker.addEventListener('input', () => text.value = picker.value);
-        text.addEventListener('input', () => { let v = text.value; if (!v.startsWith('#')) v = '#'+v; if (/^#[0-9A-Fa-f]{6}$/i.test(v)) picker.value = v; });
+    
+    container.insertAdjacentHTML('beforeend', colorHTML);
+    
+    const colorPicker = document.getElementById(`color-hex-${colorId}`);
+    const colorText = document.getElementById(`color-hex-text-${colorId}`);
+    
+    if (colorPicker && colorText) {
+        colorPicker.addEventListener('input', function() { colorText.value = this.value; });
+        colorText.addEventListener('input', function() {
+            let value = this.value;
+            if (!value.startsWith('#')) value = '#' + value;
+            if (/^#[0-9A-Fa-f]{6}$/.test(value)) colorPicker.value = value;
+        });
     }
 }
 
-function agregarSinColor(vid) {
-    const container = document.getElementById(`colores-${vid}-container`);
+function agregarSinColor(varianteId) {
+    const container = document.getElementById(`colores-${varianteId}-container`);
     if (!container) return;
-    if (container.querySelector('.sin-color-item')) { alert('Ya existe sin color'); return; }
-    const cid = `${vid}-sin-${Date.now()}`;
-    const html = `
-        <div class="color-row sin-color-item" id="color-${cid}" style="display:flex; gap:0.5rem; align-items:center; margin-top:0.5rem; background:#f5f5f5; padding:0.3rem; border-radius:8px;">
-            <span>⚪</span>
-            <span style="flex:1;">Sin color específico</span>
-            <input type="number" id="color-stock-${cid}" placeholder="Stock" min="0" value="0" style="width:70px; padding:0.3rem; border:1px solid #ddd; border-radius:6px;">
-            <button type="button" onclick="eliminarColor('${cid}')" style="background:none; border:none;">🗑️</button>
+    
+    const existingSinColor = container.querySelector('.sin-color-item');
+    if (existingSinColor) {
+        alert('⚠️ Ya existe una opción "Sin color" para esta talla');
+        return;
+    }
+    
+    const colorId = `${varianteId}-sin-color-${Date.now()}`;
+    
+    const sinColorHTML = `
+        <div class="color-row sin-color-item" id="color-${colorId}">
+            <span style="font-size: 1.5rem;">⚪</span>
+            <span style="flex: 1; font-weight: 500;">Sin color específico</span>
+            <input type="number" id="color-stock-${colorId}" placeholder="Stock" min="0" value="0" class="color-stock-input">
+            <button type="button" onclick="eliminarColor('${colorId}')" class="btn-eliminar-color">🗑️</button>
         </div>
     `;
-    container.insertAdjacentHTML('beforeend', html);
+    
+    container.insertAdjacentHTML('beforeend', sinColorHTML);
 }
 
-function eliminarColor(cid) { document.getElementById(`color-${cid}`)?.remove(); }
-function eliminarVariante(vid) { document.getElementById(`variante-${vid}`)?.remove(); }
+function eliminarColor(colorId) {
+    const elemento = document.getElementById(`color-${colorId}`);
+    if (elemento) elemento.remove();
+}
+
+function eliminarVariante(varianteId) {
+    const element = document.getElementById(`variante-${varianteId}`);
+    if (element) element.remove();
+}
 
 function getVariantesFromForm() {
     const variantes = [];
     const precioCompraGlobal = document.getElementById('producto-precio-compra')?.value || 0;
+    
     for (let i = 0; i < varianteCount; i++) {
-        const talla = document.getElementById(`variante-${i}-talla`)?.value;
-        const precioVenta = parseFloat(document.getElementById(`variante-${i}-precio`)?.value) || 0;
-        if (!talla) continue;
-        if (precioVenta === 0) { mostrarAlerta(`Talla ${talla} sin precio`, 'error'); return []; }
+        const tallaInput = document.getElementById(`variante-${i}-talla`);
+        const precioInput = document.getElementById(`variante-${i}-precio`);
+        
+        if (!tallaInput || !tallaInput.value.trim()) continue;
+        
+        const talla = tallaInput.value.trim();
+        const precioVenta = parseFloat(precioInput?.value) || 0;
+        const precioCompra = parseFloat(precioCompraGlobal) || 0;
+        
+        if (precioVenta === 0) {
+            mostrarAlerta(`⚠️ La talla ${talla} no tiene precio asignado`, 'error');
+            return [];
+        }
+        
         const colores = [];
-        const colContainer = document.getElementById(`colores-${i}-container`);
-        if (colContainer) {
-            colContainer.querySelectorAll('.color-row').forEach(row => {
-                const id = row.id.replace('color-', '');
+        const coloresContainer = document.getElementById(`colores-${i}-container`);
+        
+        if (coloresContainer) {
+            const colorRows = coloresContainer.querySelectorAll('.color-row');
+            
+            colorRows.forEach(row => {
+                const colorId = row.id.replace('color-', '');
+                
                 if (row.classList.contains('sin-color-item')) {
-                    const stock = parseInt(document.getElementById(`color-stock-${id}`)?.value) || 0;
-                    if (stock > 0) colores.push({ nombre: null, codigo: null, stock });
+                    const stockInput = document.getElementById(`color-stock-${colorId}`);
+                    const stock = parseInt(stockInput?.value) || 0;
+                    if (stock > 0) {
+                        colores.push({ nombre: null, codigo: null, stock: stock });
+                    }
                 } else {
-                    const nombre = document.getElementById(`color-nombre-${id}`)?.value;
-                    const hex = document.getElementById(`color-hex-text-${id}`)?.value;
-                    const stock = parseInt(document.getElementById(`color-stock-${id}`)?.value) || 0;
-                    if (nombre && nombre.trim()) {
-                        let hexVal = hex || '#cccccc';
-                        if (!hexVal.startsWith('#')) hexVal = '#' + hexVal;
-                        colores.push({ nombre: nombre.trim(), codigo: hexVal, stock });
+                    const nombreInput = document.getElementById(`color-nombre-${colorId}`);
+                    const hexTextInput = document.getElementById(`color-hex-text-${colorId}`);
+                    const stockInput = document.getElementById(`color-stock-${colorId}`);
+                    
+                    let hexValue = hexTextInput?.value || '#ff0000';
+                    if (!hexValue.startsWith('#')) hexValue = '#' + hexValue;
+                    if (!/^#[0-9A-Fa-f]{6}$/.test(hexValue)) hexValue = '#cccccc';
+                    
+                    if (nombreInput && nombreInput.value.trim()) {
+                        colores.push({
+                            nombre: nombreInput.value.trim(),
+                            codigo: hexValue,
+                            stock: parseInt(stockInput?.value) || 0
+                        });
                     }
                 }
             });
         }
-        if (colores.length === 0) colores.push({ nombre: 'Sin color', codigo: '#cccccc', stock: 0 });
-        const stockTotal = colores.reduce((s,c) => s + c.stock, 0);
-        variantes.push({ talla, precio_venta: precioVenta, precio_compra: parseFloat(precioCompraGlobal), colores, stock_total: stockTotal });
+        
+        if (colores.length === 0) {
+            colores.push({ nombre: 'Sin color', codigo: '#cccccc', stock: 0 });
+        }
+        
+        const stockTotal = colores.reduce((sum, c) => sum + c.stock, 0);
+        
+        variantes.push({
+            talla: talla,
+            precio_venta: precioVenta,
+            precio_compra: precioCompra,
+            colores: colores,
+            stock_total: stockTotal
+        });
     }
+    
     return variantes;
 }
 
 async function guardarProductoBase() {
     try {
         const token = JSON.parse(localStorage.getItem('admin_token'));
+        
         const codigo = document.getElementById('producto-codigo')?.value;
         const nombre = document.getElementById('producto-nombre')?.value;
         const categoria = document.getElementById('producto-categoria')?.value;
-        if (!codigo || !nombre || !categoria) { mostrarAlerta('Complete todos los campos', 'error'); return; }
+        
+        if (!codigo || !nombre || !categoria) {
+            mostrarAlerta('Código, nombre y categoría son obligatorios', 'error');
+            return;
+        }
+        
         const variantes = getVariantesFromForm();
-        if (variantes.length === 0) { mostrarAlerta('Agregue al menos una talla', 'error'); return; }
+        if (variantes.length === 0) {
+            mostrarAlerta('Debe agregar al menos una talla con precio', 'error');
+            return;
+        }
+        
+        for (const v of variantes) {
+            if (v.precio_venta === 0) {
+                mostrarAlerta(`La talla ${v.talla} no tiene precio asignado`, 'error');
+                return;
+            }
+        }
+        
         const editId = document.getElementById('form-producto').dataset.editId;
         let productoId;
+        
         if (editId) {
             productoId = parseInt(editId);
+            
+            const productoBase = {
+                codigo: codigo,
+                nombre: nombre,
+                categoria: categoria,
+                imagen_url: document.getElementById('producto-imagen')?.value || null
+            };
+            
             await fetch(`${SUPABASE_URL}/rest/v1/productos_base?id=eq.${productoId}`, {
                 method: 'PATCH',
-                headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}`, 'Content-Type': 'application/json' },
-                body: JSON.stringify({ codigo, nombre, categoria, imagen_url: document.getElementById('producto-imagen')?.value || null })
+                headers: {
+                    'apikey': SUPABASE_KEY,
+                    'Authorization': `Bearer ${token.access_token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(productoBase)
             });
+            
             await fetch(`${SUPABASE_URL}/rest/v1/variantes_producto?producto_id=eq.${productoId}`, {
                 method: 'DELETE',
-                headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}` }
+                headers: {
+                    'apikey': SUPABASE_KEY,
+                    'Authorization': `Bearer ${token.access_token}`
+                }
             });
+            
         } else {
-            const res = await fetch(`${SUPABASE_URL}/rest/v1/productos_base`, {
+            const productoBase = {
+                codigo: codigo,
+                nombre: nombre,
+                categoria: categoria,
+                imagen_url: document.getElementById('producto-imagen')?.value || null
+            };
+            
+            const response = await fetch(`${SUPABASE_URL}/rest/v1/productos_base`, {
                 method: 'POST',
-                headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}`, 'Content-Type': 'application/json', 'Prefer': 'return=representation' },
-                body: JSON.stringify({ codigo, nombre, categoria, imagen_url: document.getElementById('producto-imagen')?.value || null })
+                headers: {
+                    'apikey': SUPABASE_KEY,
+                    'Authorization': `Bearer ${token.access_token}`,
+                    'Content-Type': 'application/json',
+                    'Prefer': 'return=representation'
+                },
+                body: JSON.stringify(productoBase)
             });
-            if (!res.ok) throw new Error();
-            productoId = (await res.json())[0].id;
+            
+            const productoGuardado = await response.json();
+            productoId = productoGuardado[0].id;
         }
-        for (const v of variantes) {
-            await fetch(`${SUPABASE_URL}/rest/v1/variantes_producto`, {
+        
+        let variantesGuardadas = 0;
+        
+        for (const variante of variantes) {
+            const timestamp = Date.now();
+            const randomPart = Math.random().toString(36).substring(2, 10);
+            const skuBase = `${codigo}-${variante.talla}`.toUpperCase().replace(/[^A-Z0-9-]/g, '');
+            const skuUnico = `${skuBase}-${timestamp}-${randomPart}`;
+            
+            const varianteData = {
+                producto_id: productoId,
+                talla: variante.talla,
+                colores: variante.colores,
+                stock_total: variante.stock_total,
+                precio_venta: variante.precio_venta,
+                precio_compra: variante.precio_compra,
+                sku: skuUnico
+            };
+            
+            const varResponse = await fetch(`${SUPABASE_URL}/rest/v1/variantes_producto`, {
                 method: 'POST',
-                headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}`, 'Content-Type': 'application/json' },
-                body: JSON.stringify({ producto_id: productoId, talla: v.talla, colores: v.colores, stock_total: v.stock_total, precio_venta: v.precio_venta, precio_compra: v.precio_compra, sku: `${codigo}-${v.talla}-${Date.now()}` })
+                headers: {
+                    'apikey': SUPABASE_KEY,
+                    'Authorization': `Bearer ${token.access_token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(varianteData)
             });
+            
+            if (varResponse.ok) variantesGuardadas++;
+            await new Promise(resolve => setTimeout(resolve, 100));
         }
-        mostrarAlerta(editId ? 'Producto actualizado' : 'Producto guardado', 'success');
+        
+        mostrarAlerta(`🌸 Producto ${editId ? 'actualizado' : 'guardado'} con ${variantesGuardadas} variantes`, 'success');
+        
         cerrarFormulario('producto');
         await cargarProductos();
+        
+        // Limpiar formulario
         document.getElementById('producto-codigo').value = '';
         document.getElementById('producto-nombre').value = '';
         document.getElementById('producto-categoria').value = '';
@@ -322,125 +487,235 @@ async function guardarProductoBase() {
         document.getElementById('variantes-container').innerHTML = '';
         varianteCount = 0;
         agregarVariante();
+        
         delete document.getElementById('form-producto').dataset.editId;
-        const btn = document.querySelector('#form-producto .submit-btn');
-        if (btn) btn.textContent = 'Guardar Producto';
-    } catch(e) { mostrarAlerta('Error: ' + e.message, 'error'); }
+        const submitBtn = document.querySelector('#form-producto .submit-btn');
+        if (submitBtn) submitBtn.textContent = '🌸 Guardar Producto';
+        
+    } catch (error) {
+        console.error('Error:', error);
+        mostrarAlerta('Error: ' + error.message, 'error');
+    }
 }
 
 async function cargarProductos() {
     try {
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/vista_productos_completa`, { headers: { 'apikey': SUPABASE_KEY } });
-        const productos = await res.json();
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/vista_productos_completa`, {
+            headers: { 'apikey': SUPABASE_KEY }
+        });
+        
+        if (!response.ok) throw new Error('Error al cargar');
+        
+        productosData = await response.json();
+        ordenarProductos('nombre');
+        
+    } catch (error) {
+        console.error('Error:', error);
         const tbody = document.querySelector('#tabla-productos tbody');
-        if (!tbody) return;
-        if (!productos.length) { tbody.innerHTML = '<tr><td colspan="6">No hay productos<\/td></tr>'; return; }
-        tbody.innerHTML = productos.map(p => {
-            const totalStock = (p.variantes || []).reduce((s,v) => s + (v.stock_total || 0), 0);
-            const precioMin = Math.min(...(p.variantes || []).map(v => v.precio_venta || 0), 0);
-            return `<tr>
-                <td><strong>${p.nombre}</strong></td>
-                <td>${p.codigo}</td>
-                <td>${p.categoria || '-'}</td>
-                <td style="color:${totalStock<5?'#e74c3c':'#333'}">${totalStock}</td>
-                <td>$${precioMin.toLocaleString()}</td>
+        if (tbody) tbody.innerHTML = '<tr><td colspan="8" style="text-align: center;">Error al cargar productos</td></tr>';
+    }
+}
+
+function ordenarProductos(columna) {
+    if (sortProductosColumn === columna) {
+        sortProductosDirection = sortProductosDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+        sortProductosColumn = columna;
+        sortProductosDirection = 'asc';
+    }
+    
+    const productosOrdenados = [...productosData];
+    
+    productosOrdenados.sort((a, b) => {
+        let valA, valB;
+        
+        switch(columna) {
+            case 'codigo':
+                valA = (a.codigo || '').toLowerCase();
+                valB = (b.codigo || '').toLowerCase();
+                break;
+            case 'nombre':
+                valA = (a.nombre || '').toLowerCase();
+                valB = (b.nombre || '').toLowerCase();
+                break;
+            case 'categoria':
+                valA = (a.categoria || '').toLowerCase();
+                valB = (b.categoria || '').toLowerCase();
+                break;
+            case 'stock':
+                valA = a.stock_total || 0;
+                valB = b.stock_total || 0;
+                break;
+            case 'precio':
+                const preciosA = a.variantes?.map(v => v.precio_venta) || [0];
+                const preciosB = b.variantes?.map(v => v.precio_venta) || [0];
+                valA = Math.min(...preciosA);
+                valB = Math.min(...preciosB);
+                break;
+            default:
+                valA = a.nombre;
+                valB = b.nombre;
+        }
+        
+        if (valA < valB) return sortProductosDirection === 'asc' ? -1 : 1;
+        if (valA > valB) return sortProductosDirection === 'asc' ? 1 : -1;
+        return 0;
+    });
+    
+    mostrarProductosOrdenados(productosOrdenados);
+}
+
+function mostrarProductosOrdenados(productos) {
+    const tbody = document.querySelector('#tabla-productos tbody');
+    if (!tbody) return;
+    
+    function getEmojiCategoria(cat) {
+        const emojis = { 'vestidos': '👗', 'blusas': '👚', 'pantalones': '👖', 'deportivo': '⚽', 'caballero': '👔', 'accesorios': '🎀' };
+        return emojis[cat] || '📦';
+    }
+    
+    if (productos.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align: center;">No hay productos registrados</td></tr>';
+        return;
+    }
+    
+    tbody.innerHTML = productos.map(p => {
+        const variantes = p.variantes || [];
+        const totalStock = variantes.reduce((sum, v) => sum + (v.stock_total || 0), 0);
+        const precioMin = Math.min(...variantes.map(v => v.precio_venta || Infinity));
+        const precioMax = Math.max(...variantes.map(v => v.precio_venta || 0));
+        const precioTexto = precioMin === Infinity ? 'N/A' : (precioMin === precioMax ? `$${precioMin.toLocaleString()}` : `$${precioMin.toLocaleString()} - $${precioMax.toLocaleString()}`);
+        
+        return `
+            <tr>
                 <td>
-                    <button class="action-btn" onclick="editarProducto(${p.id})"><i class="fas fa-edit"></i></button>
-                    <button class="action-btn" onclick="verVariantes(${p.id})"><i class="fas fa-eye"></i></button>
-                    <button class="action-btn delete-btn" onclick="eliminarProducto(${p.id})"><i class="fas fa-trash"></i></button>
+                    ${p.imagen_url ? 
+                        `<img src="${p.imagen_url}" style="width:50px;height:50px;object-fit:cover;border-radius:10px;">` : 
+                        `<div style="width:50px;height:50px;background:#ffe4e9;border-radius:10px;display:flex;align-items:center;justify-content:center;">${getEmojiCategoria(p.categoria)}</div>`
+                    }
                 </td>
-            </tr>`;
-        }).join('');
-    } catch(e) { console.error(e); }
+                <td>${p.codigo || '-'}</td>
+                <td><strong>${p.nombre}</strong></td>
+                <td><span style="background:#ffe4e9;padding:0.2rem 0.8rem;border-radius:50px;">${p.categoria || '-'}</span></td>
+                <td>${variantes.length} tallas</td>
+                <td>${totalStock}</td>
+                <td>${precioTexto}</td>
+                <td>
+                    <button class="action-btn" onclick="editarProducto(${p.id})">✏️</button>
+                    <button class="action-btn" onclick="verVariantes(${p.id})">📋</button>
+                    <button class="action-btn delete-btn" onclick="eliminarProducto(${p.id})">🗑️</button>
+                </td>
+             </tr>
+        `;
+    }).join('');
+    
+    // Aplicar filtros después de mostrar
+    setTimeout(() => aplicarFiltrosProductos(), 100);
 }
 
 async function editarProducto(id) {
     try {
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/productos_base?id=eq.${id}`, { headers: { 'apikey': SUPABASE_KEY } });
-        if (!response.ok) throw new Error('Error al cargar producto');
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/productos_base?id=eq.${id}`, {
+            headers: { 'apikey': SUPABASE_KEY }
+        });
         const productos = await response.json();
-        if (productos.length === 0) throw new Error('Producto no encontrado');
         const producto = productos[0];
-        const varResponse = await fetch(`${SUPABASE_URL}/rest/v1/variantes_producto?producto_id=eq.${id}`, { headers: { 'apikey': SUPABASE_KEY } });
+        
+        const varResponse = await fetch(`${SUPABASE_URL}/rest/v1/variantes_producto?producto_id=eq.${id}`, {
+            headers: { 'apikey': SUPABASE_KEY }
+        });
         const variantes = await varResponse.json();
+        
         mostrarFormulario('producto');
         document.getElementById('form-producto').dataset.editId = id;
+        
         document.getElementById('producto-codigo').value = producto.codigo || '';
         document.getElementById('producto-nombre').value = producto.nombre || '';
         document.getElementById('producto-categoria').value = producto.categoria || '';
         document.getElementById('producto-imagen').value = producto.imagen_url || '';
+        
         if (variantes.length > 0 && variantes[0].precio_compra) {
             document.getElementById('producto-precio-compra').value = variantes[0].precio_compra;
         }
+        
         const container = document.getElementById('variantes-container');
         if (container) {
             container.innerHTML = '';
             varianteCount = 0;
+            
             if (variantes.length === 0) {
                 agregarVariante();
             } else {
                 variantes.forEach(v => {
-                    const vid = varianteCount;
+                    const varianteId = varianteCount;
                     const varianteHTML = `
-                        <div class="variante-card" id="variante-${vid}" style="background:#f9f9f9; border-radius:12px; padding:1rem; margin-bottom:1rem;">
-                            <div style="display:flex; gap:0.8rem; flex-wrap:wrap; margin-bottom:0.8rem;">
-                                <input type="text" id="variante-${vid}-talla" value="${v.talla}" style="padding:0.5rem; border:1px solid #ddd; border-radius:8px; width:100px;">
-                                <input type="number" id="variante-${vid}-precio" value="${v.precio_venta}" style="padding:0.5rem; border:1px solid #ddd; border-radius:8px; width:120px;">
-                                <button type="button" onclick="eliminarVariante(${vid})" style="background:#f0f0f0; border:none; padding:0.5rem 1rem; border-radius:8px;">🗑️ Eliminar</button>
+                        <div class="variante-card" id="variante-${varianteId}">
+                            <div class="variante-header">
+                                <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+                                    <div>
+                                        <label>📏 Talla:</label>
+                                        <input type="text" id="variante-${varianteId}-talla" value="${v.talla}" required>
+                                    </div>
+                                    <div>
+                                        <label>💰 Precio de venta:</label>
+                                        <input type="number" id="variante-${varianteId}-precio" value="${v.precio_venta}" required style="width: 120px;">
+                                    </div>
+                                </div>
+                                <button type="button" onclick="eliminarVariante(${varianteId})" class="btn-eliminar-talla">✖️ Eliminar talla</button>
                             </div>
-                            <div id="colores-${vid}-container"></div>
-                            <div style="margin-top:0.5rem;">
-                                <button type="button" onclick="agregarColorAVariante(${vid})" style="background:#e0e0e0; border:none; padding:0.3rem 0.8rem; border-radius:20px;">+ Color</button>
-                                <button type="button" onclick="agregarSinColor(${vid})" style="background:#e0e0e0; border:none; padding:0.3rem 0.8rem; border-radius:20px;">⚪ Sin color</button>
+                            <div style="margin-top: 1rem;">
+                                <label>🎨 Colores y stock:</label>
+                                <div id="colores-${varianteId}-container" class="colores-container"></div>
+                                <div>
+                                    <button type="button" onclick="agregarColorAVariante(${varianteId})" class="btn-agregar-color">➕ Agregar color</button>
+                                    <button type="button" onclick="agregarSinColor(${varianteId})" class="btn-sin-color">⚪ Sin color</button>
+                                </div>
                             </div>
                         </div>
                     `;
                     container.insertAdjacentHTML('beforeend', varianteHTML);
-                    const coloresContainer = document.getElementById(`colores-${vid}-container`);
+                    
+                    const coloresContainer = document.getElementById(`colores-${varianteId}-container`);
                     const colores = v.colores || [];
-                    if (colores.length > 0) {
-                        colores.forEach(color => {
-                            const cid = `${vid}-${Date.now()}-${Math.random()}`;
-                            let colorHTML = '';
-                            if (color.nombre === null && color.codigo === null) {
-                                colorHTML = `
-                                    <div class="color-row sin-color-item" id="color-${cid}" style="display:flex; gap:0.5rem; align-items:center; margin-top:0.5rem; background:#f5f5f5; padding:0.3rem; border-radius:8px;">
-                                        <span>⚪</span>
-                                        <span style="flex:1;">Sin color específico</span>
-                                        <input type="number" id="color-stock-${cid}" value="${color.stock}" placeholder="Stock" style="width:70px; padding:0.3rem; border:1px solid #ddd; border-radius:6px;">
-                                        <button type="button" onclick="eliminarColor('${cid}')" style="background:none; border:none;">🗑️</button>
+                    
+                    colores.forEach(color => {
+                        const colorId = `${varianteId}-${Date.now()}-${Math.random()}`;
+                        let colorHTML = '';
+                        
+                        if (color.nombre === null && color.codigo === null) {
+                            colorHTML = `
+                                <div class="color-row sin-color-item" id="color-${colorId}">
+                                    <span>⚪</span>
+                                    <span style="flex:1;">Sin color específico</span>
+                                    <input type="number" id="color-stock-${colorId}" value="${color.stock}" class="color-stock-input" style="width:80px;">
+                                    <button type="button" onclick="eliminarColor('${colorId}')">🗑️</button>
+                                </div>
+                            `;
+                        } else {
+                            colorHTML = `
+                                <div class="color-row" id="color-${colorId}">
+                                    <div style="display:flex; gap:0.5rem; flex-wrap:wrap; width:100%;">
+                                        <input type="color" id="color-hex-${colorId}" value="${color.codigo || '#ff0000'}" style="width:50px;">
+                                        <input type="text" id="color-hex-text-${colorId}" value="${color.codigo || '#ff0000'}">
+                                        <input type="text" id="color-nombre-${colorId}" value="${color.nombre || ''}">
+                                        <input type="number" id="color-stock-${colorId}" value="${color.stock}" style="width:80px;">
+                                        <button type="button" onclick="eliminarColor('${colorId}')">🗑️</button>
                                     </div>
-                                `;
-                            } else {
-                                colorHTML = `
-                                    <div class="color-row" id="color-${cid}" style="display:flex; gap:0.5rem; align-items:center; margin-top:0.5rem; flex-wrap:wrap;">
-                                        <input type="color" id="color-hex-${cid}" value="${color.codigo || '#ff0000'}" style="width:35px; height:35px; border-radius:8px;">
-                                        <input type="text" id="color-hex-text-${cid}" value="${color.codigo || '#ff0000'}" placeholder="Hex" style="width:80px; padding:0.3rem; border:1px solid #ddd; border-radius:6px;">
-                                        <input type="text" id="color-nombre-${cid}" value="${color.nombre || ''}" placeholder="Nombre" style="flex:1; min-width:100px; padding:0.3rem; border:1px solid #ddd; border-radius:6px;">
-                                        <input type="number" id="color-stock-${cid}" value="${color.stock}" placeholder="Stock" style="width:70px; padding:0.3rem; border:1px solid #ddd; border-radius:6px;">
-                                        <button type="button" onclick="eliminarColor('${cid}')" style="background:none; border:none;">🗑️</button>
-                                    </div>
-                                `;
-                            }
-                            coloresContainer.insertAdjacentHTML('beforeend', colorHTML);
-                            if (color.nombre !== null) {
-                                const picker = document.getElementById(`color-hex-${cid}`);
-                                const text = document.getElementById(`color-hex-text-${cid}`);
-                                if (picker && text) {
-                                    picker.addEventListener('input', () => text.value = picker.value);
-                                    text.addEventListener('input', () => { let v = text.value; if (!v.startsWith('#')) v = '#'+v; if (/^#[0-9A-Fa-f]{6}$/i.test(v)) picker.value = v; });
-                                }
-                            }
-                        });
-                    } else {
-                        agregarColorAVariante(vid);
-                    }
+                                </div>
+                            `;
+                        }
+                        coloresContainer.insertAdjacentHTML('beforeend', colorHTML);
+                    });
+                    
+                    if (colores.length === 0) agregarColorAVariante(varianteId);
                     varianteCount++;
                 });
             }
         }
+        
         const submitBtn = document.querySelector('#form-producto .submit-btn');
-        if (submitBtn) submitBtn.textContent = 'Actualizar Producto';
+        if (submitBtn) submitBtn.textContent = '🌸 Actualizar Producto';
+        
     } catch (error) {
         console.error('Error:', error);
         mostrarAlerta('Error al cargar el producto', 'error');
@@ -449,637 +724,49 @@ async function editarProducto(id) {
 
 async function verVariantes(id) {
     try {
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/vista_productos_completa?id=eq.${id}`, { headers: { 'apikey': SUPABASE_KEY } });
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/vista_productos_completa?id=eq.${id}`, {
+            headers: { 'apikey': SUPABASE_KEY }
+        });
         const data = await response.json();
         if (data.length === 0) return;
+        
         const producto = data[0];
         const variantes = producto.variantes || [];
-        let mensaje = `📋 VARIANTES DE: ${producto.nombre}\n═══════════════════════\nCódigo: ${producto.codigo}\nCategoría: ${producto.categoria}\nStock total: ${producto.stock_total}\n\n`;
+        
+        let mensaje = `📋 VARIANTES DE: ${producto.nombre}\n`;
+        mensaje += `═══════════════════════\n`;
+        mensaje += `Código: ${producto.codigo}\n`;
+        mensaje += `Categoría: ${producto.categoria}\n\n`;
+        
         variantes.forEach(v => {
-            mensaje += `📏 TALLA: ${v.talla}\n💰 Precio venta: $${v.precio_venta}\n💰 Precio compra: $${v.precio_compra || 0}\n`;
+            mensaje += `📏 TALLA: ${v.talla}\n`;
+            mensaje += `💰 Precio venta: $${v.precio_venta.toLocaleString()}\n`;
+            mensaje += `💰 Precio compra: $${(v.precio_compra || 0).toLocaleString()}\n`;
+            
             const colores = v.colores || [];
             if (colores.length > 0) {
                 mensaje += `🎨 Colores:\n`;
-                colores.forEach(c => { mensaje += `   • ${c.nombre || 'Sin color'} (${c.codigo || ''}) - Stock: ${c.stock}\n`; });
-            } else { mensaje += `   • Sin color específico\n`; }
+                colores.forEach(c => {
+                    mensaje += `   • ${c.nombre || 'Sin color'} - Stock: ${c.stock}\n`;
+                });
+            }
             mensaje += `\n`;
         });
+        
         alert(mensaje);
-    } catch (error) { mostrarAlerta('Error al cargar variantes', 'error'); }
+        
+    } catch (error) {
+        console.error('Error:', error);
+        mostrarAlerta('Error al cargar variantes', 'error');
+    }
 }
 
 async function eliminarProducto(id) {
-    if (!confirm('¿Eliminar este producto?')) return;
-    try {
-        const token = JSON.parse(localStorage.getItem('admin_token'));
-        await fetch(`${SUPABASE_URL}/rest/v1/productos_base?id=eq.${id}`, {
-            method: 'DELETE',
-            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}` }
-        });
-        mostrarAlerta('<i class="fas fa-check-circle"></i> Producto eliminado', 'success');
-        await cargarProductos();
-    } catch(e) { mostrarAlerta('Error al eliminar', 'error'); }
-}
-
-// ===== PROVEEDORES =====
-async function cargarProveedores() {
-    try {
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/proveedores?order=nombre`, { headers: { 'apikey': SUPABASE_KEY } });
-        const proveedores = await res.json();
-        const tbody = document.querySelector('#tabla-proveedores tbody');
-        if (!tbody) return;
-        if (!proveedores.length) { tbody.innerHTML = '<td><td colspan="5">No hay proveedores<\/td></tr>'; return; }
-        if (document.getElementById('stats-proveedores')) document.getElementById('stats-proveedores').textContent = proveedores.length;
-        tbody.innerHTML = proveedores.map(p => `<tr>
-            <td><strong>${p.nombre}</strong></td>
-            <td>${p.contacto || '-'}</td>
-            <td>${p.telefono || '-'}</td>
-            <td>${p.email || '-'}</td>
-            <td>
-                <button class="action-btn" onclick="editarProveedor(${p.id})"><i class="fas fa-edit"></i></button>
-                <button class="action-btn delete-btn" onclick="eliminarProveedor(${p.id})"><i class="fas fa-trash"></i></button>
-            </td>
-        </tr>`).join('');
-    } catch(e) { console.error(e); }
-}
-
-async function cargarProveedoresSelect(origen) {
-    try {
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/proveedores?select=id,nombre&order=nombre`, { headers: { 'apikey': SUPABASE_KEY } });
-        const prov = await res.json();
-        const select = document.getElementById(`${origen}-proveedor`);
-        if (select) select.innerHTML = '<option value="">Seleccionar</option>' + prov.map(p => `<option value="${p.id}">${p.nombre}</option>`).join('');
-    } catch(e) { console.error(e); }
-}
-
-async function guardarProveedor() {
-    const proveedor = {
-        nombre: document.getElementById('proveedor-nombre')?.value,
-        contacto: document.getElementById('proveedor-contacto')?.value || null,
-        telefono: document.getElementById('proveedor-telefono')?.value || null,
-        email: document.getElementById('proveedor-email')?.value || null,
-        direccion: document.getElementById('proveedor-direccion')?.value || null
-    };
-    if (!proveedor.nombre) { mostrarAlerta('El nombre es obligatorio', 'error'); return; }
-    try {
-        const token = JSON.parse(localStorage.getItem('admin_token'));
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/proveedores`, {
-            method: 'POST',
-            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify(proveedor)
-        });
-        if (response.ok) {
-            mostrarAlerta('Proveedor guardado', 'success');
-            cerrarFormulario('proveedor');
-            await cargarProveedores();
-            document.getElementById('proveedor-nombre').value = '';
-            document.getElementById('proveedor-contacto').value = '';
-            document.getElementById('proveedor-telefono').value = '';
-            document.getElementById('proveedor-email').value = '';
-            document.getElementById('proveedor-direccion').value = '';
-        } else { mostrarAlerta('Error al guardar', 'error'); }
-    } catch(e) { mostrarAlerta('Error de conexión', 'error'); }
-}
-
-async function editarProveedor(id) {
-    try {
-        console.log('Editando proveedor:', id);
-        
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/proveedores?id=eq.${id}`, {
-            headers: { 'apikey': SUPABASE_KEY }
-        });
-        
-        if (!response.ok) throw new Error('Error al cargar proveedor');
-        
-        const proveedores = await response.json();
-        if (proveedores.length === 0) throw new Error('Proveedor no encontrado');
-        
-        const proveedor = proveedores[0];
-        
-        // Mostrar formulario
-        mostrarFormulario('proveedor');
-        
-        // Llenar campos
-        document.getElementById('proveedor-nombre').value = proveedor.nombre || '';
-        document.getElementById('proveedor-contacto').value = proveedor.contacto || '';
-        document.getElementById('proveedor-telefono').value = proveedor.telefono || '';
-        document.getElementById('proveedor-email').value = proveedor.email || '';
-        document.getElementById('proveedor-direccion').value = proveedor.direccion || '';
-        
-        // Guardar ID para actualizar
-        document.getElementById('form-proveedor').dataset.editId = id;
-        
-        // Cambiar texto del botón
-        const submitBtn = document.querySelector('#form-proveedor .submit-btn');
-        if (submitBtn) {
-            submitBtn.textContent = '🌸 Actualizar Proveedor';
-        }
-        
-    } catch (error) {
-        console.error('Error:', error);
-        mostrarAlerta('Error al cargar el proveedor', 'error');
-    }
-}
-function eliminarProveedor(id) { if(confirm('¿Eliminar proveedor?')) mostrarAlerta('Proveedor eliminado', 'success'); }
-
-// ===== COMPRAS =====
-async function cargarCompras() {
-    try {
-        let url = `${SUPABASE_URL}/rest/v1/compras?select=*,proveedores(nombre)&order=fecha.desc`;
-        if (fechaInicioCompras) url += `&fecha=gte.${fechaInicioCompras.toISOString().split('T')[0]}`;
-        if (fechaFinCompras) url += `&fecha=lte.${fechaFinCompras.toISOString().split('T')[0]}`;
-        const res = await fetch(url, { headers: { 'apikey': SUPABASE_KEY } });
-        const compras = await res.json();
-        const tbody = document.querySelector('#tabla-compras tbody');
-        if (!tbody) return;
-        if (!compras.length) { tbody.innerHTML = '<tr><td colspan="6">No hay compras<\/td></tr>'; return; }
-        const fechaInicioMes = new Date(); fechaInicioMes.setDate(1); fechaInicioMes.setHours(0,0,0,0);
-        const comprasMes = compras.filter(c => new Date(c.fecha + 'T12:00:00') >= fechaInicioMes);
-        const totalMes = comprasMes.reduce((sum, c) => sum + (c.total || 0), 0);
-        if (document.getElementById('stats-compras-mes')) document.getElementById('stats-compras-mes').textContent = `$${totalMes.toLocaleString()}`;
-        if (document.getElementById('stats-compras-pendientes')) document.getElementById('stats-compras-pendientes').textContent = compras.filter(c => c.estado === 'Pendiente').length;
-        tbody.innerHTML = compras.map(c => `<tr>
-            <td>${new Date(c.fecha + 'T12:00:00').toLocaleDateString('es-CO')}</td>
-            <td>${c.proveedores?.nombre || 'N/A'}</td>
-            <td>${c.producto}</td>
-            <td>$${(c.total || 0).toLocaleString()}</td>
-            <td><span class="badge ${c.estado === 'Pagada' ? 'badge-pagada' : c.estado === 'Recibida' ? 'badge-recibida' : 'badge-pendiente'}">${c.estado || 'Pendiente'}</span></td>
-            <td>
-                <button class="action-btn" onclick="editarCompra(${c.id})"><i class="fas fa-edit"></i></button>
-                <button class="action-btn delete-btn" onclick="eliminarCompra(${c.id})"><i class="fas fa-trash"></i></button>
-            </td>
-        </table>`).join('');
-    } catch(e) { console.error(e); }
-}
-
-async function guardarCompra() {
-    try {
-        const token = JSON.parse(localStorage.getItem('admin_token'));
-        const proveedorId = document.getElementById('compra-proveedor')?.value;
-        if (!proveedorId) { mostrarAlerta('Seleccione un proveedor', 'error'); return; }
-        const cantidad = parseInt(document.getElementById('compra-cantidad')?.value);
-        const precio = parseFloat(document.getElementById('compra-precio')?.value);
-        if (!cantidad || cantidad <= 0) { mostrarAlerta('Cantidad inválida', 'error'); return; }
-        if (!precio || precio <= 0) { mostrarAlerta('Precio inválido', 'error'); return; }
-        const compra = {
-            proveedor_id: parseInt(proveedorId),
-            fecha: document.getElementById('compra-fecha')?.value,
-            producto: document.getElementById('compra-producto')?.value,
-            cantidad: cantidad,
-            precio_unitario: precio,
-            total: cantidad * precio,
-            estado: document.getElementById('compra-estado')?.value || 'Pendiente',
-            puc: '620501'
-        };
-        const editId = document.getElementById('form-compra')?.dataset.editId;
-        let url = `${SUPABASE_URL}/rest/v1/compras`;
-        let method = 'POST';
-        if (editId) { url += `?id=eq.${editId}`; method = 'PATCH'; }
-        const response = await fetch(url, {
-            method: method,
-            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify(compra)
-        });
-        if (response.ok) {
-            mostrarAlerta(editId ? 'Compra actualizada' : 'Compra guardada', 'success');
-            cerrarFormulario('compra');
-            await cargarCompras();
-            document.getElementById('compra-proveedor').value = '';
-            document.getElementById('compra-fecha').value = '';
-            document.getElementById('compra-producto').value = '';
-            document.getElementById('compra-cantidad').value = '';
-            document.getElementById('compra-precio').value = '';
-            delete document.getElementById('form-compra')?.dataset.editId;
-        } else { mostrarAlerta('Error al guardar', 'error'); }
-    } catch(e) { mostrarAlerta('Error de conexión', 'error'); }
-}
-
-async function editarCompra(id) {
-    try {
-        console.log('Editando compra:', id);
-        
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/compras?id=eq.${id}`, {
-            headers: { 'apikey': SUPABASE_KEY }
-        });
-        
-        if (!response.ok) throw new Error('Error al cargar compra');
-        
-        const compras = await response.json();
-        if (compras.length === 0) throw new Error('Compra no encontrada');
-        
-        const compra = compras[0];
-        
-        // Mostrar formulario
-        mostrarFormulario('compra');
-        
-        // Cargar proveedores en el select
-        await cargarProveedoresSelect('compra');
-        
-        // Pequeña pausa para asegurar que el select se cargó
-        await new Promise(resolve => setTimeout(resolve, 100));
-        
-        // Llenar campos
-        document.getElementById('compra-proveedor').value = compra.proveedor_id || '';
-        document.getElementById('compra-fecha').value = compra.fecha.split('T')[0];
-        document.getElementById('compra-producto').value = compra.producto || '';
-        document.getElementById('compra-cantidad').value = compra.cantidad || '';
-        document.getElementById('compra-precio').value = compra.precio_unitario || '';
-        document.getElementById('compra-estado').value = compra.estado || 'Pendiente';
-        
-        // Guardar ID para actualizar
-        document.getElementById('form-compra').dataset.editId = id;
-        
-        // Cambiar texto del botón
-        const submitBtn = document.querySelector('#form-compra .submit-btn');
-        if (submitBtn) {
-            submitBtn.textContent = '🌸 Actualizar Compra';
-        }
-        
-    } catch (error) {
-        console.error('Error:', error);
-        mostrarAlerta('Error al cargar la compra', 'error');
-    }
-}
-
-function eliminarCompra(id) { if(confirm('¿Eliminar compra?')) mostrarAlerta('Compra eliminada', 'success'); }
-
-// ===== GASTOS =====
-async function cargarGastos() {
-    try {
-        let url = `${SUPABASE_URL}/rest/v1/gastos?order=fecha.desc`;
-        if (fechaInicioGastos) url += `&fecha=gte.${fechaInicioGastos.toISOString().split('T')[0]}`;
-        if (fechaFinGastos) url += `&fecha=lte.${fechaFinGastos.toISOString().split('T')[0]}`;
-        const res = await fetch(url, { headers: { 'apikey': SUPABASE_KEY } });
-        const gastos = await res.json();
-        const tbody = document.querySelector('#tabla-gastos tbody');
-        if (!tbody) return;
-        if (!gastos.length) { tbody.innerHTML = '<td><td colspan="5">No hay gastos<\/td></tr>'; return; }
-        const fechaInicioMes = new Date(); fechaInicioMes.setDate(1); fechaInicioMes.setHours(0,0,0,0);
-        const gastosMes = gastos.filter(g => new Date(g.fecha) >= fechaInicioMes);
-        const totalMes = gastosMes.reduce((sum, g) => sum + (g.monto || 0), 0);
-        if (document.getElementById('stats-gastos-mes')) document.getElementById('stats-gastos-mes').textContent = `$${totalMes.toLocaleString()}`;
-        tbody.innerHTML = gastos.map(g => `<tr>
-            <td>${new Date(g.fecha).toLocaleDateString('es-CO')}</td>
-            <td>${g.concepto}</td>
-            <td>${g.categoria}</td>
-            <td>$${(g.monto || 0).toLocaleString()}</td>
-            <td><button class="action-btn" onclick="editarGasto(${g.id})"><i class="fas fa-edit"></i></button>
-                <button class="action-btn delete-btn" onclick="eliminarGasto(${g.id})"><i class="fas fa-trash"></i></button>
-            </td>
-        </tr>`).join('');
-    } catch(e) { console.error(e); }
-}
-
-async function guardarGasto() {
-    try {
-        const token = JSON.parse(localStorage.getItem('admin_token'));
-        const gasto = {
-            fecha: document.getElementById('gasto-fecha')?.value,
-            concepto: document.getElementById('gasto-concepto')?.value,
-            categoria: document.getElementById('gasto-categoria')?.value,
-            monto: parseFloat(document.getElementById('gasto-monto')?.value),
-            metodo_pago: document.getElementById('gasto-metodo')?.value || 'Efectivo'
-        };
-        if (!gasto.fecha || !gasto.concepto || !gasto.categoria || !gasto.monto) {
-            mostrarAlerta('Complete todos los campos', 'error'); return;
-        }
-        const editId = document.getElementById('form-gasto')?.dataset.editId;
-        let url = `${SUPABASE_URL}/rest/v1/gastos`;
-        let method = 'POST';
-        if (editId) { url += `?id=eq.${editId}`; method = 'PATCH'; }
-        const response = await fetch(url, {
-            method: method,
-            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify(gasto)
-        });
-        if (response.ok) {
-            mostrarAlerta(editId ? 'Gasto actualizado' : 'Gasto guardado', 'success');
-            cerrarFormulario('gasto');
-            await cargarGastos();
-            document.getElementById('gasto-fecha').value = '';
-            document.getElementById('gasto-concepto').value = '';
-            document.getElementById('gasto-categoria').value = '';
-            document.getElementById('gasto-monto').value = '';
-            delete document.getElementById('form-gasto')?.dataset.editId;
-        } else { mostrarAlerta('Error al guardar', 'error'); }
-    } catch(e) { mostrarAlerta('Error de conexión', 'error'); }
-}
-
-async function editarGasto(id) {
-    try {
-        console.log('Editando gasto:', id);
-        
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/gastos?id=eq.${id}`, {
-            headers: { 'apikey': SUPABASE_KEY }
-        });
-        
-        if (!response.ok) throw new Error('Error al cargar gasto');
-        
-        const gastos = await response.json();
-        if (gastos.length === 0) throw new Error('Gasto no encontrado');
-        
-        const gasto = gastos[0];
-        
-        // Mostrar formulario
-        mostrarFormulario('gasto');
-        
-        // Llenar campos
-        document.getElementById('gasto-fecha').value = gasto.fecha.split('T')[0];
-        document.getElementById('gasto-concepto').value = gasto.concepto || '';
-        document.getElementById('gasto-categoria').value = gasto.categoria || '';
-        document.getElementById('gasto-monto').value = gasto.monto || '';
-        document.getElementById('gasto-metodo').value = gasto.metodo_pago || 'Efectivo';
-        
-        // Guardar ID para actualizar
-        document.getElementById('form-gasto').dataset.editId = id;
-        
-        // Cambiar texto del botón
-        const submitBtn = document.querySelector('#form-gasto .submit-btn');
-        if (submitBtn) {
-            submitBtn.textContent = '🌸 Actualizar Gasto';
-        }
-        
-    } catch (error) {
-        console.error('Error:', error);
-        mostrarAlerta('Error al cargar el gasto', 'error');
-    }
-}
-function eliminarGasto(id) { if(confirm('¿Eliminar gasto?')) mostrarAlerta('Gasto eliminado', 'success'); }
-
-// ===== PERFILES =====
-async function cargarPerfiles() {
-    try {
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/perfiles?order=created_at.desc`, {
-            headers: { 'apikey': SUPABASE_KEY }
-        });
-        const perfiles = await response.json();
-        
-        const tbody = document.querySelector('#tabla-perfiles tbody');
-        
-        if (perfiles.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">No hay usuarios registrados</td></tr>';
-            return;
-        }
-        
-        document.getElementById('stats-empleados').textContent = perfiles.length;
-        
-        // Mapeo de roles a nombres legibles
-        const rolNombres = {
-            'admin_total': '👑 Dueña',
-            'admin_productos': '<i class="fas fa-box"></i> Inventario',
-            'admin_ventas': '🛍️ Vendedor',
-            'admin_contabilidad': '💰 Contabilidad',
-            'admin_caja': '💵 Cajero'
-        };
-        
-        tbody.innerHTML = perfiles.map(p => {
-            const rolUsuario = p.rol_usuario || p.rol || 'admin_productos';
-            const rolNombre = rolNombres[rolUsuario] || '<i class="fas fa-box"></i> Inventario';
-            
-            return `
-                <tr>
-                    <td><strong>${p.nombre || 'Sin nombre'}</strong></td>
-                    <td>${p.email}</td>
-                    <td>
-                        <span style="background: ${p.rol_usuario === 'admin_total' ? '#ff6b6b' : '#b87c4e'}; 
-                                     color: white; padding: 0.2rem 0.8rem; border-radius: 50px; font-size: 0.75rem;">
-                            ${rolNombre}
-                        </span>
-                    </td>
-                    <td>${new Date(p.created_at).toLocaleDateString()}</td>
-                    <td>
-                        <button class="action-btn" onclick="editarPerfil('${p.id}')" title="Editar">✏️</button>
-                        ${p.id !== currentUser?.id ? 
-                            `<button class="action-btn delete-btn" onclick="eliminarPerfil('${p.id}')" title="Eliminar">🗑️</button>` 
-                            : '<span style="color:#ccc;">(tú)</span>'}
-                    </td>
-                </tr>
-            `;
-        }).join('');
-        
-    } catch (error) {
-        console.error('Error cargando perfiles:', error);
-    }
-}
-
-async function guardarPerfil() {
-    try {
-        const token = JSON.parse(localStorage.getItem('admin_token'));
-        const nombre = document.getElementById('perfil-nombre')?.value;
-        const email = document.getElementById('perfil-email')?.value;
-        const password = document.getElementById('perfil-password')?.value;
-        const rol = document.getElementById('perfil-rol')?.value || 'empleado';
-        if (!nombre || !email) { mostrarAlerta('Nombre y email obligatorios', 'error'); return; }
-        const editId = document.getElementById('form-perfil')?.dataset.editId;
-        if (editId) {
-            const response = await fetch(`${SUPABASE_URL}/rest/v1/perfiles?id=eq.${editId}`, {
-                method: 'PATCH',
-                headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}`, 'Content-Type': 'application/json' },
-                body: JSON.stringify({ nombre, email, rol })
-            });
-            if (response.ok) {
-                mostrarAlerta('Usuario actualizado', 'success');
-                cerrarFormulario('perfil');
-                await cargarPerfiles();
-            } else { mostrarAlerta('Error al actualizar', 'error'); }
-        } else {
-            if (!password || password.length < 6) { mostrarAlerta('Contraseña mínimo 6 caracteres', 'error'); return; }
-            const authResponse = await fetch(`${SUPABASE_URL}/auth/v1/signup`, {
-                method: 'POST',
-                headers: { 'apikey': SUPABASE_KEY, 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password })
-            });
-            const authData = await authResponse.json();
-            if (!authResponse.ok) throw new Error(authData.msg || 'Error al crear usuario');
-            const perfilResponse = await fetch(`${SUPABASE_URL}/rest/v1/perfiles`, {
-                method: 'POST',
-                headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}`, 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id: authData.user.id, nombre, email, rol })
-            });
-            if (perfilResponse.ok) {
-                mostrarAlerta('Usuario creado', 'success');
-                cerrarFormulario('perfil');
-                await cargarPerfiles();
-            } else { throw new Error('Error al crear perfil'); }
-        }
-        document.getElementById('perfil-nombre').value = '';
-        document.getElementById('perfil-email').value = '';
-        document.getElementById('perfil-password').value = '';
-        delete document.getElementById('form-perfil')?.dataset.editId;
-    } catch(e) { mostrarAlerta('Error: ' + e.message, 'error'); }
-}
-
-async function editarPerfil(id) {
-    try {
-        console.log('Editando perfil:', id);
-        
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/perfiles?id=eq.${id}`, {
-            headers: { 'apikey': SUPABASE_KEY }
-        });
-        
-        if (!response.ok) throw new Error('Error al cargar perfil');
-        
-        const perfiles = await response.json();
-        if (perfiles.length === 0) throw new Error('Perfil no encontrado');
-        
-        const perfil = perfiles[0];
-        
-        // Mostrar formulario
-        mostrarFormulario('perfil');
-        
-        // Llenar campos
-        document.getElementById('perfil-nombre').value = perfil.nombre || '';
-        document.getElementById('perfil-email').value = perfil.email || '';
-        document.getElementById('perfil-rol').value = perfil.rol_usuario || perfil.rol || 'empleado';
-        
-        // Guardar ID para actualizar
-        document.getElementById('form-perfil').dataset.editId = id;
-        
-        // Ocultar campo de contraseña (no se puede editar directamente)
-        const passwordField = document.getElementById('perfil-password');
-        if (passwordField) {
-            passwordField.placeholder = 'Dejar vacío para mantener la misma';
-            passwordField.required = false;
-        }
-        
-        // Cambiar texto del botón
-        const submitBtn = document.querySelector('#form-perfil .submit-btn');
-        if (submitBtn) {
-            submitBtn.textContent = '🌸 Actualizar Usuario';
-        }
-        
-    } catch (error) {
-        console.error('Error:', error);
-        mostrarAlerta('Error al cargar el usuario', 'error');
-    }
-}
-
-// También actualiza guardarPerfil para manejar edición
-async function guardarPerfil() {
-    try {
-        const token = JSON.parse(localStorage.getItem('admin_token'));
-        
-        const nombre = document.getElementById('perfil-nombre').value;
-        const email = document.getElementById('perfil-email').value;
-        const password = document.getElementById('perfil-password').value;
-        const rol = document.getElementById('perfil-rol').value;
-        
-        if (!nombre || !email) {
-            mostrarAlerta('Nombre y email son obligatorios', 'error');
-            return;
-        }
-        
-        const editId = document.getElementById('form-perfil').dataset.editId;
-        
-        if (editId) {
-            // ACTUALIZAR perfil existente
-            const perfilData = {
-                nombre: nombre,
-                email: email,
-                rol_usuario: rol
-            };
-            
-            const response = await fetch(`${SUPABASE_URL}/rest/v1/perfiles?id=eq.${editId}`, {
-                method: 'PATCH',
-                headers: {
-                    'apikey': SUPABASE_KEY,
-                    'Authorization': `Bearer ${token.access_token}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(perfilData)
-            });
-            
-            if (response.ok) {
-                mostrarAlerta('🌸 Usuario actualizado correctamente', 'success');
-                cerrarFormulario('perfil');
-                await cargarPerfiles();
-            } else {
-                const error = await response.json();
-                mostrarAlerta('Error: ' + (error.message || 'No se pudo actualizar'), 'error');
-            }
-            
-        } else {
-            // CREAR nuevo usuario
-            if (!password || password.length < 6) {
-                mostrarAlerta('La contraseña debe tener al menos 6 caracteres', 'error');
-                return;
-            }
-            
-            // Crear usuario en Auth
-            const authResponse = await fetch(`${SUPABASE_URL}/auth/v1/signup`, {
-                method: 'POST',
-                headers: {
-                    'apikey': SUPABASE_KEY,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ email, password })
-            });
-            
-            const authData = await authResponse.json();
-            
-            if (!authResponse.ok) {
-                throw new Error(authData.msg || 'Error al crear usuario');
-            }
-            
-            // Crear perfil
-            const perfilResponse = await fetch(`${SUPABASE_URL}/rest/v1/perfiles`, {
-                method: 'POST',
-                headers: {
-                    'apikey': SUPABASE_KEY,
-                    'Authorization': `Bearer ${token.access_token}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    id: authData.user.id,
-                    nombre: nombre,
-                    email: email,
-                    rol_usuario: rol
-                })
-            });
-            
-            if (perfilResponse.ok) {
-                mostrarAlerta('🌸 Usuario creado correctamente', 'success');
-                cerrarFormulario('perfil');
-                await cargarPerfiles();
-            } else {
-                throw new Error('Error al crear perfil');
-            }
-        }
-        
-        // Limpiar formulario
-        document.getElementById('perfil-nombre').value = '';
-        document.getElementById('perfil-email').value = '';
-        document.getElementById('perfil-password').value = '';
-        
-        // Limpiar ID de edición
-        delete document.getElementById('form-perfil').dataset.editId;
-        
-        // Restaurar campo de contraseña
-        const passwordField = document.getElementById('perfil-password');
-        if (passwordField) {
-            passwordField.placeholder = 'Contraseña';
-            passwordField.required = true;
-        }
-        
-        // Restaurar texto del botón
-        const submitBtn = document.querySelector('#form-perfil .submit-btn');
-        if (submitBtn) {
-            submitBtn.textContent = '🌸 Crear Usuario';
-        }
-        
-    } catch (error) {
-        console.error('Error:', error);
-        mostrarAlerta('Error: ' + error.message, 'error');
-    }
-}
-
-async function eliminarPerfil(id) {
-    if (!confirm('¿Estás segura de eliminar este usuario?')) return;
+    if (!confirm('¿Eliminar este producto? También se eliminarán todas sus variantes.')) return;
     
     try {
         const token = JSON.parse(localStorage.getItem('admin_token'));
-        
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/perfiles?id=eq.${id}`, {
+        await fetch(`${SUPABASE_URL}/rest/v1/productos_base?id=eq.${id}`, {
             method: 'DELETE',
             headers: {
                 'apikey': SUPABASE_KEY,
@@ -1087,36 +774,83 @@ async function eliminarPerfil(id) {
             }
         });
         
-        if (response.ok) {
-            mostrarAlerta('<i class="fas fa-check-circle"></i> Usuario eliminado', 'success');
-            await cargarPerfiles();
-        } else {
-            mostrarAlerta('Error al eliminar', 'error');
-        }
+        mostrarAlerta('✅ Producto eliminado', 'success');
+        await cargarProductos();
+        
     } catch (error) {
         console.error('Error:', error);
-        mostrarAlerta('Error de conexión', 'error');
+        mostrarAlerta('Error al eliminar', 'error');
     }
 }
-function eliminarPerfil(id) { if(confirm('¿Eliminar usuario?')) mostrarAlerta('Usuario eliminado', 'success'); }
 
 // ============================================
-// FUNCIÓN PARA CARGAR CONTROL DE STOCK
+// FILTROS PARA PRODUCTOS
+// ============================================
+
+function configurarFiltrosProductos() {
+    const searchInput = document.getElementById('search-productos');
+    const categoriaSelect = document.getElementById('filter-categoria-productos');
+    const stockSelect = document.getElementById('filter-stock-productos');
+    
+    if (searchInput) searchInput.addEventListener('input', () => aplicarFiltrosProductos());
+    if (categoriaSelect) categoriaSelect.addEventListener('change', () => aplicarFiltrosProductos());
+    if (stockSelect) stockSelect.addEventListener('change', () => aplicarFiltrosProductos());
+}
+
+function aplicarFiltrosProductos() {
+    const rows = document.querySelectorAll('#tabla-productos tbody tr');
+    const searchTerm = document.getElementById('search-productos')?.value.toLowerCase() || '';
+    const categoria = document.getElementById('filter-categoria-productos')?.value || '';
+    const stockFilter = document.getElementById('filter-stock-productos')?.value || '';
+    
+    let visibleCount = 0;
+    
+    rows.forEach(row => {
+        let mostrar = true;
+        
+        const nombre = row.cells[2]?.textContent.toLowerCase() || '';
+        const codigo = row.cells[1]?.textContent.toLowerCase() || '';
+        const categoriaTexto = row.cells[3]?.textContent.toLowerCase() || '';
+        const stockTexto = row.cells[5]?.textContent || '0';
+        const stock = parseInt(stockTexto) || 0;
+        
+        if (searchTerm && !nombre.includes(searchTerm) && !codigo.includes(searchTerm)) mostrar = false;
+        if (mostrar && categoria && !categoriaTexto.includes(categoria)) mostrar = false;
+        if (mostrar && stockFilter === 'bajo' && stock >= 5) mostrar = false;
+        if (mostrar && stockFilter === 'agotado' && stock > 0) mostrar = false;
+        if (mostrar && stockFilter === 'normal' && stock < 5) mostrar = false;
+        
+        row.style.display = mostrar ? '' : 'none';
+        if (mostrar) visibleCount++;
+    });
+    
+    const filterStats = document.querySelector('#modulo-productos .filter-stats');
+    if (filterStats) filterStats.textContent = `${visibleCount} productos`;
+}
+
+function limpiarFiltrosProductos() {
+    const searchInput = document.getElementById('search-productos');
+    const categoriaSelect = document.getElementById('filter-categoria-productos');
+    const stockSelect = document.getElementById('filter-stock-productos');
+    
+    if (searchInput) searchInput.value = '';
+    if (categoriaSelect) categoriaSelect.value = '';
+    if (stockSelect) stockSelect.value = '';
+    aplicarFiltrosProductos();
+}
+
+// ============================================
+// FUNCIONES PARA STOCK
 // ============================================
 
 async function cargarStock() {
     try {
-        console.log('📊 Cargando control de stock...');
-        
         const response = await fetch(`${SUPABASE_URL}/rest/v1/vista_productos_completa`, {
             headers: { 'apikey': SUPABASE_KEY }
         });
         
-        if (!response.ok) throw new Error('Error al cargar stock');
-        
         const productos = await response.json();
         
-        // Procesar todas las variantes y colores
         let productosStockBajo = [];
         let productosAgotados = [];
         let productosNormales = 0;
@@ -1150,7 +884,6 @@ async function cargarStock() {
                         }
                     });
                 } else {
-                    // Sin colores específicos
                     const stock = variante.stock_total || 0;
                     const item = {
                         producto_id: producto.id,
@@ -1174,92 +907,63 @@ async function cargarStock() {
             });
         });
         
-        // Actualizar contadores
-        document.getElementById('stock-bajo-count').textContent = productosStockBajo.length;
-        document.getElementById('stock-agotado-count').textContent = productosAgotados.length;
-        document.getElementById('stock-normal-count').textContent = productosNormales;
+        const stockBajoCount = document.getElementById('stock-bajo-count');
+        const stockAgotadoCount = document.getElementById('stock-agotado-count');
+        const stockNormalCount = document.getElementById('stock-normal-count');
         
-        // Llenar tabla de stock bajo
+        if (stockBajoCount) stockBajoCount.textContent = productosStockBajo.length;
+        if (stockAgotadoCount) stockAgotadoCount.textContent = productosAgotados.length;
+        if (stockNormalCount) stockNormalCount.textContent = productosNormales;
+        
         const stockBajoBody = document.getElementById('stock-bajo-body');
-        if (productosStockBajo.length === 0) {
-            stockBajoBody.innerHTML = '<tr><td colspan="6" style="text-align: center;"><i class="fas fa-check-circle"></i> No hay productos con stock bajo</td></tr>';
-        } else {
-            stockBajoBody.innerHTML = productosStockBajo.map(item => `
-                <tr class="stock-bajo-row">
-                    <td><strong>${item.producto_nombre}</strong><br><small>${item.producto_codigo}</small></td>
-                    <td>${item.talla}</td>
-                    <td>
-                        <div style="display: flex; align-items: center; gap: 8px;">
-                            <div style="width: 20px; height: 20px; background: ${item.color_codigo}; border-radius: 50%; border: 1px solid #ddd;"></div>
-                            ${item.color}
-                        </div>
-                    </td>
-                    <td class="stock-critico">${item.stock} unidades</td>
-                    <td>5</td>
-                    <td>
-                        <button class="action-btn" onclick="solicitarReposicion(${item.producto_id}, '${item.producto_nombre}', '${item.talla}', '${item.color}')" title="Solicitar reposición">
-                            <i class="fas fa-box"></i> Pedir
-                        </button>
-                    </td>
-                </tr>
-            `).join('');
+        if (stockBajoBody) {
+            if (productosStockBajo.length === 0) {
+                stockBajoBody.innerHTML = '<tr><td colspan="6" style="text-align: center;">✅ No hay productos con stock bajo</td></tr>';
+            } else {
+                stockBajoBody.innerHTML = productosStockBajo.map(item => `
+                    <tr class="stock-bajo-row">
+                        <td><strong>${item.producto_nombre}</strong><br><small>${item.producto_codigo}</small></td>
+                        <td>${item.talla}</td>
+                        <td><div style="display: flex; align-items: center; gap: 8px;"><div style="width: 20px; height: 20px; background: ${item.color_codigo}; border-radius: 50%;"></div>${item.color}</div></td>
+                        <td class="stock-critico">${item.stock} unidades</td>
+                        <td>5</td>
+                        <td><button class="action-btn" onclick="solicitarReposicion(${item.producto_id}, '${item.producto_nombre}', '${item.talla}', '${item.color}')">📦 Pedir</button></td>
+                    </tr>
+                `).join('');
+            }
         }
         
-        // Llenar tabla de agotados
         const stockAgotadoBody = document.getElementById('stock-agotado-body');
-        if (productosAgotados.length === 0) {
-            stockAgotadoBody.innerHTML = '<tr><td colspan="5" style="text-align: center;">🎉 Todos los productos tienen stock disponible</td></tr>';
-        } else {
-            stockAgotadoBody.innerHTML = productosAgotados.map(item => `
-                <tr class="stock-agotado-row">
-                    <td><strong>${item.producto_nombre}</strong><br><small>${item.producto_codigo}</small></td>
-                    <td>${item.talla}</td>
-                    <td>
-                        <div style="display: flex; align-items: center; gap: 8px;">
-                            <div style="width: 20px; height: 20px; background: ${item.color_codigo}; border-radius: 50%; border: 1px solid #ddd;"></div>
-                            ${item.color}
-                        </div>
-                    </td>
-                    <td class="stock-agotado">AGOTADO</td>
-                    <td>
-                        <button class="action-btn" onclick="solicitarReposicion(${item.producto_id}, '${item.producto_nombre}', '${item.talla}', '${item.color}')" title="Solicitar reposición">
-                            <i class="fas fa-box"></i> Solicitar
-                        </button>
-                    </td>
-                </tr>
-            `).join('');
+        if (stockAgotadoBody) {
+            if (productosAgotados.length === 0) {
+                stockAgotadoBody.innerHTML = '<td><td colspan="5" style="text-align: center;">🎉 Todos los productos tienen stock disponible</td></tr>';
+            } else {
+                stockAgotadoBody.innerHTML = productosAgotados.map(item => `
+                    <tr class="stock-agotado-row">
+                        <td><strong>${item.producto_nombre}</strong><br><small>${item.producto_codigo}</small></td>
+                        <td>${item.talla}</td>
+                        <td><div style="display: flex; align-items: center; gap: 8px;"><div style="width: 20px; height: 20px; background: ${item.color_codigo}; border-radius: 50%;"></div>${item.color}</div></td>
+                        <td class="stock-agotado">AGOTADO</td>
+                        <td><button class="action-btn" onclick="solicitarReposicion(${item.producto_id}, '${item.producto_nombre}', '${item.talla}', '${item.color}')">📦 Solicitar</button></td>
+                    </tr>
+                `).join('');
+            }
         }
         
     } catch (error) {
         console.error('Error cargando stock:', error);
-        const stockBajoBody = document.getElementById('stock-bajo-body');
-        if (stockBajoBody) {
-            stockBajoBody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #ff4757;">Error al cargar datos</td></tr>';
-        }
     }
 }
 
-// Función para solicitar reposición (opcional)
 function solicitarReposicion(productoId, nombre, talla, color) {
-    const mensaje = `<i class="fas fa-box"></i> *REPOSICIÓN DE STOCK*\n\nProducto: ${nombre}\nTalla: ${talla}\nColor: ${color}\n\nPor favor, gestionar reposición.`;
-    alert(`📋 Solicitud de reposición:\n\n${mensaje}\n\n(Próximamente: notificación a proveedores)`);
-    
-    // Aquí puedes agregar lógica para:
-    // 1. Crear automáticamente una orden de compra
-    // 2. Enviar notificación por WhatsApp al proveedor
-    // 3. Agregar a una lista de pendientes
+    const mensaje = `📦 REPOSICIÓN DE STOCK\n\nProducto: ${nombre}\nTalla: ${talla}\nColor: ${color}\n\nPor favor, gestionar reposición.`;
+    alert(`📋 Solicitud de reposición:\n\n${mensaje}`);
 }
 
-// ===== VENTAS =====
 // ============================================
-// VARIABLES GLOBALES PARA VENTAS
+// FUNCIONES PARA VENTAS CON ORDENAMIENTO
 // ============================================
-let carrito = [];
-let productosDisponibles = [];
 
-// ============================================
-// CARGAR VENTAS
-// ============================================
 async function cargarVentas() {
     try {
         const response = await fetch(`${SUPABASE_URL}/rest/v1/ventas?order=fecha.desc`, {
@@ -1268,226 +972,371 @@ async function cargarVentas() {
         
         if (!response.ok) throw new Error('Error al cargar ventas');
         
-        const ventas = await response.json();
+        ventasData = await response.json();
         
         // Calcular totales
         const hoy = new Date().toISOString().split('T')[0];
-        const ventasHoy = ventas.filter(v => v.fecha.split('T')[0] === hoy);
+        const ventasHoy = ventasData.filter(v => v.fecha?.split('T')[0] === hoy);
         const totalHoy = ventasHoy.reduce((sum, v) => sum + (v.total || 0), 0);
         
         const fechaInicio = new Date();
         fechaInicio.setDate(1);
-        const ventasMes = ventas.filter(v => new Date(v.fecha) >= fechaInicio);
+        const ventasMes = ventasData.filter(v => new Date(v.fecha) >= fechaInicio);
         const totalMes = ventasMes.reduce((sum, v) => sum + (v.total || 0), 0);
         
-        const cambiosCount = ventas.filter(v => v.estado === 'cambiado' || v.estado === 'devuelto').length;
+        const cambiosCount = ventasData.filter(v => v.estado === 'cambiado' || v.estado === 'devuelto').length;
         
-        document.getElementById('ventas-hoy-total').textContent = `$${totalHoy.toLocaleString()}`;
-        document.getElementById('ventas-mes-total').textContent = `$${totalMes.toLocaleString()}`;
-        document.getElementById('ventas-cambios-count').textContent = cambiosCount;
+        const ventasHoyTotal = document.getElementById('ventas-hoy-total');
+        const ventasMesTotal = document.getElementById('ventas-mes-total');
+        const ventasCambiosCount = document.getElementById('ventas-cambios-count');
         
-        // Mostrar tabla
-        const tbody = document.getElementById('ventas-body');
-        tbody.innerHTML = ventas.map(venta => {
-            let estadoClass = '';
-            let estadoText = '';
-            
-            switch(venta.estado) {
-                case 'completada': estadoClass = 'estado-pagada'; estadoText = '<i class="fas fa-check-circle"></i> Completada'; break;
-                case 'pendiente': estadoClass = 'estado-pendiente'; estadoText = '<i class="fas fa-hourglass-half"></i> Pendiente'; break;
-                case 'cambiado': estadoClass = 'estado-badge-cambiado'; estadoText = '<i class="fas fa-exchange-alt"></i> Cambio solicitado'; break;
-                case 'devuelto': estadoClass = 'estado-badge-devuelto'; estadoText = '<i class="fas fa-box"></i> Devuelto'; break;
-                default: estadoClass = 'estado-pagada'; estadoText = '<i class="fas fa-check-circle"></i> Completada';
-            }
-            
-            return `
-                <tr>
-                    <td>#${venta.id}</td>
-                    <td>${new Date(venta.fecha).toLocaleDateString()}</td>
-                    <td>${venta.cliente || 'Consumidor final'}</td>
-                    <td>${venta.productos || '-'}</td>
-                    <td>$${(venta.total || 0).toLocaleString()}</td>
-                    <td>${venta.metodo_pago || 'Efectivo'}</td>
-                    <td><span class="estado-badge ${estadoClass}">${estadoText}</span></td>
-                    <td>
-                        <button class="action-btn" onclick="verDetalleVenta(${venta.id})" title="Ver detalle"><i class="fas fa-eye"></i></button>
-                        <button class="action-btn" onclick="editarVenta(${venta.id})" title="Editar"><i class="fas fa-edit"></i></button>
-                        <button class="action-btn" onclick="solicitarCambio(${venta.id})" title="Solicitar cambio"><i class="fas fa-exchange-alt"></i></button>
-                        <button class="action-btn delete-btn" onclick="eliminarVenta(${venta.id})" title="Eliminar"><i class="fas fa-trash-alt"></i></button>
-                    </td>
-                </tr>
-            `;
-        }).join('');
+        if (ventasHoyTotal) ventasHoyTotal.textContent = `$${totalHoy.toLocaleString()}`;
+        if (ventasMesTotal) ventasMesTotal.textContent = `$${totalMes.toLocaleString()}`;
+        if (ventasCambiosCount) ventasCambiosCount.textContent = cambiosCount;
         
-        // Configurar buscador y filtro
-        configurarFiltrosVentas(ventas);
+        // Ordenar por fecha descendente (más recientes primero)
+        ordenarVentas('fecha');
+        
+        // Configurar filtros
+        setTimeout(() => configurarFiltrosVentas(), 100);
         
     } catch (error) {
         console.error('Error:', error);
+        const tbody = document.getElementById('ventas-body');
+        if (tbody) tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: #ff4757;">Error al cargar ventas</td></tr>';
     }
 }
 
-function configurarFiltrosVentas(ventas) {
-    const buscador = document.getElementById('buscador-ventas');
-    const filtro = document.getElementById('filtro-estado-ventas');
-    
-    if (buscador) {
-        buscador.oninput = () => filtrarVentas(ventas);
-    }
-    if (filtro) {
-        filtro.onchange = () => filtrarVentas(ventas);
-    }
-}
-
-function filtrarVentas(ventasOriginales) {
-    const busqueda = document.getElementById('buscador-ventas')?.value.toLowerCase() || '';
-    const estado = document.getElementById('filtro-estado-ventas')?.value || 'todos';
-    
-    let filtradas = [...ventasOriginales];
-    
-    if (estado !== 'todos') {
-        filtradas = filtradas.filter(v => v.estado === estado);
+function ordenarVentas(columna) {
+    if (sortColumn === columna) {
+        sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+        sortColumn = columna;
+        sortDirection = 'asc';
     }
     
-    if (busqueda) {
-        filtradas = filtradas.filter(v => 
-            v.id.toString().includes(busqueda) ||
-            (v.cliente && v.cliente.toLowerCase().includes(busqueda)) ||
-            (v.productos && v.productos.toLowerCase().includes(busqueda))
-        );
-    }
+    const ventasOrdenadas = [...ventasData];
     
-    const tbody = document.getElementById('ventas-body');
-    // Actualizar tabla con ventas filtradas...
-}
-
-// ============================================
-// NUEVA VENTA
-// ============================================
-async function cargarProductosParaVenta() {
-    const response = await fetch(`${SUPABASE_URL}/rest/v1/vista_productos_completa`, {
-        headers: { 'apikey': SUPABASE_KEY }
+    ventasOrdenadas.sort((a, b) => {
+        let valA, valB;
+        
+        switch(columna) {
+            case 'id':
+                valA = a.id || 0;
+                valB = b.id || 0;
+                break;
+            case 'fecha':
+                valA = new Date(a.fecha);
+                valB = new Date(b.fecha);
+                break;
+            case 'cliente':
+                valA = (a.cliente || '').toLowerCase();
+                valB = (b.cliente || '').toLowerCase();
+                break;
+            case 'total':
+                valA = a.total || 0;
+                valB = b.total || 0;
+                break;
+            case 'metodo':
+                valA = (a.metodo_pago || '').toLowerCase();
+                valB = (b.metodo_pago || '').toLowerCase();
+                break;
+            case 'estado':
+                valA = (a.estado || '').toLowerCase();
+                valB = (b.estado || '').toLowerCase();
+                break;
+            default:
+                valA = a.fecha;
+                valB = b.fecha;
+        }
+        
+        if (valA < valB) return sortDirection === 'asc' ? -1 : 1;
+        if (valA > valB) return sortDirection === 'asc' ? 1 : -1;
+        return 0;
     });
-    productosDisponibles = await response.json();
     
-    const buscador = document.getElementById('buscador-producto-venta');
-    const resultados = document.getElementById('resultados-productos');
-    
-    buscador.oninput = () => {
-        const texto = buscador.value.toLowerCase();
-        if (texto.length < 2) {
-            resultados.style.display = 'none';
-            return;
-        }
-        
-        const filtrados = productosDisponibles.filter(p => 
-            p.nombre.toLowerCase().includes(texto) || 
-            p.codigo?.toLowerCase().includes(texto)
-        );
-        
-        if (filtrados.length === 0) {
-            resultados.style.display = 'none';
-            return;
-        }
-        
-        resultados.innerHTML = filtrados.slice(0, 10).map(p => `
-            <div class="resultado-item" onclick="agregarProductoAlCarrito(${p.id})">
-                <strong>${p.nombre}</strong><br>
-                <small>Código: ${p.codigo} | Precio: $${Math.min(...(p.variantes?.map(v => v.precio_venta) || [0])).toLocaleString()}</small>
-            </div>
-        `).join('');
-        resultados.style.display = 'block';
-    };
+    mostrarVentasOrdenadas(ventasOrdenadas);
 }
 
-function agregarProductoAlCarrito(productoId) {
-    const producto = productosDisponibles.find(p => p.id === productoId);
-    if (!producto) return;
+function mostrarVentasOrdenadas(ventas) {
+    const tbody = document.getElementById('ventas-body');
     
-    // Mostrar selector de talla y color
-    const variantes = producto.variantes || [];
-    if (variantes.length === 1 && variantes[0].colores?.length === 1) {
-        // Solo una opción, agregar directamente
-        agregarItemCarrito(producto, variantes[0], variantes[0].colores?.[0]);
-    } else {
-        mostrarSelectorVariante(producto, variantes);
-    }
+    if (!tbody) return;
     
-    document.getElementById('resultados-productos').style.display = 'none';
-    document.getElementById('buscador-producto-venta').value = '';
-}
-
-function agregarItemCarrito(producto, variante, color) {
-    const precio = variante.precio_venta;
-    const itemExistente = carrito.find(i => 
-        i.producto_id === producto.id && 
-        i.talla === variante.talla && 
-        i.color === (color?.nombre || 'Sin color')
-    );
-    
-    if (itemExistente) {
-        itemExistente.cantidad++;
-        itemExistente.subtotal = itemExistente.cantidad * itemExistente.precio;
-    } else {
-        carrito.push({
-            producto_id: producto.id,
-            producto_nombre: producto.nombre,
-            talla: variante.talla,
-            color: color?.nombre || 'Sin color',
-            color_codigo: color?.codigo || '#ccc',
-            precio: precio,
-            cantidad: 1,
-            subtotal: precio
-        });
-    }
-    
-    actualizarCarritoUI();
-}
-
-function actualizarCarritoUI() {
-    const tbody = document.getElementById('carrito-body');
-    const total = carrito.reduce((sum, item) => sum + item.subtotal, 0);
-    
-    tbody.innerHTML = carrito.map((item, idx) => `
-        <tr>
-            <td>${item.producto_nombre}</td>
-            <td>${item.talla}</td>
-            <td><div style="display: flex; align-items: center; gap: 5px;"><div style="width: 15px; height: 15px; background: ${item.color_codigo}; border-radius: 50%;"></div>${item.color}</div></td>
-            <td>$${item.precio.toLocaleString()}</td>
-            <td><input type="number" class="cantidad-input" value="${item.cantidad}" min="1" onchange="actualizarCantidadCarrito(${idx}, this.value)"></td>
-            <td>$${item.subtotal.toLocaleString()}</td>
-            <td><button class="btn-eliminar-item" onclick="eliminarItemCarrito(${idx})">🗑️</button></td>
-        </tr>
-    `).join('');
-    
-    document.getElementById('carrito-total').textContent = `$${total.toLocaleString()}`;
-}
-
-function actualizarCantidadCarrito(index, nuevaCantidad) {
-    const cantidad = parseInt(nuevaCantidad);
-    if (cantidad > 0) {
-        carrito[index].cantidad = cantidad;
-        carrito[index].subtotal = cantidad * carrito[index].precio;
-        actualizarCarritoUI();
-    }
-}
-
-function eliminarItemCarrito(index) {
-    carrito.splice(index, 1);
-    actualizarCarritoUI();
-}
-
-async function guardarVenta() {
-    if (carrito.length === 0) {
-        mostrarAlerta('Agrega al menos un producto', 'error');
+    if (!ventas || ventas.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align: center;">No hay ventas registradas</td></tr>';
         return;
     }
     
-    const fecha = document.getElementById('venta-fecha').value;
-    const cliente = document.getElementById('venta-cliente').value || 'Consumidor final';
-    const metodoPago = document.getElementById('venta-metodo').value;
+    tbody.innerHTML = ventas.map(venta => {
+        let estadoClass = '';
+        let estadoText = '';
+        
+        switch(venta.estado) {
+            case 'completada': estadoClass = 'estado-pagada'; estadoText = '✅ Completada'; break;
+            case 'pendiente': estadoClass = 'estado-pendiente'; estadoText = '⏳ Pendiente'; break;
+            case 'cambiado': estadoClass = 'estado-badge-cambiado'; estadoText = '🔄 Cambio solicitado'; break;
+            case 'devuelto': estadoClass = 'estado-badge-devuelto'; estadoText = '📦 Devuelto'; break;
+            default: estadoClass = 'estado-pagada'; estadoText = '✅ Completada';
+        }
+        
+        const fecha = new Date(venta.fecha);
+        const fechaStr = fecha.toLocaleDateString('es-CO');
+        
+        return `
+            <tr>
+                <td><strong>#${venta.id}</strong></td>
+                <td>${fechaStr}</td>
+                <td>${venta.cliente || 'Consumidor final'}</td>
+                <td>${venta.productos || '-'}</td>
+                <td><strong>$${(venta.total || 0).toLocaleString()}</strong></td>
+                <td>${venta.metodo_pago || 'Efectivo'}</td>
+                <td><span class="estado-badge ${estadoClass}">${estadoText}</span></td>
+                <td>
+                    <button class="action-btn" onclick="verDetalleVenta(${venta.id})" title="Ver detalle">👁️</button>
+                    <button class="action-btn" onclick="editarVenta(${venta.id})" title="Editar">✏️</button>
+                    <button class="action-btn" onclick="solicitarCambio(${venta.id})" title="Solicitar cambio">🔄</button>
+                    <button class="action-btn delete-btn" onclick="eliminarVenta(${venta.id})" title="Eliminar">🗑️</button>
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
+// ============================================
+// FILTROS PARA VENTAS
+// ============================================
+
+function configurarFiltrosVentas() {
+    const searchInput = document.getElementById('search-ventas');
+    const fechaInicio = document.getElementById('filter-fecha-inicio');
+    const fechaFin = document.getElementById('filter-fecha-fin');
+    const estadoSelect = document.getElementById('filter-estado-ventas');
+    const metodoSelect = document.getElementById('filter-metodo-ventas');
+    
+    if (searchInput) searchInput.addEventListener('input', () => aplicarFiltrosVentas());
+    if (fechaInicio) fechaInicio.addEventListener('change', () => aplicarFiltrosVentas());
+    if (fechaFin) fechaFin.addEventListener('change', () => aplicarFiltrosVentas());
+    if (estadoSelect) estadoSelect.addEventListener('change', () => aplicarFiltrosVentas());
+    if (metodoSelect) metodoSelect.addEventListener('change', () => aplicarFiltrosVentas());
+}
+
+function aplicarFiltrosVentas() {
+    const rows = document.querySelectorAll('#tabla-ventas tbody tr');
+    const searchTerm = document.getElementById('search-ventas')?.value.toLowerCase() || '';
+    const fechaInicio = document.getElementById('filter-fecha-inicio')?.value;
+    const fechaFin = document.getElementById('filter-fecha-fin')?.value;
+    const estado = document.getElementById('filter-estado-ventas')?.value || '';
+    const metodo = document.getElementById('filter-metodo-ventas')?.value || '';
+    
+    let visibleCount = 0;
+    
+    rows.forEach(row => {
+        let mostrar = true;
+        
+        const id = row.cells[0]?.textContent || '';
+        const cliente = row.cells[2]?.textContent.toLowerCase() || '';
+        const productos = row.cells[3]?.textContent.toLowerCase() || '';
+        const fechaTexto = row.cells[1]?.textContent || '';
+        const estadoTexto = row.cells[6]?.textContent.toLowerCase() || '';
+        const metodoTexto = row.cells[5]?.textContent || '';
+        
+        if (searchTerm && !id.includes(searchTerm) && !cliente.includes(searchTerm) && !productos.includes(searchTerm)) mostrar = false;
+        
+        if (mostrar && fechaInicio) {
+            const fechaRow = new Date(fechaTexto);
+            if (fechaRow < new Date(fechaInicio)) mostrar = false;
+        }
+        if (mostrar && fechaFin) {
+            const fechaRow = new Date(fechaTexto);
+            const fechaFinObj = new Date(fechaFin);
+            fechaFinObj.setHours(23, 59, 59);
+            if (fechaRow > fechaFinObj) mostrar = false;
+        }
+        
+        if (mostrar && estado && !estadoTexto.includes(estado.toLowerCase())) mostrar = false;
+        if (mostrar && metodo && metodoTexto !== metodo) mostrar = false;
+        
+        row.style.display = mostrar ? '' : 'none';
+        if (mostrar) visibleCount++;
+    });
+    
+    const filterStats = document.querySelector('#modulo-ventas .filter-stats');
+    if (filterStats) filterStats.textContent = `${visibleCount} ventas`;
+}
+
+function limpiarFiltrosVentas() {
+    const searchInput = document.getElementById('search-ventas');
+    const fechaInicio = document.getElementById('filter-fecha-inicio');
+    const fechaFin = document.getElementById('filter-fecha-fin');
+    const estadoSelect = document.getElementById('filter-estado-ventas');
+    const metodoSelect = document.getElementById('filter-metodo-ventas');
+    
+    if (searchInput) searchInput.value = '';
+    if (fechaInicio) fechaInicio.value = '';
+    if (fechaFin) fechaFin.value = '';
+    if (estadoSelect) estadoSelect.value = '';
+    if (metodoSelect) metodoSelect.value = '';
+    aplicarFiltrosVentas();
+}
+
+// ============================================
+// FUNCIONES DE VENTA RÁPIDA Y MANUAL
+// ============================================
+
+function abrirVentaRapida() {
+    window.open('venta-rapida.html', '_blank');
+}
+
+function abrirNuevaVenta() {
+    // Limpiar carrito
+    carrito = [];
+    if (typeof actualizarCarritoUIManual === 'function') {
+        actualizarCarritoUIManual();
+    }
+    
+    // Establecer fecha actual
+    const fechaInput = document.getElementById('venta-fecha');
+    if (fechaInput) {
+        fechaInput.value = new Date().toISOString().split('T')[0];
+    }
+    
+    // Limpiar campos
+    const clienteInput = document.getElementById('venta-cliente');
+    if (clienteInput) clienteInput.value = '';
+    
+    limpiarCamposProductoManual();
+    
+    // Mostrar el modal
+    const formVenta = document.getElementById('form-venta');
+    if (formVenta) {
+        formVenta.style.display = 'flex';
+        formVenta.classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+}
+
+function limpiarCamposProductoManual() {
+    const nombreInput = document.getElementById('venta-producto-nombre');
+    const tallaInput = document.getElementById('venta-producto-talla');
+    const colorInput = document.getElementById('venta-producto-color');
+    const cantidadInput = document.getElementById('venta-producto-cantidad');
+    const precioInput = document.getElementById('venta-producto-precio');
+    
+    if (nombreInput) nombreInput.value = '';
+    if (tallaInput) tallaInput.value = '';
+    if (colorInput) colorInput.value = '';
+    if (cantidadInput) cantidadInput.value = '1';
+    if (precioInput) precioInput.value = '';
+}
+
+function agregarProductoVentaManual() {
+    const nombre = document.getElementById('venta-producto-nombre')?.value.trim();
+    const talla = document.getElementById('venta-producto-talla')?.value.trim();
+    const color = document.getElementById('venta-producto-color')?.value.trim();
+    const cantidad = parseInt(document.getElementById('venta-producto-cantidad')?.value || '1');
+    const precio = parseFloat(document.getElementById('venta-producto-precio')?.value);
+    
+    if (!nombre) {
+        mostrarAlerta('❌ Escribe el nombre del producto', 'error');
+        return;
+    }
+    
+    if (!precio || precio <= 0) {
+        mostrarAlerta('❌ Ingresa un precio válido', 'error');
+        return;
+    }
+    
+    if (!cantidad || cantidad < 1) {
+        mostrarAlerta('❌ Ingresa una cantidad válida', 'error');
+        return;
+    }
+    
+    const subtotal = cantidad * precio;
+    
+    let textoMostrar = nombre;
+    if (talla) textoMostrar += ` (Talla: ${talla})`;
+    if (color) textoMostrar += ` - ${color}`;
+    
+    carrito.push({
+        nombre: nombre,
+        talla: talla || 'N/A',
+        color: color || 'N/A',
+        cantidad: cantidad,
+        precio: precio,
+        subtotal: subtotal,
+        texto: textoMostrar
+    });
+    
+    mostrarAlerta(`✅ Agregado: ${textoMostrar} x${cantidad} - $${subtotal.toLocaleString()}`, 'success');
+    
+    limpiarCamposProductoManual();
+    document.getElementById('venta-producto-nombre')?.focus();
+    actualizarCarritoUIManual();
+}
+
+function actualizarCarritoUIManual() {
+    const tbody = document.getElementById('carrito-body');
     const total = carrito.reduce((sum, item) => sum + item.subtotal, 0);
-    const productosTexto = carrito.map(i => `${i.producto_nombre} (${i.talla}) x${i.cantidad}`).join(', ');
+    
+    if (!tbody) return;
+    
+    if (carrito.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 2rem;">No hay productos agregados. Completa los campos arriba y haz clic en "Agregar".</td></tr>';
+        const totalElement = document.getElementById('carrito-total');
+        if (totalElement) totalElement.textContent = '$0';
+        return;
+    }
+    
+    tbody.innerHTML = carrito.map((item, idx) => `
+        <tr>
+            <td><strong>${escapeHtml(item.nombre)}</strong><br><small style="color: #888;">${item.talla !== 'N/A' ? `Talla: ${item.talla}` : ''} ${item.color !== 'N/A' ? `| Color: ${item.color}` : ''}</small></td>
+            <td>${item.talla !== 'N/A' ? escapeHtml(item.talla) : '-'}</td>
+            <td>${item.color !== 'N/A' ? escapeHtml(item.color) : '-'}</td>
+            <td>$${item.precio.toLocaleString()}</td>
+            <td><input type="number" class="cantidad-input" value="${item.cantidad}" min="1" onchange="actualizarCantidadCarritoManual(${idx}, this.value)" style="width: 70px;"></td>
+            <td>$${item.subtotal.toLocaleString()}</td>
+            <td><button class="btn-eliminar-item" onclick="eliminarItemCarritoManual(${idx})">🗑️</button></td>
+        </tr>
+    `).join('');
+    
+    const totalElement = document.getElementById('carrito-total');
+    if (totalElement) totalElement.textContent = `$${total.toLocaleString()}`;
+}
+
+function actualizarCantidadCarritoManual(index, nuevaCantidad) {
+    const cantidad = parseInt(nuevaCantidad);
+    if (cantidad > 0 && carrito[index]) {
+        carrito[index].cantidad = cantidad;
+        carrito[index].subtotal = cantidad * carrito[index].precio;
+        actualizarCarritoUIManual();
+    }
+}
+
+function eliminarItemCarritoManual(index) {
+    if (carrito[index]) {
+        carrito.splice(index, 1);
+        actualizarCarritoUIManual();
+    }
+}
+
+async function guardarVentaManual() {
+    if (carrito.length === 0) {
+        mostrarAlerta('❌ Agrega al menos un producto a la venta', 'error');
+        return;
+    }
+    
+    const fecha = document.getElementById('venta-fecha')?.value;
+    const cliente = document.getElementById('venta-cliente')?.value.trim() || 'Consumidor final';
+    const metodoPago = document.getElementById('venta-metodo')?.value || 'Efectivo';
+    const total = carrito.reduce((sum, item) => sum + item.subtotal, 0);
+    
+    const productosTexto = carrito.map(item => {
+        let texto = `${item.nombre} x${item.cantidad}`;
+        if (item.talla && item.talla !== 'N/A') texto += ` (Talla: ${item.talla})`;
+        if (item.color && item.color !== 'N/A') texto += ` - ${item.color}`;
+        return texto;
+    }).join(', ');
     
     const nuevaVenta = {
         fecha: fecha,
@@ -1512,130 +1361,48 @@ async function guardarVenta() {
         });
         
         if (response.ok) {
-            mostrarAlerta('<i class="fas fa-check-circle"></i> Venta registrada correctamente', 'success');
+            mostrarAlerta(`✅ Venta registrada correctamente - Total: $${total.toLocaleString()}`, 'success');
             cerrarFormulario('venta');
             carrito = [];
             await cargarVentas();
         } else {
-            mostrarAlerta('Error al registrar venta', 'error');
+            const error = await response.json();
+            mostrarAlerta('❌ Error al registrar venta: ' + (error.message || ''), 'error');
         }
     } catch (error) {
         console.error('Error:', error);
-        mostrarAlerta('Error de conexión', 'error');
+        mostrarAlerta('❌ Error de conexión', 'error');
     }
 }
 
-// ============================================
-// FUNCIONES PARA ABRIR VENTAS
-// ============================================
-
-// Abrir Venta Rápida (tu sistema existente)
-function abrirVentaRapida() {
-    // Opción 1: Abrir en nueva pestaña/ventana
-    window.open('venta-rapida.html', '_blank');
-    
-    // Opción 2: Si quieres abrir en un modal dentro del mismo dashboard:
-    // mostrarFormularioVentaRapida();
+function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>]/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
+    });
 }
 
-// Abrir Nueva Venta Manual (SIN catálogo - entrada libre)
-function abrirNuevaVenta() {
-    console.log('<i class="fas fa-circle" style="color: #27ae60; font-size: 0.7rem;"></i> Activo Abriendo nueva venta manual (sin catálogo)...');
-    
-    // Limpiar carrito
-    carrito = [];
-    actualizarCarritoUI();
-    
-    // Establecer fecha actual
-    const fechaInput = document.getElementById('venta-fecha');
-    if (fechaInput) {
-        fechaInput.value = new Date().toISOString().split('T')[0];
-    }
-    
-    // Limpiar campos del formulario
-    const clienteInput = document.getElementById('venta-cliente');
-    if (clienteInput) clienteInput.value = '';
-    
-    // Limpiar campos de producto manual
-    limpiarCamposProductoManual();
-    
-    // Mostrar el modal
-    const formVenta = document.getElementById('form-venta');
-    if (formVenta) {
-        formVenta.style.display = 'flex';
-        formVenta.classList.add('active');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        console.log('<i class="fas fa-check-circle"></i> Modal de venta manual abierto');
-    } else {
-        console.error('<i class="fas fa-times-circle"></i> No se encontró form-venta');
-        alert('Error: No se encuentra el formulario de venta');
-    }
+function verFactura(id) {
+    window.open(`factura.html?id=${id}`, '_blank');
 }
 
-// ============================================
-// EDITAR, ELIMINAR Y CAMBIOS
-// ============================================
-let ventaEditando = null;
+function verDetalleVenta(id) {
+    verFactura(id);
+}
 
 async function editarVenta(id) {
-    const response = await fetch(`${SUPABASE_URL}/rest/v1/ventas?id=eq.${id}`, {
-        headers: { 'apikey': SUPABASE_KEY }
-    });
-    const ventas = await response.json();
-    ventaEditando = ventas[0];
-    
-    document.getElementById('editar-venta-id').value = ventaEditando.id;
-    document.getElementById('editar-venta-fecha').value = ventaEditando.fecha.split('T')[0];
-    document.getElementById('editar-venta-cliente').value = ventaEditando.cliente || '';
-    document.getElementById('editar-venta-metodo').value = ventaEditando.metodo_pago || 'Efectivo';
-    document.getElementById('editar-venta-notas').value = ventaEditando.notas || '';
-    document.getElementById('editar-venta-estado').value = ventaEditando.estado || 'completada';
-    
-    document.getElementById('modal-editar-venta').style.display = 'block';
+    mostrarAlerta('Función de editar venta en desarrollo', 'info');
 }
 
-async function actualizarVenta() {
-    const id = document.getElementById('editar-venta-id').value;
-    const updateData = {
-        fecha: document.getElementById('editar-venta-fecha').value,
-        cliente: document.getElementById('editar-venta-cliente').value,
-        metodo_pago: document.getElementById('editar-venta-metodo').value,
-        notas: document.getElementById('editar-venta-notas').value,
-        estado: document.getElementById('editar-venta-estado').value
-    };
+async function eliminarVenta(id) {
+    if (!confirm('¿Estás segura de eliminar esta venta?')) return;
     
     try {
         const token = JSON.parse(localStorage.getItem('admin_token'));
         const response = await fetch(`${SUPABASE_URL}/rest/v1/ventas?id=eq.${id}`, {
-            method: 'PATCH',
-            headers: {
-                'apikey': SUPABASE_KEY,
-                'Authorization': `Bearer ${token.access_token}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(updateData)
-        });
-        
-        if (response.ok) {
-            mostrarAlerta('<i class="fas fa-check-circle"></i> Venta actualizada correctamente', 'success');
-            cerrarModalEditarVenta();
-            await cargarVentas();
-        } else {
-            mostrarAlerta('Error al actualizar', 'error');
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        mostrarAlerta('Error de conexión', 'error');
-    }
-}
-
-async function eliminarVenta(id = null) {
-    const ventaId = id || document.getElementById('editar-venta-id').value;
-    if (!confirm('¿Estás segura de eliminar esta venta? Esta acción no se puede deshacer.')) return;
-    
-    try {
-        const token = JSON.parse(localStorage.getItem('admin_token'));
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/ventas?id=eq.${ventaId}`, {
             method: 'DELETE',
             headers: {
                 'apikey': SUPABASE_KEY,
@@ -1644,8 +1411,7 @@ async function eliminarVenta(id = null) {
         });
         
         if (response.ok) {
-            mostrarAlerta('<i class="fas fa-check-circle"></i> Venta eliminada correctamente', 'success');
-            cerrarModalEditarVenta();
+            mostrarAlerta('✅ Venta eliminada', 'success');
             await cargarVentas();
         } else {
             mostrarAlerta('Error al eliminar', 'error');
@@ -1680,7 +1446,7 @@ async function registrarCambio(id, motivo) {
         });
         
         if (response.ok) {
-            mostrarAlerta(`<i class="fas fa-exchange-alt"></i> Cambio registrado: ${motivo}`, 'success');
+            mostrarAlerta(`🔄 Cambio registrado: ${motivo}`, 'success');
             await cargarVentas();
         }
     } catch (error) {
@@ -1688,48 +1454,608 @@ async function registrarCambio(id, motivo) {
     }
 }
 
-function verDetalleVenta(id) {
-        verFactura(id);
+// ============================================
+// FUNCIONES DE COMPRAS
+// ============================================
+
+async function cargarCompras() {
+    try {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/compras?select=*,proveedores(nombre)&order=fecha.desc`, {
+            headers: { 'apikey': SUPABASE_KEY }
+        });
+        
+        if (!response.ok) throw new Error('Error al cargar compras');
+        
+        const compras = await response.json();
+        const tbody = document.querySelector('#tabla-compras tbody');
+        
+        if (!tbody) return;
+        
+        if (compras.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="8" style="text-align: center;">No hay compras registradas</td></tr>';
+            return;
+        }
+        
+        tbody.innerHTML = compras.map(compra => {
+            const fecha = new Date(compra.fecha);
+            const fechaStr = fecha.toLocaleDateString('es-CO');
+            
+            let estadoClass = '';
+            if (compra.estado === 'Pagada') estadoClass = 'estado-pagada';
+            else if (compra.estado === 'Recibida') estadoClass = 'estado-recibida';
+            else estadoClass = 'estado-pendiente';
+            
+            return `
+                <tr>
+                    <td>${fechaStr}</td>
+                    <td>${compra.proveedores?.nombre || 'N/A'}</td>
+                    <td>${compra.producto || 'Varios'}</td>
+                    <td>${compra.cantidad || '-'}</td>
+                    <td>$${(compra.total || 0).toLocaleString()}</td>
+                    <td><span class="estado-badge ${estadoClass}">${compra.estado || 'Pendiente'}</span></td>
+                    <td>${compra.puc || '620501'}</td>
+                    <td>
+                        <button class="action-btn" onclick="editarCompra(${compra.id})">✏️</button>
+                        <button class="action-btn delete-btn" onclick="eliminarCompra(${compra.id})">🗑️</button>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+        
+    } catch (error) {
+        console.error('Error:', error);
+    }
 }
 
-function cerrarModalEditarVenta() {
-    document.getElementById('modal-editar-venta').style.display = 'none';
-    ventaEditando = null;
+async function guardarCompra() {
+    try {
+        const token = JSON.parse(localStorage.getItem('admin_token'));
+        
+        const proveedorId = document.getElementById('compra-proveedor').value;
+        if (!proveedorId) {
+            mostrarAlerta('Debe seleccionar un proveedor', 'error');
+            return;
+        }
+        
+        const cantidad = parseInt(document.getElementById('compra-cantidad').value);
+        const precio = parseFloat(document.getElementById('compra-precio').value);
+        
+        if (!cantidad || cantidad <= 0) {
+            mostrarAlerta('Cantidad debe ser mayor a 0', 'error');
+            return;
+        }
+        
+        if (!precio || precio <= 0) {
+            mostrarAlerta('Precio debe ser mayor a 0', 'error');
+            return;
+        }
+        
+        const fechaInput = document.getElementById('compra-fecha').value;
+        if (!fechaInput) {
+            mostrarAlerta('Debe seleccionar una fecha', 'error');
+            return;
+        }
+        
+        const producto = document.getElementById('compra-producto').value;
+        if (!producto) {
+            mostrarAlerta('Debe especificar el producto', 'error');
+            return;
+        }
+        
+        const compra = {
+            proveedor_id: parseInt(proveedorId),
+            fecha: fechaInput,
+            producto: producto,
+            cantidad: cantidad,
+            precio_unitario: precio,
+            total: cantidad * precio,
+            estado: document.getElementById('compra-estado').value,
+            puc: '620501'
+        };
+        
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/compras`, {
+            method: 'POST',
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${token.access_token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(compra)
+        });
+        
+        if (response.ok) {
+            mostrarAlerta('🌸 Compra guardada correctamente', 'success');
+            cerrarFormulario('compra');
+            await cargarCompras();
+            
+            // Limpiar formulario
+            document.getElementById('compra-proveedor').value = '';
+            document.getElementById('compra-fecha').value = '';
+            document.getElementById('compra-producto').value = '';
+            document.getElementById('compra-cantidad').value = '';
+            document.getElementById('compra-precio').value = '';
+        } else {
+            mostrarAlerta('Error al guardar la compra', 'error');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        mostrarAlerta('Error de conexión', 'error');
+    }
 }
 
-// Inicializar buscador de productos al abrir el formulario
-function mostrarFormularioVenta() {
-    mostrarFormulario('venta');
-    carrito = [];
-    actualizarCarritoUI();
-    document.getElementById('venta-fecha').value = new Date().toISOString().split('T')[0];
-    cargarProductosParaVenta();
+function editarCompra(id) {
+    mostrarAlerta('Función de editar compra en desarrollo', 'info');
 }
 
-function verFactura(id) { window.open(`factura.html?id=${id}`, '_blank'); }
+async function eliminarCompra(id) {
+    if (!confirm('¿Estás segura de eliminar esta compra?')) return;
+    
+    try {
+        const token = JSON.parse(localStorage.getItem('admin_token'));
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/compras?id=eq.${id}`, {
+            method: 'DELETE',
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${token.access_token}`
+            }
+        });
+        
+        if (response.ok) {
+            mostrarAlerta('✅ Compra eliminada', 'success');
+            await cargarCompras();
+        } else {
+            mostrarAlerta('Error al eliminar', 'error');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        mostrarAlerta('Error de conexión', 'error');
+    }
+}
 
-// ===== CONTABILIDAD =====
+// ============================================
+// FUNCIONES DE GASTOS
+// ============================================
+
+async function cargarGastos() {
+    try {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/gastos?order=fecha.desc`, {
+            headers: { 'apikey': SUPABASE_KEY }
+        });
+        
+        if (!response.ok) throw new Error('Error al cargar gastos');
+        
+        const gastos = await response.json();
+        const tbody = document.querySelector('#tabla-gastos tbody');
+        
+        if (!tbody) return;
+        
+        if (gastos.length === 0) {
+            tbody.innerHTML = '<td><td colspan="6" style="text-align: center;">No hay gastos registrados</td></tr>';
+            return;
+        }
+        
+        tbody.innerHTML = gastos.map(gasto => `
+            <tr>
+                <td>${new Date(gasto.fecha).toLocaleDateString()}</td>
+                <td>${gasto.concepto}</td>
+                <td>${gasto.categoria}</td>
+                <td>$${(gasto.monto || 0).toLocaleString()}</td>
+                <td>${gasto.metodo_pago || 'Efectivo'}</td>
+                <td>
+                    <button class="action-btn" onclick="editarGasto(${gasto.id})">✏️</button>
+                    <button class="action-btn delete-btn" onclick="eliminarGasto(${gasto.id})">🗑️</button>
+                </td>
+            </tr>
+        `).join('');
+        
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+async function guardarGasto() {
+    try {
+        const token = JSON.parse(localStorage.getItem('admin_token'));
+        
+        const gasto = {
+            fecha: document.getElementById('gasto-fecha').value,
+            concepto: document.getElementById('gasto-concepto').value,
+            categoria: document.getElementById('gasto-categoria').value,
+            monto: parseFloat(document.getElementById('gasto-monto').value),
+            metodo_pago: document.getElementById('gasto-metodo').value,
+            puc: obtenerPUCGasto(document.getElementById('gasto-categoria').value)
+        };
+        
+        if (!gasto.fecha || !gasto.concepto || !gasto.categoria || !gasto.monto) {
+            mostrarAlerta('Por favor completa todos los campos', 'error');
+            return;
+        }
+        
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/gastos`, {
+            method: 'POST',
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${token.access_token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(gasto)
+        });
+        
+        if (response.ok) {
+            mostrarAlerta('🌸 Gasto guardado correctamente', 'success');
+            cerrarFormulario('gasto');
+            await cargarGastos();
+            
+            document.getElementById('gasto-fecha').value = '';
+            document.getElementById('gasto-concepto').value = '';
+            document.getElementById('gasto-categoria').value = '';
+            document.getElementById('gasto-monto').value = '';
+        } else {
+            mostrarAlerta('Error al guardar el gasto', 'error');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        mostrarAlerta('Error de conexión', 'error');
+    }
+}
+
+function obtenerPUCGasto(categoria) {
+    const pucMap = {
+        'Alquiler': '511005',
+        'Servicios': '511010',
+        'Sueldos': '510506',
+        'Marketing': '513505',
+        'Mantenimiento': '513505',
+        'Otros': '519595'
+    };
+    return pucMap[categoria] || '519595';
+}
+
+function editarGasto(id) {
+    mostrarAlerta('Función de editar gasto en desarrollo', 'info');
+}
+
+async function eliminarGasto(id) {
+    if (!confirm('¿Estás segura de eliminar este gasto?')) return;
+    
+    try {
+        const token = JSON.parse(localStorage.getItem('admin_token'));
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/gastos?id=eq.${id}`, {
+            method: 'DELETE',
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${token.access_token}`
+            }
+        });
+        
+        if (response.ok) {
+            mostrarAlerta('✅ Gasto eliminado', 'success');
+            await cargarGastos();
+        } else {
+            mostrarAlerta('Error al eliminar', 'error');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        mostrarAlerta('Error de conexión', 'error');
+    }
+}
+
+// ============================================
+// FUNCIONES DE PROVEEDORES
+// ============================================
+
+async function cargarProveedores() {
+    try {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/proveedores?order=nombre`, {
+            headers: { 'apikey': SUPABASE_KEY }
+        });
+        const proveedores = await response.json();
+        
+        const tbody = document.querySelector('#tabla-proveedores tbody');
+        
+        if (!tbody) return;
+        
+        if (proveedores.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">No hay proveedores registrados</td></tr>';
+            return;
+        }
+        
+        document.getElementById('stats-proveedores').textContent = proveedores.length;
+        
+        tbody.innerHTML = proveedores.map(p => `
+            <tr>
+                <td><strong>${p.nombre}</strong></td>
+                <td>${p.contacto || '-'}</td>
+                <td>${p.telefono || '-'}</td>
+                <td>${p.email || '-'}</td>
+                <td>
+                    <button class="action-btn" onclick="editarProveedor(${p.id})">✏️</button>
+                    <button class="action-btn delete-btn" onclick="eliminarProveedor(${p.id})">🗑️</button>
+                 </td>
+             </tr>
+        `).join('');
+        
+    } catch (error) {
+        console.error('Error cargando proveedores:', error);
+    }
+}
+
+async function cargarProveedoresSelect(origen) {
+    try {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/proveedores?select=id,nombre&order=nombre`, {
+            headers: { 'apikey': SUPABASE_KEY }
+        });
+        const proveedores = await response.json();
+        
+        const select = document.getElementById(`${origen}-proveedor`);
+        if (!select) return;
+        
+        select.innerHTML = '<option value="">Seleccionar proveedor</option>' +
+            proveedores.map(p => `<option value="${p.id}">${p.nombre}</option>`).join('');
+            
+    } catch (error) {
+        console.error('Error cargando proveedores:', error);
+    }
+}
+
+async function guardarProveedor() {
+    const proveedor = {
+        nombre: document.getElementById('proveedor-nombre').value,
+        contacto: document.getElementById('proveedor-contacto').value || null,
+        telefono: document.getElementById('proveedor-telefono').value || null,
+        email: document.getElementById('proveedor-email').value || null,
+        direccion: document.getElementById('proveedor-direccion').value || null
+    };
+    
+    if (!proveedor.nombre) {
+        mostrarAlerta('El nombre del proveedor es obligatorio', 'error');
+        return;
+    }
+    
+    try {
+        const token = JSON.parse(localStorage.getItem('admin_token'));
+        
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/proveedores`, {
+            method: 'POST',
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${token.access_token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(proveedor)
+        });
+        
+        if (response.ok) {
+            mostrarAlerta('🌸 Proveedor guardado correctamente', 'success');
+            cerrarFormulario('proveedor');
+            await cargarProveedores();
+            document.getElementById('proveedor-nombre').value = '';
+            document.getElementById('proveedor-contacto').value = '';
+            document.getElementById('proveedor-telefono').value = '';
+            document.getElementById('proveedor-email').value = '';
+            document.getElementById('proveedor-direccion').value = '';
+        } else {
+            mostrarAlerta('Error al guardar el proveedor', 'error');
+        }
+    } catch (error) {
+        mostrarAlerta('Error de conexión', 'error');
+    }
+}
+
+function editarProveedor(id) {
+    mostrarAlerta('Función de editar proveedor en desarrollo', 'info');
+}
+
+async function eliminarProveedor(id) {
+    if (!confirm('¿Estás segura de eliminar este proveedor?')) return;
+    
+    try {
+        const token = JSON.parse(localStorage.getItem('admin_token'));
+        
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/proveedores?id=eq.${id}`, {
+            method: 'DELETE',
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${token.access_token}`
+            }
+        });
+        
+        if (response.ok) {
+            mostrarAlerta('✅ Proveedor eliminado', 'success');
+            await cargarProveedores();
+        } else {
+            mostrarAlerta('Error al eliminar', 'error');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        mostrarAlerta('Error de conexión', 'error');
+    }
+}
+
+// ============================================
+// FUNCIONES DE PERFILES
+// ============================================
+
+async function cargarPerfiles() {
+    try {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/perfiles?order=created_at.desc`, {
+            headers: { 'apikey': SUPABASE_KEY }
+        });
+        const perfiles = await response.json();
+        
+        const tbody = document.querySelector('#tabla-perfiles tbody');
+        
+        if (!tbody) return;
+        
+        if (perfiles.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">No hay usuarios registrados</td></tr>';
+            return;
+        }
+        
+        document.getElementById('stats-empleados').textContent = perfiles.length;
+        
+        tbody.innerHTML = perfiles.map(p => `
+            <tr>
+                <td><strong>${p.nombre || 'Sin nombre'}</strong></td>
+                <td>${p.email}</td>
+                <td>
+                    <span style="background: ${p.rol === 'admin' ? '#ff9a9e' : '#ffb6c1'}; 
+                                 color: white; padding: 0.2rem 0.8rem; border-radius: 50px;">
+                        ${p.rol || 'empleado'}
+                    </span>
+                 </td>
+                <td>${new Date(p.created_at).toLocaleDateString()}</td>
+                <tr>
+                    <button class="action-btn" onclick="editarPerfil('${p.id}')">✏️</button>
+                    ${p.id !== currentUser?.id ? 
+                        `<button class="action-btn delete-btn" onclick="eliminarPerfil('${p.id}')">🗑️</button>` 
+                        : ''}
+                 </td>
+             </tr>
+        `).join('');
+        
+    } catch (error) {
+        console.error('Error cargando perfiles:', error);
+    }
+}
+
+async function guardarPerfil() {
+    try {
+        const token = JSON.parse(localStorage.getItem('admin_token'));
+        
+        const nombre = document.getElementById('perfil-nombre').value;
+        const email = document.getElementById('perfil-email').value;
+        const password = document.getElementById('perfil-password').value;
+        const rol = document.getElementById('perfil-rol').value;
+        
+        if (!nombre || !email) {
+            mostrarAlerta('Nombre y email son obligatorios', 'error');
+            return;
+        }
+        
+        if (!password || password.length < 6) {
+            mostrarAlerta('La contraseña debe tener al menos 6 caracteres', 'error');
+            return;
+        }
+        
+        // Crear usuario en Auth
+        const authResponse = await fetch(`${SUPABASE_URL}/auth/v1/signup`, {
+            method: 'POST',
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email, password })
+        });
+        
+        const authData = await authResponse.json();
+        
+        if (!authResponse.ok) {
+            throw new Error(authData.msg || 'Error al crear usuario');
+        }
+        
+        // Crear perfil
+        const perfilResponse = await fetch(`${SUPABASE_URL}/rest/v1/perfiles`, {
+            method: 'POST',
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${token.access_token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                id: authData.user.id,
+                nombre: nombre,
+                email: email,
+                rol: rol
+            })
+        });
+        
+        if (perfilResponse.ok) {
+            mostrarAlerta('🌸 Usuario creado correctamente', 'success');
+            cerrarFormulario('perfil');
+            await cargarPerfiles();
+            
+            document.getElementById('perfil-nombre').value = '';
+            document.getElementById('perfil-email').value = '';
+            document.getElementById('perfil-password').value = '';
+        } else {
+            throw new Error('Error al crear perfil');
+        }
+        
+    } catch (error) {
+        console.error('Error:', error);
+        mostrarAlerta('Error: ' + error.message, 'error');
+    }
+}
+
+function editarPerfil(id) {
+    mostrarAlerta('Función de editar perfil en desarrollo', 'info');
+}
+
+async function eliminarPerfil(id) {
+    if (!confirm('¿Estás segura de eliminar este usuario?')) return;
+    
+    try {
+        const token = JSON.parse(localStorage.getItem('admin_token'));
+        
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/perfiles?id=eq.${id}`, {
+            method: 'DELETE',
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${token.access_token}`
+            }
+        });
+        
+        if (response.ok) {
+            mostrarAlerta('✅ Usuario eliminado', 'success');
+            await cargarPerfiles();
+        } else {
+            mostrarAlerta('Error al eliminar', 'error');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        mostrarAlerta('Error de conexión', 'error');
+    }
+}
+
+// ============================================
+// FUNCIONES DE CONTABILIDAD
+// ============================================
+
 async function cargarContabilidad() {
     try {
-        const ventas = await fetch(`${SUPABASE_URL}/rest/v1/ventas`, { headers: { 'apikey': SUPABASE_KEY } }).then(r => r.json());
-        const compras = await fetch(`${SUPABASE_URL}/rest/v1/compras`, { headers: { 'apikey': SUPABASE_KEY } }).then(r => r.json());
-        const gastos = await fetch(`${SUPABASE_URL}/rest/v1/gastos`, { headers: { 'apikey': SUPABASE_KEY } }).then(r => r.json());
-        const ingresos = ventas.reduce((s,v) => s + (v.total||0), 0);
-        const egresos = compras.reduce((s,c) => s + (c.total||0), 0) + gastos.reduce((s,g) => s + (g.monto||0), 0);
-        if (document.getElementById('stats-ingresos')) document.getElementById('stats-ingresos').textContent = `$${ingresos.toLocaleString()}`;
-        if (document.getElementById('stats-egresos')) document.getElementById('stats-egresos').textContent = `$${egresos.toLocaleString()}`;
-    } catch(e) { console.error(e); }
+        const [ventas, compras, gastos] = await Promise.all([
+            fetch(`${SUPABASE_URL}/rest/v1/ventas`, { headers: { 'apikey': SUPABASE_KEY } }).then(r => r.json()),
+            fetch(`${SUPABASE_URL}/rest/v1/compras`, { headers: { 'apikey': SUPABASE_KEY } }).then(r => r.json()),
+            fetch(`${SUPABASE_URL}/rest/v1/gastos`, { headers: { 'apikey': SUPABASE_KEY } }).then(r => r.json())
+        ]);
+        
+        const ingresos = ventas.reduce((sum, v) => sum + (v.total || 0), 0);
+        const egresos = compras.reduce((sum, c) => sum + (c.total || 0), 0) + gastos.reduce((sum, g) => sum + (g.monto || 0), 0);
+        
+        const ingresosElem = document.getElementById('stats-ingresos');
+        const egresosElem = document.getElementById('stats-egresos');
+        
+        if (ingresosElem) ingresosElem.textContent = `$${ingresos.toLocaleString()}`;
+        if (egresosElem) egresosElem.textContent = `$${egresos.toLocaleString()}`;
+        
+    } catch (error) {
+        console.error('Error cargando contabilidad:', error);
+    }
 }
 
-// ===== UTILITARIOS ACTUALIZADOS =====
+// ============================================
+// FUNCIONES DE UTILIDAD
+// ============================================
+
 function mostrarFormulario(tipo) {
     const form = document.getElementById(`form-${tipo}`);
     if (form) {
         form.classList.add('active');
-        form.style.display = 'block';  // ← FORZAR display block
-        console.log(`<i class="fas fa-check-circle"></i> Mostrando formulario: ${tipo}`);
+        form.style.display = 'flex';
+        console.log(`✅ Mostrando formulario: ${tipo}`);
     } else {
-        console.error(`<i class="fas fa-times-circle"></i> No existe form-${tipo}`);
+        console.error(`❌ No existe form-${tipo}`);
     }
 }
 
@@ -1737,8 +2063,8 @@ function cerrarFormulario(tipo) {
     const form = document.getElementById(`form-${tipo}`);
     if (form) {
         form.classList.remove('active');
-        form.style.display = 'none';  // ← FORZAR display none
-        console.log(`<i class="fas fa-check-circle"></i> Cerrando formulario: ${tipo}`);
+        form.style.display = 'none';
+        console.log(`✅ Cerrando formulario: ${tipo}`);
     }
     
     // Limpieza específica por tipo
@@ -1746,417 +2072,47 @@ function cerrarFormulario(tipo) {
         delete document.getElementById('form-producto')?.dataset.editId;
         const btn = document.querySelector('#form-producto .submit-btn');
         if (btn) btn.textContent = 'Guardar Producto';
-        // Limpiar precio compra
         const precioCompraInput = document.getElementById('producto-precio-compra');
         if (precioCompraInput) precioCompraInput.value = '';
     }
     
     if (tipo === 'venta') {
-        // Limpiar carrito al cerrar
         carrito = [];
-        if (typeof actualizarCarritoUI === 'function') {
-            actualizarCarritoUI();
+        if (typeof actualizarCarritoUIManual === 'function') {
+            actualizarCarritoUIManual();
         }
-        // Limpiar campos
         const clienteInput = document.getElementById('venta-cliente');
         if (clienteInput) clienteInput.value = '';
-        const buscador = document.getElementById('buscador-producto-venta');
-        if (buscador) buscador.value = '';
-        const resultados = document.getElementById('resultados-productos');
-        if (resultados) resultados.style.display = 'none';
     }
 }
-function mostrarAlerta(msg, tipo) {
+
+function mostrarAlerta(mensaje, tipo) {
     const alerta = document.getElementById('alertMessage');
     if (alerta) {
-        alerta.textContent = msg;
+        alerta.textContent = mensaje;
         alerta.className = `alert ${tipo}`;
         alerta.style.display = 'block';
-        setTimeout(() => alerta.style.display = 'none', 3000);
+        setTimeout(() => {
+            alerta.style.display = 'none';
+        }, 3000);
+    } else {
+        console.log(`${tipo.toUpperCase()}: ${mensaje}`);
+        alert(mensaje);
     }
 }
 
-window.cargarContabilidad = cargarContabilidad;
-
-// ============================================
-// FUNCIONES PARA VENTA MANUAL (SIN CATÁLOGO)
-// ============================================
-
-// Limpiar campos de producto manual
-function limpiarCamposProductoManual() {
-    const nombreInput = document.getElementById('venta-producto-nombre');
-    const tallaInput = document.getElementById('venta-producto-talla');
-    const colorInput = document.getElementById('venta-producto-color');
-    const cantidadInput = document.getElementById('venta-producto-cantidad');
-    const precioInput = document.getElementById('venta-producto-precio');
+function toggleMenu() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
     
-    if (nombreInput) nombreInput.value = '';
-    if (tallaInput) tallaInput.value = '';
-    if (colorInput) colorInput.value = '';
-    if (cantidadInput) cantidadInput.value = '1';
-    if (precioInput) precioInput.value = '';
-}
-
-// Agregar producto manual al carrito (SIN depender del catálogo)
-function agregarProductoVentaManual() {
-    // Obtener valores del formulario
-    const nombre = document.getElementById('venta-producto-nombre')?.value.trim();
-    const talla = document.getElementById('venta-producto-talla')?.value.trim();
-    const color = document.getElementById('venta-producto-color')?.value.trim();
-    const cantidad = parseInt(document.getElementById('venta-producto-cantidad')?.value || '1');
-    const precio = parseFloat(document.getElementById('venta-producto-precio')?.value);
-    
-    // Validaciones
-    if (!nombre) {
-        mostrarAlerta('<i class="fas fa-times-circle"></i> Escribe el nombre del producto', 'error');
-        return;
+    if (sidebar && overlay) {
+        sidebar.classList.toggle('open');
+        overlay.classList.toggle('active');
     }
-    
-    if (!precio || precio <= 0) {
-        mostrarAlerta('<i class="fas fa-times-circle"></i> Ingresa un precio válido', 'error');
-        return;
-    }
-    
-    if (!cantidad || cantidad < 1) {
-        mostrarAlerta('<i class="fas fa-times-circle"></i> Ingresa una cantidad válida', 'error');
-        return;
-    }
-    
-    const subtotal = cantidad * precio;
-    
-    // Crear texto para mostrar
-    let textoMostrar = nombre;
-    if (talla) textoMostrar += ` (Talla: ${talla})`;
-    if (color) textoMostrar += ` - ${color}`;
-    
-    // Agregar al carrito
-    carrito.push({
-        nombre: nombre,
-        talla: talla || 'N/A',
-        color: color || 'N/A',
-        cantidad: cantidad,
-        precio: precio,
-        subtotal: subtotal,
-        texto: textoMostrar
-    });
-    
-    mostrarAlerta(`<i class="fas fa-check-circle"></i> Agregado: ${textoMostrar} x${cantidad} - $${subtotal.toLocaleString()}`, 'success');
-    
-    // Limpiar campos para el siguiente producto
-    limpiarCamposProductoManual();
-    
-    // Enfocar en el campo de nombre
-    document.getElementById('venta-producto-nombre')?.focus();
-    
-    // Actualizar la tabla del carrito
-    actualizarCarritoUIManual();
-}
-
-// Actualizar UI del carrito (versión manual)
-function actualizarCarritoUIManual() {
-    const tbody = document.getElementById('carrito-body');
-    const total = carrito.reduce((sum, item) => sum + item.subtotal, 0);
-    
-    if (!tbody) return;
-    
-    if (carrito.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 2rem;">No hay productos agregados. Completa los campos arriba y haz clic en "Agregar".</td></tr>';
-        const totalElement = document.getElementById('carrito-total');
-        if (totalElement) totalElement.textContent = '$0';
-        return;
-    }
-    
-    tbody.innerHTML = carrito.map((item, idx) => `
-        <tr>
-            <td><strong>${escapeHtml(item.nombre)}</strong><br>
-                <small style="color: #888;">${item.talla !== 'N/A' ? `Talla: ${item.talla}` : ''} ${item.color !== 'N/A' ? `| Color: ${item.color}` : ''}</small>
-            </td>
-            <td>${item.talla !== 'N/A' ? escapeHtml(item.talla) : '-'}</td>
-            <td>${item.color !== 'N/A' ? escapeHtml(item.color) : '-'}</td>
-            <td>$${item.precio.toLocaleString()}</td>
-            <td>
-                <input type="number" class="cantidad-input" value="${item.cantidad}" min="1" 
-                       onchange="actualizarCantidadCarritoManual(${idx}, this.value)" style="width: 70px;">
-            </td>
-            <td>$${item.subtotal.toLocaleString()}</td>
-            <td>
-                <button class="btn-eliminar-item" onclick="eliminarItemCarritoManual(${idx})">🗑️</button>
-            </td>
-        </tr>
-    `).join('');
-    
-    const totalElement = document.getElementById('carrito-total');
-    if (totalElement) totalElement.textContent = `$${total.toLocaleString()}`;
-}
-
-// Actualizar cantidad en el carrito (versión manual)
-function actualizarCantidadCarritoManual(index, nuevaCantidad) {
-    const cantidad = parseInt(nuevaCantidad);
-    if (cantidad > 0 && carrito[index]) {
-        carrito[index].cantidad = cantidad;
-        carrito[index].subtotal = cantidad * carrito[index].precio;
-        actualizarCarritoUIManual();
-    }
-}
-
-// Eliminar item del carrito (versión manual)
-function eliminarItemCarritoManual(index) {
-    if (carrito[index]) {
-        carrito.splice(index, 1);
-        actualizarCarritoUIManual();
-    }
-}
-
-// Guardar venta manual
-async function guardarVentaManual() {
-    // Validar que haya productos en el carrito
-    if (carrito.length === 0) {
-        mostrarAlerta('<i class="fas fa-times-circle"></i> Agrega al menos un producto a la venta', 'error');
-        return;
-    }
-    
-    // Obtener datos de la venta
-    const fecha = document.getElementById('venta-fecha')?.value;
-    const cliente = document.getElementById('venta-cliente')?.value.trim() || 'Consumidor final';
-    const metodoPago = document.getElementById('venta-metodo')?.value || 'Efectivo';
-    const total = carrito.reduce((sum, item) => sum + item.subtotal, 0);
-    
-    // Crear texto resumen de productos
-    const productosTexto = carrito.map(item => {
-        let texto = `${item.nombre} x${item.cantidad}`;
-        if (item.talla && item.talla !== 'N/A') texto += ` (Talla: ${item.talla})`;
-        if (item.color && item.color !== 'N/A') texto += ` - ${item.color}`;
-        return texto;
-    }).join(', ');
-    
-    // Crear objeto de venta
-    const nuevaVenta = {
-        fecha: fecha,
-        cliente: cliente,
-        productos: productosTexto,
-        total: total,
-        metodo_pago: metodoPago,
-        estado: 'completada',
-        created_at: new Date().toISOString()
-    };
-    
-    try {
-        const token = JSON.parse(localStorage.getItem('admin_token'));
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/ventas`, {
-            method: 'POST',
-            headers: {
-                'apikey': SUPABASE_KEY,
-                'Authorization': `Bearer ${token.access_token}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(nuevaVenta)
-        });
-        
-        if (response.ok) {
-            mostrarAlerta(`<i class="fas fa-check-circle"></i> Venta registrada correctamente - Total: $${total.toLocaleString()}`, 'success');
-            cerrarFormulario('venta');
-            carrito = [];
-            await cargarVentas(); // Recargar lista de ventas
-        } else {
-            const error = await response.json();
-            mostrarAlerta('<i class="fas fa-times-circle"></i> Error al registrar venta: ' + (error.message || ''), 'error');
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        mostrarAlerta('<i class="fas fa-times-circle"></i> Error de conexión', 'error');
-    }
-}
-
-// Función auxiliar para escapar HTML
-function escapeHtml(str) {
-    if (!str) return '';
-    return str.replace(/[&<>]/g, function(m) {
-        if (m === '&') return '&amp;';
-        if (m === '<') return '&lt;';
-        if (m === '>') return '&gt;';
-        return m;
-    });
-}
-
-
-// ============================================
-// FILTROS Y BUSCADORES PARA PRODUCTOS
-// ============================================
-
-let productosOriginales = [];
-let productosFiltrados = [];
-
-function configurarFiltrosProductos() {
-    const searchInput = document.getElementById('search-productos');
-    const categoriaSelect = document.getElementById('filter-categoria-productos');
-    const stockSelect = document.getElementById('filter-stock-productos');
-    
-    if (searchInput) searchInput.addEventListener('input', () => aplicarFiltrosProductos());
-    if (categoriaSelect) categoriaSelect.addEventListener('change', () => aplicarFiltrosProductos());
-    if (stockSelect) stockSelect.addEventListener('change', () => aplicarFiltrosProductos());
-}
-
-async function aplicarFiltrosProductos() {
-    // Obtener productos actuales de la tabla
-    const rows = document.querySelectorAll('#tabla-productos tbody tr');
-    if (rows.length === 0) return;
-    
-    const searchTerm = document.getElementById('search-productos')?.value.toLowerCase() || '';
-    const categoria = document.getElementById('filter-categoria-productos')?.value || '';
-    const stockFilter = document.getElementById('filter-stock-productos')?.value || '';
-    
-    let visibleCount = 0;
-    
-    rows.forEach(row => {
-        let mostrar = true;
-        
-        // Obtener datos de la fila
-        const nombre = row.cells[2]?.textContent.toLowerCase() || '';
-        const codigo = row.cells[1]?.textContent.toLowerCase() || '';
-        const categoriaTexto = row.cells[3]?.textContent.toLowerCase() || '';
-        const stockTexto = row.cells[5]?.textContent || '0';
-        const stock = parseInt(stockTexto) || 0;
-        
-        // Filtrar por búsqueda
-        if (searchTerm && !nombre.includes(searchTerm) && !codigo.includes(searchTerm)) {
-            mostrar = false;
-        }
-        
-        // Filtrar por categoría
-        if (mostrar && categoria && !categoriaTexto.includes(categoria)) {
-            mostrar = false;
-        }
-        
-        // Filtrar por stock
-        if (mostrar && stockFilter) {
-            if (stockFilter === 'bajo' && stock >= 5) mostrar = false;
-            if (stockFilter === 'agotado' && stock > 0) mostrar = false;
-            if (stockFilter === 'normal' && stock < 5) mostrar = false;
-        }
-        
-        row.style.display = mostrar ? '' : 'none';
-        if (mostrar) visibleCount++;
-    });
-    
-    // Actualizar contador
-    const filterStats = document.querySelector('#modulo-productos .filter-stats');
-    if (filterStats) {
-        filterStats.textContent = `${visibleCount} productos`;
-    }
-}
-
-function limpiarFiltrosProductos() {
-    const searchInput = document.getElementById('search-productos');
-    const categoriaSelect = document.getElementById('filter-categoria-productos');
-    const stockSelect = document.getElementById('filter-stock-productos');
-    
-    if (searchInput) searchInput.value = '';
-    if (categoriaSelect) categoriaSelect.value = '';
-    if (stockSelect) stockSelect.value = '';
-    
-    aplicarFiltrosProductos();
 }
 
 // ============================================
-// FILTROS Y BUSCADORES PARA VENTAS
-// ============================================
-
-let ventasOriginales = [];
-
-function configurarFiltrosVentas() {
-    const searchInput = document.getElementById('search-ventas');
-    const fechaInicio = document.getElementById('filter-fecha-inicio');
-    const fechaFin = document.getElementById('filter-fecha-fin');
-    const estadoSelect = document.getElementById('filter-estado-ventas');
-    const metodoSelect = document.getElementById('filter-metodo-ventas');
-    
-    if (searchInput) searchInput.addEventListener('input', () => aplicarFiltrosVentas());
-    if (fechaInicio) fechaInicio.addEventListener('change', () => aplicarFiltrosVentas());
-    if (fechaFin) fechaFin.addEventListener('change', () => aplicarFiltrosVentas());
-    if (estadoSelect) estadoSelect.addEventListener('change', () => aplicarFiltrosVentas());
-    if (metodoSelect) metodoSelect.addEventListener('change', () => aplicarFiltrosVentas());
-}
-
-function aplicarFiltrosVentas() {
-    const rows = document.querySelectorAll('#tabla-ventas tbody tr');
-    if (rows.length === 0) return;
-    
-    const searchTerm = document.getElementById('search-ventas')?.value.toLowerCase() || '';
-    const fechaInicio = document.getElementById('filter-fecha-inicio')?.value;
-    const fechaFin = document.getElementById('filter-fecha-fin')?.value;
-    const estado = document.getElementById('filter-estado-ventas')?.value || '';
-    const metodo = document.getElementById('filter-metodo-ventas')?.value || '';
-    
-    let visibleCount = 0;
-    
-    rows.forEach(row => {
-        let mostrar = true;
-        
-        // Obtener datos de la fila
-        const id = row.cells[0]?.textContent || '';
-        const cliente = row.cells[2]?.textContent.toLowerCase() || '';
-        const productos = row.cells[3]?.textContent.toLowerCase() || '';
-        const fechaTexto = row.cells[1]?.textContent || '';
-        const estadoTexto = row.cells[6]?.textContent.toLowerCase() || '';
-        const metodoTexto = row.cells[5]?.textContent || '';
-        
-        // Filtrar por búsqueda
-        if (searchTerm && !id.includes(searchTerm) && !cliente.includes(searchTerm) && !productos.includes(searchTerm)) {
-            mostrar = false;
-        }
-        
-        // Filtrar por fecha
-        if (mostrar && fechaInicio) {
-            const fechaRow = new Date(fechaTexto);
-            const fechaInicioObj = new Date(fechaInicio);
-            if (fechaRow < fechaInicioObj) mostrar = false;
-        }
-        if (mostrar && fechaFin) {
-            const fechaRow = new Date(fechaTexto);
-            const fechaFinObj = new Date(fechaFin);
-            fechaFinObj.setHours(23, 59, 59);
-            if (fechaRow > fechaFinObj) mostrar = false;
-        }
-        
-        // Filtrar por estado
-        if (mostrar && estado && !estadoTexto.includes(estado.toLowerCase())) {
-            mostrar = false;
-        }
-        
-        // Filtrar por método de pago
-        if (mostrar && metodo && metodoTexto !== metodo) {
-            mostrar = false;
-        }
-        
-        row.style.display = mostrar ? '' : 'none';
-        if (mostrar) visibleCount++;
-    });
-    
-    // Actualizar contador
-    const filterStats = document.querySelector('#modulo-ventas .filter-stats');
-    if (filterStats) {
-        filterStats.textContent = `${visibleCount} ventas`;
-    }
-}
-
-function limpiarFiltrosVentas() {
-    const searchInput = document.getElementById('search-ventas');
-    const fechaInicio = document.getElementById('filter-fecha-inicio');
-    const fechaFin = document.getElementById('filter-fecha-fin');
-    const estadoSelect = document.getElementById('filter-estado-ventas');
-    const metodoSelect = document.getElementById('filter-metodo-ventas');
-    
-    if (searchInput) searchInput.value = '';
-    if (fechaInicio) fechaInicio.value = '';
-    if (fechaFin) fechaFin.value = '';
-    if (estadoSelect) estadoSelect.value = '';
-    if (metodoSelect) metodoSelect.value = '';
-    
-    aplicarFiltrosVentas();
-}
-
-// ============================================
-// FILTROS PARA COMPRAS
+// FILTROS PARA COMPRAS Y GASTOS
 // ============================================
 
 function configurarFiltrosCompras() {
@@ -2173,54 +2129,43 @@ function configurarFiltrosCompras() {
 
 function aplicarFiltrosCompras() {
     const rows = document.querySelectorAll('#tabla-compras tbody tr');
-    if (rows.length === 0) return;
-    
     const searchTerm = document.getElementById('search-compras')?.value.toLowerCase() || '';
     const fechaInicio = document.getElementById('filter-compra-fecha-inicio')?.value;
     const fechaFin = document.getElementById('filter-compra-fecha-fin')?.value;
     const estado = document.getElementById('filter-compra-estado')?.value || '';
     
-    let visibleCount = 0;
-    
     rows.forEach(row => {
         let mostrar = true;
-        
         const proveedor = row.cells[1]?.textContent.toLowerCase() || '';
         const producto = row.cells[2]?.textContent.toLowerCase() || '';
         const fechaTexto = row.cells[0]?.textContent || '';
         const estadoTexto = row.cells[5]?.textContent.toLowerCase() || '';
         
         if (searchTerm && !proveedor.includes(searchTerm) && !producto.includes(searchTerm)) mostrar = false;
-        
-        if (mostrar && fechaInicio) {
-            const fechaRow = new Date(fechaTexto);
-            if (fechaRow < new Date(fechaInicio)) mostrar = false;
-        }
+        if (mostrar && fechaInicio && new Date(fechaTexto) < new Date(fechaInicio)) mostrar = false;
         if (mostrar && fechaFin) {
-            const fechaRow = new Date(fechaTexto);
             const fechaFinObj = new Date(fechaFin);
             fechaFinObj.setHours(23, 59, 59);
-            if (fechaRow > fechaFinObj) mostrar = false;
+            if (new Date(fechaTexto) > fechaFinObj) mostrar = false;
         }
-        
         if (mostrar && estado && !estadoTexto.includes(estado.toLowerCase())) mostrar = false;
         
         row.style.display = mostrar ? '' : 'none';
-        if (mostrar) visibleCount++;
     });
 }
 
 function limpiarFiltrosCompras() {
-    document.getElementById('search-compras').value = '';
-    document.getElementById('filter-compra-fecha-inicio').value = '';
-    document.getElementById('filter-compra-fecha-fin').value = '';
-    document.getElementById('filter-compra-estado').value = '';
+    const searchInput = document.getElementById('search-compras');
+    const fechaInicio = document.getElementById('filter-compra-fecha-inicio');
+    const fechaFin = document.getElementById('filter-compra-fecha-fin');
+    const estadoSelect = document.getElementById('filter-compra-estado');
+    
+    if (searchInput) searchInput.value = '';
+    if (fechaInicio) fechaInicio.value = '';
+    if (fechaFin) fechaFin.value = '';
+    if (estadoSelect) estadoSelect.value = '';
     aplicarFiltrosCompras();
 }
-
-// ============================================
-// FILTROS PARA GASTOS
-// ============================================
 
 function configurarFiltrosGastos() {
     const searchInput = document.getElementById('search-gastos');
@@ -2236,46 +2181,125 @@ function configurarFiltrosGastos() {
 
 function aplicarFiltrosGastos() {
     const rows = document.querySelectorAll('#tabla-gastos tbody tr');
-    if (rows.length === 0) return;
-    
     const searchTerm = document.getElementById('search-gastos')?.value.toLowerCase() || '';
     const fechaInicio = document.getElementById('filter-gasto-fecha-inicio')?.value;
     const fechaFin = document.getElementById('filter-gasto-fecha-fin')?.value;
     const categoria = document.getElementById('filter-gasto-categoria')?.value || '';
     
-    let visibleCount = 0;
-    
     rows.forEach(row => {
         let mostrar = true;
-        
         const concepto = row.cells[1]?.textContent.toLowerCase() || '';
         const fechaTexto = row.cells[0]?.textContent || '';
         const categoriaTexto = row.cells[2]?.textContent.toLowerCase() || '';
         
         if (searchTerm && !concepto.includes(searchTerm)) mostrar = false;
-        
-        if (mostrar && fechaInicio) {
-            const fechaRow = new Date(fechaTexto);
-            if (fechaRow < new Date(fechaInicio)) mostrar = false;
-        }
+        if (mostrar && fechaInicio && new Date(fechaTexto) < new Date(fechaInicio)) mostrar = false;
         if (mostrar && fechaFin) {
-            const fechaRow = new Date(fechaTexto);
             const fechaFinObj = new Date(fechaFin);
             fechaFinObj.setHours(23, 59, 59);
-            if (fechaRow > fechaFinObj) mostrar = false;
+            if (new Date(fechaTexto) > fechaFinObj) mostrar = false;
         }
-        
         if (mostrar && categoria && !categoriaTexto.includes(categoria.toLowerCase())) mostrar = false;
         
         row.style.display = mostrar ? '' : 'none';
-        if (mostrar) visibleCount++;
     });
 }
 
 function limpiarFiltrosGastos() {
-    document.getElementById('search-gastos').value = '';
-    document.getElementById('filter-gasto-fecha-inicio').value = '';
-    document.getElementById('filter-gasto-fecha-fin').value = '';
-    document.getElementById('filter-gasto-categoria').value = '';
+    const searchInput = document.getElementById('search-gastos');
+    const fechaInicio = document.getElementById('filter-gasto-fecha-inicio');
+    const fechaFin = document.getElementById('filter-gasto-fecha-fin');
+    const categoriaSelect = document.getElementById('filter-gasto-categoria');
+    
+    if (searchInput) searchInput.value = '';
+    if (fechaInicio) fechaInicio.value = '';
+    if (fechaFin) fechaFin.value = '';
+    if (categoriaSelect) categoriaSelect.value = '';
     aplicarFiltrosGastos();
 }
+
+// ============================================
+// INICIALIZACIÓN DE FILTROS AL CARGAR MÓDULOS
+// ============================================
+
+// Sobrescribir cargarDatosModulo para configurar filtros
+const originalCargarDatosModulo = cargarDatosModulo;
+window.cargarDatosModulo = async function(modulo) {
+    await originalCargarDatosModulo(modulo);
+    
+    switch(modulo) {
+        case 'productos':
+            setTimeout(() => configurarFiltrosProductos(), 500);
+            break;
+        case 'ventas':
+            setTimeout(() => configurarFiltrosVentas(), 500);
+            break;
+        case 'compras':
+            setTimeout(() => configurarFiltrosCompras(), 500);
+            break;
+        case 'gastos':
+            setTimeout(() => configurarFiltrosGastos(), 500);
+            break;
+    }
+};
+
+// ============================================
+// FUNCIONES DE PERMISOS (placeholder si no existe)
+// ============================================
+
+function getPrimerModuloVisible() {
+    return 'productos';
+}
+
+// Exportar funciones al scope global
+window.cargarProductos = cargarProductos;
+window.cargarStock = cargarStock;
+window.cargarVentas = cargarVentas;
+window.cargarCompras = cargarCompras;
+window.cargarGastos = cargarGastos;
+window.cargarProveedores = cargarProveedores;
+window.cargarPerfiles = cargarPerfiles;
+window.cargarContabilidad = cargarContabilidad;
+window.guardarProductoBase = guardarProductoBase;
+window.guardarVenta = guardarVentaManual;
+window.guardarCompra = guardarCompra;
+window.guardarGasto = guardarGasto;
+window.guardarProveedor = guardarProveedor;
+window.guardarPerfil = guardarPerfil;
+window.editarProducto = editarProducto;
+window.editarVenta = editarVenta;
+window.editarCompra = editarCompra;
+window.editarGasto = editarGasto;
+window.editarProveedor = editarProveedor;
+window.editarPerfil = editarPerfil;
+window.eliminarProducto = eliminarProducto;
+window.eliminarVenta = eliminarVenta;
+window.eliminarCompra = eliminarCompra;
+window.eliminarGasto = eliminarGasto;
+window.eliminarProveedor = eliminarProveedor;
+window.eliminarPerfil = eliminarPerfil;
+window.verVariantes = verVariantes;
+window.verFactura = verFactura;
+window.verDetalleVenta = verDetalleVenta;
+window.solicitarCambio = solicitarCambio;
+window.solicitarReposicion = solicitarReposicion;
+window.ordenarVentas = ordenarVentas;
+window.ordenarProductos = ordenarProductos;
+window.limpiarFiltrosProductos = limpiarFiltrosProductos;
+window.limpiarFiltrosVentas = limpiarFiltrosVentas;
+window.limpiarFiltrosCompras = limpiarFiltrosCompras;
+window.limpiarFiltrosGastos = limpiarFiltrosGastos;
+window.abrirVentaRapida = abrirVentaRapida;
+window.abrirNuevaVenta = abrirNuevaVenta;
+window.agregarProductoVentaManual = agregarProductoVentaManual;
+window.actualizarCantidadCarritoManual = actualizarCantidadCarritoManual;
+window.eliminarItemCarritoManual = eliminarItemCarritoManual;
+window.agregarVariante = agregarVariante;
+window.agregarColorAVariante = agregarColorAVariante;
+window.agregarSinColor = agregarSinColor;
+window.eliminarColor = eliminarColor;
+window.eliminarVariante = eliminarVariante;
+window.mostrarFormulario = mostrarFormulario;
+window.cerrarFormulario = cerrarFormulario;
+window.toggleMenu = toggleMenu;
+window.logout = logout;
