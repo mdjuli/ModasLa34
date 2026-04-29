@@ -689,7 +689,134 @@
 
     <div id="form-proveedor" class="form-modal"><div class="form-modal-content"><div class="form-modal-header"><h3>📦 Nuevo Proveedor</h3><span class="close" onclick="cerrarFormulario('proveedor')">&times;</span></div><div class="form-modal-body"><form onsubmit="event.preventDefault(); guardarProveedor()"><div class="form-group"><label>Nombre</label><input type="text" id="proveedor-nombre" required></div><div class="form-group"><label>Contacto</label><input type="text" id="proveedor-contacto"></div><div class="form-row"><div class="form-group"><label>Teléfono</label><input type="tel" id="proveedor-telefono"></div><div class="form-group"><label>Email</label><input type="email" id="proveedor-email"></div></div><div class="form-group"><label>Dirección</label><textarea id="proveedor-direccion" rows="2"></textarea></div><button type="submit" class="submit-btn">Guardar</button><button type="button" class="cancel-btn" onclick="cerrarFormulario('proveedor')">Cancelar</button></form></div></div></div>
 
-    <div id="form-venta" class="form-modal"><div class="form-modal-content" style="max-width:900px"><div class="form-modal-header"><h3>📝 Venta Manual</h3><span class="close" onclick="cerrarFormulario('venta')">&times;</span></div><div class="form-modal-body"><form id="venta-form" onsubmit="event.preventDefault(); guardarVenta();"><div class="form-row"><div class="form-group"><label>📅 Fecha</label><input type="date" id="venta-fecha" required></div><div class="form-group"><label>👤 Cliente</label><input type="text" id="venta-cliente" placeholder="Nombre del cliente"></div><div class="form-group"><label>💵 Método de pago</label><select id="venta-metodo" required><option value="Efectivo">Efectivo</option><option value="Tarjeta Débito">Tarjeta Débito</option><option value="Tarjeta Crédito">Tarjeta Crédito</option><option value="Transferencia">Transferencia</option><option value="QR">QR</option></select></div></div><div class="panel-agregar-producto" style="background:#fefaf5;padding:1rem;border-radius:12px;margin-bottom:1rem;border:1px solid #f0e4d8"><h4>➕ Agregar producto</h4><div class="form-row"><div class="form-group" style="flex:2"><label>📦 Producto</label><input type="text" id="venta-producto-nombre" placeholder="Ej: Vestido Floral" class="form-control" required></div><div class="form-group"><label>📏 Talla</label><input type="text" id="venta-producto-talla" placeholder="Ej: S, M, L" class="form-control"></div><div class="form-group"><label>🎨 Color</label><input type="text" id="venta-producto-color" placeholder="Ej: Rojo" class="form-control"></div></div><div class="form-row"><div class="form-group"><label>🔢 Cantidad</label><input type="number" id="venta-producto-cantidad" value="1" min="1" class="form-control"></div><div class="form-group"><label>💰 Precio unitario</label><input type="number" id="venta-producto-precio" placeholder="0" min="0" step="100" class="form-control" required></div><div class="form-group"><button type="button" class="btn-agregar" onclick="agregarProductoVentaManual()" style="margin-top:24px;background:#27ae60;color:white;border:none;padding:0.6rem 1.2rem;border-radius:30px">➕ Agregar</button></div></div></div><div class="table-responsive"><table class="data-table" id="tabla-carrito"><thead><tr><th>Producto</th><th>Talla</th><th>Color</th><th>Precio</th><th>Cantidad</th><th>Subtotal</th><th></th></tr></thead><tbody id="carrito-body"><tr><td colspan="7">No hay productos agregados</td></tr></tbody><tfoot><tr><td colspan="5"><strong>Total:</strong></td><td colspan="2"><strong id="carrito-total">$0</strong></td></tr></tfoot></table></div><div class="form-actions" style="display:flex;gap:1rem;justify-content:flex-end;margin-top:1rem"><button type="submit" class="btn-primary" style="background:#b87c4e;color:white;border:none;padding:0.6rem 1.2rem;border-radius:30px">✅ Registrar Venta</button><button type="button" class="btn-secondary" onclick="cerrarFormulario('venta')" style="background:#f5ede8;color:#4a3728;border:1px solid #f0e4d8;padding:0.6rem 1.2rem;border-radius:30px">Cancelar</button></div></form></div></div></div>
+<div id="form-venta" class="form-modal">
+    <div class="form-modal-content" style="max-width:900px">
+        <div class="form-modal-header">
+            <h3>📝 Venta Manual</h3>
+            <span class="close" onclick="cerrarFormulario('venta')">&times;</span>
+        </div>
+        <div class="form-modal-body">
+            
+            <!-- ===== ESCÁNER CON CÁMARA (NUEVO) ===== -->
+            <div class="lector-camara-section" style="margin-bottom: 1.5rem; padding: 1rem; background: #fefaf5; border-radius: 16px; border: 1px solid #f0e4d8;">
+                <div style="display: flex; gap: 0.8rem; align-items: center; flex-wrap: wrap;">
+                    <button type="button" id="btn-escanner-camara" class="btn-outline" onclick="abrirEscannerCamara()" style="background: #d4a5a9; color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 30px; cursor: pointer;">
+                        <i class="fas fa-camera"></i> 📷 Escanear con cámara
+                    </button>
+                    <div style="flex: 1; min-width: 200px;">
+                        <input type="text" id="input-codigo-manual" placeholder="O escribe el código SKU manualmente y presiona Enter..." 
+                               style="width: 100%; padding: 0.6rem 1rem; border-radius: 30px; border: 1px solid #f0e4d8; background: white;">
+                    </div>
+                </div>
+                <div style="font-size: 0.7rem; color: #b8a38e; margin-top: 0.5rem; text-align: center;">
+                    💡 Los códigos SKU están en las etiquetas impresas. Ejemplo: MODA-001-S
+                </div>
+            </div>
+            
+            <!-- Modal de cámara (aparece al hacer clic) -->
+            <div id="modal-camara-lector" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.95); z-index: 10000;">
+                <div style="position: relative; height: 100%; display: flex; flex-direction: column;">
+                    <video id="video-lector" autoplay style="flex: 1; object-fit: cover; width: 100%;"></video>
+                    <div style="position: absolute; top: 20px; left: 0; right: 0; text-align: center;">
+                        <div style="background: rgba(0,0,0,0.6); display: inline-block; padding: 8px 20px; border-radius: 30px; color: white; font-size: 0.9rem;">
+                            📷 Apunta el código de barras a la cámara
+                        </div>
+                    </div>
+                    <div style="position: absolute; bottom: 30px; left: 0; right: 0; text-align: center; display: flex; gap: 1rem; justify-content: center;">
+                        <button onclick="capturarYBuscar()" style="background: white; border: none; width: 70px; height: 70px; border-radius: 50%; font-size: 2rem; cursor: pointer;">
+                            📷
+                        </button>
+                        <button onclick="cerrarEscannerCamara()" style="background: #ff4757; border: none; width: 70px; height: 70px; border-radius: 50%; font-size: 2rem; color: white; cursor: pointer;">
+                            ✕
+                        </button>
+                    </div>
+                    <canvas id="canvas-lector" style="display: none;"></canvas>
+                </div>
+            </div>
+            
+            <!-- ===== FIN ESCÁNER ===== -->
+            
+            <form id="venta-form" onsubmit="event.preventDefault(); guardarVentaManual();">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>📅 Fecha</label>
+                        <input type="date" id="venta-fecha" required>
+                    </div>
+                    <div class="form-group">
+                        <label>👤 Cliente</label>
+                        <input type="text" id="venta-cliente" placeholder="Nombre del cliente">
+                    </div>
+                    <div class="form-group">
+                        <label>💵 Método de pago</label>
+                        <select id="venta-metodo" required>
+                            <option value="Efectivo">Efectivo</option>
+                            <option value="Tarjeta Débito">Tarjeta Débito</option>
+                            <option value="Tarjeta Crédito">Tarjeta Crédito</option>
+                            <option value="Transferencia">Transferencia</option>
+                            <option value="QR">QR</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="panel-agregar-producto" style="background:#fefaf5;padding:1rem;border-radius:12px;margin-bottom:1rem;border:1px solid #f0e4d8">
+                    <h4>➕ Agregar producto manualmente</h4>
+                    <div class="form-row">
+                        <div class="form-group" style="flex:2">
+                            <label>📦 Producto</label>
+                            <input type="text" id="venta-producto-nombre" placeholder="Ej: Vestido Floral" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>📏 Talla</label>
+                            <input type="text" id="venta-producto-talla" placeholder="Ej: S, M, L" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>🎨 Color</label>
+                            <input type="text" id="venta-producto-color" placeholder="Ej: Rojo" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>🔢 Cantidad</label>
+                            <input type="number" id="venta-producto-cantidad" value="1" min="1" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>💰 Precio unitario</label>
+                            <input type="number" id="venta-producto-precio" placeholder="0" min="0" step="100" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <button type="button" class="btn-agregar" onclick="agregarProductoVentaManual()" style="margin-top:24px;background:#27ae60;color:white;border:none;padding:0.6rem 1.2rem;border-radius:30px;cursor:pointer">
+                                ➕ Agregar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="data-table" id="tabla-carrito">
+                        <thead>
+                            <tr><th>Producto</th><th>Talla</th><th>Color</th><th>Precio</th><th>Cantidad</th><th>Subtotal</th><th></th></tr>
+                        </thead>
+                        <tbody id="carrito-body">
+                            <tr><td colspan="7" style="text-align:center; padding:2rem;">No hay productos agregados. Usa el escáner o agrega manualmente.{% endfor %}</td></tr>
+                        </tbody>
+                        <tfoot>
+                            <tr><td colspan="5"><strong>Total:</strong></td><td colspan="2"><strong id="carrito-total">$0</strong></td></tr>
+                        </tfoot>
+                    </table>
+                </div>
+                
+                <div class="form-actions" style="display:flex;gap:1rem;justify-content:flex-end;margin-top:1rem">
+                    <button type="submit" class="btn-primary" style="background:#b87c4e;color:white;border:none;padding:0.6rem 1.2rem;border-radius:30px;cursor:pointer">
+                        ✅ Registrar Venta
+                    </button>
+                    <button type="button" class="btn-secondary" onclick="cerrarFormulario('venta')" style="background:#f5ede8;color:#4a3728;border:1px solid #f0e4d8;padding:0.6rem 1.2rem;border-radius:30px;cursor:pointer">
+                        Cancelar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
     <div id="modal-editar-venta" class="form-modal"><div class="form-modal-content"><div class="form-modal-header"><h3>✏️ Editar Venta</h3><span class="close" onclick="cerrarModalEditarVenta()">&times;</span></div><div class="form-modal-body"><form id="editar-venta-form" onsubmit="event.preventDefault(); actualizarVenta();"><input type="hidden" id="editar-venta-id"><div class="form-row"><div class="form-group"><label>📅 Fecha</label><input type="date" id="editar-venta-fecha" required></div><div class="form-group"><label>👤 Cliente</label><input type="text" id="editar-venta-cliente"></div><div class="form-group"><label>💵 Método de pago</label><select id="editar-venta-metodo" required><option value="Efectivo">Efectivo</option><option value="Tarjeta Débito">Tarjeta Débito</option><option value="Tarjeta Crédito">Tarjeta Crédito</option><option value="Transferencia">Transferencia</option><option value="QR">QR</option></select></div></div><div class="form-group"><label>📝 Notas</label><textarea id="editar-venta-notas" rows="2" placeholder="Motivo del cambio, devolución, etc."></textarea></div><div class="form-group"><label>🔄 Estado</label><select id="editar-venta-estado"><option value="completada">Completada</option><option value="pendiente">Pendiente</option><option value="cambiado">Cambio solicitado</option><option value="devuelto">Devuelto</option></select></div><div class="form-actions" style="display:flex;gap:1rem;justify-content:flex-end;margin-top:1rem"><button type="submit" class="btn-primary" style="background:#b87c4e;color:white;border:none;padding:0.6rem 1.2rem;border-radius:30px">💾 Guardar cambios</button><button type="button" class="btn-danger" onclick="eliminarVenta()" style="background:#e74c3c;color:white;border:none;padding:0.6rem 1.2rem;border-radius:30px">🗑️ Eliminar venta</button><button type="button" class="btn-secondary" onclick="cerrarModalEditarVenta()" style="background:#f5ede8;color:#4a3728;border:1px solid #f0e4d8;padding:0.6rem 1.2rem;border-radius:30px">Cancelar</button></div></form></div></div></div>
 
