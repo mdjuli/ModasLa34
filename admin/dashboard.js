@@ -644,7 +644,6 @@ function mostrarProductosOrdenados(productos) {
                 <td>${variantes.length} tallas</td>
                 <td>${totalStock}</td>
                 <td>${precioTexto}</td>
-                // Dentro de mostrarProductosOrdenados, en las acciones, agrega:
                 <td>
                     <button class="action-btn" onclick="editarProducto(${p.id})">✏️</button>
                     <button class="action-btn" onclick="verVariantes(${p.id})">📋</button>
