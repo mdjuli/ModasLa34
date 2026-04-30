@@ -2379,7 +2379,7 @@ function generarHTMLParaImpresion(producto, variantes) {
 <head>
     <meta charset="UTF-8">
     <title>Etiquetas - ${nombreProducto}</title>
-    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
