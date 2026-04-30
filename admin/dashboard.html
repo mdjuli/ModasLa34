@@ -5,32 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
     <title>Dashboard - Modas La 34</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Inter', sans-serif;
             background: #fefaf5;
             color: #2c2418;
             min-height: 100vh;
         }
 
-        /* ===== SCROLL PERSONALIZADO ===== */
+        h1, h2, h3, .logo-text, .form-modal-header h3 {
+            font-family: 'Playfair Display', serif;
+        }
+
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #f0ebe4; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb { background: #d4a5a9; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #c4a68a; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #b87c4e; }
 
-        /* ===== HEADER MODERNO ===== */
+        /* Header */
         .header {
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(10px);
+            background: white;
             padding: 0.8rem 2rem;
             display: flex;
             justify-content: space-between;
@@ -41,34 +39,29 @@
             left: 0;
             right: 0;
             z-index: 100;
-            box-shadow: 0 2px 20px rgba(0,0,0,0.02);
+            box-shadow: 0 2px 15px rgba(0,0,0,0.02);
         }
-
         .header-left { display: flex; align-items: center; gap: 1.2rem; }
         .menu-btn {
-            background: #f5ede8;
+            background: #faf5f0;
             border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
+            width: 42px;
+            height: 42px;
+            border-radius: 14px;
             cursor: pointer;
             color: #b87c4e;
             font-size: 1.2rem;
             transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
         .menu-btn:hover { background: #d4a5a9; color: white; }
-        .logo { display: flex; align-items: center; gap: 0.6rem; }
+        .logo { display: flex; align-items: baseline; gap: 0.5rem; flex-wrap: wrap; }
         .logo-icon { font-size: 1.6rem; }
         .logo-text {
-            font-weight: 600;
             font-size: 1.2rem;
+            font-weight: 600;
             background: linear-gradient(135deg, #b87c4e, #d4a5a9);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
         }
         .logo-badge {
             background: #f0e4d8;
@@ -83,7 +76,7 @@
             display: flex;
             align-items: center;
             gap: 0.8rem;
-            background: #f5ede8;
+            background: #faf5f0;
             padding: 0.3rem 1rem 0.3rem 0.8rem;
             border-radius: 40px;
         }
@@ -96,7 +89,6 @@
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 0.9rem;
         }
         #userNameDisplay { font-size: 0.85rem; font-weight: 500; color: #4a3728; }
         .user-rol-badge {
@@ -117,11 +109,9 @@
             border-radius: 10px;
             transition: all 0.2s;
         }
-        .logout-btn:hover { background: #f5ede8; color: #e74c3c; }
-        .header-right .logout-btn { background: none; color: #c4a68a; }
-        .header-right .logout-btn:hover { background: #f5ede8; color: #e74c3c; }
+        .logout-btn:hover { background: #faf5f0; color: #e74c3c; }
 
-        /* ===== SIDEBAR ===== */
+        /* Sidebar */
         .sidebar {
             position: fixed;
             top: 65px;
@@ -143,7 +133,6 @@
             gap: 12px;
             padding: 0.8rem 1rem;
             color: #5c4b3a;
-            text-decoration: none;
             font-size: 0.9rem;
             font-weight: 500;
             border-radius: 14px;
@@ -154,7 +143,7 @@
             border: none;
             margin-bottom: 0.3rem;
         }
-        .nav-item i { width: 24px; font-size: 1.1rem; color: #c4a68a; transition: all 0.2s; }
+        .nav-item i { width: 24px; font-size: 1.1rem; color: #c4a68a; }
         .nav-item:hover { background: #fef5ef; color: #b87c4e; }
         .nav-item:hover i { color: #d4a5a9; }
         .nav-item.active { background: linear-gradient(135deg, #fef5ef, #fae9e0); color: #b87c4e; }
@@ -172,7 +161,7 @@
         }
         .sidebar-overlay.active { display: block; }
 
-        /* ===== MAIN CONTENT ===== */
+        /* Main Content */
         .main-content {
             margin-top: 65px;
             padding: 2rem;
@@ -182,7 +171,7 @@
             margin-right: auto;
         }
 
-        /* ===== TARJETAS ===== */
+        /* Stats Cards */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -216,9 +205,8 @@
         .stat-title { font-size: 0.75rem; font-weight: 600; color: #b8a38e; text-transform: uppercase; letter-spacing: 0.5px; }
         .stat-icon { font-size: 1.6rem; color: #d4a5a9; }
         .stat-value { font-size: 2rem; font-weight: 700; color: #4a3728; letter-spacing: -0.5px; }
-        .stat-sub { font-size: 0.7rem; color: #b8a38e; margin-top: 0.5rem; }
 
-        /* ===== FILTROS ===== */
+        /* Filters */
         .filters-section {
             background: white;
             border-radius: 20px;
@@ -228,7 +216,6 @@
             display: flex;
             flex-wrap: wrap;
             align-items: center;
-            justify-content: space-between;
             gap: 1rem;
         }
         .search-box {
@@ -242,7 +229,7 @@
             flex: 1;
             min-width: 200px;
         }
-        .search-box i { color: #d4a5a9; font-size: 1rem; }
+        .search-box i { color: #c4a68a; }
         .search-box input {
             border: none;
             background: none;
@@ -252,7 +239,6 @@
             outline: none;
             color: #4a3728;
         }
-        .search-box input::placeholder { color: #c4a68a; }
         .filter-group {
             display: flex;
             align-items: center;
@@ -262,7 +248,6 @@
             border-radius: 40px;
             padding: 0.3rem 1rem;
         }
-        .filter-group i { color: #d4a5a9; font-size: 0.9rem; }
         .filter-group select, .filter-group input {
             border: none;
             background: none;
@@ -272,7 +257,7 @@
             color: #4a3728;
             cursor: pointer;
         }
-        .btn-clear-filters {
+        .btn-clear {
             background: none;
             border: 1px solid #f0e4d8;
             padding: 0.5rem 1rem;
@@ -282,9 +267,9 @@
             color: #b87c4e;
             transition: all 0.2s;
         }
-        .btn-clear-filters:hover { background: #fef5ef; border-color: #d4a5a9; }
+        .btn-clear:hover { background: #fef5ef; border-color: #d4a5a9; }
 
-        /* ===== TABLAS ===== */
+        /* Tables */
         .data-card {
             background: white;
             border-radius: 24px;
@@ -314,7 +299,7 @@
             cursor: pointer;
             transition: all 0.2s;
         }
-        .add-btn:hover { background: linear-gradient(135deg, #c49498, #b87c4e); transform: scale(1.02); }
+        .add-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(212,165,169,0.3); }
         .table-responsive { overflow-x: auto; }
         .data-table {
             width: 100%;
@@ -336,15 +321,14 @@
         }
         .data-table tr:hover { background: #fefaf5; }
 
-        /* Ordenamiento */
         .sortable-header {
             cursor: pointer;
             user-select: none;
             transition: background 0.2s;
         }
-        .sortable-header:hover { background: rgba(212, 165, 169, 0.1); }
+        .sortable-header:hover { background: rgba(212,165,169,0.1); }
         .sortable-header i { margin-left: 0.5rem; font-size: 0.7rem; color: #d4a5a9; opacity: 0.5; }
-        .sortable-header.sort-asc i { opacity: 1; transform: rotate(0deg); }
+        .sortable-header.sort-asc i { opacity: 1; }
         .sortable-header.sort-desc i { opacity: 1; transform: rotate(180deg); }
 
         .action-btn {
@@ -354,9 +338,9 @@
             cursor: pointer;
             margin: 0 0.2rem;
             color: #c4a68a;
-            transition: all 0.2s;
             padding: 0.3rem 0.5rem;
             border-radius: 8px;
+            transition: all 0.2s;
         }
         .action-btn:hover { background: #f5ede8; color: #d4a5a9; }
         .delete-btn:hover { color: #e74c3c; }
@@ -372,7 +356,7 @@
         .estado-pendiente { background: #fff3e0; color: #ef6c00; }
         .estado-recibida { background: #e3f2fd; color: #1565c0; }
 
-        /* Formularios modales */
+        /* Modales */
         .form-modal {
             display: none;
             position: fixed;
@@ -380,7 +364,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0,0,0,0.5);
             backdrop-filter: blur(4px);
             z-index: 9999;
             align-items: center;
@@ -389,12 +373,12 @@
         .form-modal.active { display: flex !important; }
         .form-modal-content {
             background: white;
-            border-radius: 24px;
+            border-radius: 28px;
             max-width: 900px;
             width: 90%;
             max-height: 85vh;
             overflow-y: auto;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
         }
         .form-modal-header {
             display: flex;
@@ -405,7 +389,7 @@
             position: sticky;
             top: 0;
             background: white;
-            border-radius: 24px 24px 0 0;
+            border-radius: 28px 28px 0 0;
         }
         .form-modal-header h3 { font-size: 1.2rem; font-weight: 600; color: #4a3728; }
         .form-modal-header .close {
@@ -413,7 +397,6 @@
             cursor: pointer;
             color: #c4a68a;
             transition: all 0.2s;
-            line-height: 1;
         }
         .form-modal-header .close:hover { color: #e74c3c; }
         .form-modal-body { padding: 1.5rem; }
@@ -428,7 +411,7 @@
             transition: all 0.2s;
             background: white;
         }
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+        .form-group input:focus, .form-group select:focus {
             outline: none;
             border-color: #d4a5a9;
             box-shadow: 0 0 0 3px rgba(212,165,169,0.1);
@@ -458,20 +441,8 @@
             width: 100%;
             margin-top: 0.8rem;
             cursor: pointer;
-            transition: all 0.2s;
         }
         .cancel-btn:hover { background: #e8ddd2; }
-
-        .alert {
-            padding: 0.8rem 1.2rem;
-            border-radius: 16px;
-            margin-bottom: 1rem;
-            display: none;
-            font-size: 0.85rem;
-            font-weight: 500;
-        }
-        .alert.success { background: #e8f5e9; color: #2e7d32; border-left: 4px solid #2e7d32; }
-        .alert.error { background: #ffebee; color: #c62828; border-left: 4px solid #c62828; }
 
         /* Variantes */
         .variante-card {
@@ -489,9 +460,8 @@
             flex-wrap: wrap;
             gap: 1rem;
         }
-        .btn-agregar-color, .btn-sin-color, .btn-eliminar-talla {
+        .btn-secondary-sm {
             background: #f5ede8;
-            color: #5c4b3a;
             border: 1px solid #f0e4d8;
             padding: 0.3rem 1rem;
             border-radius: 30px;
@@ -499,10 +469,7 @@
             cursor: pointer;
             transition: all 0.2s;
         }
-        .btn-agregar-color:hover, .btn-sin-color:hover, .btn-eliminar-talla:hover {
-            background: #d4a5a9;
-            color: white;
-        }
+        .btn-secondary-sm:hover { background: #d4a5a9; color: white; }
         .color-row {
             display: flex;
             gap: 0.5rem;
@@ -517,7 +484,7 @@
         .color-nombre-input { flex: 2; min-width: 120px; padding: 0.5rem; border: 1px solid #f0e4d8; border-radius: 8px; }
         .color-stock-input { width: 80px; padding: 0.5rem; border: 1px solid #f0e4d8; border-radius: 8px; text-align: center; }
 
-        /* Stock cards */
+        /* Stock */
         .stock-cards {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -526,34 +493,32 @@
         }
         .stock-critico { color: #e67e22; font-weight: bold; }
         .stock-agotado { color: #e74c3c; font-weight: bold; }
-        .stock-bajo-row { background: #fff8f0; }
-        .stock-agotado-row { background: #fef0f0; }
         .table-container {
             background: white;
-            border-radius: 24px;
+            border-radius: 20px;
             padding: 1.5rem;
             margin-bottom: 1.5rem;
             border: 1px solid #f0e4d8;
         }
         .table-container h3 { margin-bottom: 1rem; color: #4a3728; font-size: 0.95rem; font-weight: 600; }
 
-        /* Ventas */
-        .ventas-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
+        .alert {
+            padding: 0.8rem 1.2rem;
+            border-radius: 16px;
+            margin-bottom: 1rem;
+            display: none;
+            font-size: 0.85rem;
+            font-weight: 500;
         }
-        .cantidad-input { width: 70px; padding: 0.4rem; text-align: center; border: 1.5px solid #f0e4d8; border-radius: 12px; }
+        .alert.success { background: #e8f5e9; color: #2e7d32; border-left: 4px solid #2e7d32; }
+        .alert.error { background: #ffebee; color: #c62828; border-left: 4px solid #c62828; }
 
         @media (max-width: 768px) {
             .main-content { padding: 1rem; }
-            .stats-grid, .stock-cards, .ventas-cards { grid-template-columns: 1fr; }
+            .stats-grid, .stock-cards { grid-template-columns: 1fr; }
             .filters-section { flex-direction: column; align-items: stretch; }
             .search-box, .filter-group { width: 100%; }
-            .data-header { flex-direction: column; align-items: flex-start; }
             .logo-text { display: none; }
-            .user-info { padding: 0.3rem 0.8rem; }
             #userNameDisplay { display: none; }
         }
     </style>
@@ -594,345 +559,153 @@
     <main class="main-content">
         <div id="alertMessage" class="alert"></div>
 
-        <!-- PRODUCTOS -->
+        <!-- ==================== PRODUCTOS ==================== -->
         <div id="modulo-productos" class="module-section">
             <div class="stats-grid">
-                <div class="stat-card"><div class="stat-header"><span class="stat-title">Total Productos</span><i class="fas fa-box stat-icon"></i></div><div class="stat-value" id="stats-total-productos">0</div><div class="stat-sub">en inventario</div></div>
-                <div class="stat-card"><div class="stat-header"><span class="stat-title">Stock Bajo</span><i class="fas fa-exclamation-triangle stat-icon"></i></div><div class="stat-value" id="stats-stock-bajo">0</div><div class="stat-sub">productos por reabastecer</div></div>
-                <div class="stat-card" onclick="mostrarFormulario('producto')" style="cursor:pointer"><div class="stat-header"><span class="stat-title">Nuevo Producto</span><i class="fas fa-plus-circle stat-icon"></i></div><div class="stat-value">+</div><div class="stat-sub">agregar al catálogo</div></div>
+                <div class="stat-card"><div class="stat-header"><span class="stat-title">Total Productos</span><i class="fas fa-box stat-icon"></i></div><div class="stat-value" id="stats-total-productos">0</div></div>
+                <div class="stat-card"><div class="stat-header"><span class="stat-title">Stock Bajo</span><i class="fas fa-exclamation-triangle stat-icon"></i></div><div class="stat-value" id="stats-stock-bajo">0</div></div>
+                <div class="stat-card" onclick="mostrarFormulario('producto')"><div class="stat-header"><span class="stat-title">Nuevo Producto</span><i class="fas fa-plus-circle stat-icon"></i></div><div class="stat-value">+</div></div>
             </div>
+
             <div class="filters-section">
-                <div class="search-box"><i class="fas fa-search"></i><input type="text" id="search-productos" placeholder="Buscar por nombre, código o categoría..."></div>
-                <div class="filter-group"><i class="fas fa-tag"></i><select id="filter-categoria-productos"><option value="">Todas las categorías</option><option value="vestidos">👗 Vestidos</option><option value="blusas">👚 Blusas</option><option value="pantalones">👖 Pantalones</option><option value="deportivo">⚽ Deportivo</option><option value="caballero">👔 Caballero</option><option value="accesorios">🎀 Accesorios</option></select></div>
-                <div class="filter-group"><i class="fas fa-chart-line"></i><select id="filter-stock-productos"><option value="">Todos</option><option value="bajo">Stock bajo (&lt;5)</option><option value="agotado">Agotados (0)</option><option value="normal">Stock normal</option></select></div>
-                <button class="btn-clear-filters" onclick="limpiarFiltrosProductos()"><i class="fas fa-eraser"></i> Limpiar</button>
+                <div class="search-box"><i class="fas fa-search"></i><input type="text" id="search-productos" placeholder="Buscar por nombre, código..."></div>
+                <div class="filter-group"><i class="fas fa-tag"></i><select id="filter-categoria-productos"><option value="">Todas</option><option value="vestidos">👗 Vestidos</option><option value="blusas">👚 Blusas</option><option value="pantalones">👖 Pantalones</option><option value="deportivo">⚽ Deportivo</option><option value="caballero">👔 Caballero</option><option value="accesorios">🎀 Accesorios</option></select></div>
+                <div class="filter-group"><i class="fas fa-chart-line"></i><select id="filter-stock-productos"><option value="">Todos</option><option value="bajo">Stock bajo (&lt;5)</option><option value="agotado">Agotados</option></select></div>
+                <button class="btn-clear" onclick="limpiarFiltrosProductos()"><i class="fas fa-eraser"></i> Limpiar</button>
             </div>
+
             <div class="data-card">
                 <div class="data-header"><h2><i class="fas fa-list"></i> Productos Registrados</h2><button class="add-btn" onclick="mostrarFormulario('producto')">+ Nuevo Producto</button></div>
-                <div class="table-responsive"><table class="data-table" id="tabla-productos"><thead><tr><th class="sortable-header" data-sort="imagen" onclick="ordenarProductos('imagen')">Producto <i class="fas fa-sort"></i></th><th class="sortable-header" data-sort="codigo" onclick="ordenarProductos('codigo')">Código <i class="fas fa-sort"></i></th><th class="sortable-header" data-sort="nombre" onclick="ordenarProductos('nombre')">Nombre <i class="fas fa-sort"></i></th><th class="sortable-header" data-sort="categoria" onclick="ordenarProductos('categoria')">Categoría <i class="fas fa-sort"></i></th><th>Tallas</th><th class="sortable-header" data-sort="stock" onclick="ordenarProductos('stock')">Stock <i class="fas fa-sort"></i></th><th class="sortable-header" data-sort="precio" onclick="ordenarProductos('precio')">Precio <i class="fas fa-sort"></i></th><th>Acciones</th></tr></thead><tbody><tr><td colspan="8">Cargando...</td></tr></tbody></table></div>
+                <div class="table-responsive"><table class="data-table" id="tabla-productos"><thead><tr><th>Imagen</th><th>Código</th><th>Nombre</th><th>Categoría</th><th>Tallas</th><th>Stock</th><th>Precio</th><th>Acciones</th></tr></thead><tbody></td></tbody></table></div>
             </div>
-            <div id="modal-config-etiquetas" class="form-modal" style="display: none;">
-                <div class="form-modal-content" style="max-width: 900px;">
-                    <div class="form-modal-header">
-                        <h3><i class="fas fa-print"></i> Configurar impresión de etiquetas</h3>
-                        <span class="close" onclick="cerrarConfigEtiquetas()">&times;</span>
-                    </div>
-                    <div class="form-modal-body">
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
-                            <!-- Panel de controles -->
-                            <div style="background: #fefaf5; padding: 1rem; border-radius: 16px;">
-                                <h4 style="margin-bottom: 1rem; color: #4a3728;">⚙️ Configuración</h4>
-                                
-                                <div class="form-group">
-                                    <label>📐 Columnas por hoja</label>
-                                    <input type="range" id="config-columnas" min="1" max="5" value="3" step="1" style="width: 100%;">
-                                    <div style="display: flex; justify-content: space-between;">
-                                        <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
-                                    </div>
-                                    <span id="valor-columnas" style="color: #d4a5a9; font-weight: bold;">3 columnas</span>
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label>📏 Filas por hoja</label>
-                                    <input type="range" id="config-filas" min="2" max="8" value="4" step="1" style="width: 100%;">
-                                    <div style="display: flex; justify-content: space-between;">
-                                        <span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span>
-                                    </div>
-                                    <span id="valor-filas" style="color: #d4a5a9; font-weight: bold;">4 filas</span>
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label>📏 Tamaño de etiqueta</label>
-                                    <div style="display: flex; gap: 1rem;">
-                                        <select id="config-tamaño" style="flex: 1;">
-                                            <option value="pequeño">Pequeño (4x3 cm)</option>
-                                            <option value="mediano" selected>Mediano (6x4 cm)</option>
-                                            <option value="grande">Grande (8x5 cm)</option>
-                                            <option value="personalizado">Personalizado</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                
-                                <div id="config-personalizado" style="display: none;">
-                                    <div class="form-group">
-                                        <label>Ancho (cm)</label>
-                                        <input type="number" id="config-ancho" value="6" step="0.5" min="3" max="10">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Alto (cm)</label>
-                                        <input type="number" id="config-alto" value="4" step="0.5" min="2" max="8">
-                                    </div>
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label>🖨️ Márgenes (mm)</label>
-                                    <input type="range" id="config-margen" min="5" max="20" value="10" step="1">
-                                    <span id="valor-margen" style="color: #d4a5a9;">10 mm</span>
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label>🎨 Mostrar códigos de barras</label>
-                                    <select id="config-mostrar-barcode">
-                                        <option value="si">Sí, mostrar código</option>
-                                        <option value="no">No, solo texto</option>
-                                    </select>
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label>📦 Repetir etiquetas para llenar hoja</label>
-                                    <select id="config-repetir">
-                                        <option value="si">Sí, llenar hoja completa</option>
-                                        <option value="no">No, solo las necesarias</option>
-                                    </select>
-                                </div>
-                                
-                                <button class="btn-primary" onclick="actualizarVistaPrevia()" style="width: 100%; margin-top: 1rem;">
-                                    <i class="fas fa-sync-alt"></i> Actualizar vista previa
-                                </button>
-                            </div>
-                            
-                            <!-- Vista previa -->
-                            <div>
-                                <h4 style="margin-bottom: 1rem; color: #4a3728;">👁️ Vista previa</h4>
-                                <div id="vista-previa-etiquetas" style="background: white; border: 2px solid #e8e0d5; border-radius: 12px; padding: 1rem; min-height: 400px; overflow: auto;">
-                                    <div style="text-align: center; padding: 2rem; color: #aaa;">
-                                        Selecciona un producto y haz clic en "Generar vista previa"
-                                    </div>
-                                </div>
-                                <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
-                                    <button class="btn-export" onclick="imprimirEtiquetasConfig()" style="flex: 1;">
-                                        <i class="fas fa-print"></i> Imprimir
-                                    </button>
-                                    <button class="btn-secondary" onclick="cerrarConfigEtiquetas()" style="flex: 1;">
-                                        Cancelar
-                                    </button>
-                                </div>
-                            </div>
+        </div>
+
+        <!-- ==================== FORMULARIO PRODUCTO ==================== -->
+        <div id="form-producto" class="form-modal">
+            <div class="form-modal-content">
+                <div class="form-modal-header"><h3>🌸 Nuevo Producto</h3><span class="close" onclick="cerrarFormulario('producto')">&times;</span></div>
+                <div class="form-modal-body">
+                    <form onsubmit="event.preventDefault(); guardarProductoBase()">
+                        <div class="form-row">
+                            <div class="form-group"><label>Código</label><input type="text" id="producto-codigo" placeholder="Ej: PANT-001" required></div>
+                            <div class="form-group"><label>Categoría</label><select id="producto-categoria" required><option value="">Seleccionar</option><option value="vestidos">Vestidos</option><option value="blusas">Blusas</option><option value="pantalones">Pantalones</option><option value="deportivo">Deportivo</option><option value="caballero">Caballero</option><option value="accesorios">Accesorios</option></select></div>
                         </div>
-                    </div>
+                        <div class="form-group"><label>Nombre del Producto</label><input type="text" id="producto-nombre" placeholder="Ej: Vestido Floral" required></div>
+                        <div class="form-row">
+                            <div class="form-group"><label>💰 Precio de compra</label><input type="number" id="producto-precio-compra" placeholder="0" step="1000"></div>
+                            <div class="form-group"><label>💰 Precio de venta (general)</label><input type="number" id="producto-precio-venta-general" placeholder="0" step="1000"><small style="color:#b8a38e; display:block;">Se aplicará a todas las tallas si no especificas</small></div>
+                        </div>
+                        <div class="form-group"><label>🖼️ URL Imagen</label><input type="url" id="producto-imagen" placeholder="https://..."></div>
+                        
+                        <h4 style="margin: 1rem 0 0.5rem;">📦 Variantes (Tallas y Colores)</h4>
+                        <div id="variantes-container"></div>
+                        <button type="button" class="add-btn" onclick="agregarVariante()" style="margin: 0.5rem 0;">+ Agregar talla</button>
+                        
+                        <button type="submit" class="submit-btn">Guardar Producto</button>
+                        <button type="button" class="cancel-btn" onclick="cerrarFormulario('producto')">Cancelar</button>
+                    </form>
                 </div>
             </div>
         </div>
 
-        <!-- STOCK -->
+        <!-- ==================== STOCK ==================== -->
         <div id="modulo-stock" class="module-section" style="display: none;">
-            <div class="stock-cards"><div class="stat-card"><div class="stat-icon">⚠️</div><div class="stat-info"><h3 id="stock-bajo-count">0</h3><p>Productos con stock bajo</p></div></div><div class="stat-card"><div class="stat-icon">❌</div><div class="stat-info"><h3 id="stock-agotado-count">0</h3><p>Productos agotados</p></div></div><div class="stat-card"><div class="stat-icon">✅</div><div class="stat-info"><h3 id="stock-normal-count">0</h3><p>Productos con stock normal</p></div></div></div>
-            <div class="table-container"><h3>⚠️ Productos con stock bajo (menos de 5 unidades)</h3><table class="data-table" id="tabla-stock-bajo"><thead><tr><th>Producto</th><th>Talla</th><th>Color</th><th>Stock actual</th><th>Stock mínimo</th><th>Acciones</th></tr></thead><tbody id="stock-bajo-body"><tr><td colspan="6">Cargando...</td></tr></tbody></table></div>
-            <div class="table-container"><h3>❌ Productos agotados (stock 0)</h3><table class="data-table" id="tabla-stock-agotado"><thead><tr><th>Producto</th><th>Talla</th><th>Color</th><th>Stock actual</th><th>Estado</th></tr></thead><tbody id="stock-agotado-body"><tr><td colspan="5">Cargando...</td></tr></tbody></table></div>
+            <div class="stock-cards">
+                <div class="stat-card"><div class="stat-icon">⚠️</div><div><h3 id="stock-bajo-count">0</h3><p>Stock bajo</p></div></div>
+                <div class="stat-card"><div class="stat-icon">❌</div><div><h3 id="stock-agotado-count">0</h3><p>Agotados</p></div></div>
+                <div class="stat-card"><div class="stat-icon">✅</div><div><h3 id="stock-normal-count">0</h3><p>Stock normal</p></div></div>
+            </div>
+            <div class="table-container"><h3>⚠️ Stock bajo (&lt;5 unidades)</h3><table class="data-table" id="tabla-stock-bajo"><thead><tr><th>Producto</th><th>Talla</th><th>Color</th><th>Stock</th><th>Acción</th></tr></thead><tbody id="stock-bajo-body"><tr><td colspan="5">Cargando...</td></tr></tbody><table></div>
+            <div class="table-container"><h3>❌ Productos agotados</h3><table class="data-table" id="tabla-stock-agotado"><thead><tr><th>Producto</th><th>Talla</th><th>Color</th><th>Estado</th><th>Acción</th></tr></thead><tbody id="stock-agotado-body"><tr><td colspan="5">Cargando...</td></tr></tbody></table></div>
         </div>
 
-        <!-- COMPRAS -->
+        <!-- ==================== COMPRAS ==================== -->
         <div id="modulo-compras" class="module-section" style="display: none;">
             <div class="stats-grid"><div class="stat-card"><div class="stat-header"><span class="stat-title">Compras del Mes</span><i class="fas fa-calendar stat-icon"></i></div><div class="stat-value" id="stats-compras-mes">$0</div></div><div class="stat-card"><div class="stat-header"><span class="stat-title">Pendientes</span><i class="fas fa-clock stat-icon"></i></div><div class="stat-value" id="stats-compras-pendientes">0</div></div></div>
-            <div class="filters-section"><div class="search-box"><i class="fas fa-search"></i><input type="text" id="search-compras" placeholder="Buscar por proveedor o producto..."></div><div class="filter-group"><i class="fas fa-calendar"></i><input type="date" id="filter-compra-fecha-inicio" placeholder="Fecha inicio"></div><div class="filter-group"><i class="fas fa-calendar"></i><input type="date" id="filter-compra-fecha-fin" placeholder="Fecha fin"></div><div class="filter-group"><i class="fas fa-chart-simple"></i><select id="filter-compra-estado"><option value="">Todos los estados</option><option value="Pendiente">Pendiente</option><option value="Recibida">Recibida</option><option value="Pagada">Pagada</option></select></div><button class="btn-clear-filters" onclick="limpiarFiltrosCompras()"><i class="fas fa-eraser"></i> Limpiar</button></div>
-                <div class="table-responsive"><table class="data-table" id="tabla-compras"><thead><tr><th>Fecha</th><th>Proveedor</th><th>Producto</th><th>Cantidad</th><th>Total</th><th>Estado</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="7">Cargando...</td></tr></tbody></table></div>
-            </div>
+            <div class="data-card"><div class="data-header"><h2>Historial de Compras</h2><button class="add-btn" onclick="mostrarFormulario('compra')">+ Nueva Compra</button></div><div class="table-responsive"><table class="data-table" id="tabla-compras"><thead><tr><th>Fecha</th><th>Proveedor</th><th>Producto</th><th>Total</th><th>Estado</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="6">Cargando...</td></tr></tbody></table></div></div>
         </div>
 
-        <!-- GASTOS -->
-        <div id="modulo-gastos" class="module-section" style="display: none;">
-            <div class="stats-grid"><div class="stat-card"><div class="stat-header"><span class="stat-title">Gastos del Mes</span><i class="fas fa-coins stat-icon"></i></div><div class="stat-value" id="stats-gastos-mes">$0</div></div></div>
-            <div class="filters-section"><div class="search-box"><i class="fas fa-search"></i><input type="text" id="search-gastos" placeholder="Buscar por concepto..."></div><div class="filter-group"><i class="fas fa-calendar"></i><input type="date" id="filter-gasto-fecha-inicio" placeholder="Fecha inicio"></div><div class="filter-group"><i class="fas fa-calendar"></i><input type="date" id="filter-gasto-fecha-fin" placeholder="Fecha fin"></div><div class="filter-group"><i class="fas fa-tag"></i><select id="filter-gasto-categoria"><option value="">Todas las categorías</option><option value="Alquiler">Alquiler</option><option value="Servicios">Servicios</option><option value="Sueldos">Sueldos</option><option value="Marketing">Marketing</option><option value="Otros">Otros</option></select></div><button class="btn-clear-filters" onclick="limpiarFiltrosGastos()"><i class="fas fa-eraser"></i> Limpiar</button></div>
-            <div class="data-card"><div class="data-header"><h2>Historial de Gastos</h2><button class="add-btn" onclick="mostrarFormulario('gasto')">+ Nuevo Gasto</button></div><div class="table-responsive"><table class="data-table" id="tabla-gastos"><thead><tr><th>Fecha</th><th>Concepto</th><th>Categoría</th><th>Monto</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="5">Cargando...</td></tr></tbody></table></div></div>
-        </div>
+        <div id="form-compra" class="form-modal"><div class="form-modal-content"><div class="form-modal-header"><h3>🛍️ Nueva Compra</h3><span class="close" onclick="cerrarFormulario('compra')">&times;</span></div><div class="form-modal-body"><form onsubmit="event.preventDefault(); guardarCompra()"><div class="form-group"><label>Proveedor</label><select id="compra-proveedor" required></select></div><div class="form-group"><label>Fecha</label><input type="date" id="compra-fecha" required></div><div class="form-group"><label>Producto</label><input type="text" id="compra-producto" required></div><div class="form-row"><div class="form-group"><label>Cantidad</label><input type="number" id="compra-cantidad" min="1" required></div><div class="form-group"><label>Precio unitario</label><input type="number" id="compra-precio" min="0" required></div></div><div class="form-group"><label>Estado</label><select id="compra-estado"><option value="Pendiente">Pendiente</option><option value="Recibida">Recibida</option><option value="Pagada">Pagada</option></select></div>
+                        <button type="submit" class="submit-btn">Guardar Compra</button>
+                        <button type="button" class="cancel-btn" onclick="cerrarFormulario('compra')">Cancelar</button>
+                    </form></div></div></div>
+                </div>
 
-        <!-- PERFILES -->
-        <div id="modulo-perfiles" class="module-section" style="display: none;">
-            <div class="data-card"><div class="data-header"><h2>Usuarios del Sistema</h2><button class="add-btn" onclick="mostrarFormulario('perfil')">+ Nuevo Usuario</button></div><div class="table-responsive"><table class="data-table" id="tabla-perfiles"><thead><tr><th>Nombre</th><th>Email</th><th>Rol</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="4">Cargando...</td></tr></tbody></table></div></div>
-        </div>
+                            <!-- ==================== GASTOS ==================== -->
+                <div id="modulo-gastos" class="module-section" style="display: none;">
+                    <div class="stats-grid"><div class="stat-card"><div class="stat-header"><span class="stat-title">Gastos del Mes</span><i class="fas fa-coins stat-icon"></i></div><div class="stat-value" id="stats-gastos-mes">$0</div></div></div>
+                    <div class="data-card"><div class="data-header"><h2>Historial de Gastos</h2><button class="add-btn" onclick="mostrarFormulario('gasto')">+ Nuevo Gasto</button></div><div class="table-responsive"><table class="data-table" id="tabla-gastos"><thead><tr><th>Fecha</th><th>Concepto</th><th>Categoría</th><th>Monto</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="5">Cargando...</td></tr></tbody></table></div></div>
+                </div>
 
-        <!-- PROVEEDORES -->
-        <div id="modulo-proveedores" class="module-section" style="display: none;">
-            <div class="data-card"><div class="data-header"><h2>Proveedores</h2><button class="add-btn" onclick="mostrarFormulario('proveedor')">+ Nuevo Proveedor</button></div><div class="table-responsive"><table class="data-table" id="tabla-proveedores"><thead><tr><th>Nombre</th><th>Contacto</th><th>Teléfono</th><th>Email</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="5">Cargando...</td></tr></tbody></table></div></div>
-        </div>
+                <div id="form-gasto" class="form-modal"><div class="form-modal-content"><div class="form-modal-header"><h3>💸 Nuevo Gasto</h3><span class="close" onclick="cerrarFormulario('gasto')">&times;</span></div><div class="form-modal-body"><form onsubmit="event.preventDefault(); guardarGasto()"><div class="form-group"><label>Fecha</label><input type="date" id="gasto-fecha" required></div><div class="form-group"><label>Concepto</label><input type="text" id="gasto-concepto" required></div><div class="form-group"><label>Categoría</label><select id="gasto-categoria"><option value="Alquiler">Alquiler</option><option value="Servicios">Servicios</option><option value="Sueldos">Sueldos</option><option value="Marketing">Marketing</option><option value="Otros">Otros</option></select></div><div class="form-group"><label>Monto</label><input type="number" id="gasto-monto" min="0" required></div><div class="form-group"><label>Método</label><select id="gasto-metodo"><option value="Efectivo">Efectivo</option><option value="Transferencia">Transferencia</option><option value="Tarjeta">Tarjeta</option></select></div><button type="submit" class="submit-btn">Guardar Gasto</button><button type="button" class="cancel-btn" onclick="cerrarFormulario('gasto')">Cancelar</button></form></div></div></div>
 
-        <!-- VENTAS -->
-        <div id="modulo-ventas" class="module-section" style="display: none;">
-            <div class="ventas-cards">
-                <div class="stat-card" onclick="abrirVentaRapida()" style="cursor:pointer"><div class="stat-icon">⚡</div><div class="stat-info"><h3>Venta Rápida</h3><p>Venta express sin tanto detalle</p></div></div>
-                <div class="stat-card" onclick="abrirNuevaVenta()" style="cursor:pointer"><div class="stat-icon">📝</div><div class="stat-info"><h3>Nueva Venta</h3><p>Venta completa con detalles</p></div></div>
-                <div class="stat-card"><div class="stat-icon">💰</div><div class="stat-info"><h3 id="ventas-hoy-total">$0</h3><p>Ventas de hoy</p></div></div>
-                <div class="stat-card"><div class="stat-icon">📊</div><div class="stat-info"><h3 id="ventas-mes-total">$0</h3><p>Ventas del mes</p></div></div>
-                <div class="stat-card"><div class="stat-icon">🔄</div><div class="stat-info"><h3 id="ventas-cambios-count">0</h3><p>Cambios/Devoluciones</p></div></div>
-            </div>
-            <div class="filters-section">
-                <div class="search-box"><i class="fas fa-search"></i><input type="text" id="search-ventas" placeholder="Buscar por ID, cliente o producto..."></div>
-                <div class="filter-group"><i class="fas fa-calendar"></i><input type="date" id="filter-fecha-inicio" placeholder="Fecha inicio"></div>
-                <div class="filter-group"><i class="fas fa-calendar"></i><input type="date" id="filter-fecha-fin" placeholder="Fecha fin"></div>
-                <div class="filter-group"><i class="fas fa-chart-simple"></i><select id="filter-estado-ventas"><option value="">Todos los estados</option><option value="completada">✅ Completada</option><option value="pendiente">⏳ Pendiente</option><option value="cambiado">🔄 Cambio solicitado</option><option value="devuelto">📦 Devuelto</option></select></div>
-                <div class="filter-group"><i class="fas fa-money-bill"></i><select id="filter-metodo-ventas"><option value="">Todos los métodos</option><option value="Efectivo">Efectivo</option><option value="Tarjeta Débito">Tarjeta Débito</option><option value="Tarjeta Crédito">Tarjeta Crédito</option><option value="Transferencia">Transferencia</option><option value="QR">QR</option></select></div>
-                <button class="btn-clear-filters" onclick="limpiarFiltrosVentas()"><i class="fas fa-eraser"></i> Limpiar</button>
-            </div>
-            <div class="data-card">
-                <div class="data-header"><h2><i class="fas fa-list"></i> Ventas Recientes</h2></div>
-                <div class="table-responsive"><table class="data-table" id="tabla-ventas"><thead><tr><th class="sortable-header" data-sort="id" onclick="ordenarVentas('id')">ID <i class="fas fa-sort"></i></th><th class="sortable-header" data-sort="fecha" onclick="ordenarVentas('fecha')">Fecha <i class="fas fa-sort"></i></th><th class="sortable-header" data-sort="cliente" onclick="ordenarVentas('cliente')">Cliente <i class="fas fa-sort"></i></th><th>Productos</th><th class="sortable-header" data-sort="total" onclick="ordenarVentas('total')">Total <i class="fas fa-sort"></i></th><th class="sortable-header" data-sort="metodo" onclick="ordenarVentas('metodo')">Método <i class="fas fa-sort"></i></th><th class="sortable-header" data-sort="estado" onclick="ordenarVentas('estado')">Estado <i class="fas fa-sort"></i></th><th>Acciones</th></tr></thead><tbody id="ventas-body"><tr><td colspan="8">Cargando...</td></tr></tbody></table></div>
-            </div>
-        </div>
+                <!-- ==================== PERFILES ==================== -->
+                <div id="modulo-perfiles" class="module-section" style="display: none;">
+                    <div class="data-card"><div class="data-header"><h2>Usuarios del Sistema</h2><button class="add-btn" onclick="mostrarFormulario('perfil')">+ Nuevo Usuario</button></div><div class="table-responsive"><table class="data-table" id="tabla-perfiles"><thead><tr><th>Nombre</th><th>Email</th><th>Rol</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="4">Cargando...</td></tr></tbody></table></div></div>
+                </div>
 
-        <!-- CONTABILIDAD -->
-        <div id="modulo-contabilidad" class="module-section" style="display: none;">
-            <div class="stats-grid">
-                <div class="stat-card"><div class="stat-header"><span class="stat-title">Ingresos</span><i class="fas fa-arrow-up stat-icon"></i></div><div class="stat-value" id="stats-ingresos">$0</div></div>
-                <div class="stat-card"><div class="stat-header"><span class="stat-title">Egresos</span><i class="fas fa-arrow-down stat-icon"></i></div><div class="stat-value" id="stats-egresos">$0</div></div>
-                <div class="stat-card" onclick="window.open('contabilidad.html', '_blank')" style="cursor:pointer"><div class="stat-header"><span class="stat-title">Reportes</span><i class="fas fa-chart-pie stat-icon"></i></div><div class="stat-value">📊</div></div>
-            </div>
-        </div>
-    </main>
+                <div id="form-perfil" class="form-modal"><div class="form-modal-content"><div class="form-modal-header"><h3>👥 Nuevo Usuario</h3><span class="close" onclick="cerrarFormulario('perfil')">&times;</span></div><div class="form-modal-body"><form onsubmit="event.preventDefault(); guardarPerfil()"><div class="form-group"><label>Nombre</label><input type="text" id="perfil-nombre" required></div><div class="form-group"><label>Email</label><input type="email" id="perfil-email" required></div><div class="form-group"><label>Contraseña</label><input type="password" id="perfil-password" minlength="6" required></div><div class="form-group"><label>Rol</label><select id="perfil-rol"><option value="empleado">Empleado</option><option value="admin">Administrador</option></select></div><button type="submit" class="submit-btn">Crear Usuario</button><button type="button" class="cancel-btn" onclick="cerrarFormulario('perfil')">Cancelar</button></form></div></div></div>
 
-    <!-- FORMULARIOS MODALES -->
-    <div id="form-producto" class="form-modal"><div class="form-modal-content"><div class="form-modal-header"><h3>👗 Nuevo Producto</h3><span class="close" onclick="cerrarFormulario('producto')">&times;</span></div><div class="form-modal-body"><form onsubmit="event.preventDefault(); guardarProductoBase()"><div class="form-group"><label>Código</label><input type="text" id="producto-codigo" required></div><div class="form-group"><label>Categoría</label><select id="producto-categoria" required><option value="">Seleccionar</option><option value="vestidos">Vestidos</option><option value="blusas">Blusas</option><option value="pantalones">Pantalones</option><option value="deportivo">Deportivo</option><option value="caballero">Caballero</option><option value="accesorios">Accesorios</option></select></div><div class="form-group"><label>Nombre</label><input type="text" id="producto-nombre" required></div><div class="form-group"><label>Precio compra</label><input type="number" id="producto-precio-compra" placeholder="25000" step="1000"></div><div class="form-group"><label>URL imagen</label><input type="url" id="producto-imagen" placeholder="https://..."></div><h4>📦 Variantes</h4><div id="variantes-container"></div><button type="button" onclick="agregarVariante()" class="add-btn">+ Agregar talla</button><button type="submit" class="submit-btn">Guardar Producto</button><button type="button" class="cancel-btn" onclick="cerrarFormulario('producto')">Cancelar</button></form></div></div></div>
+                <!-- ==================== PROVEEDORES ==================== -->
+                <div id="modulo-proveedores" class="module-section" style="display: none;">
+                    <div class="data-card"><div class="data-header"><h2>Proveedores</h2><button class="add-btn" onclick="mostrarFormulario('proveedor')">+ Nuevo Proveedor</button></div><div class="table-responsive"><table class="data-table" id="tabla-proveedores"><thead><tr><th>Nombre</th><th>Contacto</th><th>Teléfono</th><th>Email</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="5">Cargando...</td></tr></tbody></table></div></div>
+                </div>
 
-    <div id="form-compra" class="form-modal"><div class="form-modal-content"><div class="form-modal-header"><h3>🛍️ Nueva Compra</h3><span class="close" onclick="cerrarFormulario('compra')">&times;</span></div><div class="form-modal-body"><form onsubmit="event.preventDefault(); guardarCompra()"><div class="form-group"><label>Proveedor</label><select id="compra-proveedor" required><option value="">Seleccionar</option></select></div><div class="form-group"><label>Fecha</label><input type="date" id="compra-fecha" required></div><div class="form-group"><label>Producto</label><input type="text" id="compra-producto" required></div><div class="form-row"><div class="form-group"><label>Cantidad</label><input type="number" id="compra-cantidad" min="1" required></div><div class="form-group"><label>Precio unitario</label><input type="number" id="compra-precio" min="0" required></div></div><div class="form-group"><label>Estado</label><select id="compra-estado"><option value="Pendiente">Pendiente</option><option value="Recibida">Recibida</option><option value="Pagada">Pagada</option></select></div><button type="submit" class="submit-btn">Guardar</button><button type="button" class="cancel-btn" onclick="cerrarFormulario('compra')">Cancelar</button></form></div></div></div>
+                <div id="form-proveedor" class="form-modal"><div class="form-modal-content"><div class="form-modal-header"><h3>📦 Nuevo Proveedor</h3><span class="close" onclick="cerrarFormulario('proveedor')">&times;</span></div><div class="form-modal-body"><form onsubmit="event.preventDefault(); guardarProveedor()"><div class="form-group"><label>Nombre</label><input type="text" id="proveedor-nombre" required></div><div class="form-group"><label>Contacto</label><input type="text" id="proveedor-contacto"></div><div class="form-row"><div class="form-group"><label>Teléfono</label><input type="tel" id="proveedor-telefono"></div><div class="form-group"><label>Email</label><input type="email" id="proveedor-email"></div></div><div class="form-group"><label>Dirección</label><textarea id="proveedor-direccion" rows="2"></textarea></div><button type="submit" class="submit-btn">Guardar Proveedor</button><button type="button" class="cancel-btn" onclick="cerrarFormulario('proveedor')">Cancelar</button></form></div></div></div>
 
-    <div id="form-gasto" class="form-modal"><div class="form-modal-content"><div class="form-modal-header"><h3>💸 Nuevo Gasto</h3><span class="close" onclick="cerrarFormulario('gasto')">&times;</span></div><div class="form-modal-body"><form onsubmit="event.preventDefault(); guardarGasto()"><div class="form-group"><label>Fecha</label><input type="date" id="gasto-fecha" required></div><div class="form-group"><label>Concepto</label><input type="text" id="gasto-concepto" required></div><div class="form-group"><label>Categoría</label><select id="gasto-categoria"><option value="Alquiler">Alquiler</option><option value="Servicios">Servicios</option><option value="Sueldos">Sueldos</option><option value="Marketing">Marketing</option><option value="Otros">Otros</option></select></div><div class="form-group"><label>Monto</label><input type="number" id="gasto-monto" min="0" required></div><div class="form-group"><label>Método</label><select id="gasto-metodo"><option value="Efectivo">Efectivo</option><option value="Transferencia">Transferencia</option><option value="Tarjeta">Tarjeta</option></select></div><button type="submit" class="submit-btn">Guardar</button><button type="button" class="cancel-btn" onclick="cerrarFormulario('gasto')">Cancelar</button></form></div></div></div>
-
-    <div id="form-perfil" class="form-modal"><div class="form-modal-content"><div class="form-modal-header"><h3>👥 Nuevo Usuario</h3><span class="close" onclick="cerrarFormulario('perfil')">&times;</span></div><div class="form-modal-body"><form onsubmit="event.preventDefault(); guardarPerfil()"><div class="form-group"><label>Nombre</label><input type="text" id="perfil-nombre" required></div><div class="form-group"><label>Email</label><input type="email" id="perfil-email" required></div><div class="form-group"><label>Contraseña</label><input type="password" id="perfil-password" minlength="6" required></div><div class="form-group"><label>Rol</label><select id="perfil-rol"><option value="empleado">Empleado</option><option value="admin">Administrador</option></select></div><button type="submit" class="submit-btn">Crear</button><button type="button" class="cancel-btn" onclick="cerrarFormulario('perfil')">Cancelar</button></form></div></div></div>
-
-    <div id="form-proveedor" class="form-modal"><div class="form-modal-content"><div class="form-modal-header"><h3>📦 Nuevo Proveedor</h3><span class="close" onclick="cerrarFormulario('proveedor')">&times;</span></div><div class="form-modal-body"><form onsubmit="event.preventDefault(); guardarProveedor()"><div class="form-group"><label>Nombre</label><input type="text" id="proveedor-nombre" required></div><div class="form-group"><label>Contacto</label><input type="text" id="proveedor-contacto"></div><div class="form-row"><div class="form-group"><label>Teléfono</label><input type="tel" id="proveedor-telefono"></div><div class="form-group"><label>Email</label><input type="email" id="proveedor-email"></div></div><div class="form-group"><label>Dirección</label><textarea id="proveedor-direccion" rows="2"></textarea></div><button type="submit" class="submit-btn">Guardar</button><button type="button" class="cancel-btn" onclick="cerrarFormulario('proveedor')">Cancelar</button></form></div></div></div>
-
-<div id="form-venta" class="form-modal">
-    <div class="form-modal-content" style="max-width:900px">
-        <div class="form-modal-header">
-            <h3>📝 Venta Manual</h3>
-            <span class="close" onclick="cerrarFormulario('venta')">&times;</span>
-        </div>
-        <div class="form-modal-body">
-            
-            <!-- ===== ESCÁNER CON CÁMARA (NUEVO) ===== -->
-            <div class="lector-camara-section" style="margin-bottom: 1.5rem; padding: 1rem; background: #fefaf5; border-radius: 16px; border: 1px solid #f0e4d8;">
-                <div style="display: flex; gap: 0.8rem; align-items: center; flex-wrap: wrap;">
-                    <button type="button" id="btn-escanner-camara" class="btn-outline" onclick="abrirEscannerCamara()" style="background: #d4a5a9; color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 30px; cursor: pointer;">
-                        <i class="fas fa-camera"></i> 📷 Escanear con cámara
-                    </button>
-                    <div style="flex: 1; min-width: 200px;">
-                        <input type="text" id="input-codigo-manual" placeholder="O escribe el código SKU manualmente y presiona Enter..." 
-                               style="width: 100%; padding: 0.6rem 1rem; border-radius: 30px; border: 1px solid #f0e4d8; background: white;">
+                <!-- ==================== VENTAS (LISTADO) ==================== -->
+                <div id="modulo-ventas" class="module-section" style="display: none;">
+                    <div class="stats-grid">
+                        <div class="stat-card" onclick="window.open('ventas.html', '_blank')"><div class="stat-header"><span class="stat-title">Punto de Venta</span><i class="fas fa-cash-register stat-icon"></i></div><div class="stat-value">🛒</div><div class="stat-sub">Ir a ventas</div></div>
+                        <div class="stat-card"><div class="stat-header"><span class="stat-title">Ventas Hoy</span><i class="fas fa-chart-line stat-icon"></i></div><div class="stat-value" id="ventas-hoy-total">$0</div></div>
+                        <div class="stat-card"><div class="stat-header"><span class="stat-title">Ventas Mes</span><i class="fas fa-calendar stat-icon"></i></div><div class="stat-value" id="ventas-mes-total">$0</div></div>
+                        <div class="stat-card"><div class="stat-header"><span class="stat-title">Cambios/Dev.</span><i class="fas fa-exchange-alt stat-icon"></i></div><div class="stat-value" id="ventas-cambios-count">0</div></div>
+                    </div>
+                    <div class="filters-section">
+                        <div class="search-box"><i class="fas fa-search"></i><input type="text" id="search-ventas" placeholder="Buscar por ID, cliente..."></div>
+                        <div class="filter-group"><i class="fas fa-calendar"></i><input type="date" id="filter-fecha-inicio"></div>
+                        <div class="filter-group"><i class="fas fa-calendar"></i><input type="date" id="filter-fecha-fin"></div>
+                        <div class="filter-group"><i class="fas fa-chart-simple"></i><select id="filter-estado-ventas"><option value="">Todos</option><option value="completada">Completada</option><option value="pendiente">Pendiente</option><option value="cambiado">Cambio</option><option value="devuelto">Devuelto</option></select></div>
+                        <button class="btn-clear" onclick="limpiarFiltrosVentas()"><i class="fas fa-eraser"></i> Limpiar</button>
+                    </div>
+                    <div class="data-card">
+                        <div class="data-header"><h2><i class="fas fa-list"></i> Historial de Ventas</h2><button class="add-btn" onclick="window.open('ventas.html', '_blank')">➕ Nueva Venta</button></div>
+                        <div class="table-responsive"><table class="data-table" id="tabla-ventas"><thead><tr><th>ID</th><th>Fecha</th><th>Cliente</th><th>Productos</th><th>Total</th><th>Método</th><th>Estado</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="8">Cargando...</td></tr></tbody></table></div>
                     </div>
                 </div>
-                <div style="font-size: 0.7rem; color: #b8a38e; margin-top: 0.5rem; text-align: center;">
-                    💡 Los códigos SKU están en las etiquetas impresas. Ejemplo: MODA-001-S
+
+                <!-- ==================== CONTABILIDAD ==================== -->
+                <div id="modulo-contabilidad" class="module-section" style="display: none;">
+                    <div class="stats-grid">
+                        <div class="stat-card"><div class="stat-header"><span class="stat-title">Ingresos</span><i class="fas fa-arrow-up stat-icon"></i></div><div class="stat-value" id="stats-ingresos">$0</div></div>
+                        <div class="stat-card"><div class="stat-header"><span class="stat-title">Egresos</span><i class="fas fa-arrow-down stat-icon"></i></div><div class="stat-value" id="stats-egresos">$0</div></div>
+                        <div class="stat-card" onclick="window.open('contabilidad.html', '_blank')"><div class="stat-header"><span class="stat-title">Reportes</span><i class="fas fa-chart-pie stat-icon"></i></div><div class="stat-value">📊</div></div>
+                    </div>
                 </div>
             </div>
-            
-            <!-- Modal de cámara (aparece al hacer clic) -->
-            <div id="modal-camara-lector" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.95); z-index: 10000;">
-                <div style="position: relative; height: 100%; display: flex; flex-direction: column;">
-                    <video id="video-lector" autoplay style="flex: 1; object-fit: cover; width: 100%;"></video>
-                    <div style="position: absolute; top: 20px; left: 0; right: 0; text-align: center;">
-                        <div style="background: rgba(0,0,0,0.6); display: inline-block; padding: 8px 20px; border-radius: 30px; color: white; font-size: 0.9rem;">
-                            📷 Apunta el código de barras a la cámara
-                        </div>
-                    </div>
-                    <div style="position: absolute; bottom: 30px; left: 0; right: 0; text-align: center; display: flex; gap: 1rem; justify-content: center;">
-                        <button onclick="capturarYBuscar()" style="background: white; border: none; width: 70px; height: 70px; border-radius: 50%; font-size: 2rem; cursor: pointer;">
-                            📷
-                        </button>
-                        <button onclick="cerrarEscannerCamara()" style="background: #ff4757; border: none; width: 70px; height: 70px; border-radius: 50%; font-size: 2rem; color: white; cursor: pointer;">
-                            ✕
-                        </button>
-                    </div>
-                    <canvas id="canvas-lector" style="display: none;"></canvas>
-                </div>
-            </div>
-            
-            <!-- ===== FIN ESCÁNER ===== -->
-            
-            <form id="venta-form" onsubmit="event.preventDefault(); guardarVentaManual();">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>📅 Fecha</label>
-                        <input type="date" id="venta-fecha" required>
-                    </div>
-                    <div class="form-group">
-                        <label>👤 Cliente</label>
-                        <input type="text" id="venta-cliente" placeholder="Nombre del cliente">
-                    </div>
-                    <div class="form-group">
-                        <label>💵 Método de pago</label>
-                        <select id="venta-metodo" required>
-                            <option value="Efectivo">Efectivo</option>
-                            <option value="Tarjeta Débito">Tarjeta Débito</option>
-                            <option value="Tarjeta Crédito">Tarjeta Crédito</option>
-                            <option value="Transferencia">Transferencia</option>
-                            <option value="QR">QR</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <div class="panel-agregar-producto" style="background:#fefaf5;padding:1rem;border-radius:12px;margin-bottom:1rem;border:1px solid #f0e4d8">
-                    <h4>➕ Agregar producto manualmente</h4>
-                    <div class="form-row">
-                        <div class="form-group" style="flex:2">
-                            <label>📦 Producto</label>
-                            <input type="text" id="venta-producto-nombre" placeholder="Ej: Vestido Floral" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label>📏 Talla</label>
-                            <input type="text" id="venta-producto-talla" placeholder="Ej: S, M, L" class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <label>🎨 Color</label>
-                            <input type="text" id="venta-producto-color" placeholder="Ej: Rojo" class="form-control">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>🔢 Cantidad</label>
-                            <input type="number" id="venta-producto-cantidad" value="1" min="1" class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <label>💰 Precio unitario</label>
-                            <input type="number" id="venta-producto-precio" placeholder="0" min="0" step="100" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <button type="button" class="btn-agregar" onclick="agregarProductoVentaManual()" style="margin-top:24px;background:#27ae60;color:white;border:none;padding:0.6rem 1.2rem;border-radius:30px;cursor:pointer">
-                                ➕ Agregar
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="table-responsive">
-                    <table class="data-table" id="tabla-carrito">
-                        <thead>
-                            <tr><th>Producto</th><th>Talla</th><th>Color</th><th>Precio</th><th>Cantidad</th><th>Subtotal</th><th></th></tr>
-                        </thead>
-                        <tbody id="carrito-body">
-                            <tr><td colspan="7" style="text-align:center; padding:2rem;">No hay productos agregados. Usa el escáner o agrega manualmente.{% endfor %}</td></tr>
-                        </tbody>
-                        <tfoot>
-                            <tr><td colspan="5"><strong>Total:</strong></td><td colspan="2"><strong id="carrito-total">$0</strong></td></tr>
-                        </tfoot>
-                    </table>
-                </div>
-                
-                <div class="form-actions" style="display:flex;gap:1rem;justify-content:flex-end;margin-top:1rem">
-                    <button type="submit" class="btn-primary" style="background:#b87c4e;color:white;border:none;padding:0.6rem 1.2rem;border-radius:30px;cursor:pointer">
-                        ✅ Registrar Venta
-                    </button>
-                    <button type="button" class="btn-secondary" onclick="cerrarFormulario('venta')" style="background:#f5ede8;color:#4a3728;border:1px solid #f0e4d8;padding:0.6rem 1.2rem;border-radius:30px;cursor:pointer">
-                        Cancelar
-                    </button>
-                </div>
-            </form>
         </div>
-    </div>
-</div>
 
-    <div id="modal-editar-venta" class="form-modal"><div class="form-modal-content"><div class="form-modal-header"><h3>✏️ Editar Venta</h3><span class="close" onclick="cerrarModalEditarVenta()">&times;</span></div><div class="form-modal-body"><form id="editar-venta-form" onsubmit="event.preventDefault(); actualizarVenta();"><input type="hidden" id="editar-venta-id"><div class="form-row"><div class="form-group"><label>📅 Fecha</label><input type="date" id="editar-venta-fecha" required></div><div class="form-group"><label>👤 Cliente</label><input type="text" id="editar-venta-cliente"></div><div class="form-group"><label>💵 Método de pago</label><select id="editar-venta-metodo" required><option value="Efectivo">Efectivo</option><option value="Tarjeta Débito">Tarjeta Débito</option><option value="Tarjeta Crédito">Tarjeta Crédito</option><option value="Transferencia">Transferencia</option><option value="QR">QR</option></select></div></div><div class="form-group"><label>📝 Notas</label><textarea id="editar-venta-notas" rows="2" placeholder="Motivo del cambio, devolución, etc."></textarea></div><div class="form-group"><label>🔄 Estado</label><select id="editar-venta-estado"><option value="completada">Completada</option><option value="pendiente">Pendiente</option><option value="cambiado">Cambio solicitado</option><option value="devuelto">Devuelto</option></select></div><div class="form-actions" style="display:flex;gap:1rem;justify-content:flex-end;margin-top:1rem"><button type="submit" class="btn-primary" style="background:#b87c4e;color:white;border:none;padding:0.6rem 1.2rem;border-radius:30px">💾 Guardar cambios</button><button type="button" class="btn-danger" onclick="eliminarVenta()" style="background:#e74c3c;color:white;border:none;padding:0.6rem 1.2rem;border-radius:30px">🗑️ Eliminar venta</button><button type="button" class="btn-secondary" onclick="cerrarModalEditarVenta()" style="background:#f5ede8;color:#4a3728;border:1px solid #f0e4d8;padding:0.6rem 1.2rem;border-radius:30px">Cancelar</button></div></form></div></div></div>
+        <!-- ==================== MODAL EDITAR VENTA ==================== -->
+        <div id="modal-editar-venta" class="form-modal"><div class="form-modal-content"><div class="form-modal-header"><h3>✏️ Editar Venta</h3><span class="close" onclick="cerrarModalEditarVenta()">&times;</span></div><div class="form-modal-body"><form id="editar-venta-form" onsubmit="event.preventDefault(); actualizarVenta();"><input type="hidden" id="editar-venta-id"><div class="form-row"><div class="form-group"><label>📅 Fecha</label><input type="date" id="editar-venta-fecha" required></div><div class="form-group"><label>👤 Cliente</label><input type="text" id="editar-venta-cliente"></div><div class="form-group"><label>💵 Método de pago</label><select id="editar-venta-metodo" required><option value="Efectivo">Efectivo</option><option value="Tarjeta Débito">Tarjeta Débito</option><option value="Tarjeta Crédito">Tarjeta Crédito</option><option value="Transferencia">Transferencia</option></select></div></div><div class="form-group"><label>📝 Notas</label><textarea id="editar-venta-notas" rows="2" placeholder="Motivo del cambio..."></textarea></div><div class="form-group"><label>🔄 Estado</label><select id="editar-venta-estado"><option value="completada">Completada</option><option value="pendiente">Pendiente</option><option value="cambiado">Cambio solicitado</option><option value="devuelto">Devuelto</option></select></div><div class="form-actions" style="display:flex;gap:1rem;justify-content:flex-end;margin-top:1rem"><button type="submit" class="submit-btn" style="width:auto;padding:0.6rem 1.2rem">💾 Guardar</button><button type="button" class="btn-danger" onclick="eliminarVenta()" style="background:#e74c3c;color:white;border:none;padding:0.6rem 1.2rem;border-radius:30px;cursor:pointer">🗑️ Eliminar</button><button type="button" class="cancel-btn" onclick="cerrarModalEditarVenta()" style="width:auto;margin-top:0">Cancelar</button></div></form></div></div></div>
 
-    <script src="../js/supabase-config.js"></script>
-    <script src="../js/permisos.js"></script>
-    <script src="dashboard.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
-    <script>
-        // Funciones auxiliares para el menú
-        function toggleMenu() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebarOverlay');
-            sidebar.classList.toggle('open');
-            overlay.classList.toggle('active');
-        }
-    </script>
-</body>
-</html>
+        <script src="../js/supabase-config.js"></script>
+        <script src="../js/permisos.js"></script>
+        <script src="dashboard.js"></script>
+        <script>
+            function toggleMenu() {
+                document.getElementById('sidebar').classList.toggle('open');
+                document.getElementById('sidebarOverlay').classList.toggle('active');
+            }
+
+            // Cerrar modal al hacer clic fuera
+            document.querySelectorAll('.form-modal').forEach(modal => {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        modal.classList.remove('active');
+                        modal.style.display = 'none';
+                    }
+                });
+            });
+        </script>
+    </body>
+    </html>
