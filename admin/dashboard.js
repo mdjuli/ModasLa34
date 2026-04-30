@@ -2343,7 +2343,6 @@ async function imprimirEtiquetasProducto(productoId) {
 }
 
 function generarHTMLParaImpresion(producto, variantes) {
-    // Escapar datos para evitar errores
     const nombreProducto = (producto.nombre || '').replace(/[&<>]/g, function(m) {
         if (m === '&') return '&amp;';
         if (m === '<') return '&lt;';
@@ -2351,18 +2350,37 @@ function generarHTMLParaImpresion(producto, variantes) {
         return m;
     });
     
+    let etiquetasHtml = '';
+    
+    for (let i = 0; i < variantes.length; i++) {
+        const v = variantes[i];
+        const sku = v.sku || `SKU-${producto.codigo}-${v.talla}`;
+        const precio = (v.precio_venta || 0).toLocaleString();
+        const talla = v.talla || 'UNICA';
+        
+        etiquetasHtml += `
+        <div class="etiqueta">
+            <div class="etiqueta-tienda">🌸 MODAS LA 34</div>
+            <div class="etiqueta-nombre">${nombreProducto}</div>
+            <div class="etiqueta-detalle">Talla: ${talla}</div>
+            <div class="barcode-container">
+                <canvas id="barcode-${i}" class="barcode" data-sku="${sku}"></canvas>
+            </div>
+            <div class="etiqueta-codigo">${sku}</div>
+            <div class="etiqueta-precio">$${precio}</div>
+        </div>
+        `;
+    }
+    
     return `<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <title>Etiquetas - ${nombreProducto}</title>
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            background: white; 
-            font-family: Arial, sans-serif;
-            padding: 20px;
-        }
+        body { background: white; padding: 20px; }
         .etiquetas-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -2401,11 +2419,9 @@ function generarHTMLParaImpresion(producto, variantes) {
             display: flex;
             justify-content: center;
             min-height: 60px;
-            background: #f9f9f9;
-            padding: 5px;
         }
-        canvas.barcode, svg.barcode {
-            max-width: 100%;
+        canvas.barcode {
+            border: 1px solid #eee;
             background: white;
         }
         .etiqueta-codigo {
@@ -2421,101 +2437,52 @@ function generarHTMLParaImpresion(producto, variantes) {
             color: #27ae60;
             margin-top: 10px;
         }
-        .error-mensaje {
-            color: red;
-            font-size: 10px;
-            padding: 5px;
-        }
         @media print {
             body { margin: 0; padding: 0; }
             .etiqueta { break-inside: avoid; page-break-inside: avoid; }
         }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
 </head>
 <body>
     <div class="etiquetas-grid">
-        ${variantes.map((v, idx) => {
-            const sku = v.sku || `SKU-${producto.codigo}-${v.talla}`;
-            const precio = (v.precio_venta || 0).toLocaleString();
-            const talla = v.talla || 'UNICA';
-            
-            return `
-            <div class="etiqueta">
-                <div class="etiqueta-tienda">🌸 MODAS LA 34</div>
-                <div class="etiqueta-nombre">${nombreProducto}</div>
-                <div class="etiqueta-detalle">Talla: ${talla}</div>
-                <div class="barcode-container">
-                    <canvas id="barcode-${idx}" class="barcode" data-sku="${sku}"></canvas>
-                </div>
-                <div class="etiqueta-codigo">${sku}</div>
-                <div class="etiqueta-precio">$${precio}</div>
-            </div>
-            `;
-        }).join('')}
+        ${etiquetasHtml}
     </div>
     <script>
         (function() {
-            console.log('=== INICIANDO GENERACIÓN DE CÓDIGOS ===');
-            
-            // Función para generar códigos con CANVAS (más compatible)
-            function generarConCanvas() {
+            // Esperar a que todo cargue
+            window.addEventListener('load', function() {
                 var elementos = document.querySelectorAll('.barcode');
-                console.log('Elementos encontrados:', elementos.length);
-                var ok = 0, error = 0;
+                console.log('Generando ' + elementos.length + ' códigos de barras');
                 
                 for (var i = 0; i < elementos.length; i++) {
                     var el = elementos[i];
                     var sku = el.getAttribute('data-sku');
-                    console.log('Procesando ' + i + ': SKU =', sku);
                     
                     if (sku && sku !== '') {
                         try {
-                            // Para canvas, necesitamos asegurar que JsBarcode existe
-                            if (typeof JsBarcode !== 'undefined') {
-                                JsBarcode(el, sku, {
-                                    format: "CODE128",
-                                    width: 1.5,
-                                    height: 40,
-                                    displayValue: false,
-                                    margin: 5
-                                });
-                                ok++;
-                                console.log('✅ Código ' + i + ' generado correctamente');
-                            } else {
-                                // Si JsBarcode no existe, mostrar texto alternativo
-                                el.outerHTML = '<div style="font-family: monospace; font-size: 12px;">' + sku + '</div>';
-                                console.warn('⚠️ JsBarcode no disponible, mostrando texto');
-                                error++;
-                            }
+                            JsBarcode(el, sku, {
+                                format: "CODE128",
+                                width: 2,
+                                height: 50,
+                                displayValue: true,
+                                fontSize: 12,
+                                margin: 5
+                            });
+                            console.log('✅ Código ' + i + ' generado: ' + sku);
                         } catch(e) {
-                            console.error('❌ Error en código ' + i + ':', e.message);
-                            el.outerHTML = '<div style="color:red; font-size:10px;">Error: ' + sku + '</div>';
-                            error++;
+                            console.error('❌ Error en ' + i + ':', e);
+                            el.style.border = '2px solid red';
                         }
                     } else {
-                        console.warn('⚠️ SKU vacío en elemento ' + i);
-                        el.outerHTML = '<div style="color:orange;">SKU no disponible</div>';
-                        error++;
+                        console.warn('⚠️ SKU vacío en ' + i);
                     }
                 }
-                console.log('=== RESUMEN: ' + ok + ' OK, ' + error + ' ERRORES ===');
-            }
-            
-            // Esperar a que la página cargue completamente
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', function() {
-                    setTimeout(generarConCanvas, 500);
-                });
-            } else {
-                setTimeout(generarConCanvas, 500);
-            }
+            });
         })();
     </script>
 </body>
 </html>`;
 }
-
 // Función auxiliar para escapar HTML
 function escapeHtml(str) {
     if (!str) return '';
