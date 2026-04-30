@@ -2300,17 +2300,20 @@ function getPrimerModuloVisible() {
 // IMPRESIÓN DE ETIQUETAS (Para impresora normal)
 // ============================================
 
+// ============================================
+// IMPRESIÓN DE ETIQUETAS CON CÓDIGO DE BARRAS
+// ============================================
+
 async function imprimirEtiquetasProducto(productoId) {
     try {
         console.log('🖨️ Generando etiquetas para producto:', productoId);
         
-        // Obtener producto y sus variantes
+        // Obtener producto
         const productoRes = await fetch(`${SUPABASE_URL}/rest/v1/productos_base?id=eq.${productoId}`, {
             headers: { 'apikey': SUPABASE_KEY }
         });
         
         if (!productoRes.ok) throw new Error('Error al obtener producto');
-        
         const productos = await productoRes.json();
         
         if (productos.length === 0) {
@@ -2320,12 +2323,12 @@ async function imprimirEtiquetasProducto(productoId) {
         
         const producto = productos[0];
         
+        // Obtener variantes
         const variantesRes = await fetch(`${SUPABASE_URL}/rest/v1/variantes_producto?producto_id=eq.${productoId}`, {
             headers: { 'apikey': SUPABASE_KEY }
         });
         
         if (!variantesRes.ok) throw new Error('Error al obtener variantes');
-        
         const variantes = await variantesRes.json();
         
         if (variantes.length === 0) {
@@ -2333,178 +2336,173 @@ async function imprimirEtiquetasProducto(productoId) {
             return;
         }
         
-        console.log('📦 Producto:', producto.nombre);
-        console.log('📏 Variantes encontradas:', variantes.length);
+        console.log(`📦 Producto: ${producto.nombre}, ${variantes.length} variantes`);
         
-        // Generar HTML para impresión
-        const etiquetasHTML = generarHTMLParaImpresion(producto, variantes);
+        // Generar HTML
+        const html = generarHTMLParaImpresion(producto, variantes);
         
-        // Abrir ventana de impresión
+        // Abrir ventana
         const ventana = window.open('', '_blank');
-        ventana.document.write(etiquetasHTML);
+        ventana.document.write(html);
         ventana.document.close();
-        
-        // Opcional: imprimir automáticamente (descomentar si quieres)
-        // ventana.print();
         
         mostrarAlerta(`✅ Etiquetas generadas para ${variantes.length} variantes`, 'success');
         
     } catch (error) {
-        console.error('Error en imprimirEtiquetasProducto:', error);
+        console.error('Error:', error);
         mostrarAlerta('Error al generar etiquetas: ' + error.message, 'error');
     }
 }
 
 function generarHTMLParaImpresion(producto, variantes) {
-    return `
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>Etiquetas - ${producto.nombre}</title>
-            <meta charset="UTF-8">
-            <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
-            <style>
-                * { margin: 0; padding: 0; box-sizing: border-box; }
-                body { 
-                    background: white; 
-                    font-family: 'Arial', sans-serif;
-                    padding: 20px;
-                }
-                .etiquetas-grid {
-                    display: grid;
-                    grid-template-columns: repeat(2, 1fr);
-                    gap: 20px;
-                    max-width: 800px;
-                    margin: 0 auto;
-                }
-                .etiqueta {
-                    border: 1px dashed #ccc;
-                    padding: 15px;
-                    border-radius: 8px;
-                    text-align: center;
-                    background: white;
-                    break-inside: avoid;
-                    page-break-inside: avoid;
-                }
-                .etiqueta-tienda {
-                    font-size: 10px;
-                    color: #d4a5a9;
-                    letter-spacing: 2px;
-                    margin-bottom: 5px;
-                }
-                .etiqueta-nombre {
-                    font-size: 14px;
-                    font-weight: bold;
-                    margin: 5px 0;
-                    color: #4a3728;
-                }
-                .etiqueta-detalle {
-                    font-size: 20px;
-                    font-weight: bold;
-                    color: #b87c4e;
-                    margin: 5px 0;
-                }
-                .barcode-container {
-                    margin: 10px 0;
-                    display: flex;
-                    justify-content: center;
-                }
-                .barcode-svg {
-                    max-width: 100%;
-                }
-                .etiqueta-codigo {
-                    font-family: 'Courier New', monospace;
-                    font-size: 9px;
-                    color: #666;
-                    margin: 5px 0;
-                    word-break: break-all;
-                }
-                .etiqueta-precio {
-                    font-size: 18px;
-                    font-weight: bold;
-                    color: #27ae60;
-                    margin-top: 10px;
-                }
-                @media print {
-                    body { margin: 0; padding: 0; }
-                    .etiqueta { break-inside: avoid; page-break-inside: avoid; }
-                }
-            </style>
-        </head>
-        <body>
-            <div class="etiquetas-grid">
-                ${variantes.map(v => `
-                    <div class="etiqueta">
-                        <div class="etiqueta-tienda">🌸 MODAS LA 34</div>
-                        <div class="etiqueta-nombre">${escapeHtml(producto.nombre)}</div>
-                        <div class="etiqueta-detalle">Talla: ${v.talla}</div>
-                        <div class="barcode-container">
-                            <svg class="barcode" data-sku="${v.sku || ''}"></svg>
-                        </div>
-                        <div class="etiqueta-codigo">${v.sku || 'SKU no disponible'}</div>
-                        <div class="etiqueta-precio">$${(v.precio_venta || 0).toLocaleString()}</div>
-                    </div>
-                `).join('')}
+    return `<!DOCTYPE html>
+<html>
+<head>
+    <title>Etiquetas - ${producto.nombre}</title>
+    <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            background: white; 
+            font-family: 'Arial', sans-serif;
+            padding: 20px;
+        }
+        .etiquetas-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .etiqueta {
+            border: 1px dashed #ccc;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            background: white;
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+        .etiqueta-tienda {
+            font-size: 10px;
+            color: #d4a5a9;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+        }
+        .etiqueta-nombre {
+            font-size: 14px;
+            font-weight: bold;
+            margin: 5px 0;
+            color: #4a3728;
+        }
+        .etiqueta-detalle {
+            font-size: 20px;
+            font-weight: bold;
+            color: #b87c4e;
+            margin: 5px 0;
+        }
+        .barcode-container {
+            margin: 10px 0;
+            display: flex;
+            justify-content: center;
+            min-height: 60px;
+        }
+        .etiqueta-codigo {
+            font-family: 'Courier New', monospace;
+            font-size: 9px;
+            color: #666;
+            margin: 5px 0;
+            word-break: break-all;
+        }
+        .etiqueta-precio {
+            font-size: 18px;
+            font-weight: bold;
+            color: #27ae60;
+            margin-top: 10px;
+        }
+        @media print {
+            body { margin: 0; padding: 0; }
+            .etiqueta { break-inside: avoid; page-break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+    <div class="etiquetas-grid">
+        ${variantes.map((v, idx) => `
+            <div class="etiqueta">
+                <div class="etiqueta-tienda">🌸 MODAS LA 34</div>
+                <div class="etiqueta-nombre">${escapeHtml(producto.nombre)}</div>
+                <div class="etiqueta-detalle">Talla: ${v.talla}</div>
+                <div class="barcode-container">
+                    <svg id="barcode-${idx}" class="barcode" data-sku="${v.sku || ''}"></svg>
+                </div>
+                <div class="etiqueta-codigo">${v.sku || 'SKU no disponible'}</div>
+                <div class="etiqueta-precio">$${(v.precio_venta || 0).toLocaleString()}</div>
             </div>
-            <script>
-                // Función para generar códigos de barras
-                function generarCodigosBarras() {
-                    const elementos = document.querySelectorAll('.barcode');
-                    console.log('Generando ' + elementos.length + ' códigos de barras');
-                    
-                    elementos.forEach((el, idx) => {
-                        const sku = el.getAttribute('data-sku');
-                        if (sku && sku.trim()) {
-                            try {
-                                JsBarcode(el, sku, {
-                                    format: "CODE128",
-                                    width: 1.5,
-                                    height: 40,
-                                    fontSize: 10,
-                                    margin: 5,
-                                    displayValue: false
-                                });
-                                console.log('✅ Código ' + idx + ' generado para: ' + sku);
-                            } catch(e) {
-                                console.error('❌ Error en código ' + idx + ':', e);
-                                el.outerHTML = '<div style="color:red;">Error: ' + sku + '</div>';
-                            }
-                        } else {
-                            console.warn('⚠️ SKU vacío en elemento ' + idx);
-                            el.outerHTML = '<div style="color:orange;">SKU no disponible</div>';
-                        }
-                    });
-                }
+        `).join('')}
+    </div>
+    <script>
+        (function() {
+            console.log('🔍 Iniciando generación de códigos de barras...');
+            console.log('📦 JsBarcode existe?', typeof JsBarcode);
+            
+            function generarCodigos() {
+                const elementos = document.querySelectorAll('.barcode');
+                console.log('📊 Elementos encontrados:', elementos.length);
                 
-                // Esperar a que la librería cargue
-                if (typeof JsBarcode !== 'undefined') {
-                    generarCodigosBarras();
-                } else {
-                    console.log('Esperando carga de JsBarcode...');
-                    window.addEventListener('load', function() {
-                        if (typeof JsBarcode !== 'undefined') {
-                            generarCodigosBarras();
-                        } else {
-                            console.error('JsBarcode no se cargó correctamente');
+                let generados = 0;
+                let errores = 0;
+                
+                elementos.forEach((el, i) => {
+                    const sku = el.getAttribute('data-sku');
+                    console.log(\`Elemento \${i}: SKU = "\${sku}"\`);
+                    
+                    if (sku && sku.trim() !== '') {
+                        try {
+                            JsBarcode(el, sku, {
+                                format: "CODE128",
+                                width: 1.5,
+                                height: 40,
+                                fontSize: 10,
+                                margin: 5,
+                                displayValue: false
+                            });
+                            generados++;
+                            console.log(\`✅ \${i}: OK\`);
+                        } catch(e) {
+                            errores++;
+                            console.error(\`❌ \${i}: Error\`, e);
+                            el.outerHTML = \`<div style="color:red; font-size:10px;">Error: \${sku}</div>\`;
                         }
-                    });
-                }
-            </script>
-        </body>
-        </html>
-    `;
-}
-
-// Generar SKU simple si no existe
-function generarSKUSimple(codigo, talla, index) {
-    return `${codigo || 'PROD'}-${talla}-${index + 1}`;
-}
-
-// Generar barra simple con caracteres
-function generarBarraSimple(texto) {
-    if (!texto) return 'Sin código';
-    // Mostrar el SKU con formato de barras
-    return texto;
+                    } else {
+                        errores++;
+                        console.warn(\`⚠️ \${i}: SKU vacío\`);
+                        el.outerHTML = '<div style="color:orange;">SKU no disponible</div>';
+                    }
+                });
+                
+                console.log(\`📊 Resumen: \${generados} generados, \${errores} errores\`);
+            }
+            
+            if (typeof JsBarcode !== 'undefined') {
+                generarCodigos();
+            } else {
+                console.log('⏳ Esperando carga de JsBarcode...');
+                window.addEventListener('load', function() {
+                    setTimeout(function() {
+                        if (typeof JsBarcode !== 'undefined') {
+                            generarCodigos();
+                        } else {
+                            console.error('❌ JsBarcode no se cargó después de esperar');
+                        }
+                    }, 1000);
+                });
+            }
+        })();
+    </script>
+</body>
+</html>`;
 }
 
 // Función auxiliar para escapar HTML
