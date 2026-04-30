@@ -691,122 +691,106 @@
         <script src="../js/supabase-config.js"></script>
         <script src="../js/permisos.js"></script>
         <script src="dashboard.js"></script>
-        <script>
-            function toggleMenu() {
-                document.getElementById('sidebar').classList.toggle('open');
-                document.getElementById('sidebarOverlay').classList.toggle('active');
-            }
-
-            // Cerrar modal al hacer clic fuera
-            document.querySelectorAll('.form-modal').forEach(modal => {
-                modal.addEventListener('click', (e) => {
-                    if (e.target === modal) {
-                        modal.classList.remove('active');
-                        modal.style.display = 'none';
-                    }
-                });
-            });
-
-            <!-- MODAL DE CONFIGURACIÓN DE ETIQUETAS -->
-            <div id="modal-config-etiquetas" class="form-modal" style="display: none;">
-                <div class="form-modal-content" style="max-width: 900px;">
-                    <div class="form-modal-header">
-                        <h3><i class="fas fa-print"></i> Configurar impresión de etiquetas</h3>
-                        <span class="close" onclick="cerrarConfigEtiquetas()">&times;</span>
-                    </div>
-                    <div class="form-modal-body">
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
-                            <!-- Panel de controles -->
-                            <div style="background: #fefaf5; padding: 1rem; border-radius: 16px;">
-                                <h4 style="margin-bottom: 1rem; color: #4a3728;">⚙️ Configuración</h4>
-                                
-                                <div class="form-group">
-                                    <label>📐 Columnas por hoja</label>
-                                    <input type="range" id="config-columnas" min="1" max="5" value="3" step="1" style="width: 100%;">
-                                    <div style="display: flex; justify-content: space-between;">
-                                        <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
-                                    </div>
-                                    <span id="valor-columnas" style="color: #d4a5a9; font-weight: bold;">3 columnas</span>
+                
+        <!-- MODAL DE CONFIGURACIÓN DE ETIQUETAS -->
+        <div id="modal-config-etiquetas" class="form-modal" style="display: none;">
+            <div class="form-modal-content" style="max-width: 900px;">
+                <div class="form-modal-header">
+                    <h3><i class="fas fa-print"></i> Configurar impresión de etiquetas</h3>
+                    <span class="close" onclick="cerrarConfigEtiquetas()">&times;</span>
+                </div>
+                <div class="form-modal-body">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                        <!-- Panel de controles -->
+                        <div style="background: #fefaf5; padding: 1rem; border-radius: 16px;">
+                            <h4 style="margin-bottom: 1rem; color: #4a3728;">⚙️ Configuración</h4>
+                            
+                            <div class="form-group">
+                                <label>📐 Columnas por hoja</label>
+                                <input type="range" id="config-columnas" min="1" max="5" value="3" step="1" style="width: 100%;">
+                                <div style="display: flex; justify-content: space-between;">
+                                    <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
                                 </div>
-                                
-                                <div class="form-group">
-                                    <label>📏 Filas por hoja</label>
-                                    <input type="range" id="config-filas" min="2" max="8" value="4" step="1" style="width: 100%;">
-                                    <div style="display: flex; justify-content: space-between;">
-                                        <span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span>
-                                    </div>
-                                    <span id="valor-filas" style="color: #d4a5a9; font-weight: bold;">4 filas</span>
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label>📏 Tamaño de etiqueta</label>
-                                    <select id="config-tamaño" style="width: 100%; padding: 0.5rem; border-radius: 8px; border: 1px solid #f0e4d8;">
-                                        <option value="pequeño">Pequeño (4x3 cm)</option>
-                                        <option value="mediano" selected>Mediano (6x4 cm)</option>
-                                        <option value="grande">Grande (8x5 cm)</option>
-                                        <option value="personalizado">Personalizado</option>
-                                    </select>
-                                </div>
-                                
-                                <div id="config-personalizado" style="display: none;">
-                                    <div class="form-group">
-                                        <label>Ancho (cm)</label>
-                                        <input type="number" id="config-ancho" value="6" step="0.5" min="3" max="10" style="width: 100%;">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Alto (cm)</label>
-                                        <input type="number" id="config-alto" value="4" step="0.5" min="2" max="8" style="width: 100%;">
-                                    </div>
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label>🖨️ Márgenes (mm)</label>
-                                    <input type="range" id="config-margen" min="5" max="20" value="10" step="1" style="width: 100%;">
-                                    <span id="valor-margen" style="color: #d4a5a9;">10 mm</span>
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label>🎨 Mostrar códigos de barras</label>
-                                    <select id="config-mostrar-barcode" style="width: 100%; padding: 0.5rem; border-radius: 8px; border: 1px solid #f0e4d8;">
-                                        <option value="si">Sí, mostrar código</option>
-                                        <option value="no">No, solo texto</option>
-                                    </select>
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label>📦 Repetir etiquetas para llenar hoja</label>
-                                    <select id="config-repetir" style="width: 100%; padding: 0.5rem; border-radius: 8px; border: 1px solid #f0e4d8;">
-                                        <option value="si">Sí, llenar hoja completa</option>
-                                        <option value="no">No, solo las necesarias</option>
-                                    </select>
-                                </div>
-                                
-                                <button class="add-btn" onclick="actualizarVistaPrevia()" style="width: 100%; margin-top: 1rem;">
-                                    <i class="fas fa-sync-alt"></i> Actualizar vista previa
-                                </button>
+                                <span id="valor-columnas" style="color: #d4a5a9; font-weight: bold;">3 columnas</span>
                             </div>
                             
-                            <!-- Vista previa -->
-                            <div>
-                                <h4 style="margin-bottom: 1rem; color: #4a3728;">👁️ Vista previa</h4>
-                                <div id="vista-previa-etiquetas" style="background: white; border: 2px solid #f0e4d8; border-radius: 12px; padding: 1rem; min-height: 400px; overflow: auto;">
-                                    <div style="text-align: center; padding: 2rem; color: #aaa;">
-                                        Selecciona un producto y haz clic en el botón 🏷️
-                                    </div>
+                            <div class="form-group">
+                                <label>📏 Filas por hoja</label>
+                                <input type="range" id="config-filas" min="2" max="8" value="4" step="1" style="width: 100%;">
+                                <div style="display: flex; justify-content: space-between;">
+                                    <span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span>
                                 </div>
-                                <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
-                                    <button class="btn-primary" onclick="imprimirEtiquetasConfig()" style="flex: 1; background: #b87c4e; color: white; border: none; padding: 0.7rem; border-radius: 30px; cursor: pointer;">
-                                        <i class="fas fa-print"></i> Imprimir
-                                    </button>
-                                    <button class="btn-secondary" onclick="cerrarConfigEtiquetas()" style="flex: 1; background: #f5ede8; border: none; padding: 0.7rem; border-radius: 30px; cursor: pointer;">
-                                        Cancelar
-                                    </button>
+                                <span id="valor-filas" style="color: #d4a5a9; font-weight: bold;">4 filas</span>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>📏 Tamaño de etiqueta</label>
+                                <select id="config-tamaño" style="width: 100%; padding: 0.5rem; border-radius: 8px; border: 1px solid #f0e4d8;">
+                                    <option value="pequeño">Pequeño (4x3 cm)</option>
+                                    <option value="mediano" selected>Mediano (6x4 cm)</option>
+                                    <option value="grande">Grande (8x5 cm)</option>
+                                    <option value="personalizado">Personalizado</option>
+                                </select>
+                            </div>
+                            
+                            <div id="config-personalizado" style="display: none;">
+                                <div class="form-group">
+                                    <label>Ancho (cm)</label>
+                                    <input type="number" id="config-ancho" value="6" step="0.5" min="3" max="10" style="width: 100%;">
                                 </div>
+                                <div class="form-group">
+                                    <label>Alto (cm)</label>
+                                    <input type="number" id="config-alto" value="4" step="0.5" min="2" max="8" style="width: 100%;">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>🖨️ Márgenes (mm)</label>
+                                <input type="range" id="config-margen" min="5" max="20" value="10" step="1" style="width: 100%;">
+                                <span id="valor-margen" style="color: #d4a5a9;">10 mm</span>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>🎨 Mostrar códigos de barras</label>
+                                <select id="config-mostrar-barcode" style="width: 100%; padding: 0.5rem; border-radius: 8px; border: 1px solid #f0e4d8;">
+                                    <option value="si">Sí, mostrar código</option>
+                                    <option value="no">No, solo texto</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>📦 Repetir etiquetas para llenar hoja</label>
+                                <select id="config-repetir" style="width: 100%; padding: 0.5rem; border-radius: 8px; border: 1px solid #f0e4d8;">
+                                    <option value="si">Sí, llenar hoja completa</option>
+                                    <option value="no">No, solo las necesarias</option>
+                                </select>
+                            </div>
+                            
+                            <button class="add-btn" onclick="actualizarVistaPrevia()" style="width: 100%; margin-top: 1rem;">
+                                <i class="fas fa-sync-alt"></i> Actualizar vista previa
+                            </button>
+                        </div>
+                        
+                        <!-- Vista previa -->
+                        <div>
+                            <h4 style="margin-bottom: 1rem; color: #4a3728;">👁️ Vista previa</h4>
+                            <div id="vista-previa-etiquetas" style="background: white; border: 2px solid #f0e4d8; border-radius: 12px; padding: 1rem; min-height: 400px; overflow: auto;">
+                                <div style="text-align: center; padding: 2rem; color: #aaa;">
+                                    Selecciona un producto y haz clic en el botón 🏷️
+                                </div>
+                            </div>
+                            <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
+                                <button class="btn-primary" onclick="imprimirEtiquetasConfig()" style="flex: 1; background: #b87c4e; color: white; border: none; padding: 0.7rem; border-radius: 30px; cursor: pointer;">
+                                    <i class="fas fa-print"></i> Imprimir
+                                </button>
+                                <button class="btn-secondary" onclick="cerrarConfigEtiquetas()" style="flex: 1; background: #f5ede8; border: none; padding: 0.7rem; border-radius: 30px; cursor: pointer;">
+                                    Cancelar
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </script>
+        </div>
     </body>
     </html>
