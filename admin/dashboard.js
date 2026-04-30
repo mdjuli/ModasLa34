@@ -2356,201 +2356,140 @@ async function imprimirEtiquetasProducto(productoId) {
 }
 
 function generarHTMLParaImpresion(producto, variantes) {
-    // ===== CONFIGURACIÓN DE ETIQUETAS =====
-    // Cambia estos valores según tu preferencia
-    const COLUMNAS = 3;        // 2, 3 o 4 columnas por hoja
-    const MARGEN = 10;         // Margen en mm
-    const ALTO_ETIQUETA = 70;  // Alto de cada etiqueta en mm
-    
-    // Calcular ancho de etiqueta (A4 = 210mm de ancho)
-    const ANCHO_ETIQUETA = (210 - (MARGEN * 2)) / COLUMNAS - 5;
-    
-    // Agrupar variantes por talla para no repetir el mismo diseño
-    const variantesAgrupadas = [];
-    variantes.forEach(v => {
-        const existente = variantesAgrupadas.find(item => item.talla === v.talla);
-        if (existente) {
-            existente.colores.push(...(v.colores || []));
-        } else {
-            variantesAgrupadas.push({
-                ...v,
-                colores: v.colores || []
-            });
-        }
-    });
-    
-    // Si hay muchas variantes, duplicar para llenar la hoja
-    let etiquetasParaImprimir = [...variantesAgrupadas];
-    const totalPorHoja = COLUMNAS * 4; // 4 filas aprox
-    while (etiquetasParaImprimir.length < totalPorHoja && etiquetasParaImprimir.length > 0) {
-        etiquetasParaImprimir = [...etiquetasParaImprimir, ...etiquetasParaImprimir.slice(0, totalPorHoja - etiquetasParaImprimir.length)];
-    }
-    
     return `
         <!DOCTYPE html>
         <html>
         <head>
             <title>Etiquetas - ${producto.nombre}</title>
             <meta charset="UTF-8">
+            <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
             <style>
-                * { 
-                    margin: 0; 
-                    padding: 0; 
-                    box-sizing: border-box; 
-                }
-                
+                * { margin: 0; padding: 0; box-sizing: border-box; }
                 body { 
                     background: white; 
                     font-family: 'Arial', sans-serif;
-                    padding: ${MARGEN}mm;
+                    padding: 20px;
                 }
-                
-                /* Grid dinámico según columnas */
                 .etiquetas-grid {
                     display: grid;
-                    grid-template-columns: repeat(${COLUMNAS}, 1fr);
-                    gap: 8mm;
-                    max-width: 210mm;
+                    grid-template-columns: repeat(2, 1fr);
+                    gap: 20px;
+                    max-width: 800px;
                     margin: 0 auto;
                 }
-                
                 .etiqueta {
                     border: 1px dashed #ccc;
-                    padding: 10px;
-                    border-radius: 6px;
+                    padding: 15px;
+                    border-radius: 8px;
                     text-align: center;
                     background: white;
                     break-inside: avoid;
                     page-break-inside: avoid;
-                    height: ${ALTO_ETIQUETA}mm;
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: space-between;
                 }
-                
-                /* Si hay muchas etiquetas, saltar página automáticamente */
-                .page-break {
-                    page-break-before: always;
-                }
-                
                 .etiqueta-tienda {
-                    font-size: 8px;
+                    font-size: 10px;
                     color: #d4a5a9;
                     letter-spacing: 2px;
-                    margin-bottom: 3px;
+                    margin-bottom: 5px;
                 }
-                
                 .etiqueta-nombre {
-                    font-size: 11px;
-                    font-weight: bold;
-                    margin: 3px 0;
-                    color: #4a3728;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    display: -webkit-box;
-                    -webkit-line-clamp: 2;
-                    -webkit-box-orient: vertical;
-                }
-                
-                .etiqueta-detalle {
-                    font-size: 16px;
-                    font-weight: bold;
-                    color: #b87c4e;
-                    margin: 3px 0;
-                }
-                
-                .etiqueta-codigo {
-                    font-family: 'Courier New', monospace;
-                    font-size: 8px;
-                    color: #666;
-                    margin: 5px 0;
-                    letter-spacing: 0.5px;
-                    word-break: break-all;
-                }
-                
-                .etiqueta-precio {
                     font-size: 14px;
                     font-weight: bold;
-                    color: #27ae60;
-                    margin-top: 5px;
+                    margin: 5px 0;
+                    color: #4a3728;
                 }
-                
-                /* Código de barras visual */
+                .etiqueta-detalle {
+                    font-size: 20px;
+                    font-weight: bold;
+                    color: #b87c4e;
+                    margin: 5px 0;
+                }
                 .barcode-container {
-                    margin: 5px 0;
-                    text-align: center;
-                }
-                
-                .barcode-visual {
-                    font-family: 'Libre Barcode 39', monospace;
-                    font-size: 32px;
-                    letter-spacing: 2px;
                     margin: 10px 0;
-                    background: white;
-                    padding: 5px;
-                }
-                
-                /* Colores si existen */
-                .etiqueta-colores {
                     display: flex;
-                    gap: 4px;
                     justify-content: center;
+                }
+                .barcode-svg {
+                    max-width: 100%;
+                }
+                .etiqueta-codigo {
+                    font-family: 'Courier New', monospace;
+                    font-size: 9px;
+                    color: #666;
                     margin: 5px 0;
+                    word-break: break-all;
                 }
-                
-                .color-dot {
-                    width: 12px;
-                    height: 12px;
-                    border-radius: 50%;
-                    border: 1px solid #ddd;
+                .etiqueta-precio {
+                    font-size: 18px;
+                    font-weight: bold;
+                    color: #27ae60;
+                    margin-top: 10px;
                 }
-                
                 @media print {
-                    body { 
-                        margin: 0; 
-                        padding: ${MARGEN}mm; 
-                    }
-                    .etiqueta { 
-                        border: 1px dashed #aaa;
-                        break-inside: avoid;
-                        page-break-inside: avoid;
-                    }
+                    body { margin: 0; padding: 0; }
+                    .etiqueta { break-inside: avoid; page-break-inside: avoid; }
                 }
             </style>
         </head>
         <body>
             <div class="etiquetas-grid">
-                ${etiquetasParaImprimir.map((v, index) => `
+                ${variantes.map(v => `
                     <div class="etiqueta">
-                        <div>
-                            <div class="etiqueta-tienda">🌸 MODAS LA 34</div>
-                            <div class="etiqueta-nombre">${escapeHtml(producto.nombre)}</div>
-                            <div class="etiqueta-detalle">Talla: ${v.talla}</div>
-                        </div>
-                        
-                        ${v.colores && v.colores.length > 0 ? `
-                            <div class="etiqueta-colores">
-                                ${v.colores.slice(0, 3).map(c => `
-                                    <div class="color-dot" style="background: ${c.codigo || '#ccc'};" title="${c.nombre || 'Color'}"></div>
-                                `).join('')}
-                            </div>
-                        ` : ''}
-                        
+                        <div class="etiqueta-tienda">🌸 MODAS LA 34</div>
+                        <div class="etiqueta-nombre">${escapeHtml(producto.nombre)}</div>
+                        <div class="etiqueta-detalle">Talla: ${v.talla}</div>
                         <div class="barcode-container">
-                            <div class="barcode-visual">*${v.sku}*</div>
+                            <svg class="barcode" data-sku="${v.sku || ''}"></svg>
                         </div>
-                        
-                        <div>
-                            <div class="etiqueta-codigo">${v.sku || 'SKU pendiente'}</div>
-                            <div class="etiqueta-precio">$${(v.precio_venta || 0).toLocaleString()}</div>
-                        </div>
+                        <div class="etiqueta-codigo">${v.sku || 'SKU no disponible'}</div>
+                        <div class="etiqueta-precio">$${(v.precio_venta || 0).toLocaleString()}</div>
                     </div>
-                    ${(index + 1) % (COLUMNAS * 4) === 0 && index !== etiquetasParaImprimir.length - 1 ? '<div class="page-break"></div>' : ''}
                 `).join('')}
             </div>
-            <div style="text-align: center; margin-top: 20px; font-size: 8px; color: #999;">
-                ${escapeHtml(producto.nombre)} - Generado el ${new Date().toLocaleDateString()} | Hoja ${Math.ceil(etiquetasParaImprimir.length / (COLUMNAS * 4))}
-            </div>
+            <script>
+                // Función para generar códigos de barras
+                function generarCodigosBarras() {
+                    const elementos = document.querySelectorAll('.barcode');
+                    console.log('Generando ' + elementos.length + ' códigos de barras');
+                    
+                    elementos.forEach((el, idx) => {
+                        const sku = el.getAttribute('data-sku');
+                        if (sku && sku.trim()) {
+                            try {
+                                JsBarcode(el, sku, {
+                                    format: "CODE128",
+                                    width: 1.5,
+                                    height: 40,
+                                    fontSize: 10,
+                                    margin: 5,
+                                    displayValue: false
+                                });
+                                console.log('✅ Código ' + idx + ' generado para: ' + sku);
+                            } catch(e) {
+                                console.error('❌ Error en código ' + idx + ':', e);
+                                el.outerHTML = '<div style="color:red;">Error: ' + sku + '</div>';
+                            }
+                        } else {
+                            console.warn('⚠️ SKU vacío en elemento ' + idx);
+                            el.outerHTML = '<div style="color:orange;">SKU no disponible</div>';
+                        }
+                    });
+                }
+                
+                // Esperar a que la librería cargue
+                if (typeof JsBarcode !== 'undefined') {
+                    generarCodigosBarras();
+                } else {
+                    console.log('Esperando carga de JsBarcode...');
+                    window.addEventListener('load', function() {
+                        if (typeof JsBarcode !== 'undefined') {
+                            generarCodigosBarras();
+                        } else {
+                            console.error('JsBarcode no se cargó correctamente');
+                        }
+                    });
+                }
+            </script>
         </body>
         </html>
     `;
