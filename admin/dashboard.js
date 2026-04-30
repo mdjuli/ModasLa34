@@ -1,6 +1,6 @@
 // ============================================
 // 🌸 DASHBOARD ADMIN - MODAS LA 34
-// VERSIÓN COMPLETA CON FILTROS Y ORDENAMIENTO
+// VERSIÓN COMPLETA CORREGIDA
 // ============================================
 
 // ===== VARIABLES GLOBALES =====
@@ -23,18 +23,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     await verificarSesion();
     await cargarDatosIniciales();
     
-    // Configurar eventos de teclado para cerrar modales con ESC
     document.addEventListener('keydown', function(event) {
         if (event.key === 'Escape') {
             cerrarTodosModales();
         }
     });
     
-    // Cargar primer módulo permitido
     const primerModulo = getPrimerModuloVisible();
     cambiarModulo(primerModulo, null);
     
-    // Inicializar variantes si el formulario existe
     setTimeout(() => {
         if (document.getElementById('variantes-container')) {
             agregarVariante();
@@ -48,6 +45,10 @@ function cerrarTodosModales() {
         modal.style.display = 'none';
         modal.classList.remove('active');
     });
+}
+
+function getPrimerModuloVisible() {
+    return 'productos';
 }
 
 // ===== FUNCIONES DE AUTENTICACIÓN =====
@@ -77,13 +78,11 @@ async function verificarSesion() {
         });
         const perfil = await perfilRes.json();
         
-        // Mostrar nombre
         const userNameSpan = document.getElementById('userNameDisplay');
         if (userNameSpan) {
             userNameSpan.textContent = perfil[0]?.nombre || user.email || 'Administradora';
         }
         
-        // Cargar permisos (desde permisos.js)
         if (typeof cargarPermisosUsuario === 'function') {
             await cargarPermisosUsuario(user.id);
             if (typeof aplicarPermisosUI === 'function') aplicarPermisosUI();
@@ -123,8 +122,6 @@ function cambiarModulo(modulo, event = null) {
     }
     
     currentModule = modulo;
-    
-    // Cargar datos del módulo
     cargarDatosModulo(modulo);
 }
 
@@ -195,23 +192,22 @@ function agregarVariante() {
             <div class="variante-header">
                 <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
                     <div>
-                        <label style="color: #ff6b6b;">📏 Talla:</label>
+                        <label style="color: #b87c4e;">📏 Talla:</label>
                         <input type="text" id="variante-${varianteId}-talla" placeholder="Ej: S, M, L, 6, 8..." required>
                     </div>
                     <div>
-                        <label style="color: #ff6b6b;">💰 Precio de venta:</label>
+                        <label style="color: #b87c4e;">💰 Precio de venta:</label>
                         <input type="number" id="variante-${varianteId}-precio" placeholder="Ej: 45000" min="0" step="1000" required style="width: 120px;">
                     </div>
                 </div>
-                ${varianteId > 0 ? `<button type="button" onclick="eliminarVariante(${varianteId})" class="btn-eliminar-talla">✖️ Eliminar talla</button>` : ''}
+                ${varianteId > 0 ? `<button type="button" onclick="eliminarVariante(${varianteId})" class="btn-secondary-sm">✖️ Eliminar talla</button>` : ''}
             </div>
-            
             <div style="margin-top: 1rem;">
-                <label style="color: #ff6b6b;">🎨 Colores y stock:</label>
+                <label style="color: #b87c4e;">🎨 Colores y stock:</label>
                 <div id="colores-${varianteId}-container" class="colores-container"></div>
                 <div>
-                    <button type="button" onclick="agregarColorAVariante(${varianteId})" class="btn-agregar-color">➕ Agregar color</button>
-                    <button type="button" onclick="agregarSinColor(${varianteId})" class="btn-sin-color">⚪ Sin color (stock único)</button>
+                    <button type="button" onclick="agregarColorAVariante(${varianteId})" class="btn-secondary-sm">➕ Agregar color</button>
+                    <button type="button" onclick="agregarSinColor(${varianteId})" class="btn-secondary-sm">⚪ Sin color (stock único)</button>
                 </div>
             </div>
         </div>
@@ -231,10 +227,10 @@ function agregarColorAVariante(varianteId) {
     const colorHTML = `
         <div class="color-row" id="color-${colorId}">
             <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; width: 100%;">
-                <input type="color" id="color-hex-${colorId}" value="#ff0000" class="color-picker" style="width: 50px; height: 40px;">
-                <input type="text" id="color-hex-text-${colorId}" value="#ff0000" placeholder="Código hex" class="color-hex-text" style="flex: 1; min-width: 100px;">
+                <input type="color" id="color-hex-${colorId}" value="#d4a5a9" class="color-picker">
+                <input type="text" id="color-hex-text-${colorId}" value="#d4a5a9" placeholder="Código hex" class="color-hex-text" style="flex: 1; min-width: 100px;">
                 <input type="text" id="color-nombre-${colorId}" placeholder="Nombre del color" class="color-nombre-input" style="flex: 2; min-width: 120px;">
-                <input type="number" id="color-stock-${colorId}" placeholder="Stock" min="0" value="0" class="color-stock-input" style="width: 80px;">
+                <input type="number" id="color-stock-${colorId}" placeholder="Stock" min="0" value="0" class="color-stock-input">
                 <button type="button" onclick="eliminarColor('${colorId}')" class="btn-eliminar-color">🗑️</button>
             </div>
         </div>
@@ -292,15 +288,23 @@ function eliminarVariante(varianteId) {
 function getVariantesFromForm() {
     const variantes = [];
     const precioCompraGlobal = document.getElementById('producto-precio-compra')?.value || 0;
+    const precioVentaGeneral = document.getElementById('producto-precio-venta-general')?.value || 0;
     
     for (let i = 0; i < varianteCount; i++) {
         const tallaInput = document.getElementById(`variante-${i}-talla`);
-        const precioInput = document.getElementById(`variante-${i}-precio`);
+        let precioInput = document.getElementById(`variante-${i}-precio`);
         
         if (!tallaInput || !tallaInput.value.trim()) continue;
         
         const talla = tallaInput.value.trim();
-        const precioVenta = parseFloat(precioInput?.value) || 0;
+        let precioVenta = parseFloat(precioInput?.value) || 0;
+        
+        // Si no tiene precio individual, usar el precio general
+        if (precioVenta === 0 && precioVentaGeneral > 0) {
+            precioVenta = precioVentaGeneral;
+            if (precioInput) precioInput.value = precioVentaGeneral;
+        }
+        
         const precioCompra = parseFloat(precioCompraGlobal) || 0;
         
         if (precioVenta === 0) {
@@ -328,9 +332,8 @@ function getVariantesFromForm() {
                     const hexTextInput = document.getElementById(`color-hex-text-${colorId}`);
                     const stockInput = document.getElementById(`color-stock-${colorId}`);
                     
-                    let hexValue = hexTextInput?.value || '#ff0000';
+                    let hexValue = hexTextInput?.value || '#d4a5a9';
                     if (!hexValue.startsWith('#')) hexValue = '#' + hexValue;
-                    if (!/^#[0-9A-Fa-f]{6}$/.test(hexValue)) hexValue = '#cccccc';
                     
                     if (nombreInput && nombreInput.value.trim()) {
                         colores.push({
@@ -344,7 +347,7 @@ function getVariantesFromForm() {
         }
         
         if (colores.length === 0) {
-            colores.push({ nombre: 'Sin color', codigo: '#cccccc', stock: 0 });
+            colores.push({ nombre: 'Sin color', codigo: '#d4a5a9', stock: 0 });
         }
         
         const stockTotal = colores.reduce((sum, c) => sum + c.stock, 0);
@@ -441,53 +444,12 @@ async function guardarProductoBase() {
             productoId = productoGuardado[0].id;
         }
         
-        // ========== NUEVA FUNCIÓN PARA GENERAR SKU LEGIBLE ==========
-        
-        // Mapa de tallas a códigos de 1 letra/número
-        const mapaTallas = {
-            'XS': 'A', 'S': 'B', 'M': 'C', 'L': 'D', 'XL': 'E',
-            'XXL': 'F', 'XXXL': 'G', '2XL': 'F', '3XL': 'G',
-            '6': '6', '7': '7', '8': '8', '9': '9', '10': '0', 
-            '11': '1', '12': '2', '34': 'a', '35': 'b', '36': 'c', 
-            '37': 'd', '38': 'e', '39': 'f', '40': 'g', '41': 'h', 
-            '42': 'i', '43': 'j', '44': 'k'
-        };
-        
         let variantesGuardadas = 0;
         
         for (const variante of variantes) {
-            // Obtener código de talla (1 carácter)
-            const tallaCode = mapaTallas[variante.talla] || variante.talla.charAt(0);
-            
-            // Obtener código de color (si existe)
-            let colorCode = '';
-            if (variante.colores && variante.colores.length > 0) {
-                const primerColor = variante.colores[0];
-                if (primerColor.nombre && primerColor.nombre !== 'Sin color') {
-                    colorCode = primerColor.nombre.charAt(0).toUpperCase();
-                }
-            }
-            
-            // Generar SKU base: MODA-{IDproducto}{talla}{color}
-            const skuBase = `MODA-${productoId}${tallaCode}${colorCode}`;
-            
-            // Verificar si el SKU ya existe (para evitar duplicados en variantes múltiples)
-            let skuFinal = skuBase;
-            let contador = 2;
-            
-            const existeRes = await fetch(`${SUPABASE_URL}/rest/v1/variantes_producto?sku=eq.${skuFinal}`, {
-                headers: { 'apikey': SUPABASE_KEY }
-            });
-            let existe = await existeRes.json();
-            
-            while (existe.length > 0) {
-                skuFinal = `${skuBase}${contador}`;
-                const resNuevo = await fetch(`${SUPABASE_URL}/rest/v1/variantes_producto?sku=eq.${skuFinal}`, {
-                    headers: { 'apikey': SUPABASE_KEY }
-                });
-                existe = await resNuevo.json();
-                contador++;
-            }
+            // Generar SKU legible
+            const skuBase = `${codigo}-${variante.talla}`.toUpperCase().replace(/[^A-Z0-9-]/g, '');
+            const skuFinal = `${skuBase}-${productoId}`;
             
             const varianteData = {
                 producto_id: productoId,
@@ -496,7 +458,7 @@ async function guardarProductoBase() {
                 stock_total: variante.stock_total,
                 precio_venta: variante.precio_venta,
                 precio_compra: variante.precio_compra,
-                sku: skuFinal  // ← SKU LEGIBLE (ej: MODA-15C)
+                sku: skuFinal
             };
             
             const varResponse = await fetch(`${SUPABASE_URL}/rest/v1/variantes_producto`, {
@@ -509,11 +471,7 @@ async function guardarProductoBase() {
                 body: JSON.stringify(varianteData)
             });
             
-            if (varResponse.ok) {
-                variantesGuardadas++;
-                console.log(`✅ Variante ${variante.talla} guardada con SKU: ${skuFinal}`);
-            }
-            
+            if (varResponse.ok) variantesGuardadas++;
             await new Promise(resolve => setTimeout(resolve, 100));
         }
         
@@ -522,12 +480,12 @@ async function guardarProductoBase() {
         cerrarFormulario('producto');
         await cargarProductos();
         
-        // Limpiar formulario
         document.getElementById('producto-codigo').value = '';
         document.getElementById('producto-nombre').value = '';
         document.getElementById('producto-categoria').value = '';
         document.getElementById('producto-imagen').value = '';
         document.getElementById('producto-precio-compra').value = '';
+        document.getElementById('producto-precio-venta-general').value = '';
         document.getElementById('variantes-container').innerHTML = '';
         varianteCount = 0;
         agregarVariante();
@@ -551,111 +509,94 @@ async function cargarProductos() {
         if (!response.ok) throw new Error('Error al cargar');
         
         productosData = await response.json();
-        ordenarProductos('nombre');
+        
+        const tbody = document.querySelector('#tabla-productos tbody');
+        if (!tbody) return;
+        
+        function getEmojiCategoria(cat) {
+            const emojis = { 'vestidos': '👗', 'blusas': '👚', 'pantalones': '👖', 'deportivo': '⚽', 'caballero': '👔', 'accesorios': '🎀' };
+            return emojis[cat] || '📦';
+        }
+        
+        if (productosData.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="8" style="text-align: center;">No hay productos registrados</td></tr>';
+            return;
+        }
+        
+        tbody.innerHTML = productosData.map(p => {
+            const variantes = p.variantes || [];
+            const totalStock = variantes.reduce((sum, v) => sum + (v.stock_total || 0), 0);
+            const precioMin = Math.min(...variantes.map(v => v.precio_venta || Infinity));
+            const precioMax = Math.max(...variantes.map(v => v.precio_venta || 0));
+            const precioTexto = precioMin === Infinity ? 'N/A' : (precioMin === precioMax ? `$${precioMin.toLocaleString()}` : `$${precioMin.toLocaleString()} - $${precioMax.toLocaleString()}`);
+            
+            return `
+                <tr>
+                    <td>${p.imagen_url ? `<img src="${p.imagen_url}" style="width:50px;height:50px;object-fit:cover;border-radius:10px;">` : `<div style="width:50px;height:50px;background:#f5ede8;border-radius:10px;display:flex;align-items:center;justify-content:center;">${getEmojiCategoria(p.categoria)}</div>`}</td>
+                    <td>${p.codigo || '-'}</td>
+                    <td><strong>${p.nombre}</strong></td>
+                    <td><span style="background:#f5ede8;padding:0.2rem 0.8rem;border-radius:50px;">${p.categoria || '-'}</span></td>
+                    <td>${variantes.length} tallas</td>
+                    <td>${totalStock}</td>
+                    <td>${precioTexto}</td>
+                    <td>
+                        <button class="action-btn" onclick="editarProducto(${p.id})" title="Editar">✏️</button>
+                        <button class="action-btn" onclick="verVariantes(${p.id})" title="Variantes">📋</button>
+                        <button class="action-btn" onclick="imprimirEtiquetasProducto(${p.id})" title="Imprimir etiquetas">🏷️</button>
+                        <button class="action-btn delete-btn" onclick="eliminarProducto(${p.id})" title="Eliminar">🗑️</button>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+        
+        // Configurar filtros
+        setTimeout(() => {
+            const searchInput = document.getElementById('search-productos');
+            const categoriaSelect = document.getElementById('filter-categoria-productos');
+            const stockSelect = document.getElementById('filter-stock-productos');
+            
+            if (searchInput) searchInput.addEventListener('input', aplicarFiltrosProductos);
+            if (categoriaSelect) categoriaSelect.addEventListener('change', aplicarFiltrosProductos);
+            if (stockSelect) stockSelect.addEventListener('change', aplicarFiltrosProductos);
+        }, 100);
         
     } catch (error) {
         console.error('Error:', error);
-        const tbody = document.querySelector('#tabla-productos tbody');
-        if (tbody) tbody.innerHTML = '<tr><td colspan="8" style="text-align: center;">Error al cargar productos</td></tr>';
     }
 }
 
-function ordenarProductos(columna) {
-    if (sortProductosColumn === columna) {
-        sortProductosDirection = sortProductosDirection === 'asc' ? 'desc' : 'asc';
-    } else {
-        sortProductosColumn = columna;
-        sortProductosDirection = 'asc';
-    }
+function aplicarFiltrosProductos() {
+    const rows = document.querySelectorAll('#tabla-productos tbody tr');
+    const searchTerm = document.getElementById('search-productos')?.value.toLowerCase() || '';
+    const categoria = document.getElementById('filter-categoria-productos')?.value || '';
+    const stockFilter = document.getElementById('filter-stock-productos')?.value || '';
     
-    const productosOrdenados = [...productosData];
-    
-    productosOrdenados.sort((a, b) => {
-        let valA, valB;
+    rows.forEach(row => {
+        let mostrar = true;
+        const nombre = row.cells[2]?.textContent.toLowerCase() || '';
+        const codigo = row.cells[1]?.textContent.toLowerCase() || '';
+        const categoriaTexto = row.cells[3]?.textContent.toLowerCase() || '';
+        const stockTexto = row.cells[5]?.textContent || '0';
+        const stock = parseInt(stockTexto) || 0;
         
-        switch(columna) {
-            case 'codigo':
-                valA = (a.codigo || '').toLowerCase();
-                valB = (b.codigo || '').toLowerCase();
-                break;
-            case 'nombre':
-                valA = (a.nombre || '').toLowerCase();
-                valB = (b.nombre || '').toLowerCase();
-                break;
-            case 'categoria':
-                valA = (a.categoria || '').toLowerCase();
-                valB = (b.categoria || '').toLowerCase();
-                break;
-            case 'stock':
-                valA = a.stock_total || 0;
-                valB = b.stock_total || 0;
-                break;
-            case 'precio':
-                const preciosA = a.variantes?.map(v => v.precio_venta) || [0];
-                const preciosB = b.variantes?.map(v => v.precio_venta) || [0];
-                valA = Math.min(...preciosA);
-                valB = Math.min(...preciosB);
-                break;
-            default:
-                valA = a.nombre;
-                valB = b.nombre;
-        }
+        if (searchTerm && !nombre.includes(searchTerm) && !codigo.includes(searchTerm)) mostrar = false;
+        if (mostrar && categoria && !categoriaTexto.includes(categoria)) mostrar = false;
+        if (mostrar && stockFilter === 'bajo' && stock >= 5) mostrar = false;
+        if (mostrar && stockFilter === 'agotado' && stock > 0) mostrar = false;
         
-        if (valA < valB) return sortProductosDirection === 'asc' ? -1 : 1;
-        if (valA > valB) return sortProductosDirection === 'asc' ? 1 : -1;
-        return 0;
+        row.style.display = mostrar ? '' : 'none';
     });
-    
-    mostrarProductosOrdenados(productosOrdenados);
 }
 
-function mostrarProductosOrdenados(productos) {
-    const tbody = document.querySelector('#tabla-productos tbody');
-    if (!tbody) return;
+function limpiarFiltrosProductos() {
+    const searchInput = document.getElementById('search-productos');
+    const categoriaSelect = document.getElementById('filter-categoria-productos');
+    const stockSelect = document.getElementById('filter-stock-productos');
     
-    function getEmojiCategoria(cat) {
-        const emojis = { 'vestidos': '👗', 'blusas': '👚', 'pantalones': '👖', 'deportivo': '⚽', 'caballero': '👔', 'accesorios': '🎀' };
-        return emojis[cat] || '📦';
-    }
-    
-    if (productos.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="8" style="text-align: center;">No hay productos registrados</td></tr>';
-        return;
-    }
-    
-    tbody.innerHTML = productos.map(p => {
-        const variantes = p.variantes || [];
-        const totalStock = variantes.reduce((sum, v) => sum + (v.stock_total || 0), 0);
-        const precioMin = Math.min(...variantes.map(v => v.precio_venta || Infinity));
-        const precioMax = Math.max(...variantes.map(v => v.precio_venta || 0));
-        const precioTexto = precioMin === Infinity ? 'N/A' : (precioMin === precioMax ? `$${precioMin.toLocaleString()}` : `$${precioMin.toLocaleString()} - $${precioMax.toLocaleString()}`);
-        
-        return `
-            <tr>
-                <td>
-                    ${p.imagen_url ? 
-                        `<img src="${p.imagen_url}" style="width:50px;height:50px;object-fit:cover;border-radius:10px;">` : 
-                        `<div style="width:50px;height:50px;background:#ffe4e9;border-radius:10px;display:flex;align-items:center;justify-content:center;">${getEmojiCategoria(p.categoria)}</div>`
-                    }
-                </td>
-                <td>${p.codigo || '-'}</td>
-                <td><strong>${p.nombre}</strong></td>
-                <td><span style="background:#ffe4e9;padding:0.2rem 0.8rem;border-radius:50px;">${p.categoria || '-'}</span></td>
-                <td>${variantes.length} tallas</td>
-                <td>${totalStock}</td>
-                <td>${precioTexto}</td>
-                <td>
-                    <button class="action-btn" onclick="editarProducto(${p.id})">✏️</button>
-                    <button class="action-btn" onclick="verVariantes(${p.id})">📋</button>
-                    <button class="action-btn" onclick="imprimirEtiquetasProducto(${p.id})">🏷️</button>
-                    <button class="action-btn delete-btn" onclick="eliminarProducto(${p.id})">🗑️</button>
-                </td>
-             </tr>
-        `;
-    }).join('');
-    
-    // Aplicar filtros después de mostrar
-    setTimeout(() => aplicarFiltrosProductos(), 100);
+    if (searchInput) searchInput.value = '';
+    if (categoriaSelect) categoriaSelect.value = '';
+    if (stockSelect) stockSelect.value = '';
+    aplicarFiltrosProductos();
 }
 
 async function editarProducto(id) {
@@ -697,24 +638,16 @@ async function editarProducto(id) {
                         <div class="variante-card" id="variante-${varianteId}">
                             <div class="variante-header">
                                 <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
-                                    <div>
-                                        <label>📏 Talla:</label>
-                                        <input type="text" id="variante-${varianteId}-talla" value="${v.talla}" required>
-                                    </div>
-                                    <div>
-                                        <label>💰 Precio de venta:</label>
-                                        <input type="number" id="variante-${varianteId}-precio" value="${v.precio_venta}" required style="width: 120px;">
-                                    </div>
+                                    <div><label>📏 Talla:</label><input type="text" id="variante-${varianteId}-talla" value="${v.talla}" required></div>
+                                    <div><label>💰 Precio de venta:</label><input type="number" id="variante-${varianteId}-precio" value="${v.precio_venta}" required style="width: 120px;"></div>
                                 </div>
-                                <button type="button" onclick="eliminarVariante(${varianteId})" class="btn-eliminar-talla">✖️ Eliminar talla</button>
+                                <button type="button" onclick="eliminarVariante(${varianteId})" class="btn-secondary-sm">✖️ Eliminar talla</button>
                             </div>
                             <div style="margin-top: 1rem;">
                                 <label>🎨 Colores y stock:</label>
                                 <div id="colores-${varianteId}-container" class="colores-container"></div>
-                                <div>
-                                    <button type="button" onclick="agregarColorAVariante(${varianteId})" class="btn-agregar-color">➕ Agregar color</button>
-                                    <button type="button" onclick="agregarSinColor(${varianteId})" class="btn-sin-color">⚪ Sin color</button>
-                                </div>
+                                <div><button type="button" onclick="agregarColorAVariante(${varianteId})" class="btn-secondary-sm">➕ Agregar color</button>
+                                <button type="button" onclick="agregarSinColor(${varianteId})" class="btn-secondary-sm">⚪ Sin color</button></div>
                             </div>
                         </div>
                     `;
@@ -728,26 +661,9 @@ async function editarProducto(id) {
                         let colorHTML = '';
                         
                         if (color.nombre === null && color.codigo === null) {
-                            colorHTML = `
-                                <div class="color-row sin-color-item" id="color-${colorId}">
-                                    <span>⚪</span>
-                                    <span style="flex:1;">Sin color específico</span>
-                                    <input type="number" id="color-stock-${colorId}" value="${color.stock}" class="color-stock-input" style="width:80px;">
-                                    <button type="button" onclick="eliminarColor('${colorId}')">🗑️</button>
-                                </div>
-                            `;
+                            colorHTML = `<div class="color-row sin-color-item" id="color-${colorId}"><span>⚪</span><span style="flex:1;">Sin color específico</span><input type="number" id="color-stock-${colorId}" value="${color.stock}" class="color-stock-input"><button type="button" onclick="eliminarColor('${colorId}')">🗑️</button></div>`;
                         } else {
-                            colorHTML = `
-                                <div class="color-row" id="color-${colorId}">
-                                    <div style="display:flex; gap:0.5rem; flex-wrap:wrap; width:100%;">
-                                        <input type="color" id="color-hex-${colorId}" value="${color.codigo || '#ff0000'}" style="width:50px;">
-                                        <input type="text" id="color-hex-text-${colorId}" value="${color.codigo || '#ff0000'}">
-                                        <input type="text" id="color-nombre-${colorId}" value="${color.nombre || ''}">
-                                        <input type="number" id="color-stock-${colorId}" value="${color.stock}" style="width:80px;">
-                                        <button type="button" onclick="eliminarColor('${colorId}')">🗑️</button>
-                                    </div>
-                                </div>
-                            `;
+                            colorHTML = `<div class="color-row" id="color-${colorId}"><div style="display:flex; gap:0.5rem; flex-wrap:wrap; width:100%;"><input type="color" id="color-hex-${colorId}" value="${color.codigo || '#d4a5a9'}" style="width:50px;"><input type="text" id="color-hex-text-${colorId}" value="${color.codigo || '#d4a5a9'}"><input type="text" id="color-nombre-${colorId}" value="${color.nombre || ''}"><input type="number" id="color-stock-${colorId}" value="${color.stock}" style="width:80px;"><button type="button" onclick="eliminarColor('${colorId}')">🗑️</button></div></div>`;
                         }
                         coloresContainer.insertAdjacentHTML('beforeend', colorHTML);
                     });
@@ -778,28 +694,17 @@ async function verVariantes(id) {
         const producto = data[0];
         const variantes = producto.variantes || [];
         
-        let mensaje = `📋 VARIANTES DE: ${producto.nombre}\n`;
-        mensaje += `═══════════════════════\n`;
-        mensaje += `Código: ${producto.codigo}\n`;
-        mensaje += `Categoría: ${producto.categoria}\n\n`;
-        
+        let mensaje = `📋 VARIANTES DE: ${producto.nombre}\n═══════════════════════\nCódigo: ${producto.codigo}\nCategoría: ${producto.categoria}\n\n`;
         variantes.forEach(v => {
-            mensaje += `📏 TALLA: ${v.talla}\n`;
-            mensaje += `💰 Precio venta: $${v.precio_venta.toLocaleString()}\n`;
-            mensaje += `💰 Precio compra: $${(v.precio_compra || 0).toLocaleString()}\n`;
-            
+            mensaje += `📏 TALLA: ${v.talla}\n💰 Precio venta: $${v.precio_venta.toLocaleString()}\n`;
             const colores = v.colores || [];
             if (colores.length > 0) {
                 mensaje += `🎨 Colores:\n`;
-                colores.forEach(c => {
-                    mensaje += `   • ${c.nombre || 'Sin color'} - Stock: ${c.stock}\n`;
-                });
+                colores.forEach(c => { mensaje += `   • ${c.nombre || 'Sin color'} - Stock: ${c.stock}\n`; });
             }
             mensaje += `\n`;
         });
-        
         alert(mensaje);
-        
     } catch (error) {
         console.error('Error:', error);
         mostrarAlerta('Error al cargar variantes', 'error');
@@ -808,80 +713,18 @@ async function verVariantes(id) {
 
 async function eliminarProducto(id) {
     if (!confirm('¿Eliminar este producto? También se eliminarán todas sus variantes.')) return;
-    
     try {
         const token = JSON.parse(localStorage.getItem('admin_token'));
         await fetch(`${SUPABASE_URL}/rest/v1/productos_base?id=eq.${id}`, {
             method: 'DELETE',
-            headers: {
-                'apikey': SUPABASE_KEY,
-                'Authorization': `Bearer ${token.access_token}`
-            }
+            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}` }
         });
-        
         mostrarAlerta('✅ Producto eliminado', 'success');
         await cargarProductos();
-        
     } catch (error) {
         console.error('Error:', error);
         mostrarAlerta('Error al eliminar', 'error');
     }
-}
-
-// ============================================
-// FILTROS PARA PRODUCTOS
-// ============================================
-
-function configurarFiltrosProductos() {
-    const searchInput = document.getElementById('search-productos');
-    const categoriaSelect = document.getElementById('filter-categoria-productos');
-    const stockSelect = document.getElementById('filter-stock-productos');
-    
-    if (searchInput) searchInput.addEventListener('input', () => aplicarFiltrosProductos());
-    if (categoriaSelect) categoriaSelect.addEventListener('change', () => aplicarFiltrosProductos());
-    if (stockSelect) stockSelect.addEventListener('change', () => aplicarFiltrosProductos());
-}
-
-function aplicarFiltrosProductos() {
-    const rows = document.querySelectorAll('#tabla-productos tbody tr');
-    const searchTerm = document.getElementById('search-productos')?.value.toLowerCase() || '';
-    const categoria = document.getElementById('filter-categoria-productos')?.value || '';
-    const stockFilter = document.getElementById('filter-stock-productos')?.value || '';
-    
-    let visibleCount = 0;
-    
-    rows.forEach(row => {
-        let mostrar = true;
-        
-        const nombre = row.cells[2]?.textContent.toLowerCase() || '';
-        const codigo = row.cells[1]?.textContent.toLowerCase() || '';
-        const categoriaTexto = row.cells[3]?.textContent.toLowerCase() || '';
-        const stockTexto = row.cells[5]?.textContent || '0';
-        const stock = parseInt(stockTexto) || 0;
-        
-        if (searchTerm && !nombre.includes(searchTerm) && !codigo.includes(searchTerm)) mostrar = false;
-        if (mostrar && categoria && !categoriaTexto.includes(categoria)) mostrar = false;
-        if (mostrar && stockFilter === 'bajo' && stock >= 5) mostrar = false;
-        if (mostrar && stockFilter === 'agotado' && stock > 0) mostrar = false;
-        if (mostrar && stockFilter === 'normal' && stock < 5) mostrar = false;
-        
-        row.style.display = mostrar ? '' : 'none';
-        if (mostrar) visibleCount++;
-    });
-    
-    const filterStats = document.querySelector('#modulo-productos .filter-stats');
-    if (filterStats) filterStats.textContent = `${visibleCount} productos`;
-}
-
-function limpiarFiltrosProductos() {
-    const searchInput = document.getElementById('search-productos');
-    const categoriaSelect = document.getElementById('filter-categoria-productos');
-    const stockSelect = document.getElementById('filter-stock-productos');
-    
-    if (searchInput) searchInput.value = '';
-    if (categoriaSelect) categoriaSelect.value = '';
-    if (stockSelect) stockSelect.value = '';
-    aplicarFiltrosProductos();
 }
 
 // ============================================
@@ -893,61 +736,28 @@ async function cargarStock() {
         const response = await fetch(`${SUPABASE_URL}/rest/v1/vista_productos_completa`, {
             headers: { 'apikey': SUPABASE_KEY }
         });
-        
         const productos = await response.json();
         
-        let productosStockBajo = [];
-        let productosAgotados = [];
-        let productosNormales = 0;
+        let productosStockBajo = [], productosAgotados = [], productosNormales = 0;
         
         productos.forEach(producto => {
             const variantes = producto.variantes || [];
-            
             variantes.forEach(variante => {
                 const colores = variante.colores || [];
-                
                 if (colores.length > 0) {
                     colores.forEach(color => {
                         const stock = color.stock || 0;
-                        const item = {
-                            producto_id: producto.id,
-                            producto_nombre: producto.nombre,
-                            producto_codigo: producto.codigo,
-                            talla: variante.talla,
-                            color: color.nombre || 'Sin color',
-                            color_codigo: color.codigo || '#ccc',
-                            stock: stock,
-                            precio_venta: variante.precio_venta
-                        };
-                        
-                        if (stock === 0) {
-                            productosAgotados.push(item);
-                        } else if (stock < 5) {
-                            productosStockBajo.push(item);
-                        } else {
-                            productosNormales++;
-                        }
+                        const item = { producto_id: producto.id, producto_nombre: producto.nombre, producto_codigo: producto.codigo, talla: variante.talla, color: color.nombre || 'Sin color', color_codigo: color.codigo || '#ccc', stock: stock };
+                        if (stock === 0) productosAgotados.push(item);
+                        else if (stock < 5) productosStockBajo.push(item);
+                        else productosNormales++;
                     });
                 } else {
                     const stock = variante.stock_total || 0;
-                    const item = {
-                        producto_id: producto.id,
-                        producto_nombre: producto.nombre,
-                        producto_codigo: producto.codigo,
-                        talla: variante.talla,
-                        color: 'N/A',
-                        color_codigo: '#ccc',
-                        stock: stock,
-                        precio_venta: variante.precio_venta
-                    };
-                    
-                    if (stock === 0) {
-                        productosAgotados.push(item);
-                    } else if (stock < 5) {
-                        productosStockBajo.push(item);
-                    } else {
-                        productosNormales++;
-                    }
+                    const item = { producto_id: producto.id, producto_nombre: producto.nombre, producto_codigo: producto.codigo, talla: variante.talla, color: 'N/A', color_codigo: '#ccc', stock: stock };
+                    if (stock === 0) productosAgotados.push(item);
+                    else if (stock < 5) productosStockBajo.push(item);
+                    else productosNormales++;
                 }
             });
         });
@@ -955,58 +765,32 @@ async function cargarStock() {
         const stockBajoCount = document.getElementById('stock-bajo-count');
         const stockAgotadoCount = document.getElementById('stock-agotado-count');
         const stockNormalCount = document.getElementById('stock-normal-count');
-        
         if (stockBajoCount) stockBajoCount.textContent = productosStockBajo.length;
         if (stockAgotadoCount) stockAgotadoCount.textContent = productosAgotados.length;
         if (stockNormalCount) stockNormalCount.textContent = productosNormales;
         
         const stockBajoBody = document.getElementById('stock-bajo-body');
         if (stockBajoBody) {
-            if (productosStockBajo.length === 0) {
-                stockBajoBody.innerHTML = '<tr><td colspan="6" style="text-align: center;">✅ No hay productos con stock bajo</td></tr>';
-            } else {
-                stockBajoBody.innerHTML = productosStockBajo.map(item => `
-                    <tr class="stock-bajo-row">
-                        <td><strong>${item.producto_nombre}</strong><br><small>${item.producto_codigo}</small></td>
-                        <td>${item.talla}</td>
-                        <td><div style="display: flex; align-items: center; gap: 8px;"><div style="width: 20px; height: 20px; background: ${item.color_codigo}; border-radius: 50%;"></div>${item.color}</div></td>
-                        <td class="stock-critico">${item.stock} unidades</td>
-                        <td>5</td>
-                        <td><button class="action-btn" onclick="solicitarReposicion(${item.producto_id}, '${item.producto_nombre}', '${item.talla}', '${item.color}')">📦 Pedir</button></td>
-                    </tr>
-                `).join('');
-            }
+            if (productosStockBajo.length === 0) stockBajoBody.innerHTML = '<tr><td colspan="5">✅ No hay productos con stock bajo</td></tr>';
+            else stockBajoBody.innerHTML = productosStockBajo.map(item => `<tr class="stock-bajo-row"><td><strong>${item.producto_nombre}</strong><br><small>${item.producto_codigo}</small></td><td>${item.talla}</td><td><div style="display:flex;align-items:center;gap:8px;"><div style="width:20px;height:20px;background:${item.color_codigo};border-radius:50%;"></div>${item.color}</div></td><td class="stock-critico">${item.stock} unidades</td><td><button class="action-btn" onclick="solicitarReposicion(${item.producto_id}, '${item.producto_nombre}', '${item.talla}', '${item.color}')">📦 Pedir</button></td></tr>`).join('');
         }
         
         const stockAgotadoBody = document.getElementById('stock-agotado-body');
         if (stockAgotadoBody) {
-            if (productosAgotados.length === 0) {
-                stockAgotadoBody.innerHTML = '<td><td colspan="5" style="text-align: center;">🎉 Todos los productos tienen stock disponible</td></tr>';
-            } else {
-                stockAgotadoBody.innerHTML = productosAgotados.map(item => `
-                    <tr class="stock-agotado-row">
-                        <td><strong>${item.producto_nombre}</strong><br><small>${item.producto_codigo}</small></td>
-                        <td>${item.talla}</td>
-                        <td><div style="display: flex; align-items: center; gap: 8px;"><div style="width: 20px; height: 20px; background: ${item.color_codigo}; border-radius: 50%;"></div>${item.color}</div></td>
-                        <td class="stock-agotado">AGOTADO</td>
-                        <td><button class="action-btn" onclick="solicitarReposicion(${item.producto_id}, '${item.producto_nombre}', '${item.talla}', '${item.color}')">📦 Solicitar</button></td>
-                    </tr>
-                `).join('');
-            }
+            if (productosAgotados.length === 0) stockAgotadoBody.innerHTML = '<tr><td colspan="5">🎉 Todos los productos tienen stock disponible</td></table>';
+            else stockAgotadoBody.innerHTML = productosAgotados.map(item => `<tr class="stock-agotado-row"><td><strong>${item.producto_nombre}</strong><br><small>${item.producto_codigo}</small></td><td>${item.talla}</td><td><div style="display:flex;align-items:center;gap:8px;"><div style="width:20px;height:20px;background:${item.color_codigo};border-radius:50%;"></div>${item.color}</div></td><td class="stock-agotado">AGOTADO</td><td><button class="action-btn" onclick="solicitarReposicion(${item.producto_id}, '${item.producto_nombre}', '${item.talla}', '${item.color}')">📦 Solicitar</button></td></tr>`).join('');
         }
-        
     } catch (error) {
         console.error('Error cargando stock:', error);
     }
 }
 
 function solicitarReposicion(productoId, nombre, talla, color) {
-    const mensaje = `📦 REPOSICIÓN DE STOCK\n\nProducto: ${nombre}\nTalla: ${talla}\nColor: ${color}\n\nPor favor, gestionar reposición.`;
-    alert(`📋 Solicitud de reposición:\n\n${mensaje}`);
+    alert(`📋 Solicitud de reposición:\n\nProducto: ${nombre}\nTalla: ${talla}\nColor: ${color}\n\nPor favor, gestionar reposición.`);
 }
 
 // ============================================
-// FUNCIONES PARA VENTAS CON ORDENAMIENTO
+// FUNCIONES PARA VENTAS
 // ============================================
 
 async function cargarVentas() {
@@ -1019,7 +803,6 @@ async function cargarVentas() {
         
         ventasData = await response.json();
         
-        // Calcular totales
         const hoy = new Date().toISOString().split('T')[0];
         const ventasHoy = ventasData.filter(v => v.fecha?.split('T')[0] === hoy);
         const totalHoy = ventasHoy.reduce((sum, v) => sum + (v.total || 0), 0);
@@ -1028,95 +811,49 @@ async function cargarVentas() {
         fechaInicio.setDate(1);
         const ventasMes = ventasData.filter(v => new Date(v.fecha) >= fechaInicio);
         const totalMes = ventasMes.reduce((sum, v) => sum + (v.total || 0), 0);
-        
         const cambiosCount = ventasData.filter(v => v.estado === 'cambiado' || v.estado === 'devuelto').length;
         
         const ventasHoyTotal = document.getElementById('ventas-hoy-total');
         const ventasMesTotal = document.getElementById('ventas-mes-total');
         const ventasCambiosCount = document.getElementById('ventas-cambios-count');
-        
         if (ventasHoyTotal) ventasHoyTotal.textContent = `$${totalHoy.toLocaleString()}`;
         if (ventasMesTotal) ventasMesTotal.textContent = `$${totalMes.toLocaleString()}`;
         if (ventasCambiosCount) ventasCambiosCount.textContent = cambiosCount;
         
-        // Ordenar por fecha descendente (más recientes primero)
-        ordenarVentas('fecha');
+        mostrarVentasOrdenadas(ventasData);
         
-        // Configurar filtros
-        setTimeout(() => configurarFiltrosVentas(), 100);
+        setTimeout(() => {
+            const searchInput = document.getElementById('search-ventas');
+            const fechaInicioFilter = document.getElementById('filter-fecha-inicio');
+            const fechaFinFilter = document.getElementById('filter-fecha-fin');
+            const estadoSelect = document.getElementById('filter-estado-ventas');
+            const metodoSelect = document.getElementById('filter-metodo-ventas');
+            
+            if (searchInput) searchInput.addEventListener('input', aplicarFiltrosVentas);
+            if (fechaInicioFilter) fechaInicioFilter.addEventListener('change', aplicarFiltrosVentas);
+            if (fechaFinFilter) fechaFinFilter.addEventListener('change', aplicarFiltrosVentas);
+            if (estadoSelect) estadoSelect.addEventListener('change', aplicarFiltrosVentas);
+            if (metodoSelect) metodoSelect.addEventListener('change', aplicarFiltrosVentas);
+        }, 100);
         
     } catch (error) {
         console.error('Error:', error);
         const tbody = document.getElementById('ventas-body');
-        if (tbody) tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: #ff4757;">Error al cargar ventas</td></tr>';
+        if (tbody) tbody.innerHTML = '<tr><td colspan="8">Error al cargar ventas</td></tr>';
     }
-}
-
-function ordenarVentas(columna) {
-    if (sortColumn === columna) {
-        sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
-    } else {
-        sortColumn = columna;
-        sortDirection = 'asc';
-    }
-    
-    const ventasOrdenadas = [...ventasData];
-    
-    ventasOrdenadas.sort((a, b) => {
-        let valA, valB;
-        
-        switch(columna) {
-            case 'id':
-                valA = a.id || 0;
-                valB = b.id || 0;
-                break;
-            case 'fecha':
-                valA = new Date(a.fecha);
-                valB = new Date(b.fecha);
-                break;
-            case 'cliente':
-                valA = (a.cliente || '').toLowerCase();
-                valB = (b.cliente || '').toLowerCase();
-                break;
-            case 'total':
-                valA = a.total || 0;
-                valB = b.total || 0;
-                break;
-            case 'metodo':
-                valA = (a.metodo_pago || '').toLowerCase();
-                valB = (b.metodo_pago || '').toLowerCase();
-                break;
-            case 'estado':
-                valA = (a.estado || '').toLowerCase();
-                valB = (b.estado || '').toLowerCase();
-                break;
-            default:
-                valA = a.fecha;
-                valB = b.fecha;
-        }
-        
-        if (valA < valB) return sortDirection === 'asc' ? -1 : 1;
-        if (valA > valB) return sortDirection === 'asc' ? 1 : -1;
-        return 0;
-    });
-    
-    mostrarVentasOrdenadas(ventasOrdenadas);
 }
 
 function mostrarVentasOrdenadas(ventas) {
     const tbody = document.getElementById('ventas-body');
-    
     if (!tbody) return;
     
     if (!ventas || ventas.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="8" style="text-align: center;">No hay ventas registradas</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="8">No hay ventas registradas</td></tr>';
         return;
     }
     
     tbody.innerHTML = ventas.map(venta => {
-        let estadoClass = '';
-        let estadoText = '';
-        
+        let estadoClass = '', estadoText = '';
         switch(venta.estado) {
             case 'completada': estadoClass = 'estado-pagada'; estadoText = '✅ Completada'; break;
             case 'pendiente': estadoClass = 'estado-pendiente'; estadoText = '⏳ Pendiente'; break;
@@ -1124,46 +861,10 @@ function mostrarVentasOrdenadas(ventas) {
             case 'devuelto': estadoClass = 'estado-badge-devuelto'; estadoText = '📦 Devuelto'; break;
             default: estadoClass = 'estado-pagada'; estadoText = '✅ Completada';
         }
-        
         const fecha = new Date(venta.fecha);
         const fechaStr = fecha.toLocaleDateString('es-CO');
-        
-        return `
-            <tr>
-                <td><strong>#${venta.id}</strong></td>
-                <td>${fechaStr}</td>
-                <td>${venta.cliente || 'Consumidor final'}</td>
-                <td>${venta.productos || '-'}</td>
-                <td><strong>$${(venta.total || 0).toLocaleString()}</strong></td>
-                <td>${venta.metodo_pago || 'Efectivo'}</td>
-                <td><span class="estado-badge ${estadoClass}">${estadoText}</span></td>
-                <td>
-                    <button class="action-btn" onclick="verDetalleVenta(${venta.id})" title="Ver detalle">👁️</button>
-                    <button class="action-btn" onclick="editarVenta(${venta.id})" title="Editar">✏️</button>
-                    <button class="action-btn" onclick="solicitarCambio(${venta.id})" title="Solicitar cambio">🔄</button>
-                    <button class="action-btn delete-btn" onclick="eliminarVenta(${venta.id})" title="Eliminar">🗑️</button>
-                </td>
-            </tr>
-        `;
+        return `<tr><td><strong>#${venta.id}</strong></td><td>${fechaStr}</td><td>${venta.cliente || 'Consumidor final'}</td><td>${venta.productos || '-'}</td><td><strong>$${(venta.total || 0).toLocaleString()}</strong></td><td>${venta.metodo_pago || 'Efectivo'}</td><td><span class="estado-badge ${estadoClass}">${estadoText}</span></td><td><button class="action-btn" onclick="verDetalleVenta(${venta.id})">👁️</button> <button class="action-btn" onclick="editarVenta(${venta.id})">✏️</button> <button class="action-btn" onclick="solicitarCambio(${venta.id})">🔄</button> <button class="action-btn delete-btn" onclick="eliminarVenta(${venta.id})">🗑️</button></td></tr>`;
     }).join('');
-}
-
-// ============================================
-// FILTROS PARA VENTAS
-// ============================================
-
-function configurarFiltrosVentas() {
-    const searchInput = document.getElementById('search-ventas');
-    const fechaInicio = document.getElementById('filter-fecha-inicio');
-    const fechaFin = document.getElementById('filter-fecha-fin');
-    const estadoSelect = document.getElementById('filter-estado-ventas');
-    const metodoSelect = document.getElementById('filter-metodo-ventas');
-    
-    if (searchInput) searchInput.addEventListener('input', () => aplicarFiltrosVentas());
-    if (fechaInicio) fechaInicio.addEventListener('change', () => aplicarFiltrosVentas());
-    if (fechaFin) fechaFin.addEventListener('change', () => aplicarFiltrosVentas());
-    if (estadoSelect) estadoSelect.addEventListener('change', () => aplicarFiltrosVentas());
-    if (metodoSelect) metodoSelect.addEventListener('change', () => aplicarFiltrosVentas());
 }
 
 function aplicarFiltrosVentas() {
@@ -1174,11 +875,8 @@ function aplicarFiltrosVentas() {
     const estado = document.getElementById('filter-estado-ventas')?.value || '';
     const metodo = document.getElementById('filter-metodo-ventas')?.value || '';
     
-    let visibleCount = 0;
-    
     rows.forEach(row => {
         let mostrar = true;
-        
         const id = row.cells[0]?.textContent || '';
         const cliente = row.cells[2]?.textContent.toLowerCase() || '';
         const productos = row.cells[3]?.textContent.toLowerCase() || '';
@@ -1187,27 +885,13 @@ function aplicarFiltrosVentas() {
         const metodoTexto = row.cells[5]?.textContent || '';
         
         if (searchTerm && !id.includes(searchTerm) && !cliente.includes(searchTerm) && !productos.includes(searchTerm)) mostrar = false;
-        
-        if (mostrar && fechaInicio) {
-            const fechaRow = new Date(fechaTexto);
-            if (fechaRow < new Date(fechaInicio)) mostrar = false;
-        }
-        if (mostrar && fechaFin) {
-            const fechaRow = new Date(fechaTexto);
-            const fechaFinObj = new Date(fechaFin);
-            fechaFinObj.setHours(23, 59, 59);
-            if (fechaRow > fechaFinObj) mostrar = false;
-        }
-        
+        if (mostrar && fechaInicio && new Date(fechaTexto) < new Date(fechaInicio)) mostrar = false;
+        if (mostrar && fechaFin) { const fechaFinObj = new Date(fechaFin); fechaFinObj.setHours(23,59,59); if (new Date(fechaTexto) > fechaFinObj) mostrar = false; }
         if (mostrar && estado && !estadoTexto.includes(estado.toLowerCase())) mostrar = false;
         if (mostrar && metodo && metodoTexto !== metodo) mostrar = false;
         
         row.style.display = mostrar ? '' : 'none';
-        if (mostrar) visibleCount++;
     });
-    
-    const filterStats = document.querySelector('#modulo-ventas .filter-stats');
-    if (filterStats) filterStats.textContent = `${visibleCount} ventas`;
 }
 
 function limpiarFiltrosVentas() {
@@ -1216,7 +900,6 @@ function limpiarFiltrosVentas() {
     const fechaFin = document.getElementById('filter-fecha-fin');
     const estadoSelect = document.getElementById('filter-estado-ventas');
     const metodoSelect = document.getElementById('filter-metodo-ventas');
-    
     if (searchInput) searchInput.value = '';
     if (fechaInicio) fechaInicio.value = '';
     if (fechaFin) fechaFin.value = '';
@@ -1225,41 +908,466 @@ function limpiarFiltrosVentas() {
     aplicarFiltrosVentas();
 }
 
-// ============================================
-// FUNCIONES DE VENTA RÁPIDA Y MANUAL
-// ============================================
+function verFactura(id) { window.open(`factura.html?id=${id}`, '_blank'); }
+function verDetalleVenta(id) { verFactura(id); }
 
-function abrirVentaRapida() {
-    window.open('venta-rapida.html', '_blank');
+async function editarVenta(id) { mostrarAlerta('Función de editar venta en desarrollo', 'info'); }
+
+async function eliminarVenta(id) {
+    if (!confirm('¿Estás segura de eliminar esta venta?')) return;
+    try {
+        const token = JSON.parse(localStorage.getItem('admin_token'));
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/ventas?id=eq.${id}`, {
+            method: 'DELETE',
+            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}` }
+        });
+        if (response.ok) { mostrarAlerta('✅ Venta eliminada', 'success'); await cargarVentas(); }
+        else { mostrarAlerta('Error al eliminar', 'error'); }
+    } catch (error) { mostrarAlerta('Error de conexión', 'error'); }
 }
 
-function abrirNuevaVenta() {
-    // Limpiar carrito
-    carrito = [];
-    if (typeof actualizarCarritoUIManual === 'function') {
+function solicitarCambio(id) {
+    const motivo = prompt('¿Cuál es el motivo del cambio/devolución?');
+    if (motivo) registrarCambio(id, motivo);
+}
+
+async function registrarCambio(id, motivo) {
+    try {
+        const token = JSON.parse(localStorage.getItem('admin_token'));
+        await fetch(`${SUPABASE_URL}/rest/v1/ventas?id=eq.${id}`, {
+            method: 'PATCH',
+            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ estado: 'cambiado', notas: `Cambio solicitado: ${motivo} - ${new Date().toLocaleString()}` })
+        });
+        mostrarAlerta(`🔄 Cambio registrado: ${motivo}`, 'success');
+        await cargarVentas();
+    } catch (error) { console.error('Error:', error); }
+}
+
+// ============================================
+// FUNCIONES DE COMPRAS
+// ============================================
+
+async function cargarCompras() {
+    try {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/compras?select=*,proveedores(nombre)&order=fecha.desc`, {
+            headers: { 'apikey': SUPABASE_KEY }
+        });
+        const compras = await response.json();
+        const tbody = document.querySelector('#tabla-compras tbody');
+        if (!tbody) return;
+        
+        if (compras.length === 0) { tbody.innerHTML = '<tr><td colspan="7">No hay compras registradas</td></tr>'; return; }
+        
+        tbody.innerHTML = compras.map(compra => {
+            const fecha = new Date(compra.fecha);
+            let estadoClass = compra.estado === 'Pagada' ? 'estado-pagada' : (compra.estado === 'Recibida' ? 'estado-recibida' : 'estado-pendiente');
+            return `<tr><td>${fecha.toLocaleDateString('es-CO')}</td><td>${compra.proveedores?.nombre || 'N/A'}</td><td>${compra.producto || 'Varios'}</td><td>${compra.cantidad || '-'}</td><td>$${(compra.total || 0).toLocaleString()}</td><td><span class="estado-badge ${estadoClass}">${compra.estado || 'Pendiente'}</span></td><td><button class="action-btn" onclick="editarCompra(${compra.id})">✏️</button> <button class="action-btn delete-btn" onclick="eliminarCompra(${compra.id})">🗑️</button></td></tr>`;
+        }).join('');
+    } catch (error) { console.error('Error:', error); }
+}
+
+async function guardarCompra() {
+    try {
+        const token = JSON.parse(localStorage.getItem('admin_token'));
+        const proveedorId = document.getElementById('compra-proveedor').value;
+        const cantidad = parseInt(document.getElementById('compra-cantidad').value);
+        const precio = parseFloat(document.getElementById('compra-precio').value);
+        const fecha = document.getElementById('compra-fecha').value;
+        const producto = document.getElementById('compra-producto').value;
+        
+        if (!proveedorId || !cantidad || !precio || !fecha || !producto) {
+            mostrarAlerta('Todos los campos son obligatorios', 'error');
+            return;
+        }
+        
+        const compra = { proveedor_id: parseInt(proveedorId), fecha, producto, cantidad, precio_unitario: precio, total: cantidad * precio, estado: document.getElementById('compra-estado').value, puc: '620501' };
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/compras`, {
+            method: 'POST',
+            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify(compra)
+        });
+        if (response.ok) { mostrarAlerta('🌸 Compra guardada', 'success'); cerrarFormulario('compra'); await cargarCompras(); }
+        else { mostrarAlerta('Error al guardar', 'error'); }
+    } catch (error) { mostrarAlerta('Error de conexión', 'error'); }
+}
+
+function editarCompra(id) { mostrarAlerta('Función de editar compra en desarrollo', 'info'); }
+
+async function eliminarCompra(id) {
+    if (!confirm('¿Eliminar esta compra?')) return;
+    try {
+        const token = JSON.parse(localStorage.getItem('admin_token'));
+        await fetch(`${SUPABASE_URL}/rest/v1/compras?id=eq.${id}`, {
+            method: 'DELETE',
+            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}` }
+        });
+        mostrarAlerta('✅ Compra eliminada', 'success');
+        await cargarCompras();
+    } catch (error) { mostrarAlerta('Error de conexión', 'error'); }
+}
+
+// ============================================
+// FUNCIONES DE GASTOS
+// ============================================
+
+async function cargarGastos() {
+    try {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/gastos?order=fecha.desc`, {
+            headers: { 'apikey': SUPABASE_KEY }
+        });
+        const gastos = await response.json();
+        const tbody = document.querySelector('#tabla-gastos tbody');
+        if (!tbody) return;
+        
+        if (gastos.length === 0) { tbody.innerHTML = '<tr><td colspan="5">No hay gastos registrados</td></tr>'; return; }
+        
+        tbody.innerHTML = gastos.map(gasto => `<tr><td>${new Date(gasto.fecha).toLocaleDateString()}</td><td>${gasto.concepto}</td><td>${gasto.categoria}</td><td>$${(gasto.monto || 0).toLocaleString()}</td><td><button class="action-btn" onclick="editarGasto(${gasto.id})">✏️</button> <button class="action-btn delete-btn" onclick="eliminarGasto(${gasto.id})">🗑️</button></td></tr>`).join('');
+    } catch (error) { console.error('Error:', error); }
+}
+
+async function guardarGasto() {
+    try {
+        const token = JSON.parse(localStorage.getItem('admin_token'));
+        const gasto = {
+            fecha: document.getElementById('gasto-fecha').value,
+            concepto: document.getElementById('gasto-concepto').value,
+            categoria: document.getElementById('gasto-categoria').value,
+            monto: parseFloat(document.getElementById('gasto-monto').value),
+            metodo_pago: document.getElementById('gasto-metodo').value,
+            puc: obtenerPUCGasto(document.getElementById('gasto-categoria').value)
+        };
+        if (!gasto.fecha || !gasto.concepto || !gasto.categoria || !gasto.monto) {
+            mostrarAlerta('Todos los campos son obligatorios', 'error');
+            return;
+        }
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/gastos`, {
+            method: 'POST',
+            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify(gasto)
+        });
+        if (response.ok) { mostrarAlerta('🌸 Gasto guardado', 'success'); cerrarFormulario('gasto'); await cargarGastos(); }
+        else { mostrarAlerta('Error al guardar', 'error'); }
+    } catch (error) { mostrarAlerta('Error de conexión', 'error'); }
+}
+
+function obtenerPUCGasto(categoria) {
+    const pucMap = { 'Alquiler': '511005', 'Servicios': '511010', 'Sueldos': '510506', 'Marketing': '513505', 'Mantenimiento': '513505', 'Otros': '519595' };
+    return pucMap[categoria] || '519595';
+}
+
+function editarGasto(id) { mostrarAlerta('Función de editar gasto en desarrollo', 'info'); }
+
+async function eliminarGasto(id) {
+    if (!confirm('¿Eliminar este gasto?')) return;
+    try {
+        const token = JSON.parse(localStorage.getItem('admin_token'));
+        await fetch(`${SUPABASE_URL}/rest/v1/gastos?id=eq.${id}`, {
+            method: 'DELETE',
+            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}` }
+        });
+        mostrarAlerta('✅ Gasto eliminado', 'success');
+        await cargarGastos();
+    } catch (error) { mostrarAlerta('Error de conexión', 'error'); }
+}
+
+// ============================================
+// FUNCIONES DE PROVEEDORES
+// ============================================
+
+async function cargarProveedores() {
+    try {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/proveedores?order=nombre`, {
+            headers: { 'apikey': SUPABASE_KEY }
+        });
+        const proveedores = await response.json();
+        const tbody = document.querySelector('#tabla-proveedores tbody');
+        if (!tbody) return;
+        
+        if (proveedores.length === 0) { tbody.innerHTML = '<tr><td colspan="5">No hay proveedores registrados</td></tr>'; return; }
+        
+        tbody.innerHTML = proveedores.map(p => `<tr><td><strong>${p.nombre}</strong></td><td>${p.contacto || '-'}</td><td>${p.telefono || '-'}</td><td>${p.email || '-'}</td><td><button class="action-btn" onclick="editarProveedor(${p.id})">✏️</button> <button class="action-btn delete-btn" onclick="eliminarProveedor(${p.id})">🗑️</button></td></tr>`).join('');
+    } catch (error) { console.error('Error:', error); }
+}
+
+async function cargarProveedoresSelect(origen) {
+    try {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/proveedores?select=id,nombre&order=nombre`, {
+            headers: { 'apikey': SUPABASE_KEY }
+        });
+        const proveedores = await response.json();
+        const select = document.getElementById(`${origen}-proveedor`);
+        if (select) select.innerHTML = '<option value="">Seleccionar proveedor</option>' + proveedores.map(p => `<option value="${p.id}">${p.nombre}</option>`).join('');
+    } catch (error) { console.error('Error:', error); }
+}
+
+async function guardarProveedor() {
+    const proveedor = {
+        nombre: document.getElementById('proveedor-nombre').value,
+        contacto: document.getElementById('proveedor-contacto').value || null,
+        telefono: document.getElementById('proveedor-telefono').value || null,
+        email: document.getElementById('proveedor-email').value || null,
+        direccion: document.getElementById('proveedor-direccion').value || null
+    };
+    if (!proveedor.nombre) { mostrarAlerta('El nombre es obligatorio', 'error'); return; }
+    try {
+        const token = JSON.parse(localStorage.getItem('admin_token'));
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/proveedores`, {
+            method: 'POST',
+            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify(proveedor)
+        });
+        if (response.ok) { mostrarAlerta('🌸 Proveedor guardado', 'success'); cerrarFormulario('proveedor'); await cargarProveedores(); }
+        else { mostrarAlerta('Error al guardar', 'error'); }
+    } catch (error) { mostrarAlerta('Error de conexión', 'error'); }
+}
+
+function editarProveedor(id) { mostrarAlerta('Función de editar proveedor en desarrollo', 'info'); }
+
+async function eliminarProveedor(id) {
+    if (!confirm('¿Eliminar este proveedor?')) return;
+    try {
+        const token = JSON.parse(localStorage.getItem('admin_token'));
+        await fetch(`${SUPABASE_URL}/rest/v1/proveedores?id=eq.${id}`, {
+            method: 'DELETE',
+            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}` }
+        });
+        mostrarAlerta('✅ Proveedor eliminado', 'success');
+        await cargarProveedores();
+    } catch (error) { mostrarAlerta('Error de conexión', 'error'); }
+}
+
+// ============================================
+// FUNCIONES DE PERFILES
+// ============================================
+
+async function cargarPerfiles() {
+    try {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/perfiles?order=created_at.desc`, {
+            headers: { 'apikey': SUPABASE_KEY }
+        });
+        const perfiles = await response.json();
+        const tbody = document.querySelector('#tabla-perfiles tbody');
+        if (!tbody) return;
+        
+        if (perfiles.length === 0) { tbody.innerHTML = '<tr><td colspan="4">No hay usuarios registrados</td></tr>'; return; }
+        
+        tbody.innerHTML = perfiles.map(p => `<tr><td><strong>${p.nombre || 'Sin nombre'}</strong></td><td>${p.email}</td><td><span style="background: ${p.rol === 'admin' ? '#ff9a9e' : '#ffb6c1'}; color:white; padding:0.2rem 0.8rem; border-radius:50px;">${p.rol || 'empleado'}</span></td><td><button class="action-btn" onclick="editarPerfil('${p.id}')">✏️</button> ${p.id !== currentUser?.id ? `<button class="action-btn delete-btn" onclick="eliminarPerfil('${p.id}')">🗑️</button>` : ''}</td></tr>`).join('');
+    } catch (error) { console.error('Error:', error); }
+}
+
+async function guardarPerfil() {
+    try {
+        const token = JSON.parse(localStorage.getItem('admin_token'));
+        const nombre = document.getElementById('perfil-nombre').value;
+        const email = document.getElementById('perfil-email').value;
+        const password = document.getElementById('perfil-password').value;
+        const rol = document.getElementById('perfil-rol').value;
+        
+        if (!nombre || !email) { mostrarAlerta('Nombre y email son obligatorios', 'error'); return; }
+        if (!password || password.length < 6) { mostrarAlerta('La contraseña debe tener al menos 6 caracteres', 'error'); return; }
+        
+        const authResponse = await fetch(`${SUPABASE_URL}/auth/v1/signup`, {
+            method: 'POST',
+            headers: { 'apikey': SUPABASE_KEY, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
+        const authData = await authResponse.json();
+        if (!authResponse.ok) throw new Error(authData.msg || 'Error al crear usuario');
+        
+        const perfilResponse = await fetch(`${SUPABASE_URL}/rest/v1/perfiles`, {
+            method: 'POST',
+            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: authData.user.id, nombre, email, rol })
+        });
+        if (perfilResponse.ok) { mostrarAlerta('🌸 Usuario creado', 'success'); cerrarFormulario('perfil'); await cargarPerfiles(); }
+        else { throw new Error('Error al crear perfil'); }
+    } catch (error) { mostrarAlerta('Error: ' + error.message, 'error'); }
+}
+
+function editarPerfil(id) { mostrarAlerta('Función de editar perfil en desarrollo', 'info'); }
+
+async function eliminarPerfil(id) {
+    if (!confirm('¿Eliminar este usuario?')) return;
+    try {
+        const token = JSON.parse(localStorage.getItem('admin_token'));
+        await fetch(`${SUPABASE_URL}/rest/v1/perfiles?id=eq.${id}`, {
+            method: 'DELETE',
+            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}` }
+        });
+        mostrarAlerta('✅ Usuario eliminado', 'success');
+        await cargarPerfiles();
+    } catch (error) { mostrarAlerta('Error de conexión', 'error'); }
+}
+
+// ============================================
+// FUNCIONES DE CONTABILIDAD
+// ============================================
+
+async function cargarContabilidad() {
+    try {
+        const [ventas, compras, gastos] = await Promise.all([
+            fetch(`${SUPABASE_URL}/rest/v1/ventas`, { headers: { 'apikey': SUPABASE_KEY } }).then(r => r.json()),
+            fetch(`${SUPABASE_URL}/rest/v1/compras`, { headers: { 'apikey': SUPABASE_KEY } }).then(r => r.json()),
+            fetch(`${SUPABASE_URL}/rest/v1/gastos`, { headers: { 'apikey': SUPABASE_KEY } }).then(r => r.json())
+        ]);
+        const ingresos = ventas.reduce((s,v) => s + (v.total || 0), 0);
+        const egresos = compras.reduce((s,c) => s + (c.total || 0), 0) + gastos.reduce((s,g) => s + (g.monto || 0), 0);
+        const ingresosElem = document.getElementById('stats-ingresos');
+        const egresosElem = document.getElementById('stats-egresos');
+        if (ingresosElem) ingresosElem.textContent = `$${ingresos.toLocaleString()}`;
+        if (egresosElem) egresosElem.textContent = `$${egresos.toLocaleString()}`;
+    } catch (error) { console.error('Error:', error); }
+}
+
+// ============================================
+// FUNCIONES DE UTILIDAD
+// ============================================
+
+function mostrarFormulario(tipo) {
+    const form = document.getElementById(`form-${tipo}`);
+    if (form) { form.classList.add('active'); form.style.display = 'flex'; }
+    else { console.error(`❌ No existe form-${tipo}`); }
+}
+
+function cerrarFormulario(tipo) {
+    const form = document.getElementById(`form-${tipo}`);
+    if (form) { form.classList.remove('active'); form.style.display = 'none'; }
+    if (tipo === 'producto') {
+        delete document.getElementById('form-producto')?.dataset.editId;
+        const btn = document.querySelector('#form-producto .submit-btn');
+        if (btn) btn.textContent = 'Guardar Producto';
+    }
+    if (tipo === 'venta') { carrito = []; if (typeof actualizarCarritoUIManual === 'function') actualizarCarritoUIManual(); }
+}
+
+function mostrarAlerta(mensaje, tipo) {
+    const alerta = document.getElementById('alertMessage');
+    if (alerta) {
+        alerta.textContent = mensaje;
+        alerta.className = `alert ${tipo}`;
+        alerta.style.display = 'block';
+        setTimeout(() => { alerta.style.display = 'none'; }, 3000);
+    } else { alert(mensaje); }
+}
+
+function toggleMenu() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    if (sidebar && overlay) { sidebar.classList.toggle('open'); overlay.classList.toggle('active'); }
+}
+
+// ============================================
+// ESCÁNER CON CÁMARA
+// ============================================
+
+let streamLector = null;
+
+function abrirEscannerCamara() {
+    const modal = document.getElementById('modal-camara-lector');
+    modal.style.display = 'flex';
+    iniciarCamaraLector();
+}
+
+function cerrarEscannerCamara() {
+    if (streamLector) { streamLector.getTracks().forEach(track => track.stop()); streamLector = null; }
+    const modal = document.getElementById('modal-camara-lector');
+    modal.style.display = 'none';
+    const video = document.getElementById('video-lector');
+    if (video) video.srcObject = null;
+}
+
+async function iniciarCamaraLector() {
+    try {
+        let constraints = { video: { facingMode: { exact: "environment" } } };
+        let stream;
+        try { stream = await navigator.mediaDevices.getUserMedia(constraints); }
+        catch (err) { stream = await navigator.mediaDevices.getUserMedia({ video: true }); }
+        const video = document.getElementById('video-lector');
+        video.srcObject = stream;
+        streamLector = stream;
+    } catch (error) { alert('No se pudo acceder a la cámara'); cerrarEscannerCamara(); }
+}
+
+function capturarYBuscar() {
+    const video = document.getElementById('video-lector');
+    const codigo = prompt('🔍 Escribe el código SKU que ves en la etiqueta:');
+    if (codigo && codigo.trim()) buscarProductoPorSKU(codigo.trim());
+    cerrarEscannerCamara();
+}
+
+async function buscarProductoPorSKU(sku) {
+    try {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/variantes_producto?sku=eq.${sku}`, {
+            headers: { 'apikey': SUPABASE_KEY }
+        });
+        const variantes = await response.json();
+        if (variantes.length === 0) { mostrarAlerta(`❌ No se encontró producto con SKU: ${sku}`, 'error'); return; }
+        const variante = variantes[0];
+        const productoRes = await fetch(`${SUPABASE_URL}/rest/v1/productos_base?id=eq.${variante.producto_id}`, {
+            headers: { 'apikey': SUPABASE_KEY }
+        });
+        const productos = await productoRes.json();
+        const producto = productos[0];
+        
+        carrito.push({
+            producto_id: producto.id,
+            producto_nombre: producto.nombre,
+            talla: variante.talla,
+            color: 'N/A',
+            precio: variante.precio_venta,
+            cantidad: 1,
+            subtotal: variante.precio_venta
+        });
+        mostrarAlerta(`✅ Agregado: ${producto.nombre} (${variante.talla})`, 'success');
         actualizarCarritoUIManual();
-    }
-    
-    // Establecer fecha actual
-    const fechaInput = document.getElementById('venta-fecha');
-    if (fechaInput) {
-        fechaInput.value = new Date().toISOString().split('T')[0];
-    }
-    
-    // Limpiar campos
-    const clienteInput = document.getElementById('venta-cliente');
-    if (clienteInput) clienteInput.value = '';
-    
-    limpiarCamposProductoManual();
-    
-    // Mostrar el modal
-    const formVenta = document.getElementById('form-venta');
-    if (formVenta) {
-        formVenta.style.display = 'flex';
-        formVenta.classList.add('active');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+    } catch (error) { console.error('Error:', error); mostrarAlerta('Error al buscar producto', 'error'); }
 }
+
+// ============================================
+// IMPRESIÓN DE ETIQUETAS
+// ============================================
+
+async function imprimirEtiquetasProducto(productoId) {
+    try {
+        const productoRes = await fetch(`${SUPABASE_URL}/rest/v1/productos_base?id=eq.${productoId}`, {
+            headers: { 'apikey': SUPABASE_KEY }
+        });
+        const productos = await productoRes.json();
+        const producto = productos[0];
+        
+        const variantesRes = await fetch(`${SUPABASE_URL}/rest/v1/variantes_producto?producto_id=eq.${productoId}`, {
+            headers: { 'apikey': SUPABASE_KEY }
+        });
+        const variantes = await variantesRes.json();
+        
+        if (variantes.length === 0) { mostrarAlerta('No hay variantes para imprimir', 'error'); return; }
+        
+        const html = generarHTMLImpresionEtiquetas(producto, variantes);
+        const ventana = window.open('', '_blank');
+        ventana.document.write(html);
+        ventana.document.close();
+        mostrarAlerta(`✅ Etiquetas generadas`, 'success');
+    } catch (error) { mostrarAlerta('Error al generar etiquetas', 'error'); }
+}
+
+function generarHTMLImpresionEtiquetas(producto, variantes) {
+    const nombreProducto = (producto.nombre || '').replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m] || m));
+    let etiquetasHtml = '';
+    for (let i = 0; i < variantes.length; i++) {
+        const v = variantes[i];
+        const sku = v.sku || `SKU-${producto.codigo}-${v.talla}`;
+        const precio = (v.precio_venta || 0).toLocaleString();
+        const talla = v.talla || 'UNICA';
+        etiquetasHtml += `<div class="etiqueta"><div class="tienda">🌸 MODAS LA 34</div><div class="nombre">${nombreProducto}</div><div class="talla">Talla: ${talla}</div><div class="barcode-container"><canvas id="barcode-${i}" class="barcode" data-sku="${sku}"></canvas></div><div class="sku">${sku}</div><div class="precio">$${precio}</div></div>`;
+    }
+    return `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Etiquetas - ${nombreProducto}</title><script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script><style>*{margin:0;padding:0;box-sizing:border-box;}body{background:white;padding:20px;}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;max-width:800px;margin:0 auto;}.etiqueta{border:1px solid #ccc;padding:
+            .etiqueta{border:1px solid #ccc;padding:15px;border-radius:8px;text-align:center;background:white;break-inside:avoid;}.tienda{font-size:10px;color:#d4a5a9;letter-spacing:2px;margin-bottom:5px;}.nombre{font-size:14px;font-weight:bold;margin:5px 0;color:#4a3728;}.talla{font-size:20px;font-weight:bold;color:#b87c4e;margin:5px 0;}.barcode-container{margin:10px 0;display:flex;justify-content:center;min-height:60px;}.sku{font-family:monospace;font-size:9px;color:#666;margin:5px 0;word-break:break-all;}.precio{font-size:18px;font-weight:bold;color:#27ae60;margin-top:10px;}@media print{body{margin:0;padding:0;}.etiqueta{break-inside:avoid;page-break-inside:avoid;}}</style></head><body><div class="grid">${etiquetasHtml}</div><script>(function(){window.addEventListener('load',function(){document.querySelectorAll('.barcode').forEach(function(canvas){var sku=canvas.getAttribute('data-sku');if(sku&&typeof JsBarcode!=='undefined'){try{JsBarcode(canvas,sku,{format:"CODE128",width:2,height:50,displayValue:true});console.log('✅ Código generado:',sku);}catch(e){console.error('Error:',e);}}});});})();</script></body></html>`;
+}
+
+// ============================================
+// VENTA MANUAL (CARRITO)
+// ============================================
 
 function limpiarCamposProductoManual() {
     const nombreInput = document.getElementById('venta-producto-nombre');
@@ -1267,7 +1375,6 @@ function limpiarCamposProductoManual() {
     const colorInput = document.getElementById('venta-producto-color');
     const cantidadInput = document.getElementById('venta-producto-cantidad');
     const precioInput = document.getElementById('venta-producto-precio');
-    
     if (nombreInput) nombreInput.value = '';
     if (tallaInput) tallaInput.value = '';
     if (colorInput) colorInput.value = '';
@@ -1282,39 +1389,16 @@ function agregarProductoVentaManual() {
     const cantidad = parseInt(document.getElementById('venta-producto-cantidad')?.value || '1');
     const precio = parseFloat(document.getElementById('venta-producto-precio')?.value);
     
-    if (!nombre) {
-        mostrarAlerta('❌ Escribe el nombre del producto', 'error');
-        return;
-    }
-    
-    if (!precio || precio <= 0) {
-        mostrarAlerta('❌ Ingresa un precio válido', 'error');
-        return;
-    }
-    
-    if (!cantidad || cantidad < 1) {
-        mostrarAlerta('❌ Ingresa una cantidad válida', 'error');
-        return;
-    }
+    if (!nombre) { mostrarAlerta('❌ Escribe el nombre del producto', 'error'); return; }
+    if (!precio || precio <= 0) { mostrarAlerta('❌ Ingresa un precio válido', 'error'); return; }
     
     const subtotal = cantidad * precio;
-    
     let textoMostrar = nombre;
     if (talla) textoMostrar += ` (Talla: ${talla})`;
     if (color) textoMostrar += ` - ${color}`;
     
-    carrito.push({
-        nombre: nombre,
-        talla: talla || 'N/A',
-        color: color || 'N/A',
-        cantidad: cantidad,
-        precio: precio,
-        subtotal: subtotal,
-        texto: textoMostrar
-    });
-    
+    carrito.push({ nombre, talla: talla || 'N/A', color: color || 'N/A', cantidad, precio, subtotal, texto: textoMostrar });
     mostrarAlerta(`✅ Agregado: ${textoMostrar} x${cantidad} - $${subtotal.toLocaleString()}`, 'success');
-    
     limpiarCamposProductoManual();
     document.getElementById('venta-producto-nombre')?.focus();
     actualizarCarritoUIManual();
@@ -1323,11 +1407,10 @@ function agregarProductoVentaManual() {
 function actualizarCarritoUIManual() {
     const tbody = document.getElementById('carrito-body');
     const total = carrito.reduce((sum, item) => sum + item.subtotal, 0);
-    
     if (!tbody) return;
     
     if (carrito.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 2rem;">No hay productos agregados. Completa los campos arriba y haz clic en "Agregar".</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;">No hay productos agregados. Usa el escáner o agrega manualmente.</td></tr>';
         const totalElement = document.getElementById('carrito-total');
         if (totalElement) totalElement.textContent = '$0';
         return;
@@ -1335,11 +1418,11 @@ function actualizarCarritoUIManual() {
     
     tbody.innerHTML = carrito.map((item, idx) => `
         <tr>
-            <td><strong>${escapeHtml(item.nombre)}</strong><br><small style="color: #888;">${item.talla !== 'N/A' ? `Talla: ${item.talla}` : ''} ${item.color !== 'N/A' ? `| Color: ${item.color}` : ''}</small></td>
+            <td><strong>${escapeHtml(item.nombre)}</strong><br><small style="color:#888;">${item.talla !== 'N/A' ? `Talla: ${item.talla}` : ''} ${item.color !== 'N/A' ? `| Color: ${item.color}` : ''}</small></td>
             <td>${item.talla !== 'N/A' ? escapeHtml(item.talla) : '-'}</td>
             <td>${item.color !== 'N/A' ? escapeHtml(item.color) : '-'}</td>
             <td>$${item.precio.toLocaleString()}</td>
-            <td><input type="number" class="cantidad-input" value="${item.cantidad}" min="1" onchange="actualizarCantidadCarritoManual(${idx}, this.value)" style="width: 70px;"></td>
+            <td><input type="number" class="cantidad-input" value="${item.cantidad}" min="1" onchange="actualizarCantidadCarritoManual(${idx}, this.value)" style="width:70px;"></td>
             <td>$${item.subtotal.toLocaleString()}</td>
             <td><button class="btn-eliminar-item" onclick="eliminarItemCarritoManual(${idx})">🗑️</button></td>
         </tr>
@@ -1366,1601 +1449,52 @@ function eliminarItemCarritoManual(index) {
 }
 
 async function guardarVentaManual() {
-    if (carrito.length === 0) {
-        mostrarAlerta('❌ Agrega al menos un producto a la venta', 'error');
-        return;
-    }
+    if (carrito.length === 0) { mostrarAlerta('❌ Agrega al menos un producto', 'error'); return; }
     
     const fecha = document.getElementById('venta-fecha')?.value;
     const cliente = document.getElementById('venta-cliente')?.value.trim() || 'Consumidor final';
     const metodoPago = document.getElementById('venta-metodo')?.value || 'Efectivo';
     const total = carrito.reduce((sum, item) => sum + item.subtotal, 0);
+    const productosTexto = carrito.map(item => `${item.nombre} x${item.cantidad}${item.talla !== 'N/A' ? ` (${item.talla})` : ''}`).join(', ');
     
-    const productosTexto = carrito.map(item => {
-        let texto = `${item.nombre} x${item.cantidad}`;
-        if (item.talla && item.talla !== 'N/A') texto += ` (Talla: ${item.talla})`;
-        if (item.color && item.color !== 'N/A') texto += ` - ${item.color}`;
-        return texto;
-    }).join(', ');
-    
-    const nuevaVenta = {
-        fecha: fecha,
-        cliente: cliente,
-        productos: productosTexto,
-        total: total,
-        metodo_pago: metodoPago,
-        estado: 'completada',
-        created_at: new Date().toISOString()
-    };
+    const nuevaVenta = { fecha, cliente, productos: productosTexto, total, metodo_pago: metodoPago, estado: 'completada', created_at: new Date().toISOString() };
     
     try {
         const token = JSON.parse(localStorage.getItem('admin_token'));
         const response = await fetch(`${SUPABASE_URL}/rest/v1/ventas`, {
             method: 'POST',
-            headers: {
-                'apikey': SUPABASE_KEY,
-                'Authorization': `Bearer ${token.access_token}`,
-                'Content-Type': 'application/json'
-            },
+            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token.access_token}`, 'Content-Type': 'application/json' },
             body: JSON.stringify(nuevaVenta)
         });
-        
         if (response.ok) {
-            mostrarAlerta(`✅ Venta registrada correctamente - Total: $${total.toLocaleString()}`, 'success');
+            mostrarAlerta(`✅ Venta registrada - Total: $${total.toLocaleString()}`, 'success');
             cerrarFormulario('venta');
             carrito = [];
             await cargarVentas();
         } else {
-            const error = await response.json();
-            mostrarAlerta('❌ Error al registrar venta: ' + (error.message || ''), 'error');
+            mostrarAlerta('❌ Error al registrar venta', 'error');
         }
-    } catch (error) {
-        console.error('Error:', error);
-        mostrarAlerta('❌ Error de conexión', 'error');
-    }
+    } catch (error) { mostrarAlerta('❌ Error de conexión', 'error'); }
 }
+
+function abrirNuevaVenta() {
+    carrito = [];
+    actualizarCarritoUIManual();
+    const fechaInput = document.getElementById('venta-fecha');
+    if (fechaInput) fechaInput.value = new Date().toISOString().split('T')[0];
+    const clienteInput = document.getElementById('venta-cliente');
+    if (clienteInput) clienteInput.value = '';
+    limpiarCamposProductoManual();
+    const formVenta = document.getElementById('form-venta');
+    if (formVenta) { formVenta.style.display = 'flex'; formVenta.classList.add('active'); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+}
+
+function abrirVentaRapida() { window.open('venta-rapida.html', '_blank'); }
 
 function escapeHtml(str) {
     if (!str) return '';
-    return str.replace(/[&<>]/g, function(m) {
-        if (m === '&') return '&amp;';
-        if (m === '<') return '&lt;';
-        if (m === '>') return '&gt;';
-        return m;
-    });
+    return str.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m] || m));
 }
-
-function verFactura(id) {
-    window.open(`factura.html?id=${id}`, '_blank');
-}
-
-function verDetalleVenta(id) {
-    verFactura(id);
-}
-
-async function editarVenta(id) {
-    mostrarAlerta('Función de editar venta en desarrollo', 'info');
-}
-
-async function eliminarVenta(id) {
-    if (!confirm('¿Estás segura de eliminar esta venta?')) return;
-    
-    try {
-        const token = JSON.parse(localStorage.getItem('admin_token'));
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/ventas?id=eq.${id}`, {
-            method: 'DELETE',
-            headers: {
-                'apikey': SUPABASE_KEY,
-                'Authorization': `Bearer ${token.access_token}`
-            }
-        });
-        
-        if (response.ok) {
-            mostrarAlerta('✅ Venta eliminada', 'success');
-            await cargarVentas();
-        } else {
-            mostrarAlerta('Error al eliminar', 'error');
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        mostrarAlerta('Error de conexión', 'error');
-    }
-}
-
-function solicitarCambio(id) {
-    const motivo = prompt('¿Cuál es el motivo del cambio/devolución?\nEj: Talla incorrecta, producto defectuoso, cambio de color, etc.');
-    if (motivo) {
-        registrarCambio(id, motivo);
-    }
-}
-
-async function registrarCambio(id, motivo) {
-    try {
-        const token = JSON.parse(localStorage.getItem('admin_token'));
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/ventas?id=eq.${id}`, {
-            method: 'PATCH',
-            headers: {
-                'apikey': SUPABASE_KEY,
-                'Authorization': `Bearer ${token.access_token}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                estado: 'cambiado',
-                notas: `Cambio solicitado: ${motivo} - Fecha: ${new Date().toLocaleString()}`
-            })
-        });
-        
-        if (response.ok) {
-            mostrarAlerta(`🔄 Cambio registrado: ${motivo}`, 'success');
-            await cargarVentas();
-        }
-    } catch (error) {
-        console.error('Error:', error);
-    }
-}
-
-// ============================================
-// FUNCIONES DE COMPRAS
-// ============================================
-
-async function cargarCompras() {
-    try {
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/compras?select=*,proveedores(nombre)&order=fecha.desc`, {
-            headers: { 'apikey': SUPABASE_KEY }
-        });
-        
-        if (!response.ok) throw new Error('Error al cargar compras');
-        
-        const compras = await response.json();
-        const tbody = document.querySelector('#tabla-compras tbody');
-        
-        if (!tbody) return;
-        
-        if (compras.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="8" style="text-align: center;">No hay compras registradas</td></tr>';
-            return;
-        }
-        
-        tbody.innerHTML = compras.map(compra => {
-            const fecha = new Date(compra.fecha);
-            const fechaStr = fecha.toLocaleDateString('es-CO');
-            
-            let estadoClass = '';
-            if (compra.estado === 'Pagada') estadoClass = 'estado-pagada';
-            else if (compra.estado === 'Recibida') estadoClass = 'estado-recibida';
-            else estadoClass = 'estado-pendiente';
-            
-            return `
-                <tr>
-                    <td>${fechaStr}</td>
-                    <td>${compra.proveedores?.nombre || 'N/A'}</td>
-                    <td>${compra.producto || 'Varios'}</td>
-                    <td>${compra.cantidad || '-'}</td>
-                    <td>$${(compra.total || 0).toLocaleString()}</td>
-                    <td><span class="estado-badge ${estadoClass}">${compra.estado || 'Pendiente'}</span></td>
-                    <td>${compra.puc || '620501'}</td>
-                    <td>
-                        <button class="action-btn" onclick="editarCompra(${compra.id})">✏️</button>
-                        <button class="action-btn delete-btn" onclick="eliminarCompra(${compra.id})">🗑️</button>
-                    </td>
-                </tr>
-            `;
-        }).join('');
-        
-    } catch (error) {
-        console.error('Error:', error);
-    }
-}
-
-async function guardarCompra() {
-    try {
-        const token = JSON.parse(localStorage.getItem('admin_token'));
-        
-        const proveedorId = document.getElementById('compra-proveedor').value;
-        if (!proveedorId) {
-            mostrarAlerta('Debe seleccionar un proveedor', 'error');
-            return;
-        }
-        
-        const cantidad = parseInt(document.getElementById('compra-cantidad').value);
-        const precio = parseFloat(document.getElementById('compra-precio').value);
-        
-        if (!cantidad || cantidad <= 0) {
-            mostrarAlerta('Cantidad debe ser mayor a 0', 'error');
-            return;
-        }
-        
-        if (!precio || precio <= 0) {
-            mostrarAlerta('Precio debe ser mayor a 0', 'error');
-            return;
-        }
-        
-        const fechaInput = document.getElementById('compra-fecha').value;
-        if (!fechaInput) {
-            mostrarAlerta('Debe seleccionar una fecha', 'error');
-            return;
-        }
-        
-        const producto = document.getElementById('compra-producto').value;
-        if (!producto) {
-            mostrarAlerta('Debe especificar el producto', 'error');
-            return;
-        }
-        
-        const compra = {
-            proveedor_id: parseInt(proveedorId),
-            fecha: fechaInput,
-            producto: producto,
-            cantidad: cantidad,
-            precio_unitario: precio,
-            total: cantidad * precio,
-            estado: document.getElementById('compra-estado').value,
-            puc: '620501'
-        };
-        
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/compras`, {
-            method: 'POST',
-            headers: {
-                'apikey': SUPABASE_KEY,
-                'Authorization': `Bearer ${token.access_token}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(compra)
-        });
-        
-        if (response.ok) {
-            mostrarAlerta('🌸 Compra guardada correctamente', 'success');
-            cerrarFormulario('compra');
-            await cargarCompras();
-            
-            // Limpiar formulario
-            document.getElementById('compra-proveedor').value = '';
-            document.getElementById('compra-fecha').value = '';
-            document.getElementById('compra-producto').value = '';
-            document.getElementById('compra-cantidad').value = '';
-            document.getElementById('compra-precio').value = '';
-        } else {
-            mostrarAlerta('Error al guardar la compra', 'error');
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        mostrarAlerta('Error de conexión', 'error');
-    }
-}
-
-function editarCompra(id) {
-    mostrarAlerta('Función de editar compra en desarrollo', 'info');
-}
-
-async function eliminarCompra(id) {
-    if (!confirm('¿Estás segura de eliminar esta compra?')) return;
-    
-    try {
-        const token = JSON.parse(localStorage.getItem('admin_token'));
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/compras?id=eq.${id}`, {
-            method: 'DELETE',
-            headers: {
-                'apikey': SUPABASE_KEY,
-                'Authorization': `Bearer ${token.access_token}`
-            }
-        });
-        
-        if (response.ok) {
-            mostrarAlerta('✅ Compra eliminada', 'success');
-            await cargarCompras();
-        } else {
-            mostrarAlerta('Error al eliminar', 'error');
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        mostrarAlerta('Error de conexión', 'error');
-    }
-}
-
-// ============================================
-// FUNCIONES DE GASTOS
-// ============================================
-
-async function cargarGastos() {
-    try {
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/gastos?order=fecha.desc`, {
-            headers: { 'apikey': SUPABASE_KEY }
-        });
-        
-        if (!response.ok) throw new Error('Error al cargar gastos');
-        
-        const gastos = await response.json();
-        const tbody = document.querySelector('#tabla-gastos tbody');
-        
-        if (!tbody) return;
-        
-        if (gastos.length === 0) {
-            tbody.innerHTML = '<td><td colspan="6" style="text-align: center;">No hay gastos registrados</td></tr>';
-            return;
-        }
-        
-        tbody.innerHTML = gastos.map(gasto => `
-            <tr>
-                <td>${new Date(gasto.fecha).toLocaleDateString()}</td>
-                <td>${gasto.concepto}</td>
-                <td>${gasto.categoria}</td>
-                <td>$${(gasto.monto || 0).toLocaleString()}</td>
-                <td>${gasto.metodo_pago || 'Efectivo'}</td>
-                <td>
-                    <button class="action-btn" onclick="editarGasto(${gasto.id})">✏️</button>
-                    <button class="action-btn delete-btn" onclick="eliminarGasto(${gasto.id})">🗑️</button>
-                </td>
-            </tr>
-        `).join('');
-        
-    } catch (error) {
-        console.error('Error:', error);
-    }
-}
-
-async function guardarGasto() {
-    try {
-        const token = JSON.parse(localStorage.getItem('admin_token'));
-        
-        const gasto = {
-            fecha: document.getElementById('gasto-fecha').value,
-            concepto: document.getElementById('gasto-concepto').value,
-            categoria: document.getElementById('gasto-categoria').value,
-            monto: parseFloat(document.getElementById('gasto-monto').value),
-            metodo_pago: document.getElementById('gasto-metodo').value,
-            puc: obtenerPUCGasto(document.getElementById('gasto-categoria').value)
-        };
-        
-        if (!gasto.fecha || !gasto.concepto || !gasto.categoria || !gasto.monto) {
-            mostrarAlerta('Por favor completa todos los campos', 'error');
-            return;
-        }
-        
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/gastos`, {
-            method: 'POST',
-            headers: {
-                'apikey': SUPABASE_KEY,
-                'Authorization': `Bearer ${token.access_token}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(gasto)
-        });
-        
-        if (response.ok) {
-            mostrarAlerta('🌸 Gasto guardado correctamente', 'success');
-            cerrarFormulario('gasto');
-            await cargarGastos();
-            
-            document.getElementById('gasto-fecha').value = '';
-            document.getElementById('gasto-concepto').value = '';
-            document.getElementById('gasto-categoria').value = '';
-            document.getElementById('gasto-monto').value = '';
-        } else {
-            mostrarAlerta('Error al guardar el gasto', 'error');
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        mostrarAlerta('Error de conexión', 'error');
-    }
-}
-
-function obtenerPUCGasto(categoria) {
-    const pucMap = {
-        'Alquiler': '511005',
-        'Servicios': '511010',
-        'Sueldos': '510506',
-        'Marketing': '513505',
-        'Mantenimiento': '513505',
-        'Otros': '519595'
-    };
-    return pucMap[categoria] || '519595';
-}
-
-function editarGasto(id) {
-    mostrarAlerta('Función de editar gasto en desarrollo', 'info');
-}
-
-async function eliminarGasto(id) {
-    if (!confirm('¿Estás segura de eliminar este gasto?')) return;
-    
-    try {
-        const token = JSON.parse(localStorage.getItem('admin_token'));
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/gastos?id=eq.${id}`, {
-            method: 'DELETE',
-            headers: {
-                'apikey': SUPABASE_KEY,
-                'Authorization': `Bearer ${token.access_token}`
-            }
-        });
-        
-        if (response.ok) {
-            mostrarAlerta('✅ Gasto eliminado', 'success');
-            await cargarGastos();
-        } else {
-            mostrarAlerta('Error al eliminar', 'error');
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        mostrarAlerta('Error de conexión', 'error');
-    }
-}
-
-// ============================================
-// FUNCIONES DE PROVEEDORES
-// ============================================
-
-async function cargarProveedores() {
-    try {
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/proveedores?order=nombre`, {
-            headers: { 'apikey': SUPABASE_KEY }
-        });
-        const proveedores = await response.json();
-        
-        const tbody = document.querySelector('#tabla-proveedores tbody');
-        
-        if (!tbody) return;
-        
-        if (proveedores.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">No hay proveedores registrados</td></tr>';
-            return;
-        }
-        
-        document.getElementById('stats-proveedores').textContent = proveedores.length;
-        
-        tbody.innerHTML = proveedores.map(p => `
-            <tr>
-                <td><strong>${p.nombre}</strong></td>
-                <td>${p.contacto || '-'}</td>
-                <td>${p.telefono || '-'}</td>
-                <td>${p.email || '-'}</td>
-                <td>
-                    <button class="action-btn" onclick="editarProveedor(${p.id})">✏️</button>
-                    <button class="action-btn delete-btn" onclick="eliminarProveedor(${p.id})">🗑️</button>
-                 </td>
-             </tr>
-        `).join('');
-        
-    } catch (error) {
-        console.error('Error cargando proveedores:', error);
-    }
-}
-
-async function cargarProveedoresSelect(origen) {
-    try {
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/proveedores?select=id,nombre&order=nombre`, {
-            headers: { 'apikey': SUPABASE_KEY }
-        });
-        const proveedores = await response.json();
-        
-        const select = document.getElementById(`${origen}-proveedor`);
-        if (!select) return;
-        
-        select.innerHTML = '<option value="">Seleccionar proveedor</option>' +
-            proveedores.map(p => `<option value="${p.id}">${p.nombre}</option>`).join('');
-            
-    } catch (error) {
-        console.error('Error cargando proveedores:', error);
-    }
-}
-
-async function guardarProveedor() {
-    const proveedor = {
-        nombre: document.getElementById('proveedor-nombre').value,
-        contacto: document.getElementById('proveedor-contacto').value || null,
-        telefono: document.getElementById('proveedor-telefono').value || null,
-        email: document.getElementById('proveedor-email').value || null,
-        direccion: document.getElementById('proveedor-direccion').value || null
-    };
-    
-    if (!proveedor.nombre) {
-        mostrarAlerta('El nombre del proveedor es obligatorio', 'error');
-        return;
-    }
-    
-    try {
-        const token = JSON.parse(localStorage.getItem('admin_token'));
-        
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/proveedores`, {
-            method: 'POST',
-            headers: {
-                'apikey': SUPABASE_KEY,
-                'Authorization': `Bearer ${token.access_token}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(proveedor)
-        });
-        
-        if (response.ok) {
-            mostrarAlerta('🌸 Proveedor guardado correctamente', 'success');
-            cerrarFormulario('proveedor');
-            await cargarProveedores();
-            document.getElementById('proveedor-nombre').value = '';
-            document.getElementById('proveedor-contacto').value = '';
-            document.getElementById('proveedor-telefono').value = '';
-            document.getElementById('proveedor-email').value = '';
-            document.getElementById('proveedor-direccion').value = '';
-        } else {
-            mostrarAlerta('Error al guardar el proveedor', 'error');
-        }
-    } catch (error) {
-        mostrarAlerta('Error de conexión', 'error');
-    }
-}
-
-function editarProveedor(id) {
-    mostrarAlerta('Función de editar proveedor en desarrollo', 'info');
-}
-
-async function eliminarProveedor(id) {
-    if (!confirm('¿Estás segura de eliminar este proveedor?')) return;
-    
-    try {
-        const token = JSON.parse(localStorage.getItem('admin_token'));
-        
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/proveedores?id=eq.${id}`, {
-            method: 'DELETE',
-            headers: {
-                'apikey': SUPABASE_KEY,
-                'Authorization': `Bearer ${token.access_token}`
-            }
-        });
-        
-        if (response.ok) {
-            mostrarAlerta('✅ Proveedor eliminado', 'success');
-            await cargarProveedores();
-        } else {
-            mostrarAlerta('Error al eliminar', 'error');
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        mostrarAlerta('Error de conexión', 'error');
-    }
-}
-
-// ============================================
-// FUNCIONES DE PERFILES
-// ============================================
-
-async function cargarPerfiles() {
-    try {
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/perfiles?order=created_at.desc`, {
-            headers: { 'apikey': SUPABASE_KEY }
-        });
-        const perfiles = await response.json();
-        
-        const tbody = document.querySelector('#tabla-perfiles tbody');
-        
-        if (!tbody) return;
-        
-        if (perfiles.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">No hay usuarios registrados</td></tr>';
-            return;
-        }
-        
-        document.getElementById('stats-empleados').textContent = perfiles.length;
-        
-        tbody.innerHTML = perfiles.map(p => `
-            <tr>
-                <td><strong>${p.nombre || 'Sin nombre'}</strong></td>
-                <td>${p.email}</td>
-                <td>
-                    <span style="background: ${p.rol === 'admin' ? '#ff9a9e' : '#ffb6c1'}; 
-                                 color: white; padding: 0.2rem 0.8rem; border-radius: 50px;">
-                        ${p.rol || 'empleado'}
-                    </span>
-                 </td>
-                <td>${new Date(p.created_at).toLocaleDateString()}</td>
-                <tr>
-                    <button class="action-btn" onclick="editarPerfil('${p.id}')">✏️</button>
-                    ${p.id !== currentUser?.id ? 
-                        `<button class="action-btn delete-btn" onclick="eliminarPerfil('${p.id}')">🗑️</button>` 
-                        : ''}
-                 </td>
-             </tr>
-        `).join('');
-        
-    } catch (error) {
-        console.error('Error cargando perfiles:', error);
-    }
-}
-
-async function guardarPerfil() {
-    try {
-        const token = JSON.parse(localStorage.getItem('admin_token'));
-        
-        const nombre = document.getElementById('perfil-nombre').value;
-        const email = document.getElementById('perfil-email').value;
-        const password = document.getElementById('perfil-password').value;
-        const rol = document.getElementById('perfil-rol').value;
-        
-        if (!nombre || !email) {
-            mostrarAlerta('Nombre y email son obligatorios', 'error');
-            return;
-        }
-        
-        if (!password || password.length < 6) {
-            mostrarAlerta('La contraseña debe tener al menos 6 caracteres', 'error');
-            return;
-        }
-        
-        // Crear usuario en Auth
-        const authResponse = await fetch(`${SUPABASE_URL}/auth/v1/signup`, {
-            method: 'POST',
-            headers: {
-                'apikey': SUPABASE_KEY,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ email, password })
-        });
-        
-        const authData = await authResponse.json();
-        
-        if (!authResponse.ok) {
-            throw new Error(authData.msg || 'Error al crear usuario');
-        }
-        
-        // Crear perfil
-        const perfilResponse = await fetch(`${SUPABASE_URL}/rest/v1/perfiles`, {
-            method: 'POST',
-            headers: {
-                'apikey': SUPABASE_KEY,
-                'Authorization': `Bearer ${token.access_token}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                id: authData.user.id,
-                nombre: nombre,
-                email: email,
-                rol: rol
-            })
-        });
-        
-        if (perfilResponse.ok) {
-            mostrarAlerta('🌸 Usuario creado correctamente', 'success');
-            cerrarFormulario('perfil');
-            await cargarPerfiles();
-            
-            document.getElementById('perfil-nombre').value = '';
-            document.getElementById('perfil-email').value = '';
-            document.getElementById('perfil-password').value = '';
-        } else {
-            throw new Error('Error al crear perfil');
-        }
-        
-    } catch (error) {
-        console.error('Error:', error);
-        mostrarAlerta('Error: ' + error.message, 'error');
-    }
-}
-
-function editarPerfil(id) {
-    mostrarAlerta('Función de editar perfil en desarrollo', 'info');
-}
-
-async function eliminarPerfil(id) {
-    if (!confirm('¿Estás segura de eliminar este usuario?')) return;
-    
-    try {
-        const token = JSON.parse(localStorage.getItem('admin_token'));
-        
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/perfiles?id=eq.${id}`, {
-            method: 'DELETE',
-            headers: {
-                'apikey': SUPABASE_KEY,
-                'Authorization': `Bearer ${token.access_token}`
-            }
-        });
-        
-        if (response.ok) {
-            mostrarAlerta('✅ Usuario eliminado', 'success');
-            await cargarPerfiles();
-        } else {
-            mostrarAlerta('Error al eliminar', 'error');
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        mostrarAlerta('Error de conexión', 'error');
-    }
-}
-
-// ============================================
-// FUNCIONES DE CONTABILIDAD
-// ============================================
-
-async function cargarContabilidad() {
-    try {
-        const [ventas, compras, gastos] = await Promise.all([
-            fetch(`${SUPABASE_URL}/rest/v1/ventas`, { headers: { 'apikey': SUPABASE_KEY } }).then(r => r.json()),
-            fetch(`${SUPABASE_URL}/rest/v1/compras`, { headers: { 'apikey': SUPABASE_KEY } }).then(r => r.json()),
-            fetch(`${SUPABASE_URL}/rest/v1/gastos`, { headers: { 'apikey': SUPABASE_KEY } }).then(r => r.json())
-        ]);
-        
-        const ingresos = ventas.reduce((sum, v) => sum + (v.total || 0), 0);
-        const egresos = compras.reduce((sum, c) => sum + (c.total || 0), 0) + gastos.reduce((sum, g) => sum + (g.monto || 0), 0);
-        
-        const ingresosElem = document.getElementById('stats-ingresos');
-        const egresosElem = document.getElementById('stats-egresos');
-        
-        if (ingresosElem) ingresosElem.textContent = `$${ingresos.toLocaleString()}`;
-        if (egresosElem) egresosElem.textContent = `$${egresos.toLocaleString()}`;
-        
-    } catch (error) {
-        console.error('Error cargando contabilidad:', error);
-    }
-}
-
-// ============================================
-// FUNCIONES DE UTILIDAD
-// ============================================
-
-function mostrarFormulario(tipo) {
-    const form = document.getElementById(`form-${tipo}`);
-    if (form) {
-        form.classList.add('active');
-        form.style.display = 'flex';
-        console.log(`✅ Mostrando formulario: ${tipo}`);
-    } else {
-        console.error(`❌ No existe form-${tipo}`);
-    }
-}
-
-function cerrarFormulario(tipo) {
-    const form = document.getElementById(`form-${tipo}`);
-    if (form) {
-        form.classList.remove('active');
-        form.style.display = 'none';
-        console.log(`✅ Cerrando formulario: ${tipo}`);
-    }
-    
-    // Limpieza específica por tipo
-    if (tipo === 'producto') {
-        delete document.getElementById('form-producto')?.dataset.editId;
-        const btn = document.querySelector('#form-producto .submit-btn');
-        if (btn) btn.textContent = 'Guardar Producto';
-        const precioCompraInput = document.getElementById('producto-precio-compra');
-        if (precioCompraInput) precioCompraInput.value = '';
-    }
-    
-    if (tipo === 'venta') {
-        carrito = [];
-        if (typeof actualizarCarritoUIManual === 'function') {
-            actualizarCarritoUIManual();
-        }
-        const clienteInput = document.getElementById('venta-cliente');
-        if (clienteInput) clienteInput.value = '';
-    }
-}
-
-function mostrarAlerta(mensaje, tipo) {
-    const alerta = document.getElementById('alertMessage');
-    if (alerta) {
-        alerta.textContent = mensaje;
-        alerta.className = `alert ${tipo}`;
-        alerta.style.display = 'block';
-        setTimeout(() => {
-            alerta.style.display = 'none';
-        }, 3000);
-    } else {
-        console.log(`${tipo.toUpperCase()}: ${mensaje}`);
-        alert(mensaje);
-    }
-}
-
-function toggleMenu() {
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('sidebarOverlay');
-    
-    if (sidebar && overlay) {
-        sidebar.classList.toggle('open');
-        overlay.classList.toggle('active');
-    }
-}
-
-// ============================================
-// FILTROS PARA COMPRAS Y GASTOS
-// ============================================
-
-function configurarFiltrosCompras() {
-    const searchInput = document.getElementById('search-compras');
-    const fechaInicio = document.getElementById('filter-compra-fecha-inicio');
-    const fechaFin = document.getElementById('filter-compra-fecha-fin');
-    const estadoSelect = document.getElementById('filter-compra-estado');
-    
-    if (searchInput) searchInput.addEventListener('input', () => aplicarFiltrosCompras());
-    if (fechaInicio) fechaInicio.addEventListener('change', () => aplicarFiltrosCompras());
-    if (fechaFin) fechaFin.addEventListener('change', () => aplicarFiltrosCompras());
-    if (estadoSelect) estadoSelect.addEventListener('change', () => aplicarFiltrosCompras());
-}
-
-function aplicarFiltrosCompras() {
-    const rows = document.querySelectorAll('#tabla-compras tbody tr');
-    const searchTerm = document.getElementById('search-compras')?.value.toLowerCase() || '';
-    const fechaInicio = document.getElementById('filter-compra-fecha-inicio')?.value;
-    const fechaFin = document.getElementById('filter-compra-fecha-fin')?.value;
-    const estado = document.getElementById('filter-compra-estado')?.value || '';
-    
-    rows.forEach(row => {
-        let mostrar = true;
-        const proveedor = row.cells[1]?.textContent.toLowerCase() || '';
-        const producto = row.cells[2]?.textContent.toLowerCase() || '';
-        const fechaTexto = row.cells[0]?.textContent || '';
-        const estadoTexto = row.cells[5]?.textContent.toLowerCase() || '';
-        
-        if (searchTerm && !proveedor.includes(searchTerm) && !producto.includes(searchTerm)) mostrar = false;
-        if (mostrar && fechaInicio && new Date(fechaTexto) < new Date(fechaInicio)) mostrar = false;
-        if (mostrar && fechaFin) {
-            const fechaFinObj = new Date(fechaFin);
-            fechaFinObj.setHours(23, 59, 59);
-            if (new Date(fechaTexto) > fechaFinObj) mostrar = false;
-        }
-        if (mostrar && estado && !estadoTexto.includes(estado.toLowerCase())) mostrar = false;
-        
-        row.style.display = mostrar ? '' : 'none';
-    });
-}
-
-function limpiarFiltrosCompras() {
-    const searchInput = document.getElementById('search-compras');
-    const fechaInicio = document.getElementById('filter-compra-fecha-inicio');
-    const fechaFin = document.getElementById('filter-compra-fecha-fin');
-    const estadoSelect = document.getElementById('filter-compra-estado');
-    
-    if (searchInput) searchInput.value = '';
-    if (fechaInicio) fechaInicio.value = '';
-    if (fechaFin) fechaFin.value = '';
-    if (estadoSelect) estadoSelect.value = '';
-    aplicarFiltrosCompras();
-}
-
-function configurarFiltrosGastos() {
-    const searchInput = document.getElementById('search-gastos');
-    const fechaInicio = document.getElementById('filter-gasto-fecha-inicio');
-    const fechaFin = document.getElementById('filter-gasto-fecha-fin');
-    const categoriaSelect = document.getElementById('filter-gasto-categoria');
-    
-    if (searchInput) searchInput.addEventListener('input', () => aplicarFiltrosGastos());
-    if (fechaInicio) fechaInicio.addEventListener('change', () => aplicarFiltrosGastos());
-    if (fechaFin) fechaFin.addEventListener('change', () => aplicarFiltrosGastos());
-    if (categoriaSelect) categoriaSelect.addEventListener('change', () => aplicarFiltrosGastos());
-}
-
-function aplicarFiltrosGastos() {
-    const rows = document.querySelectorAll('#tabla-gastos tbody tr');
-    const searchTerm = document.getElementById('search-gastos')?.value.toLowerCase() || '';
-    const fechaInicio = document.getElementById('filter-gasto-fecha-inicio')?.value;
-    const fechaFin = document.getElementById('filter-gasto-fecha-fin')?.value;
-    const categoria = document.getElementById('filter-gasto-categoria')?.value || '';
-    
-    rows.forEach(row => {
-        let mostrar = true;
-        const concepto = row.cells[1]?.textContent.toLowerCase() || '';
-        const fechaTexto = row.cells[0]?.textContent || '';
-        const categoriaTexto = row.cells[2]?.textContent.toLowerCase() || '';
-        
-        if (searchTerm && !concepto.includes(searchTerm)) mostrar = false;
-        if (mostrar && fechaInicio && new Date(fechaTexto) < new Date(fechaInicio)) mostrar = false;
-        if (mostrar && fechaFin) {
-            const fechaFinObj = new Date(fechaFin);
-            fechaFinObj.setHours(23, 59, 59);
-            if (new Date(fechaTexto) > fechaFinObj) mostrar = false;
-        }
-        if (mostrar && categoria && !categoriaTexto.includes(categoria.toLowerCase())) mostrar = false;
-        
-        row.style.display = mostrar ? '' : 'none';
-    });
-}
-
-function limpiarFiltrosGastos() {
-    const searchInput = document.getElementById('search-gastos');
-    const fechaInicio = document.getElementById('filter-gasto-fecha-inicio');
-    const fechaFin = document.getElementById('filter-gasto-fecha-fin');
-    const categoriaSelect = document.getElementById('filter-gasto-categoria');
-    
-    if (searchInput) searchInput.value = '';
-    if (fechaInicio) fechaInicio.value = '';
-    if (fechaFin) fechaFin.value = '';
-    if (categoriaSelect) categoriaSelect.value = '';
-    aplicarFiltrosGastos();
-}
-
-// ============================================
-// INICIALIZACIÓN DE FILTROS AL CARGAR MÓDULOS
-// ============================================
-
-// Sobrescribir cargarDatosModulo para configurar filtros
-const originalCargarDatosModulo = cargarDatosModulo;
-window.cargarDatosModulo = async function(modulo) {
-    await originalCargarDatosModulo(modulo);
-    
-    switch(modulo) {
-        case 'productos':
-            setTimeout(() => configurarFiltrosProductos(), 500);
-            break;
-        case 'ventas':
-            setTimeout(() => configurarFiltrosVentas(), 500);
-            break;
-        case 'compras':
-            setTimeout(() => configurarFiltrosCompras(), 500);
-            break;
-        case 'gastos':
-            setTimeout(() => configurarFiltrosGastos(), 500);
-            break;
-    }
-};
-
-// ============================================
-// IMPRESIÓN DE ETIQUETAS CON CÓDIGO DE BARRAS
-// ============================================
-
-async function imprimirEtiquetasProducto(productoId) {
-    try {
-        console.log('🖨️ Generando etiquetas para producto:', productoId);
-        
-        // Obtener producto
-        const productoRes = await fetch(`${SUPABASE_URL}/rest/v1/productos_base?id=eq.${productoId}`, {
-            headers: { 'apikey': SUPABASE_KEY }
-        });
-        
-        if (!productoRes.ok) throw new Error('Error al obtener producto');
-        const productos = await productoRes.json();
-        
-        if (productos.length === 0) {
-            mostrarAlerta('Producto no encontrado', 'error');
-            return;
-        }
-        
-        const producto = productos[0];
-        
-        // Obtener variantes
-        const variantesRes = await fetch(`${SUPABASE_URL}/rest/v1/variantes_producto?producto_id=eq.${productoId}`, {
-            headers: { 'apikey': SUPABASE_KEY }
-        });
-        
-        if (!variantesRes.ok) throw new Error('Error al obtener variantes');
-        const variantes = await variantesRes.json();
-        
-        if (variantes.length === 0) {
-            mostrarAlerta('Este producto no tiene variantes para imprimir', 'error');
-            return;
-        }
-        
-        console.log(`📦 Producto: ${producto.nombre}, ${variantes.length} variantes`);
-        
-        // Generar el HTML con la estructura CORRECTA
-        const html = generarHTMLParaImpresion(producto, variantes);
-        
-        // Abrir ventana y escribir
-        const ventana = window.open('', '_blank');
-        ventana.document.write(html);
-        ventana.document.close();
-        
-        mostrarAlerta(`✅ Etiquetas generadas para ${variantes.length} variantes`, 'success');
-        
-    } catch (error) {
-        console.error('Error:', error);
-        mostrarAlerta('Error al generar etiquetas: ' + error.message, 'error');
-    }
-}
-
-function generarHTMLParaImpresion(producto, variantes) {
-    // Escapar nombre del producto
-    const nombreProducto = (producto.nombre || '').replace(/[&<>]/g, function(m) {
-        if (m === '&') return '&amp;';
-        if (m === '<') return '&lt;';
-        if (m === '>') return '&gt;';
-        return m;
-    });
-    
-    // Construir las etiquetas MANUALMENTE (sin template literals anidados complejos)
-    let etiquetasHtml = '';
-    
-    for (let i = 0; i < variantes.length; i++) {
-        const v = variantes[i];
-        const sku = v.sku || `SKU-${producto.codigo}-${v.talla}`;
-        const precio = (v.precio_venta || 0).toLocaleString();
-        const talla = v.talla || 'UNICA';
-        
-        etiquetasHtml += `
-            <div class="etiqueta">
-                <div class="etiqueta-tienda">🌸 MODAS LA 34</div>
-                <div class="etiqueta-nombre">${nombreProducto}</div>
-                <div class="etiqueta-detalle">Talla: ${talla}</div>
-                <div class="barcode-container">
-                    <canvas id="barcode-${i}" class="barcode" data-sku="${sku}"></canvas>
-                </div>
-                <div class="etiqueta-codigo">${sku}</div>
-                <div class="etiqueta-precio">$${precio}</div>
-            </div>
-        `;
-    }
-    
-    return `<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Etiquetas - ${nombreProducto}</title>
-    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
-    <script>
-        window.addEventListener('load', function() {
-            document.querySelectorAll('.barcode').forEach(function(canvas) {
-                var sku = canvas.getAttribute('data-sku');
-                if (sku && typeof JsBarcode !== 'undefined') {
-                    JsBarcode(canvas, sku, {
-                        format: "CODE128",
-                        width: 2,
-                        height: 50,
-                        displayValue: true
-                    });
-                }
-            });
-        });
-    </script>
-<style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            background: white; 
-            font-family: Arial, sans-serif;
-            padding: 20px;
-        }
-        .etiquetas-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        .etiqueta {
-            border: 1px solid #ccc;
-            padding: 15px;
-            border-radius: 8px;
-            text-align: center;
-            background: white;
-            break-inside: avoid;
-        }
-        .etiqueta-tienda {
-            font-size: 10px;
-            color: #d4a5a9;
-            letter-spacing: 2px;
-            margin-bottom: 5px;
-        }
-        .etiqueta-nombre {
-            font-size: 14px;
-            font-weight: bold;
-            margin: 5px 0;
-            color: #4a3728;
-        }
-        .etiqueta-detalle {
-            font-size: 20px;
-            font-weight: bold;
-            color: #b87c4e;
-            margin: 5px 0;
-        }
-        .barcode-container {
-            margin: 10px 0;
-            display: flex;
-            justify-content: center;
-            min-height: 60px;
-        }
-        canvas.barcode {
-            max-width: 100%;
-            background: white;
-        }
-        .etiqueta-codigo {
-            font-family: monospace;
-            font-size: 9px;
-            color: #666;
-            margin: 5px 0;
-            word-break: break-all;
-        }
-        .etiqueta-precio {
-            font-size: 18px;
-            font-weight: bold;
-            color: #27ae60;
-            margin-top: 10px;
-        }
-        @media print {
-            body { margin: 0; padding: 0; }
-            .etiqueta { break-inside: avoid; page-break-inside: avoid; }
-        }
-    </style>
-</head>
-<body>
-    <div class="etiquetas-grid">
-        ${etiquetasHtml}
-    </div>
-    <script>
-        (function() {
-            function generarCodigos() {
-                var elementos = document.querySelectorAll('.barcode');
-                console.log('📊 Generando ' + elementos.length + ' códigos de barras');
-                
-                for (var i = 0; i < elementos.length; i++) {
-                    var el = elementos[i];
-                    var sku = el.getAttribute('data-sku');
-                    
-                    if (sku && sku !== '') {
-                        try {
-                            JsBarcode(el, sku, {
-                                format: "CODE128",
-                                width: 2,
-                                height: 50,
-                                displayValue: true,
-                                fontSize: 12,
-                                margin: 5
-                            });
-                            console.log('✅ Código ' + i + ' generado: ' + sku);
-                        } catch(e) {
-                            console.error('❌ Error en código ' + i + ':', e);
-                        }
-                    } else {
-                        console.warn('⚠️ SKU vacío en elemento ' + i);
-                    }
-                }
-            }
-            
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', generarCodigos);
-            } else {
-                generarCodigos();
-            }
-        })();
-    </script>
-</body>
-</html>`;
-}
-
-// ============================================
-// LECTOR DE CÓDIGOS DE BARRAS CON CÁMARA
-// ============================================
-
-let streamLector = null;
-let codigoDetectado = null;
-
-function abrirEscannerCamara() {
-    const modal = document.getElementById('modal-camara-lector');
-    modal.style.display = 'flex';
-    iniciarCamaraLector();
-}
-
-function cerrarEscannerCamara() {
-    if (streamLector) {
-        streamLector.getTracks().forEach(track => track.stop());
-        streamLector = null;
-    }
-    const modal = document.getElementById('modal-camara-lector');
-    modal.style.display = 'none';
-    const video = document.getElementById('video-lector');
-    if (video) video.srcObject = null;
-}
-
-async function iniciarCamaraLector() {
-    try {
-        // Intentar cámara trasera (si es móvil)
-        let constraints = { video: { facingMode: { exact: "environment" } } };
-        
-        let stream;
-        try {
-            stream = await navigator.mediaDevices.getUserMedia(constraints);
-        } catch (err) {
-            // Si no hay cámara trasera, usar cualquier cámara
-            stream = await navigator.mediaDevices.getUserMedia({ video: true });
-        }
-        
-        const video = document.getElementById('video-lector');
-        video.srcObject = stream;
-        streamLector = stream;
-        
-    } catch (error) {
-        console.error('Error al iniciar cámara:', error);
-        alert('No se pudo acceder a la cámara. Verifica los permisos.');
-        cerrarEscannerCamara();
-    }
-}
-
-function capturarYBuscar() {
-    const video = document.getElementById('video-lector');
-    const canvas = document.getElementById('canvas-lector');
-    const context = canvas.getContext('2d');
-    
-    // Capturar frame actual
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    context.drawImage(video, 0, 0, canvas.width, canvas.height);
-    
-    // Mostrar prompt para ingresar código (por ahora manual)
-    // En una versión avanzada, aquí se procesaría la imagen para extraer el código
-    const codigo = prompt('🔍 Escribe el código que ves en la etiqueta (SKU):');
-    
-    if (codigo && codigo.trim()) {
-        buscarProductoPorSKU(codigo.trim());
-    }
-    
-    cerrarEscannerCamara();
-}
-
-async function buscarProductoPorSKU(sku) {
-    try {
-        // Buscar por SKU en la tabla variantes_producto
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/variantes_producto?sku=eq.${sku}`, {
-            headers: { 'apikey': SUPABASE_KEY }
-        });
-        
-        const variantes = await response.json();
-        
-        if (variantes.length === 0) {
-            mostrarAlerta(`❌ No se encontró producto con SKU: ${sku}`, 'error');
-            return;
-        }
-        
-        const variante = variantes[0];
-        
-        // Obtener producto base
-        const productoRes = await fetch(`${SUPABASE_URL}/rest/v1/productos_base?id=eq.${variante.producto_id}`, {
-            headers: { 'apikey': SUPABASE_KEY }
-        });
-        const productos = await productoRes.json();
-        const producto = productos[0];
-        
-        // Verificar si ya está en el carrito
-        const existe = carrito.findIndex(item => 
-            item.producto_id === producto.id && 
-            item.talla === variante.talla
-        );
-        
-        if (existe !== -1) {
-            carrito[existe].cantidad++;
-            carrito[existe].subtotal = carrito[existe].cantidad * carrito[existe].precio;
-            mostrarAlerta(`✅ Cantidad actualizada: ${producto.nombre} (${variante.talla})`, 'success');
-        } else {
-            // Agregar al carrito
-            carrito.push({
-                producto_id: producto.id,
-                producto_nombre: producto.nombre,
-                talla: variante.talla,
-                color: 'N/A',
-                precio: variante.precio_venta,
-                cantidad: 1,
-                subtotal: variante.precio_venta
-            });
-            mostrarAlerta(`✅ Agregado: ${producto.nombre} (${variante.talla})`, 'success');
-        }
-        
-        actualizarCarritoUIManual();
-        
-        // Limpiar input
-        const inputManual = document.getElementById('input-codigo-manual');
-        if (inputManual) inputManual.value = '';
-        
-    } catch (error) {
-        console.error('Error:', error);
-        mostrarAlerta('Error al buscar producto', 'error');
-    }
-}
-
-// Buscar cuando escriben manualmente
-document.addEventListener('DOMContentLoaded', () => {
-    const inputManual = document.getElementById('input-codigo-manual');
-    if (inputManual) {
-        inputManual.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                buscarProductoPorSKU(inputManual.value.trim());
-                inputManual.value = '';
-            }
-        });
-    }
-});
-
-// ============================================
-// PANEL DE CONFIGURACIÓN DE ETIQUETAS
-// ============================================
-
-let productoActualParaEtiquetas = null;
-let variantesActualesParaEtiquetas = [];
-
-function abrirConfigEtiquetas(productoId) {
-    // Obtener producto y variantes
-    const producto = productosData.find(p => p.id === productoId);
-    if (!producto) {
-        mostrarAlerta('Producto no encontrado', 'error');
-        return;
-    }
-    
-    productoActualParaEtiquetas = producto;
-    
-    // Obtener variantes completas
-    const variantes = [];
-    producto.variantes.forEach(v => {
-        variantes.push({
-            id: v.id,
-            talla: v.talla,
-            precio_venta: v.precio_venta,
-            sku: v.sku,
-            colores: v.colores || []
-        });
-    });
-    
-    variantesActualesParaEtiquetas = variantes;
-    
-    // Configurar valores por defecto en los controles
-    document.getElementById('config-columnas').value = 3;
-    document.getElementById('config-filas').value = 4;
-    document.getElementById('config-margen').value = 10;
-    document.getElementById('config-tamaño').value = 'mediano';
-    document.getElementById('config-mostrar-barcode').value = 'si';
-    document.getElementById('config-repetir').value = 'si';
-    
-    actualizarValoresControles();
-    
-    // Mostrar modal
-    document.getElementById('modal-config-etiquetas').style.display = 'flex';
-    
-    // Generar vista previa inicial
-    setTimeout(() => actualizarVistaPrevia(), 100);
-}
-
-function cerrarConfigEtiquetas() {
-    document.getElementById('modal-config-etiquetas').style.display = 'none';
-    productoActualParaEtiquetas = null;
-}
-
-function actualizarValoresControles() {
-    const columnas = document.getElementById('config-columnas').value;
-    const filas = document.getElementById('config-filas').value;
-    const margen = document.getElementById('config-margen').value;
-    
-    document.getElementById('valor-columnas').textContent = `${columnas} columnas`;
-    document.getElementById('valor-filas').textContent = `${filas} filas`;
-    document.getElementById('valor-margen').textContent = `${margen} mm`;
-    
-    // Mostrar/ocultar personalizado
-    const tamaño = document.getElementById('config-tamaño').value;
-    document.getElementById('config-personalizado').style.display = tamaño === 'personalizado' ? 'block' : 'none';
-    
-    if (tamaño === 'pequeño') {
-        document.getElementById('config-ancho').value = 4;
-        document.getElementById('config-alto').value = 3;
-    } else if (tamaño === 'mediano') {
-        document.getElementById('config-ancho').value = 6;
-        document.getElementById('config-alto').value = 4;
-    } else if (tamaño === 'grande') {
-        document.getElementById('config-ancho').value = 8;
-        document.getElementById('config-alto').value = 5.5;
-    }
-}
-
-function actualizarVistaPrevia() {
-    if (!productoActualParaEtiquetas) return;
-    
-    const columnas = parseInt(document.getElementById('config-columnas').value);
-    const filas = parseInt(document.getElementById('config-filas').value);
-    const margen = parseInt(document.getElementById('config-margen').value);
-    const mostrarBarcode = document.getElementById('config-mostrar-barcode').value === 'si';
-    const repetir = document.getElementById('config-repetir').value === 'si';
-    
-    let anchoCm = parseFloat(document.getElementById('config-ancho').value);
-    let altoCm = parseFloat(document.getElementById('config-alto').value);
-    
-    const totalPorHoja = columnas * filas;
-    let variantesParaVista = [...variantesActualesParaEtiquetas];
-    
-    if (repetir && variantesParaVista.length < totalPorHoja) {
-        while (variantesParaVista.length < totalPorHoja) {
-            variantesParaVista = [...variantesParaVista, ...variantesActualesParaEtiquetas.slice(0, totalPorHoja - variantesParaVista.length)];
-        }
-    }
-    
-    const vistaHTML = generarVistaPreviaHTML(
-        productoActualParaEtiquetas, 
-        variantesParaVista, 
-        columnas, 
-        filas, 
-        margen, 
-        anchoCm, 
-        altoCm, 
-        mostrarBarcode
-    );
-    
-    document.getElementById('vista-previa-etiquetas').innerHTML = vistaHTML;
-}
-
-function generarVistaPreviaHTML(producto, variantes, columnas, filas, margen, anchoCm, altoCm, mostrarBarcode) {
-    const totalPorHoja = columnas * filas;
-    const mostrarEtiquetas = variantes.slice(0, totalPorHoja);
-    
-    return `
-        <div style="
-            max-width: 210mm; 
-            margin: 0 auto; 
-            padding: ${margen}px;
-            background: white;
-            border-radius: 8px;
-        ">
-            <div style="
-                display: grid;
-                grid-template-columns: repeat(${columnas}, 1fr);
-                gap: 8px;
-            ">
-                ${mostrarEtiquetas.map((v, idx) => `
-                    <div style="
-                        border: 1px solid #ddd;
-                        border-radius: 6px;
-                        padding: 6px;
-                        text-align: center;
-                        background: white;
-                        height: ${altoCm * 15}px;
-                        display: flex;
-                        flex-direction: column;
-                        justify-content: space-between;
-                    ">
-                        <div>
-                            <div style="font-size: 8px; color: #d4a5a9;">🌸 MODAS LA 34</div>
-                            <div style="font-size: 10px; font-weight: bold; color: #4a3728;">${escapeHtml(producto.nombre)}</div>
-                            <div style="font-size: 12px; font-weight: bold; color: #b87c4e;">Talla: ${v.talla}</div>
-                        </div>
-                        
-                        ${v.colores && v.colores.length > 0 ? `
-                            <div style="display: flex; gap: 3px; justify-content: center;">
-                                ${v.colores.slice(0, 2).map(c => `
-                                    <div style="width: 8px; height: 8px; border-radius: 50%; background: ${c.codigo || '#ccc'};"></div>
-                                `).join('')}
-                            </div>
-                        ` : ''}
-                        
-                        <div>
-                            ${mostrarBarcode ? `
-                                <div style="font-family: monospace; font-size: 12px; letter-spacing: 1px;">${v.sku || 'SKU'}</div>
-                            ` : ''}
-                            <div style="font-size: 10px; font-weight: bold; color: #27ae60;">$${(v.precio_venta || 0).toLocaleString()}</div>
-                        </div>
-                    </div>
-                `).join('')}
-            </div>
-            <div style="text-align: center; margin-top: 10px; font-size: 8px; color: #aaa;">
-                Vista previa - ${columnas} x ${filas} = ${totalPorHoja} etiquetas/hoja
-            </div>
-        </div>
-    `;
-}
-
-function imprimirEtiquetasConfig() {
-    if (!productoActualParaEtiquetas) return;
-    
-    const columnas = parseInt(document.getElementById('config-columnas').value);
-    const filas = parseInt(document.getElementById('config-filas').value);
-    const margen = parseInt(document.getElementById('config-margen').value);
-    const mostrarBarcode = document.getElementById('config-mostrar-barcode').value === 'si';
-    const repetir = document.getElementById('config-repetir').value === 'si';
-    
-    let anchoCm = parseFloat(document.getElementById('config-ancho').value);
-    let altoCm = parseFloat(document.getElementById('config-alto').value);
-    
-    const totalPorHoja = columnas * filas;
-    let variantesParaImprimir = [...variantesActualesParaEtiquetas];
-    
-    if (repetir && variantesParaImprimir.length < totalPorHoja) {
-        while (variantesParaImprimir.length < totalPorHoja) {
-            variantesParaImprimir = [...variantesParaImprimir, ...variantesActualesParaEtiquetas.slice(0, totalPorHoja - variantesParaImprimir.length)];
-        }
-    }
-    
-    const htmlCompleto = generarHTMLImpresionCompleto(
-        productoActualParaEtiquetas, 
-        variantesParaImprimir, 
-        columnas, 
-        filas, 
-        margen, 
-        anchoCm, 
-        altoCm, 
-        mostrarBarcode
-    );
-    
-    const ventana = window.open('', '_blank');
-    ventana.document.write(htmlCompleto);
-    ventana.document.close();
-    ventana.print();
-    
-    cerrarConfigEtiquetas();
-}
-
-function generarHTMLImpresionCompleto(producto, variantes, columnas, filas, margen, anchoCm, altoCm, mostrarBarcode) {
-    const totalPorHoja = columnas * filas;
-    
-    return `
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>Etiquetas - ${producto.nombre}</title>
-            <meta charset="UTF-8">
-            <style>
-                * { margin: 0; padding: 0; box-sizing: border-box; }
-                body { 
-                    background: white; 
-                    font-family: Arial, sans-serif;
-                    padding: ${margen}px;
-                }
-                .etiquetas-grid {
-                    display: grid;
-                    grid-template-columns: repeat(${columnas}, 1fr);
-                    gap: 8px;
-                    max-width: 210mm;
-                    margin: 0 auto;
-                }
-                .etiqueta {
-                    border: 1px dashed #ccc;
-                    padding: 6px;
-                    border-radius: 6px;
-                    text-align: center;
-                    background: white;
-                    break-inside: avoid;
-                    page-break-inside: avoid;
-                    height: ${altoCm * 15}px;
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: space-between;
-                }
-                .tienda { font-size: 8px; color: #d4a5a9; letter-spacing: 2px; }
-                .nombre { font-size: 10px; font-weight: bold; color: #4a3728; }
-                .talla { font-size: 12px; font-weight: bold; color: #b87c4e; }
-                .precio { font-size: 10px; font-weight: bold; color: #27ae60; }
-                .barcode { font-family: monospace; font-size: 11px; letter-spacing: 1px; }
-                .colores { display: flex; gap: 3px; justify-content: center; }
-                .color-dot { width: 8px; height: 8px; border-radius: 50%; }
-                @media print {
-                    body { margin: 0; padding: ${margen}px; }
-                    .etiqueta { border: 1px dashed #aaa; }
-                }
-            </style>
-        </head>
-        <body>
-            <div class="etiquetas-grid">
-                ${variantes.map(v => `
-                    <div class="etiqueta">
-                        <div>
-                            <div class="tienda">🌸 MODAS LA 34</div>
-                            <div class="nombre">${escapeHtml(producto.nombre)}</div>
-                            <div class="talla">Talla: ${v.talla}</div>
-                        </div>
-                        ${v.colores && v.colores.length > 0 ? `
-                            <div class="colores">
-                                ${v.colores.slice(0, 3).map(c => `
-                                    <div class="color-dot" style="background: ${c.codigo || '#ccc'};"></div>
-                                `).join('')}
-                            </div>
-                        ` : '<div style="height: 8px;"></div>'}
-                        <div>
-                            ${mostrarBarcode ? `<canvas class="barcode" data-sku="${v.sku || 'SKU'}"></canvas>` : ''}
-                            <div class="precio">$${(v.precio_venta || 0).toLocaleString()}</div>
-                        </div>
-                    </div>
-                `).join('')}
-            </div>
-        </body>
-        </html>
-    `;
-}
-
-// Modificar el botón de impresión para usar el nuevo panel
-function imprimirEtiquetasProducto(productoId) {
-    abrirConfigEtiquetas(productoId);
-}
-
-// Configurar eventos de los controles
-document.addEventListener('DOMContentLoaded', () => {
-    const controles = ['config-columnas', 'config-filas', 'config-margen', 'config-tamaño', 'config-mostrar-barcode', 'config-repetir', 'config-ancho', 'config-alto'];
-    controles.forEach(id => {
-        const elemento = document.getElementById(id);
-        if (elemento) {
-            elemento.addEventListener('input', () => {
-                actualizarValoresControles();
-                actualizarVistaPrevia();
-            });
-            elemento.addEventListener('change', () => {
-                actualizarValoresControles();
-                actualizarVistaPrevia();
-            });
-        }
-    });
-});
 
 // Exportar funciones al scope global
 window.cargarProductos = cargarProductos;
@@ -2972,7 +1506,6 @@ window.cargarProveedores = cargarProveedores;
 window.cargarPerfiles = cargarPerfiles;
 window.cargarContabilidad = cargarContabilidad;
 window.guardarProductoBase = guardarProductoBase;
-window.guardarVenta = guardarVentaManual;
 window.guardarCompra = guardarCompra;
 window.guardarGasto = guardarGasto;
 window.guardarProveedor = guardarProveedor;
@@ -2994,14 +1527,10 @@ window.verFactura = verFactura;
 window.verDetalleVenta = verDetalleVenta;
 window.solicitarCambio = solicitarCambio;
 window.solicitarReposicion = solicitarReposicion;
-window.ordenarVentas = ordenarVentas;
-window.ordenarProductos = ordenarProductos;
 window.limpiarFiltrosProductos = limpiarFiltrosProductos;
 window.limpiarFiltrosVentas = limpiarFiltrosVentas;
-window.limpiarFiltrosCompras = limpiarFiltrosCompras;
-window.limpiarFiltrosGastos = limpiarFiltrosGastos;
-window.abrirVentaRapida = abrirVentaRapida;
 window.abrirNuevaVenta = abrirNuevaVenta;
+window.abrirVentaRapida = abrirVentaRapida;
 window.agregarProductoVentaManual = agregarProductoVentaManual;
 window.actualizarCantidadCarritoManual = actualizarCantidadCarritoManual;
 window.eliminarItemCarritoManual = eliminarItemCarritoManual;
@@ -3014,3 +1543,10 @@ window.mostrarFormulario = mostrarFormulario;
 window.cerrarFormulario = cerrarFormulario;
 window.toggleMenu = toggleMenu;
 window.logout = logout;
+window.abrirEscannerCamara = abrirEscannerCamara;
+window.cerrarEscannerCamara = cerrarEscannerCamara;
+window.capturarYBuscar = capturarYBuscar;
+window.buscarProductoPorSKU = buscarProductoPorSKU;
+window.imprimirEtiquetasProducto = imprimirEtiquetasProducto;
+
+console.log('✅ Dashboard.js cargado correctamente');
