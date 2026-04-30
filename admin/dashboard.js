@@ -2320,8 +2320,145 @@ async function imprimirEtiquetasProducto(productoId) {
         }
         
         // Generar HTML para impresión
-        const etiquetasHTML = generarHTMLParaImpresion(producto[0], variantes);
-        
+function generarHTMLParaImpresion(producto, variantes) {
+    return `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Etiquetas - ${producto.nombre}</title>
+            <meta charset="UTF-8">
+            <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"><\/script>
+            <style>
+                * { margin: 0; padding: 0; box-sizing: border-box; }
+                
+                body { 
+                    background: white; 
+                    font-family: 'Arial', sans-serif;
+                    padding: 20px;
+                }
+                
+                .etiquetas-grid {
+                    display: grid;
+                    grid-template-columns: repeat(2, 1fr);
+                    gap: 20px;
+                    max-width: 800px;
+                    margin: 0 auto;
+                }
+                
+                .etiqueta {
+                    border: 1px dashed #ccc;
+                    padding: 15px;
+                    border-radius: 8px;
+                    text-align: center;
+                    background: white;
+                    break-inside: avoid;
+                    page-break-inside: avoid;
+                }
+                
+                .etiqueta-tienda {
+                    font-size: 10px;
+                    color: #d4a5a9;
+                    letter-spacing: 2px;
+                    margin-bottom: 5px;
+                }
+                
+                .etiqueta-nombre {
+                    font-size: 14px;
+                    font-weight: bold;
+                    margin: 5px 0;
+                    color: #4a3728;
+                }
+                
+                .etiqueta-detalle {
+                    font-size: 20px;
+                    font-weight: bold;
+                    color: #b87c4e;
+                    margin: 5px 0;
+                }
+                
+                .etiqueta-precio {
+                    font-size: 18px;
+                    font-weight: bold;
+                    color: #27ae60;
+                    margin: 8px 0;
+                }
+                
+                .barcode-container {
+                    margin: 10px 0;
+                    display: flex;
+                    justify-content: center;
+                }
+                
+                svg.barcode {
+                    max-width: 100%;
+                    height: auto;
+                }
+                
+                .etiqueta-codigo {
+                    font-family: 'Courier New', monospace;
+                    font-size: 10px;
+                    color: #666;
+                    margin: 5px 0;
+                    letter-spacing: 1px;
+                }
+                
+                @media print {
+                    body { margin: 0; padding: 0; }
+                    .etiquetas-grid { gap: 15px; }
+                    .etiqueta { border: 1px dashed #aaa; }
+                }
+            </style>
+        </head>
+        <body>
+            <div class="etiquetas-grid" id="etiquetas-container">
+                ${variantes.map((v, index) => `
+                    <div class="etiqueta" id="etiqueta-${index}">
+                        <div class="etiqueta-tienda">🌸 MODAS LA 34</div>
+                        <div class="etiqueta-nombre">${escapeHtml(producto.nombre)}</div>
+                        <div class="etiqueta-detalle">Talla: ${v.talla}</div>
+                        <div class="barcode-container">
+                            <svg class="barcode" data-sku="${v.sku}"></svg>
+                        </div>
+                        <div class="etiqueta-codigo">${v.sku}</div>
+                        <div class="etiqueta-precio">$${(v.precio_venta || 0).toLocaleString()}</div>
+                    </div>
+                `).join('')}
+            </div>
+            <div style="text-align: center; margin-top: 30px; font-size: 10px; color: #999;">
+                ${producto.nombre} - Etiquetas generadas el ${new Date().toLocaleDateString()}
+            </div>
+            
+            <script>
+                // Generar códigos de barras reales con JsBarcode
+                function generarCodigos() {
+                    document.querySelectorAll('.barcode').forEach(el => {
+                        try {
+                            JsBarcode(el, el.dataset.sku, {
+                                format: "CODE128",
+                                width: 1.5,
+                                height: 40,
+                                displayValue: false,
+                                margin: 5
+                            });
+                        } catch(e) {
+                            console.log('Error generando código:', e);
+                        }
+                    });
+                }
+                
+                generarCodigos();
+                
+                // Imprimir automáticamente después de cargar
+                window.onload = function() {
+                    setTimeout(() => {
+                        window.print();
+                    }, 500);
+                };
+            <\/script>
+        </body>
+        </html>
+    `;
+}        
         // Abrir ventana de impresión
         const ventana = window.open('', '_blank');
         ventana.document.write(etiquetasHTML);
