@@ -2356,7 +2356,36 @@ async function imprimirEtiquetasProducto(productoId) {
 }
 
 function generarHTMLParaImpresion(producto, variantes) {
-    // Formato papel: tamaño etiqueta (Avery 3473 o similar)
+    // ===== CONFIGURACIÓN DE ETIQUETAS =====
+    // Cambia estos valores según tu preferencia
+    const COLUMNAS = 3;        // 2, 3 o 4 columnas por hoja
+    const MARGEN = 10;         // Margen en mm
+    const ALTO_ETIQUETA = 70;  // Alto de cada etiqueta en mm
+    
+    // Calcular ancho de etiqueta (A4 = 210mm de ancho)
+    const ANCHO_ETIQUETA = (210 - (MARGEN * 2)) / COLUMNAS - 5;
+    
+    // Agrupar variantes por talla para no repetir el mismo diseño
+    const variantesAgrupadas = [];
+    variantes.forEach(v => {
+        const existente = variantesAgrupadas.find(item => item.talla === v.talla);
+        if (existente) {
+            existente.colores.push(...(v.colores || []));
+        } else {
+            variantesAgrupadas.push({
+                ...v,
+                colores: v.colores || []
+            });
+        }
+    });
+    
+    // Si hay muchas variantes, duplicar para llenar la hoja
+    let etiquetasParaImprimir = [...variantesAgrupadas];
+    const totalPorHoja = COLUMNAS * 4; // 4 filas aprox
+    while (etiquetasParaImprimir.length < totalPorHoja && etiquetasParaImprimir.length > 0) {
+        etiquetasParaImprimir = [...etiquetasParaImprimir, ...etiquetasParaImprimir.slice(0, totalPorHoja - etiquetasParaImprimir.length)];
+    }
+    
     return `
         <!DOCTYPE html>
         <html>
@@ -2373,83 +2402,113 @@ function generarHTMLParaImpresion(producto, variantes) {
                 body { 
                     background: white; 
                     font-family: 'Arial', sans-serif;
-                    padding: 20px;
+                    padding: ${MARGEN}mm;
                 }
                 
-                /* Grid de etiquetas - 2x4 por página */
+                /* Grid dinámico según columnas */
                 .etiquetas-grid {
                     display: grid;
-                    grid-template-columns: repeat(2, 1fr);
-                    gap: 20px;
-                    max-width: 800px;
+                    grid-template-columns: repeat(${COLUMNAS}, 1fr);
+                    gap: 8mm;
+                    max-width: 210mm;
                     margin: 0 auto;
                 }
                 
                 .etiqueta {
                     border: 1px dashed #ccc;
-                    padding: 15px;
-                    border-radius: 8px;
+                    padding: 10px;
+                    border-radius: 6px;
                     text-align: center;
                     background: white;
                     break-inside: avoid;
                     page-break-inside: avoid;
+                    height: ${ALTO_ETIQUETA}mm;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: space-between;
+                }
+                
+                /* Si hay muchas etiquetas, saltar página automáticamente */
+                .page-break {
+                    page-break-before: always;
                 }
                 
                 .etiqueta-tienda {
-                    font-size: 10px;
+                    font-size: 8px;
                     color: #d4a5a9;
                     letter-spacing: 2px;
-                    margin-bottom: 5px;
+                    margin-bottom: 3px;
                 }
                 
                 .etiqueta-nombre {
-                    font-size: 14px;
+                    font-size: 11px;
                     font-weight: bold;
-                    margin: 5px 0;
+                    margin: 3px 0;
                     color: #4a3728;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    display: -webkit-box;
+                    -webkit-line-clamp: 2;
+                    -webkit-box-orient: vertical;
                 }
                 
                 .etiqueta-detalle {
-                    font-size: 20px;
+                    font-size: 16px;
                     font-weight: bold;
                     color: #b87c4e;
-                    margin: 5px 0;
+                    margin: 3px 0;
                 }
                 
                 .etiqueta-codigo {
                     font-family: 'Courier New', monospace;
-                    font-size: 10px;
+                    font-size: 8px;
                     color: #666;
-                    margin: 10px 0;
-                    letter-spacing: 1px;
+                    margin: 5px 0;
+                    letter-spacing: 0.5px;
+                    word-break: break-all;
                 }
                 
                 .etiqueta-precio {
-                    font-size: 18px;
+                    font-size: 14px;
                     font-weight: bold;
                     color: #27ae60;
-                    margin-top: 10px;
+                    margin-top: 5px;
                 }
                 
-                /* Código de barras simple */
+                /* Código de barras visual */
+                .barcode-container {
+                    margin: 5px 0;
+                    text-align: center;
+                }
+                
                 .barcode-simple {
                     font-family: 'Courier New', monospace;
-                    font-size: 22px;
+                    font-size: 16px;
                     letter-spacing: 1px;
-                    margin: 10px 0;
                     background: white;
-                    padding: 5px;
-                    border: 1px solid #eee;
-                    word-break: break-all;
+                    padding: 3px;
+                    display: inline-block;
+                }
+                
+                /* Colores si existen */
+                .etiqueta-colores {
+                    display: flex;
+                    gap: 4px;
+                    justify-content: center;
+                    margin: 5px 0;
+                }
+                
+                .color-dot {
+                    width: 12px;
+                    height: 12px;
+                    border-radius: 50%;
+                    border: 1px solid #ddd;
                 }
                 
                 @media print {
                     body { 
                         margin: 0; 
-                        padding: 0; 
-                    }
-                    .etiquetas-grid { 
-                        gap: 15px; 
+                        padding: ${MARGEN}mm; 
                     }
                     .etiqueta { 
                         border: 1px dashed #aaa;
@@ -2461,23 +2520,45 @@ function generarHTMLParaImpresion(producto, variantes) {
         </head>
         <body>
             <div class="etiquetas-grid">
-                ${variantes.map(v => `
+                ${etiquetasParaImprimir.map((v, index) => `
                     <div class="etiqueta">
-                        <div class="etiqueta-tienda">🌸 MODAS LA 34</div>
-                        <div class="etiqueta-nombre">${escapeHtml(producto.nombre)}</div>
-                        <div class="etiqueta-detalle">Talla: ${v.talla}</div>
-                        <div class="barcode-simple">${generarBarraSimple(v.sku)}</div>
-                        <div class="etiqueta-codigo">${v.sku || 'SKU no disponible'}</div>
-                        <div class="etiqueta-precio">$${(v.precio_venta || 0).toLocaleString()}</div>
+                        <div>
+                            <div class="etiqueta-tienda">🌸 MODAS LA 34</div>
+                            <div class="etiqueta-nombre">${escapeHtml(producto.nombre)}</div>
+                            <div class="etiqueta-detalle">Talla: ${v.talla}</div>
+                        </div>
+                        
+                        ${v.colores && v.colores.length > 0 ? `
+                            <div class="etiqueta-colores">
+                                ${v.colores.slice(0, 3).map(c => `
+                                    <div class="color-dot" style="background: ${c.codigo || '#ccc'};" title="${c.nombre || 'Color'}"></div>
+                                `).join('')}
+                            </div>
+                        ` : ''}
+                        
+                        <div class="barcode-container">
+                            <div class="barcode-simple">${v.sku || generarSKUSimple(producto.codigo, v.talla, index)}</div>
+                        </div>
+                        
+                        <div>
+                            <div class="etiqueta-codigo">${v.sku || 'SKU pendiente'}</div>
+                            <div class="etiqueta-precio">$${(v.precio_venta || 0).toLocaleString()}</div>
+                        </div>
                     </div>
+                    ${(index + 1) % (COLUMNAS * 4) === 0 && index !== etiquetasParaImprimir.length - 1 ? '<div class="page-break"></div>' : ''}
                 `).join('')}
             </div>
-            <div style="text-align: center; margin-top: 30px; font-size: 10px; color: #999;">
-                ${escapeHtml(producto.nombre)} - Etiquetas generadas el ${new Date().toLocaleDateString()}
+            <div style="text-align: center; margin-top: 20px; font-size: 8px; color: #999;">
+                ${escapeHtml(producto.nombre)} - Generado el ${new Date().toLocaleDateString()} | Hoja ${Math.ceil(etiquetasParaImprimir.length / (COLUMNAS * 4))}
             </div>
         </body>
         </html>
     `;
+}
+
+// Generar SKU simple si no existe
+function generarSKUSimple(codigo, talla, index) {
+    return `${codigo || 'PROD'}-${talla}-${index + 1}`;
 }
 
 // Generar barra simple con caracteres
