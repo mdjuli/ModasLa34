@@ -1549,4 +1549,329 @@ window.capturarYBuscar = capturarYBuscar;
 window.buscarProductoPorSKU = buscarProductoPorSKU;
 window.imprimirEtiquetasProducto = imprimirEtiquetasProducto;
 
+// ============================================
+// PANEL DE CONFIGURACIÓN DE ETIQUETAS
+// ============================================
+
+let productoActualParaEtiquetas = null;
+let variantesActualesParaEtiquetas = [];
+
+function abrirConfigEtiquetas(productoId) {
+    // Obtener producto de la lista global
+    const producto = productosData.find(p => p.id === productoId);
+    if (!producto) {
+        mostrarAlerta('Producto no encontrado', 'error');
+        return;
+    }
+    
+    productoActualParaEtiquetas = producto;
+    
+    // Obtener variantes completas
+    const variantes = [];
+    producto.variantes.forEach(v => {
+        variantes.push({
+            id: v.id,
+            talla: v.talla,
+            precio_venta: v.precio_venta,
+            sku: v.sku,
+            colores: v.colores || []
+        });
+    });
+    
+    variantesActualesParaEtiquetas = variantes;
+    
+    // Configurar valores por defecto en los controles
+    document.getElementById('config-columnas').value = 3;
+    document.getElementById('config-filas').value = 4;
+    document.getElementById('config-margen').value = 10;
+    document.getElementById('config-tamaño').value = 'mediano';
+    document.getElementById('config-mostrar-barcode').value = 'si';
+    document.getElementById('config-repetir').value = 'si';
+    
+    actualizarValoresControles();
+    
+    // Mostrar modal
+    document.getElementById('modal-config-etiquetas').style.display = 'flex';
+    
+    // Generar vista previa inicial
+    setTimeout(() => actualizarVistaPrevia(), 100);
+}
+
+function cerrarConfigEtiquetas() {
+    document.getElementById('modal-config-etiquetas').style.display = 'none';
+    productoActualParaEtiquetas = null;
+}
+
+function actualizarValoresControles() {
+    const columnas = document.getElementById('config-columnas').value;
+    const filas = document.getElementById('config-filas').value;
+    const margen = document.getElementById('config-margen').value;
+    
+    document.getElementById('valor-columnas').textContent = `${columnas} columnas`;
+    document.getElementById('valor-filas').textContent = `${filas} filas`;
+    document.getElementById('valor-margen').textContent = `${margen} mm`;
+    
+    // Mostrar/ocultar personalizado
+    const tamaño = document.getElementById('config-tamaño').value;
+    document.getElementById('config-personalizado').style.display = tamaño === 'personalizado' ? 'block' : 'none';
+    
+    if (tamaño === 'pequeño') {
+        document.getElementById('config-ancho').value = 4;
+        document.getElementById('config-alto').value = 3;
+    } else if (tamaño === 'mediano') {
+        document.getElementById('config-ancho').value = 6;
+        document.getElementById('config-alto').value = 4;
+    } else if (tamaño === 'grande') {
+        document.getElementById('config-ancho').value = 8;
+        document.getElementById('config-alto').value = 5.5;
+    }
+}
+
+function actualizarVistaPrevia() {
+    if (!productoActualParaEtiquetas) return;
+    
+    const columnas = parseInt(document.getElementById('config-columnas').value);
+    const filas = parseInt(document.getElementById('config-filas').value);
+    const margen = parseInt(document.getElementById('config-margen').value);
+    const mostrarBarcode = document.getElementById('config-mostrar-barcode').value === 'si';
+    const repetir = document.getElementById('config-repetir').value === 'si';
+    
+    let anchoCm = parseFloat(document.getElementById('config-ancho').value);
+    let altoCm = parseFloat(document.getElementById('config-alto').value);
+    
+    const totalPorHoja = columnas * filas;
+    let variantesParaVista = [...variantesActualesParaEtiquetas];
+    
+    if (repetir && variantesParaVista.length < totalPorHoja) {
+        while (variantesParaVista.length < totalPorHoja) {
+            variantesParaVista = [...variantesParaVista, ...variantesActualesParaEtiquetas.slice(0, totalPorHoja - variantesParaVista.length)];
+        }
+    }
+    
+    const vistaHTML = generarVistaPreviaHTML(
+        productoActualParaEtiquetas, 
+        variantesParaVista, 
+        columnas, 
+        filas, 
+        margen, 
+        anchoCm, 
+        altoCm, 
+        mostrarBarcode
+    );
+    
+    document.getElementById('vista-previa-etiquetas').innerHTML = vistaHTML;
+}
+
+function generarVistaPreviaHTML(producto, variantes, columnas, filas, margen, anchoCm, altoCm, mostrarBarcode) {
+    const totalPorHoja = columnas * filas;
+    const mostrarEtiquetas = variantes.slice(0, totalPorHoja);
+    
+    return `
+        <div style="
+            max-width: 210mm; 
+            margin: 0 auto; 
+            padding: ${margen}px;
+            background: white;
+            border-radius: 8px;
+        ">
+            <div style="
+                display: grid;
+                grid-template-columns: repeat(${columnas}, 1fr);
+                gap: 6px;
+            ">
+                ${mostrarEtiquetas.map((v, idx) => `
+                    <div style="
+                        border: 1px solid #ddd;
+                        border-radius: 6px;
+                        padding: 6px;
+                        text-align: center;
+                        background: white;
+                        height: ${altoCm * 15}px;
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: space-between;
+                    ">
+                        <div>
+                            <div style="font-size: 8px; color: #d4a5a9;">🌸 MODAS LA 34</div>
+                            <div style="font-size: 10px; font-weight: bold; color: #4a3728;">${escapeHtml(producto.nombre)}</div>
+                            <div style="font-size: 12px; font-weight: bold; color: #b87c4e;">Talla: ${v.talla}</div>
+                        </div>
+                        
+                        ${v.colores && v.colores.length > 0 ? `
+                            <div style="display: flex; gap: 3px; justify-content: center;">
+                                ${v.colores.slice(0, 3).map(c => `
+                                    <div style="width: 8px; height: 8px; border-radius: 50%; background: ${c.codigo || '#ccc'};"></div>
+                                `).join('')}
+                            </div>
+                        ` : '<div style="height: 8px;"></div>'}
+                        
+                        <div>
+                            ${mostrarBarcode ? `
+                                <div style="font-family: monospace; font-size: 10px; letter-spacing: 1px;">${v.sku || 'SKU'}</div>
+                            ` : ''}
+                            <div style="font-size: 10px; font-weight: bold; color: #27ae60;">$${(v.precio_venta || 0).toLocaleString()}</div>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+            <div style="text-align: center; margin-top: 8px; font-size: 8px; color: #aaa;">
+                Vista previa - ${columnas} x ${filas} = ${totalPorHoja} etiquetas/hoja | Tamaño: ${anchoCm} x ${altoCm} cm
+            </div>
+        </div>
+    `;
+}
+
+function imprimirEtiquetasConfig() {
+    if (!productoActualParaEtiquetas) return;
+    
+    const columnas = parseInt(document.getElementById('config-columnas').value);
+    const filas = parseInt(document.getElementById('config-filas').value);
+    const margen = parseInt(document.getElementById('config-margen').value);
+    const mostrarBarcode = document.getElementById('config-mostrar-barcode').value === 'si';
+    const repetir = document.getElementById('config-repetir').value === 'si';
+    
+    let anchoCm = parseFloat(document.getElementById('config-ancho').value);
+    let altoCm = parseFloat(document.getElementById('config-alto').value);
+    
+    const totalPorHoja = columnas * filas;
+    let variantesParaImprimir = [...variantesActualesParaEtiquetas];
+    
+    if (repetir && variantesParaImprimir.length < totalPorHoja) {
+        while (variantesParaImprimir.length < totalPorHoja) {
+            variantesParaImprimir = [...variantesParaImprimir, ...variantesActualesParaEtiquetas.slice(0, totalPorHoja - variantesParaImprimir.length)];
+        }
+    }
+    
+    const htmlCompleto = generarHTMLImpresionCompleto(
+        productoActualParaEtiquetas, 
+        variantesParaImprimir, 
+        columnas, 
+        filas, 
+        margen, 
+        anchoCm, 
+        altoCm, 
+        mostrarBarcode
+    );
+    
+    const ventana = window.open('', '_blank');
+    ventana.document.write(htmlCompleto);
+    ventana.document.close();
+    ventana.print();
+    
+    cerrarConfigEtiquetas();
+}
+
+function generarHTMLImpresionCompleto(producto, variantes, columnas, filas, margen, anchoCm, altoCm, mostrarBarcode) {
+    const nombreProducto = (producto.nombre || '').replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m] || m));
+    let etiquetasHtml = '';
+    
+    for (let i = 0; i < variantes.length; i++) {
+        const v = variantes[i];
+        etiquetasHtml += `
+            <div class="etiqueta" style="height: ${altoCm * 15}px;">
+                <div class="tienda">🌸 MODAS LA 34</div>
+                <div class="nombre">${nombreProducto}</div>
+                <div class="talla">Talla: ${v.talla}</div>
+                ${mostrarBarcode ? `<div class="barcode-container"><canvas id="barcode-${i}" class="barcode" data-sku="${v.sku || 'SKU'}"></canvas></div>` : ''}
+                <div class="precio">$${(v.precio_venta || 0).toLocaleString()}</div>
+            </div>
+        `;
+    }
+    
+    return `<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Etiquetas - ${nombreProducto}</title>
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            background: white; 
+            font-family: Arial, sans-serif;
+            padding: ${margen}px;
+        }
+        .etiquetas-grid {
+            display: grid;
+            grid-template-columns: repeat(${columnas}, 1fr);
+            gap: 6px;
+            max-width: 210mm;
+            margin: 0 auto;
+        }
+        .etiqueta {
+            border: 1px dashed #ccc;
+            padding: 6px;
+            border-radius: 6px;
+            text-align: center;
+            background: white;
+            break-inside: avoid;
+            page-break-inside: avoid;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .tienda { font-size: 8px; color: #d4a5a9; letter-spacing: 2px; }
+        .nombre { font-size: 10px; font-weight: bold; color: #4a3728; margin: 2px 0; }
+        .talla { font-size: 12px; font-weight: bold; color: #b87c4e; margin: 2px 0; }
+        .precio { font-size: 10px; font-weight: bold; color: #27ae60; margin-top: 4px; }
+        .barcode-container { margin: 4px 0; display: flex; justify-content: center; }
+        .barcode { max-width: 100%; height: auto; }
+        @media print {
+            body { margin: 0; padding: ${margen}px; }
+            .etiqueta { border: 1px dashed #aaa; break-inside: avoid; page-break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+    <div class="etiquetas-grid">
+        ${etiquetasHtml}
+    </div>
+    <script>
+        (function() {
+            window.addEventListener('load', function() {
+                var elementos = document.querySelectorAll('.barcode');
+                for (var i = 0; i < elementos.length; i++) {
+                    var sku = elementos[i].getAttribute('data-sku');
+                    if (sku && typeof JsBarcode !== 'undefined') {
+                        try {
+                            JsBarcode(elementos[i], sku, {
+                                format: "CODE128",
+                                width: 1.5,
+                                height: 30,
+                                displayValue: false
+                            });
+                        } catch(e) { console.error(e); }
+                    }
+                }
+            });
+        })();
+    </script>
+</body>
+</html>`;
+}
+
+// Modificar la función de impresión para usar el nuevo panel
+const imprimirEtiquetasProductoOriginal = imprimirEtiquetasProducto;
+window.imprimirEtiquetasProducto = function(productoId) {
+    abrirConfigEtiquetas(productoId);
+};
+
+// Configurar eventos de los controles
+document.addEventListener('DOMContentLoaded', () => {
+    const controles = ['config-columnas', 'config-filas', 'config-margen', 'config-tamaño', 'config-mostrar-barcode', 'config-repetir', 'config-ancho', 'config-alto'];
+    controles.forEach(id => {
+        const elemento = document.getElementById(id);
+        if (elemento) {
+            elemento.addEventListener('input', () => {
+                actualizarValoresControles();
+                actualizarVistaPrevia();
+            });
+            elemento.addEventListener('change', () => {
+                actualizarValoresControles();
+                actualizarVistaPrevia();
+            });
+        }
+    });
+});
+
 console.log('✅ Dashboard.js cargado correctamente');
