@@ -2326,10 +2326,10 @@ async function imprimirEtiquetasProducto(productoId) {
         
         console.log(`📦 Producto: ${producto.nombre}, ${variantes.length} variantes`);
         
-        // Generar HTML - VERSIÓN MEJORADA
+        // Generar el HTML con la estructura CORRECTA
         const html = generarHTMLParaImpresion(producto, variantes);
         
-        // Abrir ventana
+        // Abrir ventana y escribir
         const ventana = window.open('', '_blank');
         ventana.document.write(html);
         ventana.document.close();
@@ -2343,6 +2343,7 @@ async function imprimirEtiquetasProducto(productoId) {
 }
 
 function generarHTMLParaImpresion(producto, variantes) {
+    // Escapar nombre del producto
     const nombreProducto = (producto.nombre || '').replace(/[&<>]/g, function(m) {
         if (m === '&') return '&amp;';
         if (m === '<') return '&lt;';
@@ -2350,6 +2351,7 @@ function generarHTMLParaImpresion(producto, variantes) {
         return m;
     });
     
+    // Construir las etiquetas MANUALMENTE (sin template literals anidados complejos)
     let etiquetasHtml = '';
     
     for (let i = 0; i < variantes.length; i++) {
@@ -2359,16 +2361,16 @@ function generarHTMLParaImpresion(producto, variantes) {
         const talla = v.talla || 'UNICA';
         
         etiquetasHtml += `
-        <div class="etiqueta">
-            <div class="etiqueta-tienda">🌸 MODAS LA 34</div>
-            <div class="etiqueta-nombre">${nombreProducto}</div>
-            <div class="etiqueta-detalle">Talla: ${talla}</div>
-            <div class="barcode-container">
-                <canvas id="barcode-${i}" class="barcode" data-sku="${sku}"></canvas>
+            <div class="etiqueta">
+                <div class="etiqueta-tienda">🌸 MODAS LA 34</div>
+                <div class="etiqueta-nombre">${nombreProducto}</div>
+                <div class="etiqueta-detalle">Talla: ${talla}</div>
+                <div class="barcode-container">
+                    <canvas id="barcode-${i}" class="barcode" data-sku="${sku}"></canvas>
+                </div>
+                <div class="etiqueta-codigo">${sku}</div>
+                <div class="etiqueta-precio">$${precio}</div>
             </div>
-            <div class="etiqueta-codigo">${sku}</div>
-            <div class="etiqueta-precio">$${precio}</div>
-        </div>
         `;
     }
     
@@ -2380,7 +2382,11 @@ function generarHTMLParaImpresion(producto, variantes) {
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: white; padding: 20px; }
+        body { 
+            background: white; 
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
         .etiquetas-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -2421,7 +2427,7 @@ function generarHTMLParaImpresion(producto, variantes) {
             min-height: 60px;
         }
         canvas.barcode {
-            border: 1px solid #eee;
+            max-width: 100%;
             background: white;
         }
         .etiqueta-codigo {
@@ -2449,10 +2455,9 @@ function generarHTMLParaImpresion(producto, variantes) {
     </div>
     <script>
         (function() {
-            // Esperar a que todo cargue
-            window.addEventListener('load', function() {
+            function generarCodigos() {
                 var elementos = document.querySelectorAll('.barcode');
-                console.log('Generando ' + elementos.length + ' códigos de barras');
+                console.log('📊 Generando ' + elementos.length + ' códigos de barras');
                 
                 for (var i = 0; i < elementos.length; i++) {
                     var el = elementos[i];
@@ -2470,28 +2475,23 @@ function generarHTMLParaImpresion(producto, variantes) {
                             });
                             console.log('✅ Código ' + i + ' generado: ' + sku);
                         } catch(e) {
-                            console.error('❌ Error en ' + i + ':', e);
-                            el.style.border = '2px solid red';
+                            console.error('❌ Error en código ' + i + ':', e);
                         }
                     } else {
-                        console.warn('⚠️ SKU vacío en ' + i);
+                        console.warn('⚠️ SKU vacío en elemento ' + i);
                     }
                 }
-            });
+            }
+            
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', generarCodigos);
+            } else {
+                generarCodigos();
+            }
         })();
     </script>
 </body>
 </html>`;
-}
-// Función auxiliar para escapar HTML
-function escapeHtml(str) {
-    if (!str) return '';
-    return str
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
 }
 
 // ============================================
