@@ -2365,9 +2365,9 @@ function generarHTMLParaImpresion(producto, variantes) {
                 <div class="etiqueta-tienda">🌸 MODAS LA 34</div>
                 <div class="etiqueta-nombre">${nombreProducto}</div>
                 <div class="etiqueta-detalle">Talla: ${talla}</div>
-                <div class="barcode-container">
+                <canvas class="barcode-container">
                     <canvas id="barcode-${i}" class="barcode" data-sku="${sku}"></canvas>
-                </div>
+                </canvas>
                 <div class="etiqueta-codigo">${sku}</div>
                 <div class="etiqueta-precio">$${precio}</div>
             </div>
