@@ -1659,106 +1659,79 @@ function actualizarVistaPrevia() {
         mostrarBarcode
     );
     
-    document.getElementById('vista-previa-etiquetas').innerHTML = vistaHTML;
+    const vistaDiv = document.getElementById('vista-previa-etiquetas');
+    vistaDiv.innerHTML = vistaHTML;
+    
+    // Forzar la generación de códigos después de insertar el HTML
+    setTimeout(function() {
+        const elementos = vistaDiv.querySelectorAll('.barcode');
+        for (var i = 0; i < elementos.length; i++) {
+            var sku = elementos[i].getAttribute('data-sku');
+            if (sku && typeof JsBarcode !== 'undefined') {
+                try {
+                    JsBarcode(elementos[i], sku, {
+                        format: "CODE128",
+                        width: 1.5,
+                        height: 30,
+                        displayValue: false
+                    });
+                } catch(e) { console.error(e); }
+            }
+        }
+    }, 150);
 }
 
 function generarVistaPreviaHTML(producto, variantes, columnas, filas, margen, anchoCm, altoCm, mostrarBarcode) {
     const totalPorHoja = columnas * filas;
     const mostrarEtiquetas = variantes.slice(0, totalPorHoja);
+    const nombreProducto = (producto.nombre || '').replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m] || m));
     
-    return `
-        <div style="
-            max-width: 210mm; 
-            margin: 0 auto; 
-            padding: ${margen}px;
-            background: white;
-            border-radius: 8px;
-        ">
-            <div style="
-                display: grid;
-                grid-template-columns: repeat(${columnas}, 1fr);
-                gap: 6px;
-            ">
-                ${mostrarEtiquetas.map((v, idx) => `
-                    <div style="
-                        border: 1px solid #ddd;
-                        border-radius: 6px;
-                        padding: 6px;
-                        text-align: center;
-                        background: white;
-                        height: ${altoCm * 15}px;
-                        display: flex;
-                        flex-direction: column;
-                        justify-content: space-between;
-                    ">
-                        <div>
-                            <div style="font-size: 8px; color: #d4a5a9;">🌸 MODAS LA 34</div>
-                            <div style="font-size: 10px; font-weight: bold; color: #4a3728;">${escapeHtml(producto.nombre)}</div>
-                            <div style="font-size: 12px; font-weight: bold; color: #b87c4e;">Talla: ${v.talla}</div>
-                        </div>
-                        
-                        ${v.colores && v.colores.length > 0 ? `
-                            <div style="display: flex; gap: 3px; justify-content: center;">
-                                ${v.colores.slice(0, 3).map(c => `
-                                    <div style="width: 8px; height: 8px; border-radius: 50%; background: ${c.codigo || '#ccc'};"></div>
-                                `).join('')}
-                            </div>
-                        ` : '<div style="height: 8px;"></div>'}
-                        
-                        <div>
-                            ${mostrarBarcode ? `
-                                <div style="font-family: monospace; font-size: 10px; letter-spacing: 1px;">${v.sku || 'SKU'}</div>
-                            ` : ''}
-                            <div style="font-size: 10px; font-weight: bold; color: #27ae60;">$${(v.precio_venta || 0).toLocaleString()}</div>
-                        </div>
-                    </div>
-                `).join('')}
+    // Generar HTML con IDs únicos para cada canvas
+    let etiquetasHtml = '';
+    for (let i = 0; i < mostrarEtiquetas.length; i++) {
+        const v = mostrarEtiquetas[i];
+        const sku = v.sku || `SKU-${producto.codigo}-${v.talla}`;
+        etiquetasHtml += `
+            <div class="etiqueta" style="height: ${altoCm * 15}px;">
+                <div class="tienda">🌸 MODAS LA 34</div>
+                <div class="nombre">${nombreProducto}</div>
+                <div class="talla">Talla: ${v.talla}</div>
+                ${mostrarBarcode ? `<div class="barcode-container"><canvas id="barcode-${i}" class="barcode" data-sku="${sku}"></canvas></div>` : ''}
+                <div class="precio">$${(v.precio_venta || 0).toLocaleString()}</div>
             </div>
-            <div style="text-align: center; margin-top: 8px; font-size: 8px; color: #aaa;">
-                Vista previa - ${columnas} x ${filas} = ${totalPorHoja} etiquetas/hoja | Tamaño: ${anchoCm} x ${altoCm} cm
-            </div>
-        </div>
-    `;
-}
-
-function imprimirEtiquetasConfig() {
-    if (!productoActualParaEtiquetas) return;
-    
-    const columnas = parseInt(document.getElementById('config-columnas').value);
-    const filas = parseInt(document.getElementById('config-filas').value);
-    const margen = parseInt(document.getElementById('config-margen').value);
-    const mostrarBarcode = document.getElementById('config-mostrar-barcode').value === 'si';
-    const repetir = document.getElementById('config-repetir').value === 'si';
-    
-    let anchoCm = parseFloat(document.getElementById('config-ancho').value);
-    let altoCm = parseFloat(document.getElementById('config-alto').value);
-    
-    const totalPorHoja = columnas * filas;
-    let variantesParaImprimir = [...variantesActualesParaEtiquetas];
-    
-    if (repetir && variantesParaImprimir.length < totalPorHoja) {
-        while (variantesParaImprimir.length < totalPorHoja) {
-            variantesParaImprimir = [...variantesParaImprimir, ...variantesActualesParaEtiquetas.slice(0, totalPorHoja - variantesParaImprimir.length)];
-        }
+        `;
     }
     
-    const htmlCompleto = generarHTMLImpresionCompleto(
-        productoActualParaEtiquetas, 
-        variantesParaImprimir, 
-        columnas, 
-        filas, 
-        margen, 
-        anchoCm, 
-        altoCm, 
-        mostrarBarcode
-    );
-    
-    const ventana = window.open('', '_blank');
-    ventana.document.write(htmlCompleto);
-    ventana.document.close();
-    ventana.print();
-    
-    cerrarConfigEtiquetas();
+    return `
+        <div style="max-width: 210mm; margin: 0 auto; padding: ${margen}px; background: white; border-radius: 8px;">
+            <div style="display: grid; grid-template-columns: repeat(${columnas}, 1fr); gap: 6px;">
+                ${etiquetasHtml}
+            </div>
+            <div style="text-align: center; margin-top: 8px; font-size: 8px; color: #aaa;">
+                Vista previa - ${columnas} x ${filas} = ${totalPorHoja} etiquetas/hoja
+            </div>
+        </div>
+        <script>
+            (function() {
+                setTimeout(function() {
+                    var elementos = document.querySelectorAll('.barcode');
+                    for (var i = 0; i < elementos.length; i++) {
+                        var sku = elementos[i].getAttribute('data-sku');
+                        if (sku && typeof JsBarcode !== 'undefined') {
+                            try {
+                                JsBarcode(elementos[i], sku, {
+                                    format: "CODE128",
+                                    width: 1.5,
+                                    height: 30,
+                                    displayValue: false
+                                });
+                            } catch(e) { console.error(e); }
+                        }
+                    }
+                }, 100);
+            })();
+        </script>
+    `;
 }
 
 function generarHTMLImpresionCompleto(producto, variantes, columnas, filas, margen, anchoCm, altoCm, mostrarBarcode) {
@@ -1767,12 +1740,13 @@ function generarHTMLImpresionCompleto(producto, variantes, columnas, filas, marg
     
     for (let i = 0; i < variantes.length; i++) {
         const v = variantes[i];
+        const sku = v.sku || `SKU-${producto.codigo}-${v.talla}`;
         etiquetasHtml += `
             <div class="etiqueta" style="height: ${altoCm * 15}px;">
                 <div class="tienda">🌸 MODAS LA 34</div>
                 <div class="nombre">${nombreProducto}</div>
                 <div class="talla">Talla: ${v.talla}</div>
-                ${mostrarBarcode ? `<div class="barcode-container"><canvas id="barcode-${i}" class="barcode" data-sku="${v.sku || 'SKU'}"></canvas></div>` : ''}
+                ${mostrarBarcode ? `<div class="barcode-container"><canvas id="barcode-${i}" class="barcode" data-sku="${sku}"></canvas></div>` : ''}
                 <div class="precio">$${(v.precio_venta || 0).toLocaleString()}</div>
             </div>
         `;
@@ -1828,7 +1802,7 @@ function generarHTMLImpresionCompleto(producto, variantes, columnas, filas, marg
     </div>
     <script>
         (function() {
-            window.addEventListener('load', function() {
+            function generarCodigos() {
                 var elementos = document.querySelectorAll('.barcode');
                 for (var i = 0; i < elementos.length; i++) {
                     var sku = elementos[i].getAttribute('data-sku');
@@ -1840,10 +1814,15 @@ function generarHTMLImpresionCompleto(producto, variantes, columnas, filas, marg
                                 height: 30,
                                 displayValue: false
                             });
-                        } catch(e) { console.error(e); }
+                        } catch(e) { console.error('Error generando código:', e); }
                     }
                 }
-            });
+            }
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', generarCodigos);
+            } else {
+                generarCodigos();
+            }
         })();
     </script>
 </body>
