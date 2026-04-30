@@ -2913,7 +2913,7 @@ function generarHTMLImpresionCompleto(producto, variantes, columnas, filas, marg
                             </div>
                         ` : '<div style="height: 8px;"></div>'}
                         <div>
-                            ${mostrarBarcode ? `<canvas class="barcode">${v.sku || 'SKU'}</canvas>` : ''}
+                            ${mostrarBarcode ? `<canvas class="barcode" data-sku="${v.sku || 'SKU'}"></canvas>` : ''}
                             <div class="precio">$${(v.precio_venta || 0).toLocaleString()}</div>
                         </div>
                     </div>
