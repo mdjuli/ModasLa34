@@ -2379,8 +2379,23 @@ function generarHTMLParaImpresion(producto, variantes) {
 <head>
     <meta charset="UTF-8">
     <title>Etiquetas - ${nombreProducto}</title>
-     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
-    <style>
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+    <script>
+        window.addEventListener('load', function() {
+            document.querySelectorAll('.barcode').forEach(function(canvas) {
+                var sku = canvas.getAttribute('data-sku');
+                if (sku && typeof JsBarcode !== 'undefined') {
+                    JsBarcode(canvas, sku, {
+                        format: "CODE128",
+                        width: 2,
+                        height: 50,
+                        displayValue: true
+                    });
+                }
+            });
+        });
+    </script>
+<style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
             background: white; 
