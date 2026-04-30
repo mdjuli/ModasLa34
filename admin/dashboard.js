@@ -2481,13 +2481,13 @@ function generarHTMLParaImpresion(producto, variantes) {
                     text-align: center;
                 }
                 
-                .barcode-simple {
-                    font-family: 'Courier New', monospace;
-                    font-size: 16px;
-                    letter-spacing: 1px;
+                .barcode-visual {
+                    font-family: 'Libre Barcode 39', monospace;
+                    font-size: 32px;
+                    letter-spacing: 2px;
+                    margin: 10px 0;
                     background: white;
-                    padding: 3px;
-                    display: inline-block;
+                    padding: 5px;
                 }
                 
                 /* Colores si existen */
@@ -2537,7 +2537,7 @@ function generarHTMLParaImpresion(producto, variantes) {
                         ` : ''}
                         
                         <div class="barcode-container">
-                            <div class="barcode-simple">${v.sku || generarSKUSimple(producto.codigo, v.talla, index)}</div>
+                            <div class="barcode-visual">*${v.sku}*</div>
                         </div>
                         
                         <div>
