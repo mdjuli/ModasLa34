@@ -629,6 +629,9 @@ window.ordenarProductos = ordenarProductos;
 window.aplicarFiltrosProductos = aplicarFiltrosProductos;
 window.limpiarFiltrosProductos = limpiarFiltrosProductos;
 window.configurarFiltrosProductos = configurarFiltrosProductos;
+window.abrirConfiguracionEtiquetas = abrirConfiguracionEtiquetas;
+window.cerrarConfigEtiquetas = cerrarConfigEtiquetas;
+window.imprimirEtiquetasConConfig = imprimirEtiquetasConConfig;
 
 console.log('✅ Productos.js cargado correctamente');
 console.log('📦 Funciones disponibles:', {
