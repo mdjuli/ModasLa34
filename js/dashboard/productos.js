@@ -69,3 +69,25 @@ async function imprimirEtiquetasProducto(id) { /* ... */ }
 function configurarFiltrosProductos() { /* ... */ }
 function aplicarFiltrosProductos() { /* ... */ }
 function limpiarFiltrosProductos() { /* ... */ }
+
+// ============================================
+// EXPORTAR FUNCIONES AL SCOPE GLOBAL
+// ============================================
+
+window.agregarVariante = agregarVariante;
+window.agregarColorAVariante = agregarColorAVariante;
+window.agregarSinColor = agregarSinColor;
+window.eliminarColor = eliminarColor;
+window.eliminarVariante = eliminarVariante;
+window.guardarProductoBase = guardarProductoBase;
+window.cargarProductos = cargarProductos;
+window.editarProducto = editarProducto;
+window.eliminarProducto = eliminarProducto;
+window.verVariantes = verVariantes;
+window.imprimirEtiquetasProducto = imprimirEtiquetasProducto;
+window.ordenarProductos = ordenarProductos;
+window.aplicarFiltrosProductos = aplicarFiltrosProductos;
+window.limpiarFiltrosProductos = limpiarFiltrosProductos;
+window.configurarFiltrosProductos = configurarFiltrosProductos;
+
+console.log('✅ Productos.js cargado correctamente');
