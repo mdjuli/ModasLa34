@@ -1,5 +1,5 @@
 // ============================================
-// MAIN.JS - Inicialización y navegación
+// MAIN.JS - Inicialización y navegacióni
 // ============================================
 
 let currentUser = null;
