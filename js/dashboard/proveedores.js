@@ -1,5 +1,5 @@
 // ============================================
-// PROVEEDORES.JS - Gestión de proveedores
+// PROVEEDORES.JS - Gestión de proveedore
 // ============================================
 
 async function cargarProveedores() {
