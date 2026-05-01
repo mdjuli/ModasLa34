@@ -1,5 +1,5 @@
 // ============================================
-// STOCK.JS - Control de inventario
+// STOCK.JS - Control de inventari
 // ============================================
 
 async function cargarStock() {
