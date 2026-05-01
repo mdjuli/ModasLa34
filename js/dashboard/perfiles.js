@@ -1,5 +1,5 @@
 // ============================================
-// PERFILES.JS - Gestión de usuarios
+// PERFILES.JS - Gestión de usuario
 // ============================================
 
 async function cargarPerfiles() {
