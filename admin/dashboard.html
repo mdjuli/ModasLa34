@@ -817,20 +817,24 @@
         </div>
     </div>
 
-    <!-- ==================== SCRIPTS ==================== -->
-    <script src="../js/supabase-config.js"></script>
-    <script src="../js/permisos.js"></script>
-    
-    <!-- Módulos del dashboard -->
-    <script src="../js/dashboard/utils.js"></script>
-    <script src="../js/dashboard/main.js"></script>
-    <script src="../js/dashboard/productos.js"></script>
-    <script src="../js/dashboard/compras.js"></script>
-    <script src="../js/dashboard/gastos.js"></script>
-    <script src="../js/dashboard/perfiles.js"></script>
-    <script src="../js/dashboard/proveedores.js"></script>
-    <script src="../js/dashboard/ventas.js"></script>
-    <script src="../js/dashboard/stock.js"></script>
+<!-- Primero: Configuración y dependencias -->
+<script src="../js/supabase-config.js"></script>
+<script src="../js/permisos.js"></script>
+
+<!-- Segundo: Utilidades (necesarias para todo) -->
+<script src="../js/dashboard/utils.js"></script>
+
+<!-- Tercero: Main (que contiene verificarSesion) -->
+<script src="../js/dashboard/main.js"></script>
+
+<!-- Cuarto: Módulos específicos (dependen de main.js) -->
+<script src="../js/dashboard/productos.js"></script>
+<script src="../js/dashboard/compras.js"></script>
+<script src="../js/dashboard/gastos.js"></script>
+<script src="../js/dashboard/perfiles.js"></script>
+<script src="../js/dashboard/proveedores.js"></script>
+<script src="../js/dashboard/ventas.js"></script>
+<script src="../js/dashboard/stock.js"></script>
 </body>
 </html>
           
