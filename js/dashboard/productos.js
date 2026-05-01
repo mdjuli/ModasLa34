@@ -1,5 +1,5 @@
 // ============================================
-// PRODUCTOS.JS - Gestión de productos
+// PRODUCTOS.JS - Gestión de producto
 // ============================================
 
 let productosData = [];
