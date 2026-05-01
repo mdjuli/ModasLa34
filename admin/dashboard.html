@@ -8,7 +8,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        /* ============================================
+           ESTILOS PRINCIPALES - MODAS LA 34
+           ============================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         body {
             font-family: 'Inter', sans-serif;
@@ -21,12 +28,13 @@
             font-family: 'Playfair Display', serif;
         }
 
+        /* Scroll personalizado */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #f0ebe4; border-radius: 10px; }
         ::-webkit-scrollbar-thumb { background: #c4a68a; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #b87c4e; }
 
-        /* Header */
+        /* ===== HEADER ===== */
         .header {
             background: white;
             padding: 0.8rem 2rem;
@@ -111,7 +119,7 @@
         }
         .logout-btn:hover { background: #faf5f0; color: #e74c3c; }
 
-        /* Sidebar */
+        /* ===== SIDEBAR ===== */
         .sidebar {
             position: fixed;
             top: 65px;
@@ -161,7 +169,7 @@
         }
         .sidebar-overlay.active { display: block; }
 
-        /* Main Content */
+        /* ===== MAIN CONTENT ===== */
         .main-content {
             margin-top: 65px;
             padding: 2rem;
@@ -171,7 +179,7 @@
             margin-right: auto;
         }
 
-        /* Stats Cards */
+        /* ===== TARJETAS ===== */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -205,8 +213,9 @@
         .stat-title { font-size: 0.75rem; font-weight: 600; color: #b8a38e; text-transform: uppercase; letter-spacing: 0.5px; }
         .stat-icon { font-size: 1.6rem; color: #d4a5a9; }
         .stat-value { font-size: 2rem; font-weight: 700; color: #4a3728; letter-spacing: -0.5px; }
+        .stat-sub { font-size: 0.7rem; color: #b8a38e; margin-top: 0.5rem; }
 
-        /* Filters */
+        /* ===== FILTROS ===== */
         .filters-section {
             background: white;
             border-radius: 20px;
@@ -239,6 +248,7 @@
             outline: none;
             color: #4a3728;
         }
+        .search-box input::placeholder { color: #c4a68a; }
         .filter-group {
             display: flex;
             align-items: center;
@@ -248,6 +258,7 @@
             border-radius: 40px;
             padding: 0.3rem 1rem;
         }
+        .filter-group i { color: #d4a5a9; }
         .filter-group select, .filter-group input {
             border: none;
             background: none;
@@ -269,7 +280,7 @@
         }
         .btn-clear:hover { background: #fef5ef; border-color: #d4a5a9; }
 
-        /* Tables */
+        /* ===== TABLAS ===== */
         .data-card {
             background: white;
             border-radius: 24px;
@@ -321,16 +332,6 @@
         }
         .data-table tr:hover { background: #fefaf5; }
 
-        .sortable-header {
-            cursor: pointer;
-            user-select: none;
-            transition: background 0.2s;
-        }
-        .sortable-header:hover { background: rgba(212,165,169,0.1); }
-        .sortable-header i { margin-left: 0.5rem; font-size: 0.7rem; color: #d4a5a9; opacity: 0.5; }
-        .sortable-header.sort-asc i { opacity: 1; }
-        .sortable-header.sort-desc i { opacity: 1; transform: rotate(180deg); }
-
         .action-btn {
             background: none;
             border: none;
@@ -356,7 +357,7 @@
         .estado-pendiente { background: #fff3e0; color: #ef6c00; }
         .estado-recibida { background: #e3f2fd; color: #1565c0; }
 
-        /* Modales */
+        /* ===== FORMULARIOS MODALES ===== */
         .form-modal {
             display: none;
             position: fixed;
@@ -444,7 +445,7 @@
         }
         .cancel-btn:hover { background: #e8ddd2; }
 
-        /* Variantes */
+        /* ===== VARIANTES ===== */
         .variante-card {
             background: #fefaf5;
             border: 1px solid #f0e4d8;
@@ -484,7 +485,7 @@
         .color-nombre-input { flex: 2; min-width: 120px; padding: 0.5rem; border: 1px solid #f0e4d8; border-radius: 8px; }
         .color-stock-input { width: 80px; padding: 0.5rem; border: 1px solid #f0e4d8; border-radius: 8px; text-align: center; }
 
-        /* Stock */
+        /* ===== STOCK ===== */
         .stock-cards {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -493,6 +494,8 @@
         }
         .stock-critico { color: #e67e22; font-weight: bold; }
         .stock-agotado { color: #e74c3c; font-weight: bold; }
+        .stock-bajo-row { background: #fff8f0; }
+        .stock-agotado-row { background: #fef0f0; }
         .table-container {
             background: white;
             border-radius: 20px;
@@ -502,6 +505,16 @@
         }
         .table-container h3 { margin-bottom: 1rem; color: #4a3728; font-size: 0.95rem; font-weight: 600; }
 
+        /* ===== VENTAS ===== */
+        .ventas-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .cantidad-input { width: 70px; padding: 0.4rem; text-align: center; border: 1.5px solid #f0e4d8; border-radius: 12px; }
+
+        /* ===== ALERTAS ===== */
         .alert {
             padding: 0.8rem 1.2rem;
             border-radius: 16px;
@@ -513,9 +526,10 @@
         .alert.success { background: #e8f5e9; color: #2e7d32; border-left: 4px solid #2e7d32; }
         .alert.error { background: #ffebee; color: #c62828; border-left: 4px solid #c62828; }
 
+        /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
             .main-content { padding: 1rem; }
-            .stats-grid, .stock-cards { grid-template-columns: 1fr; }
+            .stats-grid, .stock-cards, .ventas-cards { grid-template-columns: 1fr; }
             .filters-section { flex-direction: column; align-items: stretch; }
             .search-box, .filter-group { width: 100%; }
             .logo-text { display: none; }
@@ -559,238 +573,264 @@
     <main class="main-content">
         <div id="alertMessage" class="alert"></div>
 
-        <!-- ==================== PRODUCTOS ==================== -->
+        <!-- ==================== MÓDULO PRODUCTOS ==================== -->
         <div id="modulo-productos" class="module-section">
             <div class="stats-grid">
                 <div class="stat-card"><div class="stat-header"><span class="stat-title">Total Productos</span><i class="fas fa-box stat-icon"></i></div><div class="stat-value" id="stats-total-productos">0</div></div>
                 <div class="stat-card"><div class="stat-header"><span class="stat-title">Stock Bajo</span><i class="fas fa-exclamation-triangle stat-icon"></i></div><div class="stat-value" id="stats-stock-bajo">0</div></div>
                 <div class="stat-card" onclick="mostrarFormulario('producto')"><div class="stat-header"><span class="stat-title">Nuevo Producto</span><i class="fas fa-plus-circle stat-icon"></i></div><div class="stat-value">+</div></div>
             </div>
-
             <div class="filters-section">
                 <div class="search-box"><i class="fas fa-search"></i><input type="text" id="search-productos" placeholder="Buscar por nombre, código..."></div>
                 <div class="filter-group"><i class="fas fa-tag"></i><select id="filter-categoria-productos"><option value="">Todas</option><option value="vestidos">👗 Vestidos</option><option value="blusas">👚 Blusas</option><option value="pantalones">👖 Pantalones</option><option value="deportivo">⚽ Deportivo</option><option value="caballero">👔 Caballero</option><option value="accesorios">🎀 Accesorios</option></select></div>
                 <div class="filter-group"><i class="fas fa-chart-line"></i><select id="filter-stock-productos"><option value="">Todos</option><option value="bajo">Stock bajo (&lt;5)</option><option value="agotado">Agotados</option></select></div>
                 <button class="btn-clear" onclick="limpiarFiltrosProductos()"><i class="fas fa-eraser"></i> Limpiar</button>
             </div>
-
             <div class="data-card">
                 <div class="data-header"><h2><i class="fas fa-list"></i> Productos Registrados</h2><button class="add-btn" onclick="mostrarFormulario('producto')">+ Nuevo Producto</button></div>
-                <div class="table-responsive"><table class="data-table" id="tabla-productos"><thead><tr><th>Imagen</th><th>Código</th><th>Nombre</th><th>Categoría</th><th>Tallas</th><th>Stock</th><th>Precio</th><th>Acciones</th></tr></thead><tbody></td></tbody></table></div>
+                <div class="table-responsive"><table class="data-table" id="tabla-productos"><thead><tr><th>Imagen</th><th>Código</th><th>Nombre</th><th>Categoría</th><th>Tallas</th><th>Stock</th><th>Precio</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="8">Cargando...</tr></tbody></table></div>
             </div>
         </div>
 
-        <!-- ==================== FORMULARIO PRODUCTO ==================== -->
-        <div id="form-producto" class="form-modal">
-            <div class="form-modal-content">
-                <div class="form-modal-header"><h3>🌸 Nuevo Producto</h3><span class="close" onclick="cerrarFormulario('producto')">&times;</span></div>
-                <div class="form-modal-body">
-                    <form onsubmit="event.preventDefault(); guardarProductoBase()">
-                        <div class="form-row">
-                            <div class="form-group"><label>Código</label><input type="text" id="producto-codigo" placeholder="Ej: PANT-001" required></div>
-                            <div class="form-group"><label>Categoría</label><select id="producto-categoria" required><option value="">Seleccionar</option><option value="vestidos">Vestidos</option><option value="blusas">Blusas</option><option value="pantalones">Pantalones</option><option value="deportivo">Deportivo</option><option value="caballero">Caballero</option><option value="accesorios">Accesorios</option></select></div>
-                        </div>
-                        <div class="form-group"><label>Nombre del Producto</label><input type="text" id="producto-nombre" placeholder="Ej: Vestido Floral" required></div>
-                        <div class="form-row">
-                            <div class="form-group"><label>💰 Precio de compra</label><input type="number" id="producto-precio-compra" placeholder="0" step="1000"></div>
-                            <div class="form-group"><label>💰 Precio de venta (general)</label><input type="number" id="producto-precio-venta-general" placeholder="0" step="1000"><small style="color:#b8a38e; display:block;">Se aplicará a todas las tallas si no especificas</small></div>
-                        </div>
-                        <div class="form-group"><label>🖼️ URL Imagen</label><input type="url" id="producto-imagen" placeholder="https://..."></div>
-                        
-                        <h4 style="margin: 1rem 0 0.5rem;">📦 Variantes (Tallas y Colores)</h4>
-                        <div id="variantes-container"></div>
-                        <button type="button" class="add-btn" onclick="agregarVariante()" style="margin: 0.5rem 0;">+ Agregar talla</button>
-                        
-                        <button type="submit" class="submit-btn">Guardar Producto</button>
-                        <button type="button" class="cancel-btn" onclick="cerrarFormulario('producto')">Cancelar</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        <!-- ==================== STOCK ==================== -->
+        <!-- ==================== MÓDULO STOCK ==================== -->
         <div id="modulo-stock" class="module-section" style="display: none;">
             <div class="stock-cards">
                 <div class="stat-card"><div class="stat-icon">⚠️</div><div><h3 id="stock-bajo-count">0</h3><p>Stock bajo</p></div></div>
                 <div class="stat-card"><div class="stat-icon">❌</div><div><h3 id="stock-agotado-count">0</h3><p>Agotados</p></div></div>
                 <div class="stat-card"><div class="stat-icon">✅</div><div><h3 id="stock-normal-count">0</h3><p>Stock normal</p></div></div>
             </div>
-            <div class="table-container"><h3>⚠️ Stock bajo (&lt;5 unidades)</h3><table class="data-table" id="tabla-stock-bajo"><thead><tr><th>Producto</th><th>Talla</th><th>Color</th><th>Stock</th><th>Acción</th></tr></thead><tbody id="stock-bajo-body"><tr><td colspan="5">Cargando...</td></tr></tbody><table></div>
-            <div class="table-container"><h3>❌ Productos agotados</h3><table class="data-table" id="tabla-stock-agotado"><thead><tr><th>Producto</th><th>Talla</th><th>Color</th><th>Estado</th><th>Acción</th></tr></thead><tbody id="stock-agotado-body"><tr><td colspan="5">Cargando...</td></tr></tbody></table></div>
+            <div class="table-container"><h3>⚠️ Stock bajo (&lt;5 unidades)</h3><table class="data-table" id="tabla-stock-bajo"><thead><tr><th>Producto</th><th>Talla</th><th>Color</th><th>Stock</th><th>Acción</th></tr></thead><tbody id="stock-bajo-body"><tr><td colspan="5">Cargando...</tr></tbody></table></div>
+            <div class="table-container"><h3>❌ Productos agotados</h3><table class="data-table" id="tabla-stock-agotado"><thead><tr><th>Producto</th><th>Talla</th><th>Color</th><th>Estado</th><th>Acción</th></tr></thead><tbody id="stock-agotado-body"><tr><td colspan="5">Cargando...</tr></tbody></table></div>
         </div>
 
-        <!-- ==================== COMPRAS ==================== -->
+        <!-- ==================== MÓDULO COMPRAS ==================== -->
         <div id="modulo-compras" class="module-section" style="display: none;">
-            <div class="stats-grid"><div class="stat-card"><div class="stat-header"><span class="stat-title">Compras del Mes</span><i class="fas fa-calendar stat-icon"></i></div><div class="stat-value" id="stats-compras-mes">$0</div></div><div class="stat-card"><div class="stat-header"><span class="stat-title">Pendientes</span><i class="fas fa-clock stat-icon"></i></div><div class="stat-value" id="stats-compras-pendientes">0</div></div></div>
-            <div class="data-card"><div class="data-header"><h2>Historial de Compras</h2><button class="add-btn" onclick="mostrarFormulario('compra')">+ Nueva Compra</button></div><div class="table-responsive"><table class="data-table" id="tabla-compras"><thead><tr><th>Fecha</th><th>Proveedor</th><th>Producto</th><th>Total</th><th>Estado</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="6">Cargando...</td></tr></tbody></table></div></div>
+            <div class="stats-grid">
+                <div class="stat-card"><div class="stat-header"><span class="stat-title">Compras del Mes</span><i class="fas fa-calendar stat-icon"></i></div><div class="stat-value" id="stats-compras-mes">$0</div></div>
+                <div class="stat-card"><div class="stat-header"><span class="stat-title">Pendientes</span><i class="fas fa-clock stat-icon"></i></div><div class="stat-value" id="stats-compras-pendientes">0</div></div>
+            </div>
+            <div class="filters-section">
+                <div class="search-box"><i class="fas fa-search"></i><input type="text" id="search-compras" placeholder="Buscar por proveedor o producto..."></div>
+                <div class="filter-group"><i class="fas fa-calendar"></i><input type="date" id="filter-compra-fecha-inicio"></div>
+                <div class="filter-group"><i class="fas fa-calendar"></i><input type="date" id="filter-compra-fecha-fin"></div>
+                <div class="filter-group"><i class="fas fa-chart-simple"></i><select id="filter-compra-estado"><option value="">Todos</option><option value="Pendiente">Pendiente</option><option value="Recibida">Recibida</option><option value="Pagada">Pagada</option></select></div>
+                <button class="btn-clear" onclick="limpiarFiltrosCompras()"><i class="fas fa-eraser"></i> Limpiar</button>
+            </div>
+            <div class="data-card"><div class="data-header"><h2>Historial de Compras</h2><button class="add-btn" onclick="mostrarFormulario('compra')">+ Nueva Compra</button></div><div class="table-responsive"><table class="data-table" id="tabla-compras"><thead><tr><th>Fecha</th><th>Proveedor</th><th>Producto</th><th>Cantidad</th><th>Total</th><th>Estado</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="7">Cargando...</tr></tbody></table></div></div>
         </div>
 
-        <div id="form-compra" class="form-modal"><div class="form-modal-content"><div class="form-modal-header"><h3>🛍️ Nueva Compra</h3><span class="close" onclick="cerrarFormulario('compra')">&times;</span></div><div class="form-modal-body"><form onsubmit="event.preventDefault(); guardarCompra()"><div class="form-group"><label>Proveedor</label><select id="compra-proveedor" required></select></div><div class="form-group"><label>Fecha</label><input type="date" id="compra-fecha" required></div><div class="form-group"><label>Producto</label><input type="text" id="compra-producto" required></div><div class="form-row"><div class="form-group"><label>Cantidad</label><input type="number" id="compra-cantidad" min="1" required></div><div class="form-group"><label>Precio unitario</label><input type="number" id="compra-precio" min="0" required></div></div><div class="form-group"><label>Estado</label><select id="compra-estado"><option value="Pendiente">Pendiente</option><option value="Recibida">Recibida</option><option value="Pagada">Pagada</option></select></div>
-                        <button type="submit" class="submit-btn">Guardar Compra</button>
-                        <button type="button" class="cancel-btn" onclick="cerrarFormulario('compra')">Cancelar</button>
-                    </form></div></div></div>
-                </div>
+        <!-- ==================== MÓDULO GASTOS ==================== -->
+        <div id="modulo-gastos" class="module-section" style="display: none;">
+            <div class="stats-grid"><div class="stat-card"><div class="stat-header"><span class="stat-title">Gastos del Mes</span><i class="fas fa-coins stat-icon"></i></div><div class="stat-value" id="stats-gastos-mes">$0</div></div></div>
+            <div class="filters-section">
+                <div class="search-box"><i class="fas fa-search"></i><input type="text" id="search-gastos" placeholder="Buscar por concepto..."></div>
+                <div class="filter-group"><i class="fas fa-calendar"></i><input type="date" id="filter-gasto-fecha-inicio"></div>
+                <div class="filter-group"><i class="fas fa-calendar"></i><input type="date" id="filter-gasto-fecha-fin"></div>
+                <div class="filter-group"><i class="fas fa-tag"></i><select id="filter-gasto-categoria"><option value="">Todas</option><option value="Alquiler">Alquiler</option><option value="Servicios">Servicios</option><option value="Sueldos">Sueldos</option><option value="Marketing">Marketing</option><option value="Otros">Otros</option></select></div>
+                <button class="btn-clear" onclick="limpiarFiltrosGastos()"><i class="fas fa-eraser"></i> Limpiar</button>
+            </div>
+            <div class="data-card"><div class="data-header"><h2>Historial de Gastos</h2><button class="add-btn" onclick="mostrarFormulario('gasto')">+ Nuevo Gasto</button></div><div class="table-responsive"><table class="data-table" id="tabla-gastos"><thead><tr><th>Fecha</th><th>Concepto</th><th>Categoría</th><th>Monto</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="5">Cargando...</tr></tbody></table></div>
 
-                            <!-- ==================== GASTOS ==================== -->
-                <div id="modulo-gastos" class="module-section" style="display: none;">
-                    <div class="stats-grid"><div class="stat-card"><div class="stat-header"><span class="stat-title">Gastos del Mes</span><i class="fas fa-coins stat-icon"></i></div><div class="stat-value" id="stats-gastos-mes">$0</div></div></div>
-                    <div class="data-card"><div class="data-header"><h2>Historial de Gastos</h2><button class="add-btn" onclick="mostrarFormulario('gasto')">+ Nuevo Gasto</button></div><div class="table-responsive"><table class="data-table" id="tabla-gastos"><thead><tr><th>Fecha</th><th>Concepto</th><th>Categoría</th><th>Monto</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="5">Cargando...</td></tr></tbody></table></div></div>
-                </div>
-
-                <div id="form-gasto" class="form-modal"><div class="form-modal-content"><div class="form-modal-header"><h3>💸 Nuevo Gasto</h3><span class="close" onclick="cerrarFormulario('gasto')">&times;</span></div><div class="form-modal-body"><form onsubmit="event.preventDefault(); guardarGasto()"><div class="form-group"><label>Fecha</label><input type="date" id="gasto-fecha" required></div><div class="form-group"><label>Concepto</label><input type="text" id="gasto-concepto" required></div><div class="form-group"><label>Categoría</label><select id="gasto-categoria"><option value="Alquiler">Alquiler</option><option value="Servicios">Servicios</option><option value="Sueldos">Sueldos</option><option value="Marketing">Marketing</option><option value="Otros">Otros</option></select></div><div class="form-group"><label>Monto</label><input type="number" id="gasto-monto" min="0" required></div><div class="form-group"><label>Método</label><select id="gasto-metodo"><option value="Efectivo">Efectivo</option><option value="Transferencia">Transferencia</option><option value="Tarjeta">Tarjeta</option></select></div><button type="submit" class="submit-btn">Guardar Gasto</button><button type="button" class="cancel-btn" onclick="cerrarFormulario('gasto')">Cancelar</button></form></div></div></div>
-
-                <!-- ==================== PERFILES ==================== -->
-                <div id="modulo-perfiles" class="module-section" style="display: none;">
-                    <div class="data-card"><div class="data-header"><h2>Usuarios del Sistema</h2><button class="add-btn" onclick="mostrarFormulario('perfil')">+ Nuevo Usuario</button></div><div class="table-responsive"><table class="data-table" id="tabla-perfiles"><thead><tr><th>Nombre</th><th>Email</th><th>Rol</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="4">Cargando...</td></tr></tbody></table></div></div>
-                </div>
-
-                <div id="form-perfil" class="form-modal"><div class="form-modal-content"><div class="form-modal-header"><h3>👥 Nuevo Usuario</h3><span class="close" onclick="cerrarFormulario('perfil')">&times;</span></div><div class="form-modal-body"><form onsubmit="event.preventDefault(); guardarPerfil()"><div class="form-group"><label>Nombre</label><input type="text" id="perfil-nombre" required></div><div class="form-group"><label>Email</label><input type="email" id="perfil-email" required></div><div class="form-group"><label>Contraseña</label><input type="password" id="perfil-password" minlength="6" required></div><div class="form-group"><label>Rol</label><select id="perfil-rol"><option value="empleado">Empleado</option><option value="admin">Administrador</option></select></div><button type="submit" class="submit-btn">Crear Usuario</button><button type="button" class="cancel-btn" onclick="cerrarFormulario('perfil')">Cancelar</button></form></div></div></div>
-
-                <!-- ==================== PROVEEDORES ==================== -->
-                <div id="modulo-proveedores" class="module-section" style="display: none;">
-                    <div class="data-card"><div class="data-header"><h2>Proveedores</h2><button class="add-btn" onclick="mostrarFormulario('proveedor')">+ Nuevo Proveedor</button></div><div class="table-responsive"><table class="data-table" id="tabla-proveedores"><thead><tr><th>Nombre</th><th>Contacto</th><th>Teléfono</th><th>Email</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="5">Cargando...</td></tr></tbody></table></div></div>
-                </div>
-
-                <div id="form-proveedor" class="form-modal"><div class="form-modal-content"><div class="form-modal-header"><h3>📦 Nuevo Proveedor</h3><span class="close" onclick="cerrarFormulario('proveedor')">&times;</span></div><div class="form-modal-body"><form onsubmit="event.preventDefault(); guardarProveedor()"><div class="form-group"><label>Nombre</label><input type="text" id="proveedor-nombre" required></div><div class="form-group"><label>Contacto</label><input type="text" id="proveedor-contacto"></div><div class="form-row"><div class="form-group"><label>Teléfono</label><input type="tel" id="proveedor-telefono"></div><div class="form-group"><label>Email</label><input type="email" id="proveedor-email"></div></div><div class="form-group"><label>Dirección</label><textarea id="proveedor-direccion" rows="2"></textarea></div><button type="submit" class="submit-btn">Guardar Proveedor</button><button type="button" class="cancel-btn" onclick="cerrarFormulario('proveedor')">Cancelar</button></form></div></div></div>
-
-                <!-- ==================== VENTAS (LISTADO) ==================== -->
-                <div id="modulo-ventas" class="module-section" style="display: none;">
-                    <div class="stats-grid">
-                        <div class="stat-card" onclick="window.open('ventas.html', '_blank')"><div class="stat-header"><span class="stat-title">Punto de Venta</span><i class="fas fa-cash-register stat-icon"></i></div><div class="stat-value">🛒</div><div class="stat-sub">Ir a ventas</div></div>
-                        <div class="stat-card"><div class="stat-header"><span class="stat-title">Ventas Hoy</span><i class="fas fa-chart-line stat-icon"></i></div><div class="stat-value" id="ventas-hoy-total">$0</div></div>
-                        <div class="stat-card"><div class="stat-header"><span class="stat-title">Ventas Mes</span><i class="fas fa-calendar stat-icon"></i></div><div class="stat-value" id="ventas-mes-total">$0</div></div>
-                        <div class="stat-card"><div class="stat-header"><span class="stat-title">Cambios/Dev.</span><i class="fas fa-exchange-alt stat-icon"></i></div><div class="stat-value" id="ventas-cambios-count">0</div></div>
-                    </div>
-                    <div class="filters-section">
-                        <div class="search-box"><i class="fas fa-search"></i><input type="text" id="search-ventas" placeholder="Buscar por ID, cliente..."></div>
-                        <div class="filter-group"><i class="fas fa-calendar"></i><input type="date" id="filter-fecha-inicio"></div>
-                        <div class="filter-group"><i class="fas fa-calendar"></i><input type="date" id="filter-fecha-fin"></div>
-                        <div class="filter-group"><i class="fas fa-chart-simple"></i><select id="filter-estado-ventas"><option value="">Todos</option><option value="completada">Completada</option><option value="pendiente">Pendiente</option><option value="cambiado">Cambio</option><option value="devuelto">Devuelto</option></select></div>
-                        <button class="btn-clear" onclick="limpiarFiltrosVentas()"><i class="fas fa-eraser"></i> Limpiar</button>
-                    </div>
-                    <div class="data-card">
-                        <div class="data-header"><h2><i class="fas fa-list"></i> Historial de Ventas</h2><button class="add-btn" onclick="window.open('ventas.html', '_blank')">➕ Nueva Venta</button></div>
-                        <div class="table-responsive"><table class="data-table" id="tabla-ventas"><thead><tr><th>ID</th><th>Fecha</th><th>Cliente</th><th>Productos</th><th>Total</th><th>Método</th><th>Estado</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="8">Cargando...</td></tr></tbody></table></div>
-                    </div>
-                </div>
-
-                <!-- ==================== CONTABILIDAD ==================== -->
-                <div id="modulo-contabilidad" class="module-section" style="display: none;">
-                    <div class="stats-grid">
-                        <div class="stat-card"><div class="stat-header"><span class="stat-title">Ingresos</span><i class="fas fa-arrow-up stat-icon"></i></div><div class="stat-value" id="stats-ingresos">$0</div></div>
-                        <div class="stat-card"><div class="stat-header"><span class="stat-title">Egresos</span><i class="fas fa-arrow-down stat-icon"></i></div><div class="stat-value" id="stats-egresos">$0</div></div>
-                        <div class="stat-card" onclick="window.open('contabilidad.html', '_blank')"><div class="stat-header"><span class="stat-title">Reportes</span><i class="fas fa-chart-pie stat-icon"></i></div><div class="stat-value">📊</div></div>
-                    </div>
-                </div>
+                  <!-- ==================== MÓDULO PERFILES ==================== -->
+        <div id="modulo-perfiles" class="module-section" style="display: none;">
+            <div class="stats-grid">
+                <div class="stat-card"><div class="stat-header"><span class="stat-title">Empleados</span><i class="fas fa-users stat-icon"></i></div><div class="stat-value" id="stats-empleados">0</div></div>
+                <div class="stat-card" onclick="mostrarFormulario('perfil')"><div class="stat-header"><span class="stat-title">Nuevo Usuario</span><i class="fas fa-user-plus stat-icon"></i></div><div class="stat-value">+</div></div>
+            </div>
+            <div class="data-card">
+                <div class="data-header"><h2><i class="fas fa-users"></i> Usuarios del Sistema</h2><button class="add-btn" onclick="mostrarFormulario('perfil')">+ Nuevo Usuario</button></div>
+                <div class="table-responsive"><table class="data-table" id="tabla-perfiles"><thead></tr><th>Nombre</th><th>Email</th><th>Rol</th><th>Fecha</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="5">Cargando...</tr></tbody></table></div>
             </div>
         </div>
 
-        <!-- ==================== MODAL EDITAR VENTA ==================== -->
-        <div id="modal-editar-venta" class="form-modal"><div class="form-modal-content"><div class="form-modal-header"><h3>✏️ Editar Venta</h3><span class="close" onclick="cerrarModalEditarVenta()">&times;</span></div><div class="form-modal-body"><form id="editar-venta-form" onsubmit="event.preventDefault(); actualizarVenta();"><input type="hidden" id="editar-venta-id"><div class="form-row"><div class="form-group"><label>📅 Fecha</label><input type="date" id="editar-venta-fecha" required></div><div class="form-group"><label>👤 Cliente</label><input type="text" id="editar-venta-cliente"></div><div class="form-group"><label>💵 Método de pago</label><select id="editar-venta-metodo" required><option value="Efectivo">Efectivo</option><option value="Tarjeta Débito">Tarjeta Débito</option><option value="Tarjeta Crédito">Tarjeta Crédito</option><option value="Transferencia">Transferencia</option></select></div></div><div class="form-group"><label>📝 Notas</label><textarea id="editar-venta-notas" rows="2" placeholder="Motivo del cambio..."></textarea></div><div class="form-group"><label>🔄 Estado</label><select id="editar-venta-estado"><option value="completada">Completada</option><option value="pendiente">Pendiente</option><option value="cambiado">Cambio solicitado</option><option value="devuelto">Devuelto</option></select></div><div class="form-actions" style="display:flex;gap:1rem;justify-content:flex-end;margin-top:1rem"><button type="submit" class="submit-btn" style="width:auto;padding:0.6rem 1.2rem">💾 Guardar</button><button type="button" class="btn-danger" onclick="eliminarVenta()" style="background:#e74c3c;color:white;border:none;padding:0.6rem 1.2rem;border-radius:30px;cursor:pointer">🗑️ Eliminar</button><button type="button" class="cancel-btn" onclick="cerrarModalEditarVenta()" style="width:auto;margin-top:0">Cancelar</button></div></form></div></div></div>
-
-        <script src="../js/supabase-config.js"></script>
-        <script src="../js/permisos.js"></script>
-        <script src="dashboard.js"></script>
-                
-        <!-- MODAL DE CONFIGURACIÓN DE ETIQUETAS -->
-        <div id="modal-config-etiquetas" class="form-modal" style="display: none;">
-            <div class="form-modal-content" style="max-width: 900px;">
-                <div class="form-modal-header">
-                    <h3><i class="fas fa-print"></i> Configurar impresión de etiquetas</h3>
-                    <span class="close" onclick="cerrarConfigEtiquetas()">&times;</span>
-                </div>
-                <div class="form-modal-body">
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
-                        <!-- Panel de controles -->
-                        <div style="background: #fefaf5; padding: 1rem; border-radius: 16px;">
-                            <h4 style="margin-bottom: 1rem; color: #4a3728;">⚙️ Configuración</h4>
-                            
-                            <div class="form-group">
-                                <label>📐 Columnas por hoja</label>
-                                <input type="range" id="config-columnas" min="1" max="5" value="3" step="1" style="width: 100%;">
-                                <div style="display: flex; justify-content: space-between;">
-                                    <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
-                                </div>
-                                <span id="valor-columnas" style="color: #d4a5a9; font-weight: bold;">3 columnas</span>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label>📏 Filas por hoja</label>
-                                <input type="range" id="config-filas" min="2" max="8" value="4" step="1" style="width: 100%;">
-                                <div style="display: flex; justify-content: space-between;">
-                                    <span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span>
-                                </div>
-                                <span id="valor-filas" style="color: #d4a5a9; font-weight: bold;">4 filas</span>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label>📏 Tamaño de etiqueta</label>
-                                <select id="config-tamaño" style="width: 100%; padding: 0.5rem; border-radius: 8px; border: 1px solid #f0e4d8;">
-                                    <option value="pequeño">Pequeño (4x3 cm)</option>
-                                    <option value="mediano" selected>Mediano (6x4 cm)</option>
-                                    <option value="grande">Grande (8x5 cm)</option>
-                                    <option value="personalizado">Personalizado</option>
-                                </select>
-                            </div>
-                            
-                            <div id="config-personalizado" style="display: none;">
-                                <div class="form-group">
-                                    <label>Ancho (cm)</label>
-                                    <input type="number" id="config-ancho" value="6" step="0.5" min="3" max="10" style="width: 100%;">
-                                </div>
-                                <div class="form-group">
-                                    <label>Alto (cm)</label>
-                                    <input type="number" id="config-alto" value="4" step="0.5" min="2" max="8" style="width: 100%;">
-                                </div>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label>🖨️ Márgenes (mm)</label>
-                                <input type="range" id="config-margen" min="5" max="20" value="10" step="1" style="width: 100%;">
-                                <span id="valor-margen" style="color: #d4a5a9;">10 mm</span>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label>🎨 Mostrar códigos de barras</label>
-                                <select id="config-mostrar-barcode" style="width: 100%; padding: 0.5rem; border-radius: 8px; border: 1px solid #f0e4d8;">
-                                    <option value="si">Sí, mostrar código</option>
-                                    <option value="no">No, solo texto</option>
-                                </select>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label>📦 Repetir etiquetas para llenar hoja</label>
-                                <select id="config-repetir" style="width: 100%; padding: 0.5rem; border-radius: 8px; border: 1px solid #f0e4d8;">
-                                    <option value="si">Sí, llenar hoja completa</option>
-                                    <option value="no">No, solo las necesarias</option>
-                                </select>
-                            </div>
-                            
-                            <button class="add-btn" onclick="actualizarVistaPrevia()" style="width: 100%; margin-top: 1rem;">
-                                <i class="fas fa-sync-alt"></i> Actualizar vista previa
-                            </button>
-                        </div>
-                        
-                        <!-- Vista previa -->
-                        <div>
-                            <h4 style="margin-bottom: 1rem; color: #4a3728;">👁️ Vista previa</h4>
-                            <div id="vista-previa-etiquetas" style="background: white; border: 2px solid #f0e4d8; border-radius: 12px; padding: 1rem; min-height: 400px; overflow: auto;">
-                                <div style="text-align: center; padding: 2rem; color: #aaa;">
-                                    Selecciona un producto y haz clic en el botón 🏷️
-                                </div>
-                            </div>
-                            <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
-                                <button class="btn-primary" onclick="imprimirEtiquetasConfig()" style="flex: 1; background: #b87c4e; color: white; border: none; padding: 0.7rem; border-radius: 30px; cursor: pointer;">
-                                    <i class="fas fa-print"></i> Imprimir
-                                </button>
-                                <button class="btn-secondary" onclick="cerrarConfigEtiquetas()" style="flex: 1; background: #f5ede8; border: none; padding: 0.7rem; border-radius: 30px; cursor: pointer;">
-                                    Cancelar
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <!-- ==================== MÓDULO PROVEEDORES ==================== -->
+        <div id="modulo-proveedores" class="module-section" style="display: none;">
+            <div class="stats-grid">
+                <div class="stat-card"><div class="stat-header"><span class="stat-title">Proveedores</span><i class="fas fa-truck stat-icon"></i></div><div class="stat-value" id="stats-proveedores">0</div></div>
+                <div class="stat-card" onclick="mostrarFormulario('proveedor')"><div class="stat-header"><span class="stat-title">Nuevo Proveedor</span><i class="fas fa-plus-circle stat-icon"></i></div><div class="stat-value">+</div></div>
+            </div>
+            <div class="data-card">
+                <div class="data-header"><h2><i class="fas fa-truck"></i> Proveedores</h2><button class="add-btn" onclick="mostrarFormulario('proveedor')">+ Nuevo Proveedor</button></div>
+                <div class="table-responsive"><table class="data-table" id="tabla-proveedores"><thead></tr><th>Nombre</th><th>Contacto</th><th>Teléfono</th><th>Email</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="5">Cargando...</td></tbody></table></div>
             </div>
         </div>
-    </body>
-    </html>
+
+        <!-- ==================== MÓDULO VENTAS ==================== -->
+        <div id="modulo-ventas" class="module-section" style="display: none;">
+            <div class="ventas-cards">
+                <div class="stat-card" onclick="window.open('ventas.html', '_blank')"><div class="stat-icon">🛒</div><div class="stat-info"><h3>Punto de Venta</h3><p>Ir a ventas</p></div></div>
+                <div class="stat-card"><div class="stat-icon">💰</div><div class="stat-info"><h3 id="ventas-hoy-total">$0</h3><p>Ventas hoy</p></div></div>
+                <div class="stat-card"><div class="stat-icon">📊</div><div class="stat-info"><h3 id="ventas-mes-total">$0</h3><p>Ventas mes</p></div></div>
+                <div class="stat-card"><div class="stat-icon">🔄</div><div class="stat-info"><h3 id="ventas-cambios-count">0</h3><p>Cambios/Dev.</p></div></div>
+            </div>
+            <div class="filters-section">
+                <div class="search-box"><i class="fas fa-search"></i><input type="text" id="search-ventas" placeholder="Buscar por ID, cliente..."></div>
+                <div class="filter-group"><i class="fas fa-calendar"></i><input type="date" id="filter-fecha-inicio"></div>
+                <div class="filter-group"><i class="fas fa-calendar"></i><input type="date" id="filter-fecha-fin"></div>
+                <div class="filter-group"><i class="fas fa-chart-simple"></i><select id="filter-estado-ventas"><option value="">Todos</option><option value="completada">Completada</option><option value="pendiente">Pendiente</option><option value="cambiado">Cambio</option><option value="devuelto">Devuelto</option></select></div>
+                <div class="filter-group"><i class="fas fa-money-bill"></i><select id="filter-metodo-ventas"><option value="">Todos</option><option value="Efectivo">Efectivo</option><option value="Tarjeta">Tarjeta</option><option value="Transferencia">Transferencia</option><option value="QR">QR</option></select></div>
+                <button class="btn-clear" onclick="limpiarFiltrosVentas()"><i class="fas fa-eraser"></i> Limpiar</button>
+            </div>
+            <div class="data-card">
+                <div class="data-header"><h2><i class="fas fa-list"></i> Historial de Ventas</h2><button class="add-btn" onclick="window.open('ventas.html', '_blank')">➕ Nueva Venta</button></div>
+                <div class="table-responsive"><table class="data-table" id="tabla-ventas"><thead><tr><th>ID</th><th>Fecha</th><th>Cliente</th><th>Productos</th><th>Total</th><th>Método</th><th>Estado</th><th>Acciones</th></tr></thead><tbody id="ventas-body"><tr><td colspan="8">Cargando...</td></tbody></table></div>
+            </div>
+        </div>
+
+        <!-- ==================== MÓDULO CONTABILIDAD ==================== -->
+        <div id="modulo-contabilidad" class="module-section" style="display: none;">
+            <div class="stats-grid">
+                <div class="stat-card"><div class="stat-header"><span class="stat-title">Ingresos</span><i class="fas fa-arrow-up stat-icon"></i></div><div class="stat-value" id="stats-ingresos">$0</div></div>
+                <div class="stat-card"><div class="stat-header"><span class="stat-title">Egresos</span><i class="fas fa-arrow-down stat-icon"></i></div><div class="stat-value" id="stats-egresos">$0</div></div>
+                <div class="stat-card" onclick="window.open('contabilidad.html', '_blank')"><div class="stat-header"><span class="stat-title">Reportes</span><i class="fas fa-chart-pie stat-icon"></i></div><div class="stat-value">📊</div></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ==================== MODALES ==================== -->
+
+    <!-- Modal Producto -->
+    <div id="form-producto" class="form-modal">
+        <div class="form-modal-content">
+            <div class="form-modal-header"><h3>🌸 Nuevo Producto</h3><span class="close" onclick="cerrarFormulario('producto')">&times;</span></div>
+            <div class="form-modal-body">
+                <form onsubmit="event.preventDefault(); guardarProductoBase()">
+                    <div class="form-row">
+                        <div class="form-group"><label>Código</label><input type="text" id="producto-codigo" placeholder="Ej: PANT-001" required></div>
+                        <div class="form-group"><label>Categoría</label><select id="producto-categoria" required><option value="">Seleccionar</option><option value="vestidos">Vestidos</option><option value="blusas">Blusas</option><option value="pantalones">Pantalones</option><option value="deportivo">Deportivo</option><option value="caballero">Caballero</option><option value="accesorios">Accesorios</option></select></div>
+                    </div>
+                    <div class="form-group"><label>Nombre del Producto</label><input type="text" id="producto-nombre" placeholder="Ej: Vestido Floral" required></div>
+                    <div class="form-row">
+                        <div class="form-group"><label>💰 Precio de compra</label><input type="number" id="producto-precio-compra" placeholder="0" step="1000"></div>
+                        <div class="form-group"><label>💰 Precio de venta (general)</label><input type="number" id="producto-precio-venta-general" placeholder="0" step="1000"></div>
+                    </div>
+                    <div class="form-group"><label>🖼️ URL Imagen</label><input type="url" id="producto-imagen" placeholder="https://..."></div>
+                    
+                    <h4 style="margin: 1rem 0 0.5rem;">📦 Variantes</h4>
+                    <div id="variantes-container"></div>
+                    <button type="button" class="add-btn" onclick="agregarVariante()" style="margin: 0.5rem 0;">+ Agregar talla</button>
+                    
+                    <button type="submit" class="submit-btn">Guardar Producto</button>
+                    <button type="button" class="cancel-btn" onclick="cerrarFormulario('producto')">Cancelar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Compra -->
+    <div id="form-compra" class="form-modal">
+        <div class="form-modal-content">
+            <div class="form-modal-header"><h3>🛍️ Nueva Compra</h3><span class="close" onclick="cerrarFormulario('compra')">&times;</span></div>
+            <div class="form-modal-body">
+                <form onsubmit="event.preventDefault(); guardarCompra()">
+                    <div class="form-group"><label>Proveedor</label><select id="compra-proveedor" required><option value="">Seleccionar</option></select></div>
+                    <div class="form-group"><label>Fecha</label><input type="date" id="compra-fecha" required></div>
+                    <div class="form-group"><label>Producto</label><input type="text" id="compra-producto" required></div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Cantidad</label><input type="number" id="compra-cantidad" min="1" required></div>
+                        <div class="form-group"><label>Precio unitario</label><input type="number" id="compra-precio" min="0" required></div>
+                    </div>
+                    <div class="form-group"><label>Estado</label><select id="compra-estado"><option value="Pendiente">Pendiente</option><option value="Recibida">Recibida</option><option value="Pagada">Pagada</option></select></div>
+                    <button type="submit" class="submit-btn">Guardar Compra</button>
+                    <button type="button" class="cancel-btn" onclick="cerrarFormulario('compra')">Cancelar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Gasto -->
+    <div id="form-gasto" class="form-modal">
+        <div class="form-modal-content">
+            <div class="form-modal-header"><h3>💸 Nuevo Gasto</h3><span class="close" onclick="cerrarFormulario('gasto')">&times;</span></div>
+            <div class="form-modal-body">
+                <form onsubmit="event.preventDefault(); guardarGasto()">
+                    <div class="form-group"><label>Fecha</label><input type="date" id="gasto-fecha" required></div>
+                    <div class="form-group"><label>Concepto</label><input type="text" id="gasto-concepto" required></div>
+                    <div class="form-group"><label>Categoría</label><select id="gasto-categoria"><option value="Alquiler">Alquiler</option><option value="Servicios">Servicios</option><option value="Sueldos">Sueldos</option><option value="Marketing">Marketing</option><option value="Otros">Otros</option></select></div>
+                    <div class="form-group"><label>Monto</label><input type="number" id="gasto-monto" min="0" required></div>
+                    <div class="form-group"><label>Método</label><select id="gasto-metodo"><option value="Efectivo">Efectivo</option><option value="Transferencia">Transferencia</option><option value="Tarjeta">Tarjeta</option></select></div>
+                    <button type="submit" class="submit-btn">Guardar Gasto</button>
+                    <button type="button" class="cancel-btn" onclick="cerrarFormulario('gasto')">Cancelar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Perfil -->
+    <div id="form-perfil" class="form-modal">
+        <div class="form-modal-content">
+            <div class="form-modal-header"><h3>👥 Nuevo Usuario</h3><span class="close" onclick="cerrarFormulario('perfil')">&times;</span></div>
+            <div class="form-modal-body">
+                <form onsubmit="event.preventDefault(); guardarPerfil()">
+                    <div class="form-group"><label>Nombre</label><input type="text" id="perfil-nombre" required></div>
+                    <div class="form-group"><label>Email</label><input type="email" id="perfil-email" required></div>
+                    <div class="form-group"><label>Contraseña</label><input type="password" id="perfil-password" minlength="6" required></div>
+                    <div class="form-group"><label>Rol</label><select id="perfil-rol"><option value="empleado">Empleado</option><option value="admin">Administrador</option></select></div>
+                    <button type="submit" class="submit-btn">Crear Usuario</button>
+                    <button type="button" class="cancel-btn" onclick="cerrarFormulario('perfil')">Cancelar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Proveedor -->
+    <div id="form-proveedor" class="form-modal">
+        <div class="form-modal-content">
+            <div class="form-modal-header"><h3>📦 Nuevo Proveedor</h3><span class="close" onclick="cerrarFormulario('proveedor')">&times;</span></div>
+            <div class="form-modal-body">
+                <form onsubmit="event.preventDefault(); guardarProveedor()">
+                    <div class="form-group"><label>Nombre</label><input type="text" id="proveedor-nombre" required></div>
+                    <div class="form-group"><label>Contacto</label><input type="text" id="proveedor-contacto"></div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Teléfono</label><input type="tel" id="proveedor-telefono"></div>
+                        <div class="form-group"><label>Email</label><input type="email" id="proveedor-email"></div>
+                    </div>
+                    <div class="form-group"><label>Dirección</label><textarea id="proveedor-direccion" rows="2"></textarea></div>
+                    <button type="submit" class="submit-btn">Guardar Proveedor</button>
+                    <button type="button" class="cancel-btn" onclick="cerrarFormulario('proveedor')">Cancelar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Editar Venta -->
+    <div id="modal-editar-venta" class="form-modal">
+        <div class="form-modal-content">
+            <div class="form-modal-header"><h3>✏️ Editar Venta</h3><span class="close" onclick="cerrarModalEditarVenta()">&times;</span></div>
+            <div class="form-modal-body">
+                <form id="editar-venta-form" onsubmit="event.preventDefault(); actualizarVenta();">
+                    <input type="hidden" id="editar-venta-id">
+                    <div class="form-row">
+                        <div class="form-group"><label>📅 Fecha</label><input type="date" id="editar-venta-fecha" required></div>
+                        <div class="form-group"><label>👤 Cliente</label><input type="text" id="editar-venta-cliente"></div>
+                        <div class="form-group"><label>💵 Método de pago</label><select id="editar-venta-metodo" required><option value="Efectivo">Efectivo</option><option value="Tarjeta">Tarjeta</option><option value="Transferencia">Transferencia</option></select></div>
+                    </div>
+                    <div class="form-group"><label>📝 Notas</label><textarea id="editar-venta-notas" rows="2" placeholder="Motivo del cambio..."></textarea></div>
+                    <div class="form-group"><label>🔄 Estado</label><select id="editar-venta-estado"><option value="completada">Completada</option><option value="pendiente">Pendiente</option><option value="cambiado">Cambio solicitado</option><option value="devuelto">Devuelto</option></select></div>
+                    <div class="form-actions" style="display:flex;gap:1rem;justify-content:flex-end;margin-top:1rem">
+                        <button type="submit" class="submit-btn" style="width:auto;padding:0.6rem 1.2rem">💾 Guardar</button>
+                        <button type="button" class="btn-danger" onclick="eliminarVenta()" style="background:#e74c3c;color:white;border:none;padding:0.6rem 1.2rem;border-radius:30px;cursor:pointer">🗑️ Eliminar</button>
+                        <button type="button" class="cancel-btn" onclick="cerrarModalEditarVenta()" style="width:auto;margin-top:0">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== SCRIPTS ==================== -->
+    <script src="../js/supabase-config.js"></script>
+    <script src="../js/permisos.js"></script>
+    
+    <!-- Módulos del dashboard -->
+    <script src="../js/dashboard/utils.js"></script>
+    <script src="../js/dashboard/main.js"></script>
+    <script src="../js/dashboard/productos.js"></script>
+    <script src="../js/dashboard/compras.js"></script>
+    <script src="../js/dashboard/gastos.js"></script>
+    <script src="../js/dashboard/perfiles.js"></script>
+    <script src="../js/dashboard/proveedores.js"></script>
+    <script src="../js/dashboard/ventas.js"></script>
+    <script src="../js/dashboard/stock.js"></script>
+</body>
+</html>
+          
