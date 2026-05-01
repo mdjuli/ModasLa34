@@ -1,5 +1,5 @@
 // ============================================
-// COMPRAS.JS - Gestión de compra
+// COMPRAS.JS - Gestión de compras
 // ============================================
 
 async function cargarCompras() {
