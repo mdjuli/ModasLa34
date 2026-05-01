@@ -1,5 +1,5 @@
 // ============================================
-// UTILS.JS - Utilidades comunes
+// UTILS.JS - Utilidades comune
 // ============================================
 
 function mostrarFormulario(tipo) {
