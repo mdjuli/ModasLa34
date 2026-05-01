@@ -251,7 +251,8 @@ function ordenarProductos(columna) {
 // EXPORTAR FUNCIONES AL SCOPE GLOBAL
 // ============================================
 
-window.agregarVariante = agregarVariante;
+// Busca esta sección al final del archivo y AGRÉGALA
+window.agregarVariante = agregarVariante;           // ← ESTA FALTA
 window.agregarColorAVariante = agregarColorAVariante;
 window.agregarSinColor = agregarSinColor;
 window.eliminarColor = eliminarColor;
@@ -265,6 +266,6 @@ window.imprimirEtiquetasProducto = imprimirEtiquetasProducto;
 window.ordenarProductos = ordenarProductos;
 window.aplicarFiltrosProductos = aplicarFiltrosProductos;
 window.limpiarFiltrosProductos = limpiarFiltrosProductos;
-window.configurarFiltrosProductos = configurarFiltrosProductos;
 
-console.log('✅ Productos.js cargado correctamente');
+console.log('✅ Productos.js cargado, funciones exportadas');
+console.log('agregarVariante exportada:', typeof agregarVariante);
