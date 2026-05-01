@@ -525,70 +525,7 @@ async function verVariantes(id) {
     }
 }
 
-async function imprimirEtiquetasProducto(id) {
-    mostrarAlerta('🖨️ Generando etiquetas...', 'info');
-    try {
-        const productoRes = await fetch(`${SUPABASE_URL}/rest/v1/productos_base?id=eq.${id}`, {
-            headers: { 'apikey': SUPABASE_KEY }
-        });
-        const productos = await productoRes.json();
-        const producto = productos[0];
-        
-        const variantesRes = await fetch(`${SUPABASE_URL}/rest/v1/variantes_producto?producto_id=eq.${id}`, {
-            headers: { 'apikey': SUPABASE_KEY }
-        });
-        const variantes = await variantesRes.json();
-        
-        if (variantes.length === 0) {
-            mostrarAlerta('No hay variantes para imprimir', 'error');
-            return;
-        }
-        
-        let etiquetasHtml = `
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>Etiquetas - ${producto.nombre}</title>
-            <meta charset="UTF-8">
-            <style>
-                * { margin: 0; padding: 0; box-sizing: border-box; }
-                body { font-family: Arial, sans-serif; padding: 20px; }
-                .etiquetas-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; max-width: 800px; margin: 0 auto; }
-                .etiqueta { border: 1px solid #ccc; padding: 15px; border-radius: 8px; text-align: center; }
-                .tienda { font-size: 12px; color: #d4a5a9; margin-bottom: 5px; }
-                .nombre { font-size: 14px; font-weight: bold; }
-                .talla { font-size: 18px; font-weight: bold; color: #b87c4e; margin: 5px 0; }
-                .sku { font-family: monospace; font-size: 10px; color: #666; margin: 5px 0; }
-                .precio { font-size: 16px; font-weight: bold; color: #27ae60; }
-            </style>
-        </head>
-        <body>
-            <div class="etiquetas-grid">`;
-        
-        for (const v of variantes) {
-            etiquetasHtml += `
-                <div class="etiqueta">
-                    <div class="tienda">🌸 MODAS LA 34</div>
-                    <div class="nombre">${producto.nombre}</div>
-                    <div class="talla">Talla: ${v.talla}</div>
-                    <div class="sku">${v.sku || 'SKU'}</div>
-                    <div class="precio">$${(v.precio_venta || 0).toLocaleString()}</div>
-                </div>`;
-        }
-        
-        etiquetasHtml += `
-            </div>
-        </body>
-        </html>`;
-        
-        const ventana = window.open('', '_blank');
-        ventana.document.write(etiquetasHtml);
-        ventana.document.close();
-        mostrarAlerta('✅ Etiquetas generadas', 'success');
-    } catch (error) {
-        mostrarAlerta('Error al generar etiquetas', 'error');
-    }
-}
+En imprimir etiquetas todavia falta un codigo de barras y ademas que se pueda editar cuantas etiquetas hacer una hoja (Como 5 por columna y cuatro por fila y asi)
 
 // ============================================
 // FILTROS
