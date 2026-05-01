@@ -1,12 +1,24 @@
 // ============================================
-// PRODUCTOS.JS - Versión COMPLETA y FUNCIONAL
+// PRODUCTOS.JS - COMPLETO Y FUNCIONAL
 // ============================================
 
 let productosData = [];
 let varianteCount = 0;
+let sortProductosColumn = 'nombre';
+let sortProductosDirection = 'asc';
+
+// Configuración de etiquetas
+let configuracionEtiquetas = {
+    columnas: 2,
+    filas: 4,
+    mostrarPrecio: true,
+    mostrarBarcode: true,
+    margen: 10,
+    tamanoFuente: 12
+};
 
 // ============================================
-// VARIABLES GLOBALES
+// CARGAR PRODUCTOS
 // ============================================
 
 async function cargarProductos() {
@@ -16,7 +28,7 @@ async function cargarProductos() {
         });
         productosData = await response.json();
         
-        mostrarTablaProductos(productosData);
+        ordenarProductos('nombre');
         
         setTimeout(() => {
             const searchInput = document.getElementById('search-productos');
@@ -38,11 +50,6 @@ async function cargarProductos() {
 function mostrarTablaProductos(productos) {
     const tbody = document.querySelector('#tabla-productos tbody');
     if (!tbody) return;
-    
-    function getEmojiCategoria(cat) {
-        const emojis = { 'vestidos': '👗', 'blusas': '👚', 'pantalones': '👖', 'deportivo': '⚽', 'caballero': '👔', 'accesorios': '🎀' };
-        return emojis[cat] || '📦';
-    }
     
     if (productos.length === 0) {
         tbody.innerHTML = '<tr><td colspan="8" style="text-align: center;">No hay productos registrados</td></tr>';
@@ -73,6 +80,11 @@ function mostrarTablaProductos(productos) {
             </td>
         </tr>`;
     }).join('');
+}
+
+function getEmojiCategoria(cat) {
+    const emojis = { 'vestidos': '👗', 'blusas': '👚', 'pantalones': '👖', 'deportivo': '⚽', 'caballero': '👔', 'accesorios': '🎀' };
+    return emojis[cat] || '📦';
 }
 
 // ============================================
@@ -250,7 +262,7 @@ function getVariantesFromForm() {
 }
 
 // ============================================
-// GUARDAR PRODUCTO BASE (COMPLETO)
+// GUARDAR PRODUCTO
 // ============================================
 
 async function guardarProductoBase() {
@@ -388,11 +400,10 @@ async function guardarProductoBase() {
 }
 
 // ============================================
-// CRUD PRODUCTOS (EDITAR, ELIMINAR, VER)
+// CRUD PRODUCTOS
 // ============================================
 
 async function editarProducto(id) {
-    console.log('✏️ Editando producto:', id);
     try {
         const response = await fetch(`${SUPABASE_URL}/rest/v1/productos_base?id=eq.${id}`, {
             headers: { 'apikey': SUPABASE_KEY }
@@ -525,10 +536,305 @@ async function verVariantes(id) {
     }
 }
 
-En imprimir etiquetas todavia falta un codigo de barras y ademas que se pueda editar cuantas etiquetas hacer una hoja (Como 5 por columna y cuatro por fila y asi)
+// ============================================
+// IMPRESIÓN DE ETIQUETAS CON CÓDIGO DE BARRAS
+// ============================================
+
+function abrirConfiguracionEtiquetas(productoId) {
+    window.productoActualEtiquetas = productoId;
+    
+    const modalHTML = `
+        <div id="modal-config-etiquetas" class="form-modal" style="display: flex;">
+            <div class="form-modal-content" style="max-width: 500px;">
+                <div class="form-modal-header">
+                    <h3>🖨️ Configurar impresión de etiquetas</h3>
+                    <span class="close" onclick="cerrarConfigEtiquetas()">&times;</span>
+                </div>
+                <div class="form-modal-body">
+                    <div class="form-group">
+                        <label>📐 Columnas por hoja</label>
+                        <input type="range" id="config-columnas" min="1" max="5" value="${configuracionEtiquetas.columnas}" step="1" style="width: 100%;">
+                        <div style="display: flex; justify-content: space-between;">
+                            <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+                        </div>
+                        <span id="valor-columnas" style="color: #d4a5a9;">${configuracionEtiquetas.columnas} columnas</span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>📏 Filas por hoja</label>
+                        <input type="range" id="config-filas" min="2" max="8" value="${configuracionEtiquetas.filas}" step="1" style="width: 100%;">
+                        <div style="display: flex; justify-content: space-between;">
+                            <span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span>
+                        </div>
+                        <span id="valor-filas" style="color: #d4a5a9;">${configuracionEtiquetas.filas} filas</span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>📏 Márgenes (mm)</label>
+                        <input type="range" id="config-margen" min="5" max="20" value="${configuracionEtiquetas.margen}" step="1" style="width: 100%;">
+                        <span id="valor-margen" style="color: #d4a5a9;">${configuracionEtiquetas.margen} mm</span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>🎨 Mostrar código de barras</label>
+                        <select id="config-mostrar-barcode">
+                            <option value="si" ${configuracionEtiquetas.mostrarBarcode ? 'selected' : ''}>Sí</option>
+                            <option value="no" ${!configuracionEtiquetas.mostrarBarcode ? 'selected' : ''}>No</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>💰 Mostrar precio</label>
+                        <select id="config-mostrar-precio">
+                            <option value="si" ${configuracionEtiquetas.mostrarPrecio ? 'selected' : ''}>Sí</option>
+                            <option value="no" ${!configuracionEtiquetas.mostrarPrecio ? 'selected' : ''}>No</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>📦 Tamaño de letra</label>
+                        <input type="range" id="config-fuente" min="8" max="16" value="${configuracionEtiquetas.tamanoFuente}" step="1">
+                        <span id="valor-fuente" style="color: #d4a5a9;">${configuracionEtiquetas.tamanoFuente} px</span>
+                    </div>
+                    
+                    <div class="form-actions" style="display: flex; gap: 1rem; margin-top: 1rem;">
+                        <button class="btn-primary" onclick="imprimirEtiquetasConConfig()" style="flex: 1;">
+                            <i class="fas fa-print"></i> Imprimir
+                        </button>
+                        <button class="btn-secondary" onclick="cerrarConfigEtiquetas()" style="flex: 1;">
+                            Cancelar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    const existingModal = document.getElementById('modal-config-etiquetas');
+    if (existingModal) existingModal.remove();
+    
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    
+    document.getElementById('config-columnas').addEventListener('input', function() {
+        configuracionEtiquetas.columnas = parseInt(this.value);
+        document.getElementById('valor-columnas').textContent = this.value + ' columnas';
+    });
+    
+    document.getElementById('config-filas').addEventListener('input', function() {
+        configuracionEtiquetas.filas = parseInt(this.value);
+        document.getElementById('valor-filas').textContent = this.value + ' filas';
+    });
+    
+    document.getElementById('config-margen').addEventListener('input', function() {
+        configuracionEtiquetas.margen = parseInt(this.value);
+        document.getElementById('valor-margen').textContent = this.value + ' mm';
+    });
+    
+    document.getElementById('config-fuente').addEventListener('input', function() {
+        configuracionEtiquetas.tamanoFuente = parseInt(this.value);
+        document.getElementById('valor-fuente').textContent = this.value + ' px';
+    });
+    
+    document.getElementById('config-mostrar-barcode').addEventListener('change', function() {
+        configuracionEtiquetas.mostrarBarcode = this.value === 'si';
+    });
+    
+    document.getElementById('config-mostrar-precio').addEventListener('change', function() {
+        configuracionEtiquetas.mostrarPrecio = this.value === 'si';
+    });
+}
+
+function cerrarConfigEtiquetas() {
+    const modal = document.getElementById('modal-config-etiquetas');
+    if (modal) modal.remove();
+}
+
+async function imprimirEtiquetasConConfig() {
+    const productoId = window.productoActualEtiquetas;
+    if (!productoId) return;
+    
+    cerrarConfigEtiquetas();
+    
+    try {
+        const productoRes = await fetch(`${SUPABASE_URL}/rest/v1/productos_base?id=eq.${productoId}`, {
+            headers: { 'apikey': SUPABASE_KEY }
+        });
+        const productos = await productoRes.json();
+        const producto = productos[0];
+        
+        const variantesRes = await fetch(`${SUPABASE_URL}/rest/v1/variantes_producto?producto_id=eq.${productoId}`, {
+            headers: { 'apikey': SUPABASE_KEY }
+        });
+        const variantes = await variantesRes.json();
+        
+        if (variantes.length === 0) {
+            mostrarAlerta('No hay variantes para imprimir', 'error');
+            return;
+        }
+        
+        const totalEtiquetas = configuracionEtiquetas.columnas * configuracionEtiquetas.filas;
+        let variantesParaImprimir = [];
+        
+        while (variantesParaImprimir.length < totalEtiquetas) {
+            for (const v of variantes) {
+                if (variantesParaImprimir.length < totalEtiquetas) {
+                    variantesParaImprimir.push(v);
+                }
+            }
+        }
+        
+        const html = generarHTMLImpresion(producto, variantesParaImprimir);
+        const ventana = window.open('', '_blank');
+        ventana.document.write(html);
+        ventana.document.close();
+        ventana.print();
+        
+    } catch (error) {
+        console.error('Error:', error);
+        mostrarAlerta('Error al imprimir etiquetas', 'error');
+    }
+}
+
+function generarHTMLImpresion(producto, variantes) {
+    const columnas = configuracionEtiquetas.columnas;
+    const filas = configuracionEtiquetas.filas;
+    const margen = configuracionEtiquetas.margen;
+    const altoEtiqueta = Math.floor((297 - (margen * 2) - (filas * 5)) / filas);
+    
+    return `<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Etiquetas - ${producto.nombre}</title>
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        @page {
+            size: A4;
+            margin: ${margen}mm;
+        }
+        
+        body { 
+            background: white;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        .etiquetas-grid {
+            display: grid;
+            grid-template-columns: repeat(${columnas}, 1fr);
+            gap: 5px;
+        }
+        
+        .etiqueta {
+            border: 1px dashed #ccc;
+            padding: 6px;
+            text-align: center;
+            break-inside: avoid;
+            page-break-inside: avoid;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: ${altoEtiqueta}px;
+        }
+        
+        .tienda {
+            font-size: ${Math.max(8, configuracionEtiquetas.tamanoFuente - 4)}px;
+            color: #d4a5a9;
+            letter-spacing: 1px;
+        }
+        
+        .nombre {
+            font-size: ${configuracionEtiquetas.tamanoFuente}px;
+            font-weight: bold;
+            color: #4a3728;
+        }
+        
+        .talla {
+            font-size: ${configuracionEtiquetas.tamanoFuente + 4}px;
+            font-weight: bold;
+            color: #b87c4e;
+        }
+        
+        .barcode-container {
+            margin: 5px 0;
+            display: flex;
+            justify-content: center;
+        }
+        
+        canvas.barcode {
+            max-width: 100%;
+            height: auto;
+        }
+        
+        .sku-texto {
+            font-family: monospace;
+            font-size: ${Math.max(8, configuracionEtiquetas.tamanoFuente - 4)}px;
+            color: #666;
+            word-break: break-all;
+        }
+        
+        .precio {
+            font-size: ${configuracionEtiquetas.tamanoFuente + 2}px;
+            font-weight: bold;
+            color: #27ae60;
+            margin-top: 5px;
+        }
+        
+        @media print {
+            body { margin: 0; padding: 0; }
+            .etiqueta { border: 1px dashed #aaa; }
+        }
+    </style>
+</head>
+<body>
+    <div class="etiquetas-grid">
+        ${variantes.map((v, idx) => `
+            <div class="etiqueta">
+                <div>
+                    <div class="tienda">🌸 MODAS LA 34</div>
+                    <div class="nombre">${escapeHtml(producto.nombre)}</div>
+                    <div class="talla">Talla: ${v.talla}</div>
+                </div>
+                ${configuracionEtiquetas.mostrarBarcode ? `
+                    <div class="barcode-container">
+                        <canvas id="barcode-${idx}" class="barcode" data-sku="${v.sku || `${producto.codigo}-${v.talla}`}"></canvas>
+                    </div>
+                    <div class="sku-texto">${v.sku || `${producto.codigo}-${v.talla}`}</div>
+                ` : ''}
+                ${configuracionEtiquetas.mostrarPrecio ? `
+                    <div class="precio">$${(v.precio_venta || 0).toLocaleString()}</div>
+                ` : ''}
+            </div>
+        `).join('')}
+    </div>
+    <script>
+        window.addEventListener('load', function() {
+            document.querySelectorAll('.barcode').forEach(function(canvas) {
+                var sku = canvas.getAttribute('data-sku');
+                if (sku && typeof JsBarcode !== 'undefined') {
+                    JsBarcode(canvas, sku, {
+                        format: "CODE128",
+                        width: 1.5,
+                        height: 35,
+                        fontSize: 9,
+                        margin: 3,
+                        displayValue: false
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>`;
+}
+
+async function imprimirEtiquetasProducto(productoId) {
+    abrirConfiguracionEtiquetas(productoId);
+}
 
 // ============================================
-// FILTROS
+// FILTROS Y ORDENAMIENTO
 // ============================================
 
 function aplicarFiltrosProductos() {
@@ -536,8 +842,6 @@ function aplicarFiltrosProductos() {
     const searchTerm = document.getElementById('search-productos')?.value.toLowerCase() || '';
     const categoria = document.getElementById('filter-categoria-productos')?.value || '';
     const stockFilter = document.getElementById('filter-stock-productos')?.value || '';
-    
-    let visibleCount = 0;
     
     rows.forEach(row => {
         let mostrar = true;
@@ -553,7 +857,6 @@ function aplicarFiltrosProductos() {
         if (mostrar && stockFilter === 'agotado' && stock > 0) mostrar = false;
         
         row.style.display = mostrar ? '' : 'none';
-        if (mostrar) visibleCount++;
     });
 }
 
@@ -566,16 +869,6 @@ function limpiarFiltrosProductos() {
     if (categoriaSelect) categoriaSelect.value = '';
     if (stockSelect) stockSelect.value = '';
     aplicarFiltrosProductos();
-}
-
-function configurarFiltrosProductos() {
-    const searchInput = document.getElementById('search-productos');
-    const categoriaSelect = document.getElementById('filter-categoria-productos');
-    const stockSelect = document.getElementById('filter-stock-productos');
-    
-    if (searchInput) searchInput.addEventListener('input', aplicarFiltrosProductos);
-    if (categoriaSelect) categoriaSelect.addEventListener('change', aplicarFiltrosProductos);
-    if (stockSelect) stockSelect.addEventListener('change', aplicarFiltrosProductos);
 }
 
 function ordenarProductos(columna) {
@@ -591,15 +884,31 @@ function ordenarProductos(columna) {
     productosOrdenados.sort((a, b) => {
         let valA, valB;
         switch(columna) {
-            case 'codigo': valA = (a.codigo || '').toLowerCase(); valB = (b.codigo || '').toLowerCase(); break;
-            case 'nombre': valA = (a.nombre || '').toLowerCase(); valB = (b.nombre || '').toLowerCase(); break;
-            case 'categoria': valA = (a.categoria || '').toLowerCase(); valB = (b.categoria || '').toLowerCase(); break;
-            case 'stock': valA = a.stock_total || 0; valB = b.stock_total || 0; break;
-            case 'precio': 
+            case 'codigo':
+                valA = (a.codigo || '').toLowerCase();
+                valB = (b.codigo || '').toLowerCase();
+                break;
+            case 'nombre':
+                valA = (a.nombre || '').toLowerCase();
+                valB = (b.nombre || '').toLowerCase();
+                break;
+            case 'categoria':
+                valA = (a.categoria || '').toLowerCase();
+                valB = (b.categoria || '').toLowerCase();
+                break;
+            case 'stock':
+                valA = a.stock_total || 0;
+                valB = b.stock_total || 0;
+                break;
+            case 'precio':
                 const preciosA = a.variantes?.map(v => v.precio_venta) || [0];
                 const preciosB = b.variantes?.map(v => v.precio_venta) || [0];
-                valA = Math.min(...preciosA); valB = Math.min(...preciosB); break;
-            default: valA = a.nombre; valB = b.nombre;
+                valA = Math.min(...preciosA);
+                valB = Math.min(...preciosB);
+                break;
+            default:
+                valA = a.nombre;
+                valB = b.nombre;
         }
         if (valA < valB) return sortProductosDirection === 'asc' ? -1 : 1;
         if (valA > valB) return sortProductosDirection === 'asc' ? 1 : -1;
@@ -607,6 +916,20 @@ function ordenarProductos(columna) {
     });
     
     mostrarTablaProductos(productosOrdenados);
+}
+
+// ============================================
+// FUNCIONES DE UTILIDAD
+// ============================================
+
+function escapeHtml(str) {
+    if (!str) return '';
+    return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
 }
 
 // ============================================
@@ -628,7 +951,6 @@ window.imprimirEtiquetasProducto = imprimirEtiquetasProducto;
 window.ordenarProductos = ordenarProductos;
 window.aplicarFiltrosProductos = aplicarFiltrosProductos;
 window.limpiarFiltrosProductos = limpiarFiltrosProductos;
-window.configurarFiltrosProductos = configurarFiltrosProductos;
 window.abrirConfiguracionEtiquetas = abrirConfiguracionEtiquetas;
 window.cerrarConfigEtiquetas = cerrarConfigEtiquetas;
 window.imprimirEtiquetasConConfig = imprimirEtiquetasConConfig;
@@ -640,6 +962,5 @@ console.log('📦 Funciones disponibles:', {
     cargarProductos: typeof cargarProductos,
     editarProducto: typeof editarProducto,
     eliminarProducto: typeof eliminarProducto,
-    verVariantes: typeof verVariantes,
     imprimirEtiquetasProducto: typeof imprimirEtiquetasProducto
 });
