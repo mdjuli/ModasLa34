@@ -132,16 +132,30 @@ function agregarColorAVariante(varianteId) {
     const container = document.getElementById(`colores-${varianteId}-container`);
     if (!container) return;
     
-    const colorId = `${varianteId}-${Date.now()}-${Math.random()}`;
+    const colorId = `${varianteId}-color-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`;
     
     const colorHTML = `
-        <div class="color-row" id="color-${colorId}">
+        <div class="color-row" id="color-${colorId}" data-color-id="${colorId}">
             <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; width: 100%;">
-                <input type="color" id="color-hex-${colorId}" value="#d4a5a9" class="color-picker" style="width: 40px; height: 40px;">
-                <input type="text" id="color-hex-text-${colorId}" value="#d4a5a9" placeholder="Código hex" style="flex: 1;">
-                <input type="text" id="color-nombre-${colorId}" placeholder="Nombre del color" style="flex: 2;">
-                <input type="number" id="color-stock-${colorId}" placeholder="Stock" min="0" value="0" style="width: 80px;">
-                <button type="button" onclick="eliminarColor('${colorId}')" class="btn-eliminar-color">🗑️</button>
+                <input type="color" id="color-hex-${colorId}" value="#d4a5a9" class="color-picker" 
+                       style="width: 45px; height: 40px; border-radius: 8px; cursor: pointer;"
+                       onchange="actualizarHexTexto('${colorId}')">
+                <input type="text" id="color-hex-text-${colorId}" value="#d4a5a9" 
+                       placeholder="#RRGGBB" class="color-hex-text" 
+                       style="flex: 1; min-width: 100px; padding: 0.5rem; border: 1px solid #f0e4d8; border-radius: 8px;"
+                       oninput="validarHexColor('${colorId}', this.value)">
+                <input type="text" id="color-nombre-${colorId}" placeholder="Nombre del color (ej: Rojo, Azul)" 
+                       class="color-nombre-input" 
+                       style="flex: 2; min-width: 120px; padding: 0.5rem; border: 1px solid #f0e4d8; border-radius: 8px;">
+                <input type="number" id="color-stock-${colorId}" placeholder="Stock" min="0" value="0" 
+                       class="color-stock-input" style="width: 80px; padding: 0.5rem; border: 1px solid #f0e4d8; border-radius: 8px;">
+                <button type="button" onclick="eliminarColor('${colorId}')" class="btn-eliminar-color" 
+                        style="background: none; border: none; color: #e74c3c; cursor: pointer; font-size: 1.2rem;">
+                    🗑️
+                </button>
+            </div>
+            <div style="font-size: 0.7rem; color: #aaa; margin-top: 5px; padding-left: 5px;">
+                💡 Puedes escribir el código hexadecimal manualmente (ej: #ff0000 para rojo)
             </div>
         </div>
     `;
