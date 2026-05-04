@@ -176,11 +176,15 @@ function agregarSinColor(varianteId) {
     const colorId = `${varianteId}-sin-color-${Date.now()}`;
     
     const sinColorHTML = `
-        <div class="color-row sin-color-item" id="color-${colorId}">
+        <div class="color-row sin-color-item" id="color-${colorId}" data-color-id="${colorId}">
             <span style="font-size: 1.5rem;">⚪</span>
             <span style="flex: 1; font-weight: 500;">Sin color específico</span>
-            <input type="number" id="color-stock-${colorId}" placeholder="Stock" min="0" value="0" style="width: 80px;">
-            <button type="button" onclick="eliminarColor('${colorId}')" class="btn-eliminar-color">🗑️</button>
+            <input type="number" id="color-stock-${colorId}" placeholder="Stock" min="0" value="0" 
+                   class="color-stock-input" style="width: 80px; padding: 0.5rem; border: 1px solid #f0e4d8; border-radius: 8px;">
+            <button type="button" onclick="eliminarColor('${colorId}')" class="btn-eliminar-color" 
+                    style="background: none; border: none; color: #e74c3c; cursor: pointer; font-size: 1.2rem;">
+                🗑️
+            </button>
         </div>
     `;
     
@@ -195,6 +199,110 @@ function eliminarColor(colorId) {
 function eliminarVariante(varianteId) {
     const element = document.getElementById(`variante-${varianteId}`);
     if (element) element.remove();
+}
+
+// Actualizar el texto hexadecimal cuando se cambia el color picker
+function actualizarHexTexto(colorId) {
+    const colorPicker = document.getElementById(`color-hex-${colorId}`);
+    const hexText = document.getElementById(`color-hex-text-${colorId}`);
+    if (colorPicker && hexText) {
+        hexText.value = colorPicker.value.toUpperCase();
+    }
+}
+
+// Validar y corregir código hexadecimal
+function validarHexColor(colorId, valor) {
+    const hexText = document.getElementById(`color-hex-text-${colorId}`);
+    const colorPicker = document.getElementById(`color-hex-${colorId}`);
+    
+    let hex = valor.trim();
+    
+    // Agregar # si no tiene
+    if (!hex.startsWith('#')) {
+        hex = '#' + hex;
+    }
+    
+    // Validar formato hexadecimal (6 caracteres después de #)
+    const hexPattern = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
+    
+    if (hexPattern.test(hex)) {
+        // Si es formato corto (3 dígitos), convertirlo a 6
+        if (hex.length === 4) {
+            hex = '#' + hex[1] + hex[1] + hex[2] + hex[2] + hex[3] + hex[3];
+        }
+        hexText.value = hex.toUpperCase();
+        if (colorPicker) colorPicker.value = hex;
+        hexText.style.borderColor = "#27ae60";
+        hexText.style.backgroundColor = "#e8f5e9";
+    } else if (hex === '#') {
+        hexText.value = '#';
+        hexText.style.borderColor = "#f0e4d8";
+        hexText.style.backgroundColor = "white";
+    } else {
+        hexText.style.borderColor = "#e74c3c";
+        hexText.style.backgroundColor = "#ffebee";
+    }
+}
+
+// Obtener todos los colores del formulario correctamente
+function obtenerColoresFromForm(varianteId) {
+    const colores = [];
+    const container = document.getElementById(`colores-${varianteId}-container`);
+    if (!container) return colores;
+    
+    const colorRows = container.querySelectorAll('.color-row');
+    
+    colorRows.forEach(row => {
+        const colorId = row.id.replace('color-', '');
+        
+        // Para "sin color"
+        if (row.classList.contains('sin-color-item')) {
+            const stockInput = document.getElementById(`color-stock-${colorId}`);
+            const stock = parseInt(stockInput?.value) || 0;
+            if (stock > 0) {
+                colores.push({
+                    nombre: null,
+                    codigo: null,
+                    stock: stock
+                });
+            }
+        } else {
+            // Para colores con nombre y código hexadecimal
+            const nombreInput = document.getElementById(`color-nombre-${colorId}`);
+            const hexTextInput = document.getElementById(`color-hex-text-${colorId}`);
+            const colorPicker = document.getElementById(`color-hex-${colorId}`);
+            const stockInput = document.getElementById(`color-stock-${colorId}`);
+            
+            // Obtener el valor hexadecimal (priorizar el texto si es válido)
+            let hexValue = '#d4a5a9';
+            
+            if (hexTextInput && hexTextInput.value) {
+                let hex = hexTextInput.value.trim();
+                if (!hex.startsWith('#')) hex = '#' + hex;
+                const hexPattern = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
+                if (hexPattern.test(hex)) {
+                    hexValue = hex.toUpperCase();
+                }
+            } else if (colorPicker && colorPicker.value) {
+                hexValue = colorPicker.value;
+            }
+            
+            // Asegurar formato de 6 dígitos
+            if (hexValue.length === 4) {
+                hexValue = '#' + hexValue[1] + hexValue[1] + hexValue[2] + hexValue[2] + hexValue[3] + hexValue[3];
+            }
+            
+            if (nombreInput && nombreInput.value.trim()) {
+                colores.push({
+                    nombre: nombreInput.value.trim(),
+                    codigo: hexValue,
+                    stock: parseInt(stockInput?.value) || 0
+                });
+            }
+        }
+    });
+    
+    return colores;
 }
 
 function getVariantesFromForm() {
@@ -223,40 +331,10 @@ function getVariantesFromForm() {
             return [];
         }
         
-        const colores = [];
-        const coloresContainer = document.getElementById(`colores-${i}-container`);
+        // Usar la nueva función para obtener colores
+        const colores = obtenerColoresFromForm(i);
         
-        if (coloresContainer) {
-            const colorRows = coloresContainer.querySelectorAll('.color-row');
-            
-            colorRows.forEach(row => {
-                const colorId = row.id.replace('color-', '');
-                
-                if (row.classList.contains('sin-color-item')) {
-                    const stockInput = document.getElementById(`color-stock-${colorId}`);
-                    const stock = parseInt(stockInput?.value) || 0;
-                    if (stock > 0) {
-                        colores.push({ nombre: null, codigo: null, stock: stock });
-                    }
-                } else {
-                    const nombreInput = document.getElementById(`color-nombre-${colorId}`);
-                    const hexTextInput = document.getElementById(`color-hex-text-${colorId}`);
-                    const stockInput = document.getElementById(`color-stock-${colorId}`);
-                    
-                    let hexValue = hexTextInput?.value || '#d4a5a9';
-                    if (!hexValue.startsWith('#')) hexValue = '#' + hexValue;
-                    
-                    if (nombreInput && nombreInput.value.trim()) {
-                        colores.push({
-                            nombre: nombreInput.value.trim(),
-                            codigo: hexValue,
-                            stock: parseInt(stockInput?.value) || 0
-                        });
-                    }
-                }
-            });
-        }
-        
+        // Si no hay colores válidos, crear uno por defecto
         if (colores.length === 0) {
             colores.push({ nombre: 'Sin color', codigo: '#d4a5a9', stock: 0 });
         }
@@ -471,16 +549,48 @@ async function editarProducto(id) {
                     const coloresContainer = document.getElementById(`colores-${varianteId}-container`);
                     const colores = v.colores || [];
                     
-                    colores.forEach(color => {
-                        const colorId = `${varianteId}-${Date.now()}-${Math.random()}`;
-                        let colorHTML = '';
-                        if (color.nombre === null && color.codigo === null) {
-                            colorHTML = `<div class="color-row" id="color-${colorId}"><span>⚪</span><span>Sin color</span><input type="number" id="color-stock-${colorId}" value="${color.stock}" style="width:80px;"><button onclick="eliminarColor('${colorId}')">🗑️</button></div>`;
-                        } else {
-                            colorHTML = `<div class="color-row" id="color-${colorId}"><input type="color" id="color-hex-${colorId}" value="${color.codigo || '#d4a5a9'}"><input type="text" id="color-nombre-${colorId}" value="${color.nombre || ''}"><input type="number" id="color-stock-${colorId}" value="${color.stock}" style="width:80px;"><button onclick="eliminarColor('${colorId}')">🗑️</button></div>`;
-                        }
-                        coloresContainer.insertAdjacentHTML('beforeend', colorHTML);
-                    });
+                        colores.forEach(color => {
+                            const colorId = `${varianteId}-color-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`;
+                            let colorHTML = '';
+                            
+                            if (color.nombre === null && color.codigo === null) {
+                                // Sin color
+                                colorHTML = `
+                                    <div class="color-row sin-color-item" id="color-${colorId}">
+                                        <span style="font-size: 1.5rem;">⚪</span>
+                                        <span style="flex: 1; font-weight: 500;">Sin color específico</span>
+                                        <input type="number" id="color-stock-${colorId}" value="${color.stock}" style="width: 80px;">
+                                        <button type="button" onclick="eliminarColor('${colorId}')">🗑️</button>
+                                    </div>
+                                `;
+                            } else {
+                                const hexValue = color.codigo || '#d4a5a9';
+                                colorHTML = `
+                                    <div class="color-row" id="color-${colorId}">
+                                        <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; width: 100%;">
+                                            <input type="color" id="color-hex-${colorId}" value="${hexValue}" class="color-picker" 
+                                                   style="width: 45px; height: 40px; border-radius: 8px; cursor: pointer;"
+                                                   onchange="actualizarHexTexto('${colorId}')">
+                                            <input type="text" id="color-hex-text-${colorId}" value="${hexValue}" 
+                                                   placeholder="#RRGGBB" class="color-hex-text" 
+                                                   style="flex: 1; min-width: 100px; padding: 0.5rem; border: 1px solid #f0e4d8; border-radius: 8px;"
+                                                   oninput="validarHexColor('${colorId}', this.value)">
+                                            <input type="text" id="color-nombre-${colorId}" value="${color.nombre || ''}" 
+                                                   placeholder="Nombre del color" class="color-nombre-input" 
+                                                   style="flex: 2; min-width: 120px; padding: 0.5rem; border: 1px solid #f0e4d8; border-radius: 8px;">
+                                            <input type="number" id="color-stock-${colorId}" value="${color.stock}" 
+                                                   placeholder="Stock" min="0" class="color-stock-input" 
+                                                   style="width: 80px; padding: 0.5rem; border: 1px solid #f0e4d8; border-radius: 8px;">
+                                            <button type="button" onclick="eliminarColor('${colorId}')" class="btn-eliminar-color" 
+                                                    style="background: none; border: none; color: #e74c3c; cursor: pointer; font-size: 1.2rem;">
+                                                🗑️
+                                            </button>
+                                        </div>
+                                    </div>
+                                `;
+                            }
+                            coloresContainer.insertAdjacentHTML('beforeend', colorHTML);
+                        });
                     
                     varianteCount++;
                 });
@@ -968,6 +1078,9 @@ window.limpiarFiltrosProductos = limpiarFiltrosProductos;
 window.abrirConfiguracionEtiquetas = abrirConfiguracionEtiquetas;
 window.cerrarConfigEtiquetas = cerrarConfigEtiquetas;
 window.imprimirEtiquetasConConfig = imprimirEtiquetasConConfig;
+window.actualizarHexTexto = actualizarHexTexto;
+window.validarHexColor = validarHexColor;
+window.obtenerColoresFromForm = obtenerColoresFromForm;
 
 console.log('✅ Productos.js cargado correctamente');
 console.log('📦 Funciones disponibles:', {
