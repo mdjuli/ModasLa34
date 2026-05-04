@@ -1,14 +1,13 @@
 // ============================================
-// MAIN.JS - Versión CORREGIDA
+// MAIN.JS - COMPLETO Y CORREGIDO
 // ============================================
 
-// 1. PRIMERO: Declarar variables globales
+// ===== VARIABLES GLOBALES =====
 let currentUser = null;
 let currentModule = 'productos';
 
-// 2. SEGUNDO: Declarar TODAS las funciones
+// ===== FUNCIONES DE AUTENTICACIÓN =====
 async function verificarSesion() {
-    console.log('🔐 Verificando sesión...');
     const tokenData = localStorage.getItem('admin_token');
     if (!tokenData) {
         window.location.href = 'login.html';
@@ -45,8 +44,6 @@ async function verificarSesion() {
             if (typeof filtrarModulosPorPermisos === 'function') filtrarModulosPorPermisos();
         }
         
-        console.log('✅ Sesión verificada:', user.email);
-        
     } catch (error) {
         console.error('Error de sesión:', error);
         localStorage.removeItem('admin_token');
@@ -61,13 +58,21 @@ function logout() {
     }
 }
 
+// ===== NAVEGACIÓN =====
 function cambiarModulo(modulo, event = null) {
+    console.log('🔄 Cambiando a módulo:', modulo);
+    
     document.querySelectorAll('.module-section').forEach(section => {
         section.style.display = 'none';
     });
     
     const seccion = document.getElementById(`modulo-${modulo}`);
-    if (seccion) seccion.style.display = 'block';
+    if (seccion) {
+        seccion.style.display = 'block';
+        console.log(`✅ Mostrando módulo: ${modulo}`);
+    } else {
+        console.error(`❌ No existe la sección: modulo-${modulo}`);
+    }
     
     if (event) {
         document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
@@ -75,31 +80,90 @@ function cambiarModulo(modulo, event = null) {
     }
     
     currentModule = modulo;
-    
-    // Usar setTimeout para asegurar que los módulos están cargados
-    setTimeout(() => {
-        if (typeof cargarDatosModulo === 'function') {
-            cargarDatosModulo(modulo);
-        } else {
-            console.log('cargarDatosModulo no está definida todavía');
-        }
-    }, 100);
+    cargarDatosModulo(modulo);
 }
 
+// ===== CARGA DE DATOS POR MÓDULO (¡ESTA ES LA PARTE IMPORTANTE!) =====
 async function cargarDatosModulo(modulo) {
-    console.log('📦 Cargando módulo:', modulo);
+    console.log('📦 Cargando datos del módulo:', modulo);
+    
     switch(modulo) {
-        case 'productos': if (window.cargarProductos) await window.cargarProductos(); break;
-        case 'stock': if (window.cargarStock) await window.cargarStock(); break;
-        case 'compras': if (window.cargarCompras) await window.cargarCompras(); break;
-        case 'gastos': if (window.cargarGastos) await window.cargarGastos(); break;
-        case 'perfiles': if (window.cargarPerfiles) await window.cargarPerfiles(); break;
-        case 'proveedores': if (window.cargarProveedores) await window.cargarProveedores(); break;
-        case 'ventas': if (window.cargarVentas) await window.cargarVentas(); break;
-        case 'contabilidad': if (window.cargarContabilidad) window.cargarContabilidad(); break;
+        case 'productos':
+            if (typeof cargarProductos === 'function') {
+                await cargarProductos();
+            } else {
+                console.error('❌ cargarProductos no está definida');
+            }
+            break;
+        case 'stock':
+            if (typeof cargarStock === 'function') {
+                await cargarStock();
+            } else {
+                console.error('❌ cargarStock no está definida');
+            }
+            break;
+        case 'compras':
+            if (typeof cargarCompras === 'function') {
+                await cargarCompras();
+            } else {
+                console.error('❌ cargarCompras no está definida');
+            }
+            break;
+        case 'gastos':
+            if (typeof cargarGastos === 'function') {
+                await cargarGastos();
+            } else {
+                console.error('❌ cargarGastos no está definida');
+            }
+            break;
+        case 'perfiles':
+            if (typeof cargarPerfiles === 'function') {
+                await cargarPerfiles();
+            } else {
+                console.error('❌ cargarPerfiles no está definida');
+            }
+            break;
+        case 'proveedores':
+            if (typeof cargarProveedores === 'function') {
+                await cargarProveedores();
+            } else {
+                console.error('❌ cargarProveedores no está definida');
+            }
+            break;
+        case 'ventas':
+            if (typeof cargarVentas === 'function') {
+                await cargarVentas();
+            } else {
+                console.error('❌ cargarVentas no está definida');
+            }
+            break;
+        case 'contabilidad':
+            if (typeof cargarContabilidad === 'function') {
+                await cargarContabilidad();
+            } else {
+                console.log('📊 cargarContabilidad no está definida, usando versión simple');
+                // Versión simple si no existe la función
+                try {
+                    const [ventas, compras, gastos] = await Promise.all([
+                        fetch(`${SUPABASE_URL}/rest/v1/ventas`, { headers: { 'apikey': SUPABASE_KEY } }).then(r => r.json()),
+                        fetch(`${SUPABASE_URL}/rest/v1/compras`, { headers: { 'apikey': SUPABASE_KEY } }).then(r => r.json()),
+                        fetch(`${SUPABASE_URL}/rest/v1/gastos`, { headers: { 'apikey': SUPABASE_KEY } }).then(r => r.json())
+                    ]);
+                    const ingresos = ventas.reduce((s, v) => s + (v.total || 0), 0);
+                    const egresos = compras.reduce((s, c) => s + (c.total || 0), 0) + gastos.reduce((s, g) => s + (g.monto || 0), 0);
+                    const ingresosElem = document.getElementById('stats-ingresos');
+                    const egresosElem = document.getElementById('stats-egresos');
+                    if (ingresosElem) ingresosElem.textContent = `$${ingresos.toLocaleString()}`;
+                    if (egresosElem) egresosElem.textContent = `$${egresos.toLocaleString()}`;
+                } catch(e) { console.error('Error contabilidad simple:', e); }
+            }
+            break;
+        default:
+            console.log(`Módulo ${modulo} no reconocido`);
     }
 }
 
+// ===== UTILIDADES =====
 function toggleMenu() {
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('sidebarOverlay');
@@ -139,9 +203,19 @@ async function cargarDatosIniciales() {
     }
 }
 
-// 3. TERCERO: Event listener (después de definir las funciones)
+// ===== INICIALIZACIÓN =====
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('🚀 Dashboard iniciado');
+    console.log('📋 Funciones disponibles:', {
+        cargarProductos: typeof cargarProductos,
+        cargarStock: typeof cargarStock,
+        cargarCompras: typeof cargarCompras,
+        cargarGastos: typeof cargarGastos,
+        cargarPerfiles: typeof cargarPerfiles,
+        cargarProveedores: typeof cargarProveedores,
+        cargarVentas: typeof cargarVentas
+    });
+    
     await verificarSesion();
     await cargarDatosIniciales();
     
@@ -159,7 +233,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (overlay) overlay.onclick = () => toggleMenu();
 });
 
-// 4. CUARTO: Exportar funciones al scope global
+// ===== EXPORTAR FUNCIONES AL SCOPE GLOBAL =====
 window.verificarSesion = verificarSesion;
 window.logout = logout;
 window.cambiarModulo = cambiarModulo;
@@ -168,3 +242,5 @@ window.toggleMenu = toggleMenu;
 window.cerrarTodosModales = cerrarTodosModales;
 window.cargarDatosIniciales = cargarDatosIniciales;
 window.getPrimerModuloVisible = getPrimerModuloVisible;
+
+console.log('✅ Main.js cargado correctamente');
