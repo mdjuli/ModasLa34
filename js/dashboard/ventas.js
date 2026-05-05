@@ -212,3 +212,65 @@ window.editarVenta = editarVenta;
 window.eliminarVenta = eliminarVenta;
 window.solicitarCambio = solicitarCambio;
 window.limpiarFiltrosVentas = limpiarFiltrosVentas;
+
+// ============================================
+// REGISTRAR PWA
+// ============================================
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(registration => {
+        console.log('Service Worker registrado:', registration);
+        
+        // Verificar actualizaciones
+        registration.addEventListener('updatefound', () => {
+          const newWorker = registration.installing;
+          console.log('Nuevo Service Worker encontrado');
+          newWorker.addEventListener('statechange', () => {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              // Mostrar notificación de actualización
+              mostrarNotificacionActualizacion();
+            }
+          });
+        });
+      })
+      .catch(error => {
+        console.log('Error al registrar Service Worker:', error);
+      });
+  });
+}
+
+function mostrarNotificacionActualizacion() {
+  const toast = document.createElement('div');
+  toast.innerHTML = `
+    <div style="position: fixed; bottom: 20px; left: 20px; right: 20px; background: #4a3728; color: white; padding: 1rem; border-radius: 12px; z-index: 10000; display: flex; justify-content: space-between; align-items: center;">
+      <span>🔄 Nueva versión disponible</span>
+      <button onclick="location.reload()" style="background: #d4a5a9; border: none; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer;">Actualizar</button>
+    </div>
+  `;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 10000);
+}
+
+// Detectar si la app está instalada
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  window.deferredPrompt = e;
+  
+  // Mostrar botón de instalación
+  const btnInstalar = document.getElementById('btn-instalar-app');
+  if (btnInstalar) {
+    btnInstalar.style.display = 'flex';
+    btnInstalar.onclick = () => {
+      window.deferredPrompt.prompt();
+      window.deferredPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === 'accepted') {
+          console.log('Usuario instaló la app');
+        }
+        window.deferredPrompt = null;
+        btnInstalar.style.display = 'none';
+      });
+    };
+  }
+});
