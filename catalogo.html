@@ -1,454 +1,732 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modas La 34 | Tienda indie</title>
+    <title>Catálogo - Modas La 34</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
-<style>
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
-
-    body {
-        font-family: 'Inter', sans-serif;
-        background: #faf7f2;
-        color: #2c2b28;
-        line-height: 1.5;
-    }
-
-    h1, h2, h3 {
-        font-family: 'Playfair Display', serif;
-        font-weight: 500;
-        letter-spacing: -0.02em;
-    }
-
-    header {
-        background: #ffffff;
-        padding: 2rem 2rem 1rem 2rem;
-        border-bottom: 1px solid #e8e0d5;
-    }
-
-    header h1 {
-        font-size: 2rem;
-        font-weight: 500;
-        color: #4a3728;
-        text-align: center;
-        letter-spacing: 2px;
-        margin-bottom: 1.5rem;
-    }
-
-    nav {
-        display: flex;
-        justify-content: center;
-        gap: 2rem;
-        flex-wrap: wrap;
-    }
-
-    nav a, .dropbtn {
-        color: #4a3728;
-        text-decoration: none;
-        font-size: 0.85rem;
-        font-weight: 500;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        transition: color 0.3s;
-        background: none;
-        border: none;
-        cursor: pointer;
-    }
-
-    nav a:hover, .dropbtn:hover {
-        color: #b87c4e;
-    }
-
-    .dropdown {
-        position: relative;
-        display: inline-block;
-    }
-
-    .dropdown-content {
-        display: none;
-        position: absolute;
-        background: #ffffff;
-        min-width: 200px;
-        box-shadow: 0 8px 16px rgba(0,0,0,0.05);
-        z-index: 1000;
-        top: 100%;
-        left: 0;
-        margin-top: 0.5rem;
-        border: 1px solid #e8e0d5;
-        border-radius: 8px;
-        overflow: hidden;
-    }
-
-    .dropdown-content a {
-        color: #4a3728;
-        padding: 0.8rem 1.2rem;
-        text-decoration: none;
-        display: block;
-        font-size: 0.8rem;
-        text-transform: none;
-        border-bottom: 1px solid #f0ebe4;
-    }
-
-    .dropdown-content a:last-child {
-        border-bottom: none;
-    }
-
-    .dropdown-content a:hover {
-        background: #faf7f2;
-        color: #b87c4e;
-        padding-left: 1.5rem;
-    }
-
-    .dropdown:hover .dropdown-content {
-        display: block;
-    }
-
-    main {
-        max-width: 1400px;
-        margin: 3rem auto;
-        padding: 0 2rem;
-        min-height: 60vh;
-    }
-
-    main h2 {
-        font-size: 2rem;
-        color: #4a3728;
-        text-align: center;
-        margin-bottom: 0.5rem;
-    }
-
-    main > p {
-        text-align: center;
-        color: #8b7a6b;
-        margin-bottom: 2rem;
-        font-size: 0.95rem;
-    }
-
-    .buscador-container {
-        max-width: 400px;
-        margin: 0 auto 3rem auto;
-    }
-
-    .buscador-input {
-        width: 100%;
-        padding: 1rem 1.5rem;
-        border: 1px solid #e8e0d5;
-        border-radius: 50px;
-        font-size: 0.9rem;
-        background: #ffffff;
-        transition: all 0.3s;
-        font-family: 'Inter', sans-serif;
-    }
-
-    .buscador-input:focus {
-        outline: none;
-        border-color: #b87c4e;
-        box-shadow: 0 0 0 3px rgba(184, 124, 78, 0.1);
-    }
-
-    .grid-productos {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-        gap: 2rem;
-    }
-
-    .producto-card {
-        background: #ffffff;
-        border-radius: 8px;
-        overflow: hidden;
-        transition: all 0.3s;
-        border: 1px solid #f0ebe4;
-        cursor: pointer;
-    }
-
-    .producto-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 12px 24px rgba(0,0,0,0.05);
-        border-color: #e0d5ca;
-    }
-
-    .producto-imagen {
-        width: 100%;
-        height: 320px;
-        object-fit: cover;
-        background: #f5f0ea;
-    }
-
-    .producto-sin-imagen {
-        width: 100%;
-        height: 320px;
-        background: #f5f0ea;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 4rem;
-    }
-
-    .producto-info {
-        padding: 1.5rem;
-    }
-
-    .producto-titulo {
-        font-family: 'Playfair Display', serif;
-        font-size: 1.2rem;
-        font-weight: 500;
-        color: #4a3728;
-        margin-bottom: 0.5rem;
-    }
-
-    .producto-detalle {
-        font-size: 0.8rem;
-        color: #8b7a6b;
-        margin: 0.5rem 0;
-    }
-
-    .producto-colores {
-        display: flex;
-        gap: 6px;
-        margin: 10px 0;
-        flex-wrap: wrap;
-    }
-
-    .producto-precio {
-        font-size: 1.3rem;
-        font-weight: 600;
-        color: #b87c4e;
-        margin: 0.8rem 0;
-    }
-
-    .producto-btn {
-        width: 100%;
-        padding: 0.8rem;
-        background: none;
-        border: 1px solid #d4c9bd;
-        border-radius: 50px;
-        font-family: 'Inter', sans-serif;
-        font-weight: 500;
-        font-size: 0.8rem;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        color: #4a3728;
-        cursor: pointer;
-        transition: all 0.3s;
-    }
-
-    .producto-btn:hover {
-        background: #b87c4e;
-        border-color: #b87c4e;
-        color: white;
-    }
-
-    footer {
-        text-align: center;
-        padding: 2rem;
-        color: #8b7a6b;
-        font-size: 0.8rem;
-        border-top: 1px solid #e8e0d5;
-        margin-top: 3rem;
-    }
-
-    .admin-link {
-        display: inline-block;
-        margin-top: 0.5rem;
-        font-size: 0.7rem;
-        color: #c4b8ac;
-        text-decoration: none;
-        transition: color 0.3s;
-    }
-
-    .admin-link:hover {
-        color: #b87c4e;
-    }
-
-    /* ===== MODAL MEJORADO ===== */
-    .modal {
-        display: none;
-        position: fixed;
-        z-index: 1000;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.6);
-        backdrop-filter: blur(5px);
-    }
-
-    .modal-contenido {
-        background: #ffffff;
-        margin: 3% auto;
-        padding: 0;
-        width: 90%;
-        max-width: 950px;
-        border-radius: 24px;
-        position: relative;
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-        overflow: hidden;
-        animation: modalEntrada 0.3s ease-out;
-    }
-
-    @keyframes modalEntrada {
-        from {
-            opacity: 0;
-            transform: scale(0.95) translateY(-20px);
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        to {
-            opacity: 1;
-            transform: scale(1) translateY(0);
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #faf7f2;
+            color: #2c2b28;
+            line-height: 1.5;
         }
-    }
 
-    .modal-cerrar {
-        position: absolute;
-        right: 16px;
-        top: 16px;
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        background: rgba(0, 0, 0, 0.5);
-        color: white;
-        font-size: 24px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.2s;
-        z-index: 10;
-        border: none;
-    }
+        h1, h2, h3 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 500;
+            letter-spacing: -0.02em;
+        }
 
-    .modal-cerrar:hover {
-        background: rgba(0, 0, 0, 0.7);
-        transform: scale(1.05);
-    }
+        /* ===== HEADER ===== */
+        header {
+            background: #ffffff;
+            padding: 1.5rem 2rem 1rem 2rem;
+            border-bottom: 1px solid #e8e0d5;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
 
-    .modal-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 0;
-        max-height: 85vh;
-        overflow: hidden;
-    }
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
 
-    .modal-imagen {
-        background: #faf7f2;
-        padding: 2rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        overflow-y: auto;
-    }
+        .logo a {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #4a3728;
+            text-decoration: none;
+        }
 
-    .modal-imagen img {
-        width: 100%;
-        max-height: 400px;
-        object-fit: contain;
-        border-radius: 16px;
-    }
+        .logo a:hover {
+            color: #b87c4e;
+        }
 
-    .modal-imagen-placeholder {
-        width: 100%;
-        aspect-ratio: 1;
-        background: #f5f0ea;
-        border-radius: 16px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 5rem;
-    }
+        .nav {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
 
-    .modal-info {
-        padding: 1.5rem;
-        background: white;
-        overflow-y: auto;
-        max-height: 85vh;
-    }
+        .nav a {
+            color: #4a3728;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s;
+        }
 
-    .modal-info::-webkit-scrollbar {
-        width: 6px;
-    }
+        .nav a:hover {
+            color: #b87c4e;
+        }
 
-    .modal-info::-webkit-scrollbar-track {
-        background: #f0ebe4;
-        border-radius: 10px;
-    }
+        .nav .btn-inicio {
+            background: #b87c4e;
+            color: white;
+            padding: 0.5rem 1.2rem;
+            border-radius: 50px;
+            transition: all 0.3s;
+            text-transform: none;
+        }
 
-    .modal-info::-webkit-scrollbar-thumb {
-        background: #b87c4e;
-        border-radius: 10px;
-    }
+        .nav .btn-inicio:hover {
+            background: #9a663f;
+            color: white;
+            transform: scale(1.02);
+        }
 
-    .modal-info h2 {
-        color: #4a3728;
-        font-size: 1.6rem;
-        margin-bottom: 0.5rem;
-        padding-right: 2rem;
-    }
+        .nav .admin-link {
+            font-size: 0.7rem;
+            color: #c4b8ac;
+            text-transform: none;
+        }
 
-    .modal-codigo {
-        font-family: monospace;
-        background: #f5f0ea;
-        padding: 0.3rem 0.8rem;
-        border-radius: 20px;
-        display: inline-block;
-        font-size: 0.75rem;
-        color: #8b7a6b;
-        margin-bottom: 1rem;
-    }
+        .nav .admin-link:hover {
+            color: #b87c4e;
+        }
 
-    .modal-detalle {
-        margin: 1rem 0;
-    }
+        /* ===== DROPDOWN ===== */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
 
-    .modal-detalle p {
-        margin: 0.5rem 0;
-        font-size: 0.9rem;
-        color: #4a3728;
-    }
+        .dropbtn {
+            background: none;
+            border: none;
+            color: #4a3728;
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: color 0.3s;
+            font-family: 'Inter', sans-serif;
+        }
 
-    .modal-detalle strong {
-        color: #4a3728;
-        width: 100px;
-        display: inline-block;
-    }
+        .dropbtn:hover {
+            color: #b87c4e;
+        }
 
-    .modal-precio {
-        font-size: 1.8rem;
-        font-weight: 600;
-        color: #b87c4e;
-        margin: 1rem 0;
-        text-align: center;
-        background: #faf7f2;
-        padding: 0.8rem;
-        border-radius: 12px;
-    }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background: #ffffff;
+            min-width: 200px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.05);
+            z-index: 1;
+            top: 100%;
+            left: 0;
+            margin-top: 0.5rem;
+            border: 1px solid #e8e0d5;
+            border-radius: 8px;
+            overflow: hidden;
+        }
 
-    /* Tallas con scroll */
-    .tallas-scroll-container {
-        max-height: 250px;
-        overflow-y: auto;
-        margin: 1rem 0;
-        padding-right: 5px;
-    }
+        .dropdown-content a {
+            color: #4a3728 !important;
+            padding: 0.8rem 1.2rem;
+            text-decoration: none;
+            display: block;
+            font-size: 0.8rem;
+            text-transform: none;
+            letter-spacing: normal;
+            background: white;
+            border-bottom: 1px solid #f0ebe4;
+        }
 
-    .tallas-scroll-container::-webkit-scrollbar {
-        width: 5px;
-    }
+        .dropdown-content a:hover {
+            background: #faf7f2;
+            color: #b87c4e !important;
+            padding-left: 1.5rem;
+        }
 
-    .tallas-scroll-container::-webkit-scrollbar-track {
-        background: #f0ebe4;
-        border-radius: 10px;
-    }
+        .dropdown-content a:last-child {
+            border-bottom: none;
+        }
 
-    .tallas-scroll-container::-webkit-scrollbar-thumb {
-        background: #b87c4e;
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        /* ===== MAIN ===== */
+        main {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        main h2 {
+            font-size: 2rem;
+            color: #4a3728;
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+
+        main > p {
+            text-align: center;
+            color: #8b7a6b;
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+
+        /* ===== BUSCADOR ===== */
+        .buscador-container {
+            max-width: 400px;
+            margin: 0 auto 2rem auto;
+        }
+
+        .buscador-input {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            border: 1px solid #e8e0d5;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            background: #ffffff;
+            transition: all 0.3s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .buscador-input:focus {
+            outline: none;
+            border-color: #b87c4e;
+            box-shadow: 0 0 0 3px rgba(184, 124, 78, 0.1);
+        }
+
+        /* ===== GRID PRODUCTOS ===== */
+        .grid-productos {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .producto-card {
+            background: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.3s;
+            border: 1px solid #f0ebe4;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .producto-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.05);
+            border-color: #e0d5ca;
+        }
+
+        .producto-imagen {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            background: #f5f0ea;
+        }
+
+        .producto-sin-imagen {
+            width: 100%;
+            height: 280px;
+            background: #f5f0ea;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+        }
+
+        .producto-info {
+            padding: 1.5rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .producto-titulo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #4a3728;
+            margin: 0 0 0.5rem 0;
+        }
+
+        .producto-detalle {
+            font-size: 0.8rem;
+            color: #8b7a6b;
+            margin: 0.5rem 0;
+        }
+
+        .producto-colores {
+            display: flex;
+            gap: 6px;
+            margin: 10px 0;
+            flex-wrap: wrap;
+        }
+
+        .color-circulo {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 1px solid #e8e0d5;
+            transition: transform 0.2s;
+        }
+
+        .color-circulo:hover {
+            transform: scale(1.1);
+        }
+
+        .producto-precio {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #b87c4e;
+            margin: 0.8rem 0;
+        }
+
+        .producto-btn {
+            width: 100%;
+            padding: 0.8rem;
+            background: none;
+            border: 1px solid #d4c9bd;
+            border-radius: 50px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #4a3728;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: auto;
+        }
+
+        .producto-btn:hover {
+            background: #b87c4e;
+            border-color: #b87c4e;
+            color: white;
+        }
+
+        /* ===== MODAL ===== */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-contenido {
+            background: #ffffff;
+            margin: 5% auto;
+            padding: 2rem;
+            width: 90%;
+            max-width: 900px;
+            border-radius: 12px;
+            position: relative;
+            border: 1px solid #e8e0d5;
+        }
+
+        .modal-cerrar {
+            position: absolute;
+            right: 1.5rem;
+            top: 1rem;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: #8b7a6b;
+            transition: color 0.3s;
+        }
+
+        .modal-cerrar:hover {
+            color: #b87c4e;
+        }
+
+        .modal-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .modal-imagen img {
+            width: 100%;
+            border-radius: 8px;
+        }
+
+        .modal-imagen-placeholder {
+            width: 100%;
+            aspect-ratio: 1;
+            background: #f5f0ea;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+            border-radius: 8px;
+        }
+
+        .modal-info h2 {
+            color: #4a3728;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .modal-codigo {
+            font-family: monospace;
+            background: #f5f0ea;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            display: inline-block;
+            font-size: 0.8rem;
+            color: #8b7a6b;
+            margin-bottom: 1rem;
+        }
+
+        .modal-detalle {
+            margin: 1.5rem 0;
+        }
+
+        .modal-detalle p {
+            margin: 0.8rem 0;
+            color: #4a3728;
+        }
+
+        .modal-precio {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #b87c4e;
+            margin: 1.5rem 0;
+        }
+
+        .modal-stock {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-left: 0.5rem;
+        }
+
+        .stock-disponible { background: #e8f0e8; color: #5a7a5a; }
+        .stock-bajo { background: #fdf0e0; color: #b87c4e; }
+        .stock-agotado { background: #f5e8e8; color: #b55a5a; }
+
+        .modal-botones {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 50px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-consultar {
+            background: #b87c4e;
+            color: white;
+        }
+
+        .btn-consultar:hover {
+            background: #9a663f;
+        }
+
+        .btn-cerrar {
+            background: #f5f0ea;
+            color: #4a3728;
+        }
+
+        .btn-cerrar:hover {
+            background: #e8e0d5;
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: #8b7a6b;
+            font-size: 0.8rem;
+            border-top: 1px solid #e8e0d5;
+            margin-top: 3rem;
+            background: white;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+
+        .footer-links a {
+            color: #8b7a6b;
+            text-decoration: none;
+            font-size: 0.75rem;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: #b87c4e;
+        }
+
+        /* ===== WHATSAPP FLOTANTE ===== */
+        .whatsapp-float {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #25D366;
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+            z-index: 1000;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .whatsapp-float:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .header-top {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .nav {
+                justify-content: center;
+                gap: 0.8rem;
+            }
+
+            .nav a, .dropbtn {
+                font-size: 0.75rem;
+            }
+
+            .grid-productos {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                gap: 1rem;
+            }
+
+            .producto-imagen, .producto-sin-imagen {
+                height: 180px;
+            }
+
+            .producto-info {
+                padding: 0.8rem;
+            }
+
+            .producto-titulo {
+                font-size: 1rem;
+            }
+
+            .producto-precio {
+                font-size: 1.1rem;
+            }
+
+            .modal-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-contenido {
+                margin: 2% auto;
+                width: 95%;
+                padding: 1rem;
+            }
+
+            .modal-info h2 {
+                font-size: 1.3rem;
+            }
+
+            .modal-precio {
+                font-size: 1.5rem;
+            }
+
+            .dropdown-content {
+                position: static;
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .grid-productos {
+                grid-template-columns: 1fr 1fr;
+                gap: 0.8rem;
+            }
+
+            .producto-imagen, .producto-sin-imagen {
+                height: 140px;
+            }
+
+            .producto-info {
+                padding: 0.6rem;
+            }
+
+            .producto-titulo {
+                font-size: 0.85rem;
+            }
+
+            .producto-precio {
+                font-size: 0.95rem;
+            }
+
+            .producto-btn {
+                font-size: 0.7rem;
+                padding: 0.5rem;
+            }
+
+            main {
+                padding: 0 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-top">
+            <div class="logo">
+                <a href="index.html">🌸 Modas La 34</a>
+            </div>
+            <nav class="nav">
+                <a href="index.html" class="btn-inicio">🏠 Inicio</a>
+                <div class="dropdown">
+                    <button class="dropbtn">Colección ▼</button>
+                    <div class="dropdown-content">
+                        <a href="#" onclick="filtrarPorCategoria('todos')">✨ Todos los productos</a>
+                        <a href="#" onclick="filtrarPorCategoria('vestidos')">👗 Vestidos</a>
+                        <a href="#" onclick="filtrarPorCategoria('blusas')">👚 Blusas</a>
+                        <a href="#" onclick="filtrarPorCategoria('pantalones')">👖 Pantalones</a>
+                        <a href="#" onclick="filtrarPorCategoria('deportivo')">⚽ Deportivo</a>
+                        <a href="#" onclick="filtrarPorCategoria('caballero')">👔 Caballero</a>
+                        <a href="#" onclick="filtrarPorCategoria('accesorios')">🎀 Accesorios</a>
+                    </div>
+                </div>
+                <a href="index.html#novedades">🌿 Novedades</a>
+                <a href="admin/login.html" class="admin-link">🔑 Admin</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <h2>🛍️ Nuestro Catálogo</h2>
+        <p>Explora todas nuestras prendas con esencia y estilo atemporal</p>
+
+        <div class="buscador-container">
+            <input type="text" id="buscador-productos" placeholder="🔍 Buscar productos..." class="buscador-input">
+        </div>
+
+        <div class="grid-productos" id="catalogo-productos">
+            <div class="producto-card">
+                <div class="producto-sin-imagen">🌿</div>
+                <div class="producto-info">
+                    <h3 class="producto-titulo">Cargando...</h3>
+                    <p class="producto-precio">$0</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- MODAL DE PRODUCTO -->
+    <div id="modal-producto" class="modal" style="display: none;">
+        <div class="modal-contenido">
+            <span class="modal-cerrar" onclick="cerrarModal()">&times;</span>
+            <div id="modal-contenido-producto"></div>
+        </div>
+    </div>
+
+    <!-- WHATSAPP FLOTANTE -->
+    <a href="https://wa.me/573001234567?text=Hola%20Modas%20La%2034%2C%20vi%20el%20catálogo%20y%20me%20interesa%20un%20producto" 
+       class="whatsapp-float" 
+       target="_blank" 
+       title="Contáctanos por WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <footer>
+        <p>© 2026 Modas La 34 — Diseño atemporal para almas libres</p>
+        <div class="footer-links">
+            <a href="index.html">🏠 Inicio</a>
+            <a href="https://wa.me/573001234567" target="_blank">💬 WhatsApp</a>
+            <a href="admin/login.html">🔑 Administración</a>
+        </div>
+    </footer>
+
+    <script src="js/supabase-config.js"></script>
+    <script>
+        // ============================================
+        // 🌸 CATÁLOGO - MODAS LA 34
+        // ============================================
+
+        let todosLosProductos = [];
+        let categoriaActual = 'todos';
+        let productoActual = null;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await cargarProductos();
+            configurarBuscador();
+        });
+
+        async function cargarProductos() {
+            try {
+                const catalogo = document.getElementById('catalogo-productos');
+                catalogo.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 2rem;">Cargando productos...</div>';
+
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/vista_productos_completa?order=nombre`, {
+                    headers: { 'apikey': SUPABASE_KEY }
+                });
+
+                if (!response.ok) throw new Error('Error al cargar productos');
+
+                todosLosProductos = await response.json();
+                console.log('✅ Productos cargados:', todosLosProductos.length);
+                mostrarProductos('todos');
+
+            } catch (error) {
+                console.error('❌ Error:', error);
+                document.getElementById('catalogo-productos').innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: #b87c4e;">
+                        ❌ Error al cargar los productos. Intenta de nuevo más tarde.
+                    </div>
+                `;
+            }
+        }
+
+        function filtrarPorCategoria(categoria) {
+            categoriaActual = categoria;
+            mostrarProductos(categoria);
+            
+            const dropbtn   background: #b87c4e;
         border-radius: 10px;
     }
 
