@@ -913,3 +913,85 @@ h1, h2, h3 {
         flex-direction: column;
     }
 }
+
+
+/* ============================================
+   ESTILOS FALTANTES PARA EL CATÁLOGO
+   ============================================ */
+
+/* Header inner */
+.header-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+/* Botón de navegación */
+.btn-nav {
+    background: #b87c4e;
+    color: white !important;
+    padding: 0.5rem 1.5rem;
+    border-radius: 30px;
+    letter-spacing: 0.5px;
+    transition: all 0.3s;
+    text-transform: none !important;
+}
+.btn-nav:hover {
+    background: #9a663f;
+    transform: translateY(-2px);
+    color: white !important;
+}
+
+/* WhatsApp flotante (coincide con el HTML) */
+.wa-float {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    background: #25D366;
+    color: white;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    box-shadow: 0 4px 20px rgba(37,211,102,0.25);
+    z-index: 999;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+.wa-float:hover {
+    transform: scale(1.05);
+    background: #1da851;
+    color: white;
+}
+
+/* Footer (selector de etiqueta) */
+footer {
+    text-align: center;
+    padding: 2.5rem;
+    color: #8b7a6b;
+    font-size: 0.8rem;
+    border-top: 1px solid #f0e6dc;
+    margin-top: 3rem;
+    background: white;
+}
+
+/* Estilos para el modal activo */
+.modal.active {
+    display: flex !important;
+}
+
+/* Ajuste para el dropdown en móvil */
+@media (max-width: 768px) {
+    .dropdown-content {
+        position: static;
+        width: 100%;
+        margin-top: 0.5rem;
+    }
+}
