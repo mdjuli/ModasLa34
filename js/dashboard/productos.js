@@ -358,6 +358,16 @@ function getVariantesFromForm() {
 // ============================================
 
 async function guardarProductoBase() {
+
+    // Dentro de guardarProductoBase, al crear el productoBase
+    const productoBase = {
+        codigo: codigo,
+        nombre: nombre,
+        categoria: categoria,
+        imagen_url: document.getElementById('producto-imagen')?.value || null,
+        visible: document.getElementById('producto-visible')?.value === 'true'  // ← NUEVO
+    };
+    
     try {
         const token = JSON.parse(localStorage.getItem('admin_token'));
         
@@ -496,6 +506,10 @@ async function guardarProductoBase() {
 // ============================================
 
 async function editarProducto(id) {
+
+// Dentro de editarProducto, al cargar los datos
+document.getElementById('producto-visible').value = producto.visible ? 'true' : 'false';
+    
     try {
         const response = await fetch(`${SUPABASE_URL}/rest/v1/productos_base?id=eq.${id}`, {
             headers: { 'apikey': SUPABASE_KEY }
