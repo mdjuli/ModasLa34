@@ -34,16 +34,18 @@ async function cargarProductos() {
             const searchInput = document.getElementById('search-productos');
             const categoriaSelect = document.getElementById('filter-categoria-productos');
             const stockSelect = document.getElementById('filter-stock-productos');
+            const visibilidadSelect = document.getElementById('filter-visibilidad');
             
             if (searchInput) searchInput.addEventListener('input', aplicarFiltrosProductos);
             if (categoriaSelect) categoriaSelect.addEventListener('change', aplicarFiltrosProductos);
             if (stockSelect) stockSelect.addEventListener('change', aplicarFiltrosProductos);
+            if (visibilidadSelect) visibilidadSelect.addEventListener('change', aplicarFiltrosProductos);
         }, 100);
         
     } catch (error) {
         console.error('Error:', error);
         const tbody = document.querySelector('#tabla-productos tbody');
-        if (tbody) tbody.innerHTML = '<tr><td colspan="8">Error al cargar productos</td></tr>';
+        if (tbody) tbody.innerHTML = '<tr><td colspan="9">Error al cargar productos</td></tr>';
     }
 }
 
@@ -52,7 +54,7 @@ function mostrarTablaProductos(productos) {
     if (!tbody) return;
     
     if (productos.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="8" style="text-align: center;">No hay productos registrados</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="9" style="text-align: center;">No hay productos registrados</td></tr>';
         return;
     }
     
@@ -64,6 +66,11 @@ function mostrarTablaProductos(productos) {
         const precioMax = Math.max(...precios);
         const precioTexto = precioMin === precioMax ? `$${precioMin.toLocaleString()}` : `$${precioMin.toLocaleString()} - $${precioMax.toLocaleString()}`;
         
+        // 👇 INDICADOR DE VISIBILIDAD
+        const visibilidad = p.visible !== false ? '✅' : '🔒';
+        const claseVisibilidad = p.visible !== false ? 'visible' : 'oculto';
+        const tituloVisibilidad = p.visible !== false ? 'Visible en catálogo' : 'Oculto en catálogo';
+        
         return `<tr>
             <td>${p.imagen_url ? `<img src="${p.imagen_url}" style="width:50px;height:50px;object-fit:cover;border-radius:10px;">` : `<div style="width:50px;height:50px;background:#f5ede8;border-radius:10px;display:flex;align-items:center;justify-content:center;">${getEmojiCategoria(p.categoria)}</div>`}</td>
             <td>${p.codigo || '-'}</td>
@@ -72,6 +79,11 @@ function mostrarTablaProductos(productos) {
             <td>${variantes.length} tallas</td>
             <td>${totalStock}</td>
             <td>${precioTexto}</td>
+            <td>
+                <span class="badge-visible ${claseVisibilidad}" title="${tituloVisibilidad}">
+                    ${visibilidad}
+                </span>
+            </td>
             <td>
                 <button class="action-btn" onclick="editarProducto(${p.id})" title="Editar">✏️</button>
                 <button class="action-btn" onclick="verVariantes(${p.id})" title="Variantes">📋</button>
@@ -217,16 +229,13 @@ function validarHexColor(colorId, valor) {
     
     let hex = valor.trim();
     
-    // Agregar # si no tiene
     if (!hex.startsWith('#')) {
         hex = '#' + hex;
     }
     
-    // Validar formato hexadecimal (6 caracteres después de #)
     const hexPattern = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
     
     if (hexPattern.test(hex)) {
-        // Si es formato corto (3 dígitos), convertirlo a 6
         if (hex.length === 4) {
             hex = '#' + hex[1] + hex[1] + hex[2] + hex[2] + hex[3] + hex[3];
         }
@@ -255,7 +264,6 @@ function obtenerColoresFromForm(varianteId) {
     colorRows.forEach(row => {
         const colorId = row.id.replace('color-', '');
         
-        // Para "sin color"
         if (row.classList.contains('sin-color-item')) {
             const stockInput = document.getElementById(`color-stock-${colorId}`);
             const stock = parseInt(stockInput?.value) || 0;
@@ -267,13 +275,11 @@ function obtenerColoresFromForm(varianteId) {
                 });
             }
         } else {
-            // Para colores con nombre y código hexadecimal
             const nombreInput = document.getElementById(`color-nombre-${colorId}`);
             const hexTextInput = document.getElementById(`color-hex-text-${colorId}`);
             const colorPicker = document.getElementById(`color-hex-${colorId}`);
             const stockInput = document.getElementById(`color-stock-${colorId}`);
             
-            // Obtener el valor hexadecimal (priorizar el texto si es válido)
             let hexValue = '#d4a5a9';
             
             if (hexTextInput && hexTextInput.value) {
@@ -287,7 +293,6 @@ function obtenerColoresFromForm(varianteId) {
                 hexValue = colorPicker.value;
             }
             
-            // Asegurar formato de 6 dígitos
             if (hexValue.length === 4) {
                 hexValue = '#' + hexValue[1] + hexValue[1] + hexValue[2] + hexValue[2] + hexValue[3] + hexValue[3];
             }
@@ -331,10 +336,8 @@ function getVariantesFromForm() {
             return [];
         }
         
-        // Usar la nueva función para obtener colores
         const colores = obtenerColoresFromForm(i);
         
-        // Si no hay colores válidos, crear uno por defecto
         if (colores.length === 0) {
             colores.push({ nombre: 'Sin color', codigo: '#d4a5a9', stock: 0 });
         }
@@ -358,22 +361,13 @@ function getVariantesFromForm() {
 // ============================================
 
 async function guardarProductoBase() {
-
-    // Dentro de guardarProductoBase, al crear el productoBase
-    const productoBase = {
-        codigo: codigo,
-        nombre: nombre,
-        categoria: categoria,
-        imagen_url: document.getElementById('producto-imagen')?.value || null,
-        visible: document.getElementById('producto-visible')?.value === 'true'  // ← NUEVO
-    };
-    
     try {
         const token = JSON.parse(localStorage.getItem('admin_token'));
         
         const codigo = document.getElementById('producto-codigo')?.value;
         const nombre = document.getElementById('producto-nombre')?.value;
         const categoria = document.getElementById('producto-categoria')?.value;
+        const visible = document.getElementById('producto-visible')?.value === 'true';
         
         if (!codigo || !nombre || !categoria) {
             mostrarAlerta('Código, nombre y categoría son obligatorios', 'error');
@@ -403,7 +397,8 @@ async function guardarProductoBase() {
                 codigo: codigo,
                 nombre: nombre,
                 categoria: categoria,
-                imagen_url: document.getElementById('producto-imagen')?.value || null
+                imagen_url: document.getElementById('producto-imagen')?.value || null,
+                visible: visible
             };
             
             await fetch(`${SUPABASE_URL}/rest/v1/productos_base?id=eq.${productoId}`, {
@@ -429,7 +424,8 @@ async function guardarProductoBase() {
                 codigo: codigo,
                 nombre: nombre,
                 categoria: categoria,
-                imagen_url: document.getElementById('producto-imagen')?.value || null
+                imagen_url: document.getElementById('producto-imagen')?.value || null,
+                visible: visible
             };
             
             const response = await fetch(`${SUPABASE_URL}/rest/v1/productos_base`, {
@@ -506,10 +502,6 @@ async function guardarProductoBase() {
 // ============================================
 
 async function editarProducto(id) {
-
-// Dentro de editarProducto, al cargar los datos
-document.getElementById('producto-visible').value = producto.visible ? 'true' : 'false';
-    
     try {
         const response = await fetch(`${SUPABASE_URL}/rest/v1/productos_base?id=eq.${id}`, {
             headers: { 'apikey': SUPABASE_KEY }
@@ -529,6 +521,7 @@ document.getElementById('producto-visible').value = producto.visible ? 'true' : 
         document.getElementById('producto-nombre').value = producto.nombre || '';
         document.getElementById('producto-categoria').value = producto.categoria || '';
         document.getElementById('producto-imagen').value = producto.imagen_url || '';
+        document.getElementById('producto-visible').value = producto.visible ? 'true' : 'false';
         
         if (variantes.length > 0 && variantes[0].precio_compra) {
             document.getElementById('producto-precio-compra').value = variantes[0].precio_compra;
@@ -563,48 +556,47 @@ document.getElementById('producto-visible').value = producto.visible ? 'true' : 
                     const coloresContainer = document.getElementById(`colores-${varianteId}-container`);
                     const colores = v.colores || [];
                     
-                        colores.forEach(color => {
-                            const colorId = `${varianteId}-color-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`;
-                            let colorHTML = '';
-                            
-                            if (color.nombre === null && color.codigo === null) {
-                                // Sin color
-                                colorHTML = `
-                                    <div class="color-row sin-color-item" id="color-${colorId}">
-                                        <span style="font-size: 1.5rem;">⚪</span>
-                                        <span style="flex: 1; font-weight: 500;">Sin color específico</span>
-                                        <input type="number" id="color-stock-${colorId}" value="${color.stock}" style="width: 80px;">
-                                        <button type="button" onclick="eliminarColor('${colorId}')">🗑️</button>
+                    colores.forEach(color => {
+                        const colorId = `${varianteId}-color-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`;
+                        let colorHTML = '';
+                        
+                        if (color.nombre === null && color.codigo === null) {
+                            colorHTML = `
+                                <div class="color-row sin-color-item" id="color-${colorId}">
+                                    <span style="font-size: 1.5rem;">⚪</span>
+                                    <span style="flex: 1; font-weight: 500;">Sin color específico</span>
+                                    <input type="number" id="color-stock-${colorId}" value="${color.stock}" style="width: 80px;">
+                                    <button type="button" onclick="eliminarColor('${colorId}')">🗑️</button>
+                                </div>
+                            `;
+                        } else {
+                            const hexValue = color.codigo || '#d4a5a9';
+                            colorHTML = `
+                                <div class="color-row" id="color-${colorId}">
+                                    <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; width: 100%;">
+                                        <input type="color" id="color-hex-${colorId}" value="${hexValue}" class="color-picker" 
+                                               style="width: 45px; height: 40px; border-radius: 8px; cursor: pointer;"
+                                               onchange="actualizarHexTexto('${colorId}')">
+                                        <input type="text" id="color-hex-text-${colorId}" value="${hexValue}" 
+                                               placeholder="#RRGGBB" class="color-hex-text" 
+                                               style="flex: 1; min-width: 100px; padding: 0.5rem; border: 1px solid #f0e4d8; border-radius: 8px;"
+                                               oninput="validarHexColor('${colorId}', this.value)">
+                                        <input type="text" id="color-nombre-${colorId}" value="${color.nombre || ''}" 
+                                               placeholder="Nombre del color" class="color-nombre-input" 
+                                               style="flex: 2; min-width: 120px; padding: 0.5rem; border: 1px solid #f0e4d8; border-radius: 8px;">
+                                        <input type="number" id="color-stock-${colorId}" value="${color.stock}" 
+                                               placeholder="Stock" min="0" class="color-stock-input" 
+                                               style="width: 80px; padding: 0.5rem; border: 1px solid #f0e4d8; border-radius: 8px;">
+                                        <button type="button" onclick="eliminarColor('${colorId}')" class="btn-eliminar-color" 
+                                                style="background: none; border: none; color: #e74c3c; cursor: pointer; font-size: 1.2rem;">
+                                            🗑️
+                                        </button>
                                     </div>
-                                `;
-                            } else {
-                                const hexValue = color.codigo || '#d4a5a9';
-                                colorHTML = `
-                                    <div class="color-row" id="color-${colorId}">
-                                        <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; width: 100%;">
-                                            <input type="color" id="color-hex-${colorId}" value="${hexValue}" class="color-picker" 
-                                                   style="width: 45px; height: 40px; border-radius: 8px; cursor: pointer;"
-                                                   onchange="actualizarHexTexto('${colorId}')">
-                                            <input type="text" id="color-hex-text-${colorId}" value="${hexValue}" 
-                                                   placeholder="#RRGGBB" class="color-hex-text" 
-                                                   style="flex: 1; min-width: 100px; padding: 0.5rem; border: 1px solid #f0e4d8; border-radius: 8px;"
-                                                   oninput="validarHexColor('${colorId}', this.value)">
-                                            <input type="text" id="color-nombre-${colorId}" value="${color.nombre || ''}" 
-                                                   placeholder="Nombre del color" class="color-nombre-input" 
-                                                   style="flex: 2; min-width: 120px; padding: 0.5rem; border: 1px solid #f0e4d8; border-radius: 8px;">
-                                            <input type="number" id="color-stock-${colorId}" value="${color.stock}" 
-                                                   placeholder="Stock" min="0" class="color-stock-input" 
-                                                   style="width: 80px; padding: 0.5rem; border: 1px solid #f0e4d8; border-radius: 8px;">
-                                            <button type="button" onclick="eliminarColor('${colorId}')" class="btn-eliminar-color" 
-                                                    style="background: none; border: none; color: #e74c3c; cursor: pointer; font-size: 1.2rem;">
-                                                🗑️
-                                            </button>
-                                        </div>
-                                    </div>
-                                `;
-                            }
-                            coloresContainer.insertAdjacentHTML('beforeend', colorHTML);
-                        });
+                                </div>
+                            `;
+                        }
+                        coloresContainer.insertAdjacentHTML('beforeend', colorHTML);
+                    });
                     
                     varianteCount++;
                 });
@@ -980,6 +972,7 @@ function aplicarFiltrosProductos() {
     const searchTerm = document.getElementById('search-productos')?.value.toLowerCase() || '';
     const categoria = document.getElementById('filter-categoria-productos')?.value || '';
     const stockFilter = document.getElementById('filter-stock-productos')?.value || '';
+    const visibilidad = document.getElementById('filter-visibilidad')?.value || '';
     
     rows.forEach(row => {
         let mostrar = true;
@@ -994,6 +987,14 @@ function aplicarFiltrosProductos() {
         if (mostrar && stockFilter === 'bajo' && stock >= 5) mostrar = false;
         if (mostrar && stockFilter === 'agotado' && stock > 0) mostrar = false;
         
+        // 👇 NUEVO FILTRO DE VISIBILIDAD
+        if (mostrar && visibilidad) {
+            const badge = row.querySelector('.badge-visible');
+            const esVisible = badge?.textContent.includes('✅');
+            if (visibilidad === 'visible' && !esVisible) mostrar = false;
+            if (visibilidad === 'oculto' && esVisible) mostrar = false;
+        }
+        
         row.style.display = mostrar ? '' : 'none';
     });
 }
@@ -1002,10 +1003,12 @@ function limpiarFiltrosProductos() {
     const searchInput = document.getElementById('search-productos');
     const categoriaSelect = document.getElementById('filter-categoria-productos');
     const stockSelect = document.getElementById('filter-stock-productos');
+    const visibilidadSelect = document.getElementById('filter-visibilidad');
     
     if (searchInput) searchInput.value = '';
     if (categoriaSelect) categoriaSelect.value = '';
     if (stockSelect) stockSelect.value = '';
+    if (visibilidadSelect) visibilidadSelect.value = '';
     aplicarFiltrosProductos();
 }
 
