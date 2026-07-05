@@ -357,6 +357,15 @@
         .estado-pendiente { background: #fff3e0; color: #ef6c00; }
         .estado-recibida { background: #e3f2fd; color: #1565c0; }
 
+        /* Badge de visibilidad */
+        .badge-visible {
+            font-size: 1rem;
+            cursor: default;
+        }
+        .badge-visible.oculto {
+            opacity: 0.5;
+        }
+
         /* ===== FORMULARIOS MODALES ===== */
         .form-modal {
             display: none;
@@ -482,6 +491,7 @@
             flex-wrap: wrap;
         }
         .color-picker { width: 40px; height: 40px; border: 1px solid #f0e4d8; border-radius: 8px; cursor: pointer; }
+        .color-hex-text { flex: 1; min-width: 100px; padding: 0.5rem; border: 1px solid #f0e4d8; border-radius: 8px; }
         .color-nombre-input { flex: 2; min-width: 120px; padding: 0.5rem; border: 1px solid #f0e4d8; border-radius: 8px; }
         .color-stock-input { width: 80px; padding: 0.5rem; border: 1px solid #f0e4d8; border-radius: 8px; text-align: center; }
 
@@ -584,11 +594,37 @@
                 <div class="search-box"><i class="fas fa-search"></i><input type="text" id="search-productos" placeholder="Buscar por nombre, código..."></div>
                 <div class="filter-group"><i class="fas fa-tag"></i><select id="filter-categoria-productos"><option value="">Todas</option><option value="vestidos">👗 Vestidos</option><option value="blusas">👚 Blusas</option><option value="pantalones">👖 Pantalones</option><option value="deportivo">⚽ Deportivo</option><option value="caballero">👔 Caballero</option><option value="accesorios">🎀 Accesorios</option></select></div>
                 <div class="filter-group"><i class="fas fa-chart-line"></i><select id="filter-stock-productos"><option value="">Todos</option><option value="bajo">Stock bajo (&lt;5)</option><option value="agotado">Agotados</option></select></div>
+                <!-- NUEVO FILTRO DE VISIBILIDAD -->
+                <div class="filter-group">
+                    <i class="fas fa-eye"></i>
+                    <select id="filter-visibilidad">
+                        <option value="">Todos</option>
+                        <option value="visible">✅ Visibles</option>
+                        <option value="oculto">🔒 Ocultos</option>
+                    </select>
+                </div>
                 <button class="btn-clear" onclick="limpiarFiltrosProductos()"><i class="fas fa-eraser"></i> Limpiar</button>
             </div>
             <div class="data-card">
                 <div class="data-header"><h2><i class="fas fa-list"></i> Productos Registrados</h2><button class="add-btn" onclick="mostrarFormulario('producto')">+ Nuevo Producto</button></div>
-                <div class="table-responsive"><table class="data-table" id="tabla-productos"><thead><tr><th>Imagen</th><th>Código</th><th>Nombre</th><th>Categoría</th><th>Colores</th><th>Tallas</th><th>Stock</th><th>Precio</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="8">Cargando...</tr></tbody></table></div>
+                <div class="table-responsive">
+                    <table class="data-table" id="tabla-productos">
+                        <thead>
+                            <tr>
+                                <th>Imagen</th>
+                                <th>Código</th>
+                                <th>Nombre</th>
+                                <th>Categoría</th>
+                                <th>Tallas</th>
+                                <th>Stock</th>
+                                <th>Precio</th>
+                                <th>👁️ Visibilidad</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody><tr><td colspan="9">Cargando...</td></tr></tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
@@ -599,8 +635,8 @@
                 <div class="stat-card"><div class="stat-icon">❌</div><div><h3 id="stock-agotado-count">0</h3><p>Agotados</p></div></div>
                 <div class="stat-card"><div class="stat-icon">✅</div><div><h3 id="stock-normal-count">0</h3><p>Stock normal</p></div></div>
             </div>
-            <div class="table-container"><h3>⚠️ Stock bajo (&lt;5 unidades)</h3><table class="data-table" id="tabla-stock-bajo"><thead><tr><th>Producto</th><th>Talla</th><th>Color</th><th>Stock</th><th>Acción</th></tr></thead><tbody id="stock-bajo-body"><tr><td colspan="5">Cargando...</tr></tbody></table></div>
-            <div class="table-container"><h3>❌ Productos agotados</h3><table class="data-table" id="tabla-stock-agotado"><thead><tr><th>Producto</th><th>Talla</th><th>Color</th><th>Estado</th><th>Acción</th></tr></thead><tbody id="stock-agotado-body"><tr><td colspan="5">Cargando...</tr></tbody></table></div>
+            <div class="table-container"><h3>⚠️ Stock bajo (&lt;5 unidades)</h3><table class="data-table" id="tabla-stock-bajo"><thead><tr><th>Producto</th><th>Talla</th><th>Color</th><th>Stock</th><th>Acción</th></tr></thead><tbody id="stock-bajo-body"><tr><td colspan="5">Cargando...</td></tr></tbody></table></div>
+            <div class="table-container"><h3>❌ Productos agotados</h3><table class="data-table" id="tabla-stock-agotado"><thead><tr><th>Producto</th><th>Talla</th><th>Color</th><th>Estado</th><th>Acción</th></tr></thead><tbody id="stock-agotado-body"><tr><td colspan="5">Cargando...</td></tr></tbody></table></div>
         </div>
 
         <!-- ==================== MÓDULO COMPRAS ==================== -->
@@ -616,7 +652,7 @@
                 <div class="filter-group"><i class="fas fa-chart-simple"></i><select id="filter-compra-estado"><option value="">Todos</option><option value="Pendiente">Pendiente</option><option value="Recibida">Recibida</option><option value="Pagada">Pagada</option></select></div>
                 <button class="btn-clear" onclick="limpiarFiltrosCompras()"><i class="fas fa-eraser"></i> Limpiar</button>
             </div>
-            <div class="data-card"><div class="data-header"><h2>Historial de Compras</h2><button class="add-btn" onclick="mostrarFormulario('compra')">+ Nueva Compra</button></div><div class="table-responsive"><table class="data-table" id="tabla-compras"><thead><tr><th>Fecha</th><th>Proveedor</th><th>Producto</th><th>Cantidad</th><th>Total</th><th>Estado</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="7">Cargando...</tr></tbody></table></div></div>
+            <div class="data-card"><div class="data-header"><h2>Historial de Compras</h2><button class="add-btn" onclick="mostrarFormulario('compra')">+ Nueva Compra</button></div><div class="table-responsive"><table class="data-table" id="tabla-compras"><thead><tr><th>Fecha</th><th>Proveedor</th><th>Producto</th><th>Cantidad</th><th>Total</th><th>Estado</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="7">Cargando...</td></tr></tbody></table></div></div>
         </div>
 
         <!-- ==================== MÓDULO GASTOS ==================== -->
@@ -624,16 +660,16 @@
             <div class="stats-grid"><div class="stat-card"><div class="stat-header"><span class="stat-title">Gastos del Mes</span><i class="fas fa-coins stat-icon"></i></div><div class="stat-value" id="stats-gastos-mes">$0</div></div></div>
             <div class="filters-section">
                 <div class="search-box"><i class="fas fa-search"></i><input type="text" id="search-gastos" placeholder="Buscar por concepto..."></div>
-                <div class="filter-group"><i class="fas fa-calendar"></i><input type="date" id="filter-gasto-fecha-inicio"></div>
+                                <div class="filter-group"><i class="fas fa-calendar"></i><input type="date" id="filter-gasto-fecha-inicio"></div>
                 <div class="filter-group"><i class="fas fa-calendar"></i><input type="date" id="filter-gasto-fecha-fin"></div>
                 <div class="filter-group"><i class="fas fa-tag"></i><select id="filter-gasto-categoria"><option value="">Todas</option><option value="Alquiler">Alquiler</option><option value="Servicios">Servicios</option><option value="Sueldos">Sueldos</option><option value="Marketing">Marketing</option><option value="Otros">Otros</option></select></div>
                 <button class="btn-clear" onclick="limpiarFiltrosGastos()"><i class="fas fa-eraser"></i> Limpiar</button>
             </div>
-            <div class="data-card"><div class="data-header"><h2>Historial de Gastos</h2><button class="add-btn" onclick="mostrarFormulario('gasto')">+ Nuevo Gasto</button></div><div class="table-responsive"><table class="data-table" id="tabla-gastos"><thead><tr><th>Fecha</th><th>Concepto</th><th>Categoría</th><th>Monto</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="5">Cargando...</tr></tbody></table></div>
+            <div class="data-card"><div class="data-header"><h2>Historial de Gastos</h2><button class="add-btn" onclick="mostrarFormulario('gasto')">+ Nuevo Gasto</button></div><div class="table-responsive"><table class="data-table" id="tabla-gastos"><thead><tr><th>Fecha</th><th>Concepto</th><th>Categoría</th><th>Monto</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="5">Cargando...</td></tr></tbody></table></div>
             </div>
         </div>     
                 
-                  <!-- ==================== MÓDULO PERFILES ==================== -->
+        <!-- ==================== MÓDULO PERFILES ==================== -->
         <div id="modulo-perfiles" class="module-section" style="display: none;">
             <div class="stats-grid">
                 <div class="stat-card"><div class="stat-header"><span class="stat-title">Empleados</span><i class="fas fa-users stat-icon"></i></div><div class="stat-value" id="stats-empleados">0</div></div>
@@ -641,7 +677,7 @@
             </div>
             <div class="data-card">
                 <div class="data-header"><h2><i class="fas fa-users"></i> Usuarios del Sistema</h2><button class="add-btn" onclick="mostrarFormulario('perfil')">+ Nuevo Usuario</button></div>
-                <div class="table-responsive"><table class="data-table" id="tabla-perfiles"><thead></tr><th>Nombre</th><th>Email</th><th>Rol</th><th>Fecha</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="5">Cargando...</tr></tbody></table></div>
+                <div class="table-responsive"><table class="data-table" id="tabla-perfiles"><thead></tr><th>Nombre</th><th>Email</th><th>Rol</th><th>Fecha</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="5">Cargando...</td></tr></tbody></table></div>
             </div>
         </div>
 
@@ -653,7 +689,7 @@
             </div>
             <div class="data-card">
                 <div class="data-header"><h2><i class="fas fa-truck"></i> Proveedores</h2><button class="add-btn" onclick="mostrarFormulario('proveedor')">+ Nuevo Proveedor</button></div>
-                <div class="table-responsive"><table class="data-table" id="tabla-proveedores"><thead></tr><th>Nombre</th><th>Contacto</th><th>Teléfono</th><th>Email</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="5">Cargando...</td></tbody></table></div>
+                <div class="table-responsive"><table class="data-table" id="tabla-proveedores"><thead></tr><th>Nombre</th><th>Contacto</th><th>Teléfono</th><th>Email</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="5">Cargando...</td></tr></tbody></table></div>
             </div>
         </div>
 
@@ -675,7 +711,7 @@
             </div>
             <div class="data-card">
                 <div class="data-header"><h2><i class="fas fa-list"></i> Historial de Ventas</h2><button class="add-btn" onclick="window.open('ventas.html', '_blank')">➕ Nueva Venta</button></div>
-                <div class="table-responsive"><table class="data-table" id="tabla-ventas"><thead><tr><th>ID</th><th>Fecha</th><th>Cliente</th><th>Productos</th><th>Total</th><th>Método</th><th>Estado</th><th>Acciones</th></tr></thead><tbody id="ventas-body"><tr><td colspan="8">Cargando...</td></tbody></table></div>
+                <div class="table-responsive"><table class="data-table" id="tabla-ventas"><thead><tr><th>ID</th><th>Fecha</th><th>Cliente</th><th>Productos</th><th>Total</th><th>Método</th><th>Estado</th><th>Acciones</th></tr></thead><tbody id="ventas-body"><tr><td colspan="8">Cargando...</td></tr></tbody></table></div>
             </div>
         </div>
 
@@ -708,7 +744,7 @@
                     </div>
                     <div class="form-group"><label>🖼️ URL Imagen</label><input type="url" id="producto-imagen" placeholder="https://..."></div>
 
-                    <!-- Agrega esto después del campo URL imagen -->
+                    <!-- ===== VISIBILIDAD EN CATÁLOGO ===== -->
                     <div class="form-group">
                         <label>👁️ Visibilidad en catálogo</label>
                         <select id="producto-visible" style="width: 100%; padding: 0.75rem 1rem; border: 1.5px solid #f0e4d8; border-radius: 14px;">
@@ -831,26 +867,32 @@
         </div>
     </div>
 
-<!-- Primero: Configuración y dependencias -->
-<script src="../js/supabase-config.js"></script>
-<script src="../js/permisos.js"></script>
+    <!-- ==================== SCRIPTS ==================== -->
+    <!-- Primero: Configuración y dependencias -->
+    <script src="../js/supabase-config.js"></script>
+    <script src="../js/permisos.js"></script>
 
-<!-- Segundo: Utilidades (necesarias para todo) -->
-<script src="../js/dashboard/utils.js"></script>
+    <!-- Segundo: Utilidades (necesarias para todo) -->
+    <script src="../js/dashboard/utils.js"></script>
 
-<!-- Tercero: Main (que contiene verificarSesion) -->
-<script src="../js/dashboard/main.js"></script>
+    <!-- Tercero: Main (que contiene verificarSesion) -->
+    <script src="../js/dashboard/main.js"></script>
 
-<!-- Cuarto: Módulos específicos (dependen de main.js) -->
-<script src="../js/dashboard/productos.js"></script>
-<script src="../js/dashboard/compras.js"></script>
-<script src="../js/dashboard/gastos.js"></script>
-<script src="../js/dashboard/perfiles.js"></script>
-<script src="../js/dashboard/proveedores.js"></script>
-<script src="../js/dashboard/ventas.js"></script>
-<script src="../js/dashboard/stock.js"></script>
-<script src="../js/dashboard/contabilidad.js"></script>
-                
+    <!-- Cuarto: Módulos específicos (dependen de main.js) -->
+    <script src="../js/dashboard/productos.js"></script>
+    <script src="../js/dashboard/compras.js"></script>
+    <script src="../js/dashboard/gastos.js"></script>
+    <script src="../js/dashboard/perfiles.js"></script>
+    <script src="../js/dashboard/proveedores.js"></script>
+    <script src="../js/dashboard/ventas.js"></script>
+    <script src="../js/dashboard/stock.js"></script>
+    <script src="../js/dashboard/contabilidad.js"></script>
+
+    <!-- Script de verificación -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('✅ Dashboard cargado correctamente');
+        });
+    </script>
 </body>
 </html>
-          
