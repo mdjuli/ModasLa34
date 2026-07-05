@@ -5,6 +5,11 @@
 // Variable global para almacenar todos los productos
 let todosLosProductos = [];
 let categoriaActual = 'todos';
+let productoActual = null;
+
+// ============================================
+// FUNCIÓN PARA ORDENAR TALLAS
+// ============================================
 
 function ordenarVariantesPorTalla(variantes) {
     const ordenTallas = {
@@ -22,35 +27,12 @@ function ordenarVariantesPorTalla(variantes) {
     });
 }
 
+// ============================================
+// CARGAR PRODUCTOS
+// ============================================
+
 async function cargarProductos() {
     try {
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/vista_productos_completa?visible=eq.true&order=nombre`, {
-            headers: { 'apikey': SUPABASE_KEY }
-        });
-        
-        // ... resto del código
-    } catch (error) {
-        // ...
-    }
-}
-
-// Cargar productos al iniciar la página
-document.addEventListener('DOMContentLoaded', async () => {
-    console.log('🚀 Catálogo iniciado');
-    await cargarProductos();
-    configurarBuscador();
-    
-    // Verificar que el modal existe en el HTML
-    const modal = document.getElementById('modal-producto');
-    if (!modal) {
-        console.error('❌ Modal no encontrado en el HTML');
-    }
-});
-
-// Función para cargar productos desde Supabase
-async function cargarProductos() {
-    try {
-        // Mostrar indicador de carga
         const catalogo = document.getElementById('catalogo-productos');
         if (!catalogo) {
             console.error('❌ No se encontró el elemento catalogo-productos');
@@ -59,8 +41,8 @@ async function cargarProductos() {
         
         catalogo.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 2rem;">Cargando productos...</div>';
         
-        // Usar la vista completa con la nueva estructura
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/vista_productos_completa?order=nombre`, {
+        // ✅ SOLO PRODUCTOS VISIBLES (visible = true)
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/vista_productos_completa?visible=eq.true&order=nombre`, {
             headers: { 'apikey': SUPABASE_KEY }
         });
         
@@ -69,9 +51,8 @@ async function cargarProductos() {
         }
         
         todosLosProductos = await response.json();
-        console.log('✅ Productos cargados:', todosLosProductos);
+        console.log('✅ Productos cargados:', todosLosProductos.length);
         
-        // Mostrar todos los productos inicialmente
         mostrarProductos('todos');
         
     } catch (error) {
@@ -87,34 +68,27 @@ async function cargarProductos() {
     }
 }
 
-// Función para filtrar productos por categoría
-function filtrarPorCategoria(categoria) {
-    categoriaActual = categoria;
-    mostrarProductos(categoria);
-    
-    // Actualizar el texto del menú
-    const dropbtn = document.querySelector('.dropbtn');
-    if (dropbtn) {
-        const nombresCategoria = {
-            'todos': '🔥 Todos los productos',
-            'vestidos': '👗 Vestidos',
-            'blusas': '👚 Blusas',
-            'pantalones': '👖 Pantalones',
-            'deportivo': '⚽ Deportivo',
-            'caballero': '👔 Caballero',
-            'accesorios': '🎀 Accesorios'
-        };
-        dropbtn.innerHTML = `${nombresCategoria[categoria] || 'Inicio'} ▼`;
-    }
+// ============================================
+// FUNCIONES AUXILIARES
+// ============================================
+
+function getEmojiCategoria(cat) {
+    const emojis = {
+        'vestidos': '👗',
+        'blusas': '👚',
+        'pantalones': '👖',
+        'deportivo': '⚽',
+        'caballero': '👔',
+        'accesorios': '🎀'
+    };
+    return emojis[cat] || '📦';
 }
 
-// Función para obtener todas las tallas únicas de un producto
 function obtenerTallasUnicas(producto) {
     const variantes = producto.variantes || [];
     return variantes.map(v => v.talla).filter((v, i, a) => a.indexOf(v) === i);
 }
 
-// Función para obtener todos los colores únicos de un producto
 function obtenerColoresUnicos(producto) {
     const variantes = producto.variantes || [];
     const coloresVistos = new Set();
@@ -136,20 +110,18 @@ function obtenerColoresUnicos(producto) {
     return coloresUnicos;
 }
 
-// Función para obtener el rango de precios
 function obtenerRangoPrecios(producto) {
     const variantes = producto.variantes || [];
     const precios = variantes.map(v => v.precio_venta || 0);
     const min = Math.min(...precios);
     const max = Math.max(...precios);
     
-    if (min === max) {
-        return `$${min.toLocaleString()}`;
+    if (min === max || min === 0) {
+        return `$${max.toLocaleString()}`;
     }
     return `$${min.toLocaleString()} - $${max.toLocaleString()}`;
 }
 
-// Función para obtener el stock total
 function obtenerStockTotal(producto) {
     const variantes = producto.variantes || [];
     let total = 0;
@@ -162,12 +134,15 @@ function obtenerStockTotal(producto) {
     return total;
 }
 
-// Función para mostrar productos según categoría
+// ============================================
+// MOSTRAR PRODUCTOS
+// ============================================
+
 function mostrarProductos(categoria) {
     const catalogo = document.getElementById('catalogo-productos');
     if (!catalogo) return;
     
-    // Filtrar productos
+    // Filtrar productos por categoría
     let productosFiltrados = todosLosProductos;
     
     if (categoria !== 'todos') {
@@ -176,7 +151,6 @@ function mostrarProductos(categoria) {
         );
     }
     
-    // Si no hay productos en la categoría
     if (productosFiltrados.length === 0) {
         catalogo.innerHTML = `
             <div style="grid-column: 1/-1; text-align: center; padding: 3rem; color: #a5a5a5;">
@@ -186,20 +160,6 @@ function mostrarProductos(categoria) {
         return;
     }
     
-    // Función para obtener emoji según categoría
-    function getEmojiCategoria(cat) {
-        const emojis = {
-            'vestidos': '👗',
-            'blusas': '👚',
-            'pantalones': '👖',
-            'deportivo': '⚽',
-            'caballero': '👔',
-            'accesorios': '🎀'
-        };
-        return emojis[cat] || '📦';
-    }
-    
-    // Generar HTML de los productos
     catalogo.innerHTML = productosFiltrados.map(p => {
         const tallasUnicas = obtenerTallasUnicas(p);
         const coloresUnicos = obtenerColoresUnicos(p);
@@ -209,7 +169,7 @@ function mostrarProductos(categoria) {
         return `
             <div class="producto-card" onclick="verProducto(${p.id})" style="cursor: pointer;">
                 ${p.imagen_url ? 
-                    `<img src="${p.imagen_url}" alt="${p.nombre}" class="producto-imagen">` : 
+                    `<img src="${p.imagen_url}" alt="${p.nombre}" class="producto-imagen" loading="lazy">` : 
                     `<div class="producto-sin-imagen">
                         <span class="producto-emoji">${getEmojiCategoria(p.categoria)}</span>
                     </div>`
@@ -234,7 +194,6 @@ function mostrarProductos(categoria) {
                                     border-radius: 50%; 
                                     border: 2px solid white; 
                                     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-                                    cursor: pointer;
                                     transition: transform 0.2s;
                                 " title="${c.nombre}"></span>
                             `).join('')}
@@ -257,14 +216,35 @@ function mostrarProductos(categoria) {
     }).join('');
 }
 
-// ===== FUNCIÓN PARA VER PRODUCTO EN MODAL =====
-let productoActual = null;
+// ============================================
+// FILTRAR POR CATEGORÍA
+// ============================================
+
+function filtrarPorCategoria(categoria) {
+    categoriaActual = categoria;
+    mostrarProductos(categoria);
+    
+    const dropbtn = document.querySelector('.dropbtn');
+    if (dropbtn) {
+        const nombresCategoria = {
+            'todos': '🔥 Todos los productos',
+            'vestidos': '👗 Vestidos',
+            'blusas': '👚 Blusas',
+            'pantalones': '👖 Pantalones',
+            'deportivo': '⚽ Deportivo',
+            'caballero': '👔 Caballero',
+            'accesorios': '🎀 Accesorios'
+        };
+        dropbtn.innerHTML = `${nombresCategoria[categoria] || 'Inicio'} ▼`;
+    }
+}
+
+// ============================================
+// VER PRODUCTO EN MODAL
+// ============================================
 
 async function verProducto(id) {
     try {
-        console.log('🖱️ Ver producto:', id);
-        
-        // Buscar el producto en la lista
         productoActual = todosLosProductos.find(p => p.id === id);
         
         if (!productoActual) {
@@ -272,19 +252,12 @@ async function verProducto(id) {
             return;
         }
         
-        console.log('Producto seleccionado:', productoActual);
-        
-        // Llenar el modal
         llenarModal(productoActual);
         
-        // Mostrar el modal
         const modal = document.getElementById('modal-producto');
         if (modal) {
             modal.style.display = 'block';
             document.body.style.overflow = 'hidden';
-        } else {
-            console.error('Modal no encontrado en el DOM');
-            alert('Error: Modal no encontrado');
         }
         
     } catch (error) {
@@ -293,16 +266,15 @@ async function verProducto(id) {
     }
 }
 
-// Función para llenar el modal (actualizada para la nueva estructura)
-// Función para llenar el modal (VERSIÓN CON SCROLL)
+// ============================================
+// LLENAR MODAL
+// ============================================
+
 function llenarModal(producto) {
     const contenedor = document.getElementById('modal-contenido-producto');
     if (!contenedor) return;
     
-    // Ordenar variantes por talla
     const variantes = ordenarVariantesPorTalla(producto.variantes || []);
-    
-    // Emoji según categoría
     const emojis = {
         'vestidos': '👗',
         'blusas': '👚',
@@ -313,7 +285,6 @@ function llenarModal(producto) {
     };
     const emoji = emojis[producto.categoria] || '📦';
     
-    // Calcular stock total
     let stockTotal = 0;
     variantes.forEach(v => {
         const colores = v.colores || [];
@@ -322,7 +293,6 @@ function llenarModal(producto) {
         });
     });
     
-    // Obtener rango de precios
     const precios = variantes.map(v => v.precio_venta || 0);
     const precioMin = Math.min(...precios);
     const precioMax = Math.max(...precios);
@@ -330,7 +300,6 @@ function llenarModal(producto) {
         `$${precioMin.toLocaleString()}` : 
         `$${precioMin.toLocaleString()} - $${precioMax.toLocaleString()}`;
     
-    // Stock badge
     let stockBadgeClass = 'stock-disponible';
     let stockBadgeText = '✅ En stock';
     if (stockTotal === 0) {
@@ -343,7 +312,6 @@ function llenarModal(producto) {
         stockBadgeText = `✅ En stock (${stockTotal})`;
     }
     
-    // Generar HTML de tallas (CON SCROLL)
     let tallasHTML = '';
     
     if (variantes.length > 0) {
@@ -399,7 +367,6 @@ function llenarModal(producto) {
         tallasHTML = '<p style="color: #a5a5a5; text-align: center;">No hay variantes disponibles</p>';
     }
     
-    // Generar todo el HTML del modal
     contenedor.innerHTML = `
         <div class="modal-grid">
             <div class="modal-imagen">
@@ -435,7 +402,6 @@ function llenarModal(producto) {
         </div>
     `;
     
-    // Guardar datos para usar después
     window.modalProductoActual = producto;
     window.modalVariantesActuales = variantes;
     window.modalSeleccion = {
@@ -448,17 +414,17 @@ function llenarModal(producto) {
     };
 }
 
-// Función para seleccionar talla en el modal
+// ============================================
+// SELECCIONAR TALLA EN MODAL
+// ============================================
+
 function seleccionarTallaModal(varianteId, talla, precio) {
-    // Remover selección anterior
     document.querySelectorAll('.talla-card').forEach(card => {
         card.classList.remove('selected');
     });
     
-    // Marcar seleccionada
     event.currentTarget.classList.add('selected');
     
-    // Guardar selección
     window.modalSeleccion = {
         varianteId: varianteId,
         talla: talla,
@@ -468,14 +434,10 @@ function seleccionarTallaModal(varianteId, talla, precio) {
         stock: 0
     };
     
-    // Buscar la variante
     const variante = window.modalVariantesActuales.find(v => v.id === varianteId);
-    
-    // Actualizar texto de talla seleccionada
     document.getElementById('selected-talla-text').innerHTML = `Talla ${talla}`;
     
     if (variante && variante.colores && variante.colores.length > 0) {
-        // Mostrar colores
         const coloresSection = document.getElementById('colores-section');
         const coloresGrid = document.getElementById('colores-grid');
         const seleccionInfo = document.getElementById('seleccion-info');
@@ -502,9 +464,7 @@ function seleccionarTallaModal(varianteId, talla, precio) {
         coloresSection.style.display = 'block';
         seleccionInfo.style.display = 'block';
         document.getElementById('selected-color-text').innerHTML = 'Selecciona un color';
-        
     } else {
-        // Sin colores
         window.modalSeleccion.stock = variante?.stock_total || 0;
         document.getElementById('selected-color-text').innerHTML = 'Sin color específico';
         document.getElementById('seleccion-info').style.display = 'block';
@@ -512,43 +472,28 @@ function seleccionarTallaModal(varianteId, talla, precio) {
     }
 }
 
-// Función para seleccionar color en el modal
+// ============================================
+// SELECCIONAR COLOR EN MODAL
+// ============================================
+
 function seleccionarColorModal(index, nombre, stock) {
-    // Remover selección anterior
     document.querySelectorAll('.color-card').forEach(card => {
         card.classList.remove('selected');
     });
     
-    // Marcar seleccionado
     event.currentTarget.classList.add('selected');
     
-    // Guardar selección
     window.modalSeleccion.colorIndex = index;
     window.modalSeleccion.colorNombre = nombre;
     window.modalSeleccion.stock = stock;
     
-    // Actualizar texto
     document.getElementById('selected-color-text').innerHTML = nombre;
 }
 
-// Función para ordenar tallas
-function ordenarVariantesPorTalla(variantes) {
-    const ordenTallas = {
-        'XS': 1, 'S': 2, 'M': 3, 'L': 4, 'XL': 5, 'XXL': 6, 'XXXL': 7,
-        '2XL': 6, '3XL': 7, '4XL': 8, '5XL': 9,
-        '6': 10, '7': 11, '8': 12, '9': 13, '10': 14, '11': 15, '12': 16,
-        '34': 17, '35': 18, '36': 19, '37': 20, '38': 21, '39': 22, '40': 23,
-        '41': 24, '42': 25, '43': 26, '44': 27, '45': 28, '46': 29
-    };
-    
-    return [...variantes].sort((a, b) => {
-        const ordenA = ordenTallas[a.talla] || 999;
-        const ordenB = ordenTallas[b.talla] || 999;
-        return ordenA - ordenB;
-    });
-}
+// ============================================
+// CONSULTAR POR WHATSAPP
+// ============================================
 
-// Función para consultar por WhatsApp
 function consultarProductoWhatsApp() {
     if (!window.modalProductoActual) return;
     
@@ -567,103 +512,15 @@ function consultarProductoWhatsApp() {
     
     mensaje += `\n¿Podrían darme más información?`;
     
-    // Cambia este número por el WhatsApp del negocio
     const numeroWhatsApp = "573208049635";
     const url = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensaje)}`;
     window.open(url, '_blank');
 }
 
-// Función para mostrar colores de una talla específica
-function mostrarColoresTalla(varianteId, talla, precio) {
-    // Remover selección anterior de tallas
-    document.querySelectorAll('.talla-card').forEach(card => {
-        card.classList.remove('selected');
-    });
-    
-    // Marcar la talla seleccionada
-    event.currentTarget.classList.add('selected');
-    
-    // Guardar talla seleccionada
-    window.tallaSeleccionada = {
-        id: varianteId,
-        talla: talla,
-        precio: precio
-    };
-    
-    // Buscar la variante para mostrar sus colores
-    const variante = window.modalVariantesActuales.find(v => v.id === varianteId);
-    
-    if (variante && variante.colores && variante.colores.length > 0) {
-        // Actualizar título
-        document.getElementById('talla-seleccionada-nombre').textContent = talla;
-        
-        const coloresGrid = document.getElementById('modal-colores-grid');
-        const coloresContainer = document.getElementById('modal-colores-container');
-        
-        if (coloresGrid) {
-            const coloresOrdenados = [...variante.colores].sort((a, b) => {
-                if (a.nombre === null && b.nombre !== null) return 1;
-                if (a.nombre !== null && b.nombre === null) return -1;
-                if (a.nombre && b.nombre) return a.nombre.localeCompare(b.nombre);
-                return 0;
-            });
-            
-            coloresGrid.innerHTML = coloresOrdenados.map((color) => {
-                const tieneStock = (color.stock || 0) > 0;
-                return `
-                    <div class="color-card ${tieneStock ? '' : 'color-sin-stock'}">
-                        <div class="color-circulo" style="background: ${color.codigo || '#ccc'};"></div>
-                        <div class="color-nombre">${color.nombre || 'Sin color'}</div>
-                        <div class="color-stock">${color.stock > 0 ? color.stock + ' uds' : 'Agotado'}</div>
-                    </div>
-                `;
-            }).join('');
-        }
-        
-        coloresContainer.style.display = 'block';
-        
-        // Hacer scroll hacia los colores
-        coloresContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    } else {
-        // Sin colores, mostrar mensaje
-        const coloresContainer = document.getElementById('modal-colores-container');
-        const coloresGrid = document.getElementById('modal-colores-grid');
-        
-        if (coloresGrid) {
-            coloresGrid.innerHTML = `
-                <div style="grid-column: 1/-1; text-align: center; padding: 1rem; color: #888;">
-                    ⚪ Sin colores específicos para esta talla
-                </div>
-            `;
-        }
-        coloresContainer.style.display = 'block';
-    }
-}
+// ============================================
+// CERRAR MODAL
+// ============================================
 
-// Función para consultar por WhatsApp
-function consultarProductoWhatsApp() {
-    if (!window.modalProductoActual) return;
-    
-    const producto = window.modalProductoActual;
-    const tallaSel = window.tallaSeleccionada;
-    
-    let mensaje = `🌸 *MODAS LA 34* 🌸\n\n`;
-    mensaje += `Me interesa este producto:\n`;
-    mensaje += `📦 *${producto.nombre}*\n`;
-    mensaje += `💵 Precio: *$${(tallaSel?.precio || 0).toLocaleString()}*\n`;
-    
-    if (tallaSel?.talla) {
-        mensaje += `📏 Talla: *${tallaSel.talla}*\n`;
-    }
-    
-    mensaje += `\n¿Podrían darme más información sobre disponibilidad?`;
-    
-    const numeroWhatsApp = "573208049635";
-    const url = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensaje)}`;
-    window.open(url, '_blank');
-}
-
-// Función para cerrar el modal
 function cerrarModal() {
     const modal = document.getElementById('modal-producto');
     if (modal) {
@@ -673,76 +530,61 @@ function cerrarModal() {
     productoActual = null;
 }
 
-// Función para consultar producto
-function consultarProducto() {
-    if (!productoActual) return;
-    
-    alert(`📱 Para consultar sobre "${productoActual.nombre}", contáctanos:\n\nWhatsApp: 300 123 4567\nEmail: ventas@modasla34.com`);
-}
+// ============================================
+// BUSCADOR
+// ============================================
 
-// ===== FUNCIONES DEL BUSCADOR =====
 function configurarBuscador() {
-    const main = document.querySelector('main');
-    if (!main) return;
+    const buscador = document.getElementById('buscador-productos');
+    if (!buscador) return;
     
-    let buscador = document.getElementById('buscador-productos');
-    
-    if (!buscador) {
-        const buscadorHTML = `
-            <div class="buscador-container">
-                <input type="text" id="buscador-productos" placeholder="🔍 Buscar productos por nombre, talla o color..." class="buscador-input">
-            </div>
-        `;
-        main.insertAdjacentHTML('afterbegin', buscadorHTML);
-        buscador = document.getElementById('buscador-productos');
-    }
-    
-    if (buscador) {
-        buscador.addEventListener('input', (e) => {
-            const busqueda = e.target.value.toLowerCase().trim();
-            
-            if (busqueda === '') {
-                mostrarProductos(categoriaActual);
-            } else {
-                const productosFiltrados = todosLosProductos.filter(p => {
-                    if (p.nombre?.toLowerCase().includes(busqueda)) return true;
-                    if (p.categoria?.toLowerCase().includes(busqueda)) return true;
-                    
-                    const variantes = p.variantes || [];
-                    for (const v of variantes) {
-                        if (v.talla?.toLowerCase().includes(busqueda)) return true;
-                        const colores = v.colores || [];
-                        for (const c of colores) {
-                            if (c.nombre?.toLowerCase().includes(busqueda)) return true;
-                        }
+    buscador.addEventListener('input', (e) => {
+        const busqueda = e.target.value.toLowerCase().trim();
+        
+        if (busqueda === '') {
+            mostrarProductos(categoriaActual);
+        } else {
+            const productosFiltrados = todosLosProductos.filter(p => {
+                if (p.nombre?.toLowerCase().includes(busqueda)) return true;
+                if (p.categoria?.toLowerCase().includes(busqueda)) return true;
+                
+                const variantes = p.variantes || [];
+                for (const v of variantes) {
+                    if (v.talla?.toLowerCase().includes(busqueda)) return true;
+                    const colores = v.colores || [];
+                    for (const c of colores) {
+                        if (c.nombre?.toLowerCase().includes(busqueda)) return true;
                     }
-                    return false;
-                });
-                
-                const catalogo = document.getElementById('catalogo-productos');
-                if (!catalogo) return;
-                
-                if (productosFiltrados.length === 0) {
-                    catalogo.innerHTML = `
-                        <div style="grid-column: 1/-1; text-align: center; padding: 3rem; color: #a5a5a5;">
-                            🔍 No se encontraron productos para "${busqueda}"
-                        </div>
-                    `;
-                } else {
-                    const categoriaOriginal = categoriaActual;
-                    categoriaActual = 'todos';
-                    const productosOriginal = todosLosProductos;
-                    todosLosProductos = productosFiltrados;
-                    mostrarProductos('todos');
-                    todosLosProductos = productosOriginal;
-                    categoriaActual = categoriaOriginal;
                 }
+                return false;
+            });
+            
+            const catalogo = document.getElementById('catalogo-productos');
+            if (!catalogo) return;
+            
+            if (productosFiltrados.length === 0) {
+                catalogo.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 3rem; color: #a5a5a5;">
+                        🔍 No se encontraron productos para "${busqueda}"
+                    </div>
+                `;
+            } else {
+                const categoriaOriginal = categoriaActual;
+                categoriaActual = 'todos';
+                const productosOriginal = todosLosProductos;
+                todosLosProductos = productosFiltrados;
+                mostrarProductos('todos');
+                todosLosProductos = productosOriginal;
+                categoriaActual = categoriaOriginal;
             }
-        });
-    }
+        }
+    });
 }
 
-// ===== EVENTOS DEL MODAL =====
+// ============================================
+// EVENTOS DEL MODAL
+// ============================================
+
 window.onclick = function(event) {
     const modal = document.getElementById('modal-producto');
     if (event.target === modal) {
@@ -754,4 +596,14 @@ document.addEventListener('keydown', function(event) {
     if (event.key === 'Escape') {
         cerrarModal();
     }
+});
+
+// ============================================
+// INICIALIZACIÓN
+// ============================================
+
+document.addEventListener('DOMContentLoaded', async () => {
+    console.log('🚀 Catálogo iniciado');
+    await cargarProductos();
+    configurarBuscador();
 });
