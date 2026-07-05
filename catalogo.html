@@ -1,218 +1,165 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
     <title>Catálogo - Modas La 34</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
             font-family: 'Inter', sans-serif;
-            background: #faf7f2;
-            color: #2c2b28;
-            line-height: 1.5;
+            background: #f5f0eb;
+            color: #2d2a24;
+            min-height: 100vh;
         }
 
-        h1, h2, h3 {
-            font-family: 'Playfair Display', serif;
-            font-weight: 500;
-            letter-spacing: -0.02em;
-        }
+        h1, h2, h3 { font-family: 'Playfair Display', serif; }
 
         /* ===== HEADER ===== */
         header {
             background: #ffffff;
-            padding: 1.5rem 2rem 1rem 2rem;
-            border-bottom: 1px solid #e8e0d5;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.03);
             position: sticky;
             top: 0;
             z-index: 100;
         }
 
-        .header-top {
+        .header-inner {
+            max-width: 1400px;
+            margin: 0 auto;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        .logo a {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.8rem;
-            font-weight: 600;
-            color: #4a3728;
-            text-decoration: none;
-        }
-
-        .logo a:hover {
-            color: #b87c4e;
-        }
-
-        .nav {
-            display: flex;
-            gap: 1.5rem;
-            align-items: center;
             flex-wrap: wrap;
+            gap: 1rem;
         }
 
-        .nav a {
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            font-weight: 700;
             color: #4a3728;
             text-decoration: none;
-            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo span { color: #b87c4e; }
+        .logo i { color: #d4a5a9; }
+
+        nav { display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; }
+        nav a {
+            color: #4a3728;
+            text-decoration: none;
+            font-size: 0.8rem;
             font-weight: 500;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
             transition: color 0.3s;
         }
+        nav a:hover { color: #b87c4e; }
 
-        .nav a:hover {
-            color: #b87c4e;
-        }
-
-        .nav .btn-inicio {
+        .btn-outline {
             background: #b87c4e;
-            color: white;
+            color: white !important;
             padding: 0.5rem 1.2rem;
             border-radius: 50px;
             transition: all 0.3s;
-            text-transform: none;
         }
-
-        .nav .btn-inicio:hover {
+        .btn-outline:hover {
             background: #9a663f;
-            color: white;
-            transform: scale(1.02);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(184,124,78,0.3);
         }
 
-        .nav .admin-link {
-            font-size: 0.7rem;
-            color: #c4b8ac;
-            text-transform: none;
-        }
-
-        .nav .admin-link:hover {
-            color: #b87c4e;
-        }
-
-        /* ===== DROPDOWN ===== */
-        .dropdown {
-            position: relative;
-            display: inline-block;
-        }
-
+        /* Dropdown */
+        .dropdown { position: relative; display: inline-block; }
         .dropbtn {
             background: none;
             border: none;
             color: #4a3728;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 500;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
             cursor: pointer;
-            transition: color 0.3s;
             font-family: 'Inter', sans-serif;
         }
-
-        .dropbtn:hover {
-            color: #b87c4e;
-        }
-
+        .dropbtn:hover { color: #b87c4e; }
         .dropdown-content {
             display: none;
             position: absolute;
-            background: #ffffff;
-            min-width: 200px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.05);
-            z-index: 1;
+            background: white;
+            min-width: 220px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border-radius: 12px;
+            overflow: hidden;
             top: 100%;
             left: 0;
             margin-top: 0.5rem;
-            border: 1px solid #e8e0d5;
-            border-radius: 8px;
-            overflow: hidden;
         }
-
         .dropdown-content a {
             color: #4a3728 !important;
             padding: 0.8rem 1.2rem;
-            text-decoration: none;
             display: block;
             font-size: 0.8rem;
             text-transform: none;
-            letter-spacing: normal;
-            background: white;
-            border-bottom: 1px solid #f0ebe4;
+            border-bottom: 1px solid #f5f0eb;
         }
-
-        .dropdown-content a:hover {
-            background: #faf7f2;
-            color: #b87c4e !important;
-            padding-left: 1.5rem;
-        }
-
-        .dropdown-content a:last-child {
-            border-bottom: none;
-        }
-
-        .dropdown:hover .dropdown-content {
-            display: block;
-        }
+        .dropdown-content a:hover { background: #faf7f2; color: #b87c4e !important; padding-left: 1.8rem; }
+        .dropdown-content a:last-child { border-bottom: none; }
+        .dropdown:hover .dropdown-content { display: block; }
 
         /* ===== MAIN ===== */
-        main {
+        .main-content {
             max-width: 1400px;
-            margin: 2rem auto;
+            margin: 3rem auto;
             padding: 0 2rem;
         }
 
-        main h2 {
-            font-size: 2rem;
+        .hero-text {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        .hero-text h2 {
+            font-size: 2.5rem;
             color: #4a3728;
-            text-align: center;
-            margin-bottom: 0.5rem;
+            font-weight: 600;
         }
-
-        main > p {
-            text-align: center;
+        .hero-text p {
             color: #8b7a6b;
-            margin-bottom: 2rem;
-            font-size: 0.95rem;
+            font-size: 1.05rem;
+            margin-top: 0.5rem;
         }
 
-        /* ===== BUSCADOR ===== */
-        .buscador-container {
-            max-width: 400px;
-            margin: 0 auto 2rem auto;
+        /* Buscador */
+        .buscador-wrapper {
+            max-width: 500px;
+            margin: 0 auto 2.5rem;
         }
-
         .buscador-input {
             width: 100%;
             padding: 1rem 1.5rem;
-            border: 1px solid #e8e0d5;
-            border-radius: 50px;
+            border: 2px solid #e8e0d5;
+            border-radius: 60px;
             font-size: 0.9rem;
-            background: #ffffff;
+            background: white;
             transition: all 0.3s;
             font-family: 'Inter', sans-serif;
         }
-
         .buscador-input:focus {
             outline: none;
             border-color: #b87c4e;
-            box-shadow: 0 0 0 3px rgba(184, 124, 78, 0.1);
+            box-shadow: 0 0 0 4px rgba(184,124,78,0.1);
         }
 
-        /* ===== GRID PRODUCTOS ===== */
+        /* Grid */
         .grid-productos {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -220,33 +167,31 @@
         }
 
         .producto-card {
-            background: #ffffff;
-            border-radius: 8px;
+            background: white;
+            border-radius: 20px;
             overflow: hidden;
-            transition: all 0.3s;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             border: 1px solid #f0ebe4;
             cursor: pointer;
             display: flex;
             flex-direction: column;
         }
-
         .producto-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 24px rgba(0,0,0,0.05);
-            border-color: #e0d5ca;
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.06);
+            border-color: #d4a5a9;
         }
 
         .producto-imagen {
             width: 100%;
-            height: 280px;
+            height: 300px;
             object-fit: cover;
             background: #f5f0ea;
         }
-
         .producto-sin-imagen {
             width: 100%;
-            height: 280px;
-            background: #f5f0ea;
+            height: 300px;
+            background: linear-gradient(135deg, #f5f0ea, #e8e0d5);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -259,64 +204,67 @@
             display: flex;
             flex-direction: column;
         }
-
         .producto-titulo {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.2rem;
-            font-weight: 500;
+            font-size: 1.15rem;
+            font-weight: 600;
             color: #4a3728;
-            margin: 0 0 0.5rem 0;
+            margin-bottom: 0.3rem;
         }
-
-        .producto-detalle {
-            font-size: 0.8rem;
-            color: #8b7a6b;
-            margin: 0.5rem 0;
+        .producto-categoria {
+            font-size: 0.7rem;
+            color: #b8a38e;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
-
         .producto-colores {
             display: flex;
             gap: 6px;
             margin: 10px 0;
             flex-wrap: wrap;
         }
-
-        .color-circulo {
-            width: 20px;
-            height: 20px;
+        .color-dot {
+            width: 22px;
+            height: 22px;
             border-radius: 50%;
-            border: 1px solid #e8e0d5;
+            border: 2px solid white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
             transition: transform 0.2s;
         }
-
-        .color-circulo:hover {
-            transform: scale(1.1);
-        }
+        .color-dot:hover { transform: scale(1.15); }
 
         .producto-precio {
             font-size: 1.3rem;
-            font-weight: 600;
+            font-weight: 700;
             color: #b87c4e;
-            margin: 0.8rem 0;
+            margin: 0.5rem 0;
         }
+
+        .producto-stock {
+            font-size: 0.75rem;
+            font-weight: 500;
+            padding: 0.2rem 0.6rem;
+            border-radius: 30px;
+            display: inline-block;
+            margin-bottom: 0.5rem;
+        }
+        .stock-available { background: #e8f5e9; color: #2e7d32; }
+        .stock-low { background: #fff3e0; color: #e67e22; }
+        .stock-out { background: #ffebee; color: #c62828; }
 
         .producto-btn {
             width: 100%;
             padding: 0.8rem;
-            background: none;
-            border: 1px solid #d4c9bd;
-            border-radius: 50px;
+            background: #faf7f2;
+            border: 1px solid #e8e0d5;
+            border-radius: 60px;
             font-family: 'Inter', sans-serif;
-            font-weight: 500;
+            font-weight: 600;
             font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
             color: #4a3728;
             cursor: pointer;
             transition: all 0.3s;
             margin-top: auto;
         }
-
         .producto-btn:hover {
             background: #b87c4e;
             border-color: #b87c4e;
@@ -332,135 +280,170 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            backdrop-filter: blur(4px);
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(6px);
         }
-
         .modal-contenido {
-            background: #ffffff;
-            margin: 5% auto;
-            padding: 2rem;
-            width: 90%;
-            max-width: 900px;
-            border-radius: 12px;
+            background: white;
+            margin: 3% auto;
+            padding: 0;
+            width: 92%;
+            max-width: 1000px;
+            border-radius: 28px;
             position: relative;
-            border: 1px solid #e8e0d5;
+            overflow: hidden;
+            animation: modalIn 0.3s ease;
+        }
+        @keyframes modalIn {
+            from { transform: scale(0.95); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
         }
 
         .modal-cerrar {
             position: absolute;
-            right: 1.5rem;
-            top: 1rem;
-            font-size: 1.8rem;
+            right: 20px;
+            top: 20px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(0,0,0,0.5);
+            color: white;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
-            color: #8b7a6b;
-            transition: color 0.3s;
+            z-index: 10;
+            border: none;
+            transition: background 0.3s;
         }
-
-        .modal-cerrar:hover {
-            color: #b87c4e;
-        }
+        .modal-cerrar:hover { background: rgba(0,0,0,0.7); }
 
         .modal-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 2rem;
+            gap: 0;
+            min-height: 500px;
         }
-
-        .modal-imagen img {
-            width: 100%;
-            border-radius: 8px;
-        }
-
-        .modal-imagen-placeholder {
-            width: 100%;
-            aspect-ratio: 1;
-            background: #f5f0ea;
+        .modal-imagen {
+            background: #faf7f2;
+            padding: 2rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 5rem;
-            border-radius: 8px;
+        }
+        .modal-imagen img {
+            width: 100%;
+            max-height: 450px;
+            object-fit: contain;
+            border-radius: 16px;
+        }
+        .modal-imagen-placeholder {
+            font-size: 6rem;
         }
 
+        .modal-info {
+            padding: 2rem;
+            overflow-y: auto;
+            max-height: 85vh;
+        }
         .modal-info h2 {
-            color: #4a3728;
             font-size: 1.8rem;
-            margin-bottom: 1rem;
+            color: #4a3728;
+            margin-bottom: 0.3rem;
         }
-
         .modal-codigo {
             font-family: monospace;
-            background: #f5f0ea;
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            display: inline-block;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: #8b7a6b;
-            margin-bottom: 1rem;
+            background: #f5f0ea;
+            padding: 0.2rem 0.8rem;
+            border-radius: 30px;
+            display: inline-block;
         }
-
-        .modal-detalle {
-            margin: 1.5rem 0;
-        }
-
-        .modal-detalle p {
-            margin: 0.8rem 0;
-            color: #4a3728;
-        }
-
         .modal-precio {
             font-size: 2rem;
-            font-weight: 600;
+            font-weight: 700;
             color: #b87c4e;
-            margin: 1.5rem 0;
+            margin: 1rem 0;
         }
-
-        .modal-stock {
-            display: inline-block;
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
+        .modal-stock-badge {
+            padding: 0.2rem 0.8rem;
+            border-radius: 30px;
             font-size: 0.8rem;
-            margin-left: 0.5rem;
+            font-weight: 500;
         }
 
-        .stock-disponible { background: #e8f0e8; color: #5a7a5a; }
-        .stock-bajo { background: #fdf0e0; color: #b87c4e; }
-        .stock-agotado { background: #f5e8e8; color: #b55a5a; }
+        /* Tallas en modal */
+        .tallas-scroll {
+            max-height: 200px;
+            overflow-y: auto;
+            margin: 1rem 0;
+        }
+        .tallas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 10px;
+        }
+        .talla-card {
+            background: #faf7f2;
+            border: 2px solid #e8e0d5;
+            border-radius: 12px;
+            padding: 10px 5px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .talla-card:hover {
+            border-color: #b87c4e;
+            transform: translateY(-2px);
+        }
+        .talla-card.selected {
+            border-color: #b87c4e;
+            background: #b87c4e15;
+        }
+        .talla-numero { font-weight: 700; font-size: 1.1rem; }
 
         .modal-botones {
             display: flex;
             gap: 1rem;
-            margin-top: 2rem;
+            margin-top: 1.5rem;
         }
-
         .modal-btn {
             flex: 1;
-            padding: 0.8rem;
+            padding: 0.8rem 1.2rem;
             border: none;
-            border-radius: 50px;
-            font-weight: 500;
+            border-radius: 60px;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
+            font-family: 'Inter', sans-serif;
         }
+        .btn-whatsapp { background: #25D366; color: white; }
+        .btn-whatsapp:hover { background: #1da851; transform: translateY(-2px); }
+        .btn-cerrar-modal { background: #f5f0ea; color: #4a3728; border: 1px solid #e8e0d5; }
+        .btn-cerrar-modal:hover { background: #e8e0d5; }
 
-        .btn-consultar {
-            background: #b87c4e;
+        /* ===== WHATSAPP FLOTANTE ===== */
+        .wa-float {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: #25D366;
             color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            box-shadow: 0 4px 20px rgba(37,211,102,0.3);
+            z-index: 999;
+            text-decoration: none;
+            transition: all 0.3s;
         }
-
-        .btn-consultar:hover {
-            background: #9a663f;
-        }
-
-        .btn-cerrar {
-            background: #f5f0ea;
-            color: #4a3728;
-        }
-
-        .btn-cerrar:hover {
-            background: #e8e0d5;
-        }
+        .wa-float:hover { transform: scale(1.05); }
 
         /* ===== FOOTER ===== */
         footer {
@@ -473,155 +456,44 @@
             background: white;
         }
 
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            gap: 1.5rem;
-            flex-wrap: wrap;
-            margin-top: 0.5rem;
-        }
-
-        .footer-links a {
-            color: #8b7a6b;
+        .admin-link {
+            font-size: 0.7rem;
+            color: #c4b8ac;
             text-decoration: none;
-            font-size: 0.75rem;
-            transition: color 0.3s;
         }
-
-        .footer-links a:hover {
-            color: #b87c4e;
-        }
-
-        /* ===== WHATSAPP FLOTANTE ===== */
-        .whatsapp-float {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #25D366;
-            color: white;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
-            z-index: 1000;
-            text-decoration: none;
-            transition: all 0.3s;
-        }
-
-        .whatsapp-float:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
-        }
+        .admin-link:hover { color: #b87c4e; }
 
         /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
-            .header-top {
-                flex-direction: column;
-                gap: 1rem;
-                text-align: center;
-            }
-
-            .nav {
-                justify-content: center;
-                gap: 0.8rem;
-            }
-
-            .nav a, .dropbtn {
-                font-size: 0.75rem;
-            }
-
-            .grid-productos {
-                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-                gap: 1rem;
-            }
-
-            .producto-imagen, .producto-sin-imagen {
-                height: 180px;
-            }
-
-            .producto-info {
-                padding: 0.8rem;
-            }
-
-            .producto-titulo {
-                font-size: 1rem;
-            }
-
-            .producto-precio {
-                font-size: 1.1rem;
-            }
-
-            .modal-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .modal-contenido {
-                margin: 2% auto;
-                width: 95%;
-                padding: 1rem;
-            }
-
-            .modal-info h2 {
-                font-size: 1.3rem;
-            }
-
-            .modal-precio {
-                font-size: 1.5rem;
-            }
-
-            .dropdown-content {
-                position: static;
-                width: 100%;
-            }
+            .header-inner { flex-direction: column; text-align: center; }
+            nav { justify-content: center; }
+            .grid-productos { grid-template-columns: 1fr 1fr; gap: 1rem; }
+            .producto-imagen, .producto-sin-imagen { height: 200px; }
+            .modal-grid { grid-template-columns: 1fr; }
+            .hero-text h2 { font-size: 1.8rem; }
+            .modal-info { max-height: 60vh; }
         }
 
         @media (max-width: 480px) {
-            .grid-productos {
-                grid-template-columns: 1fr 1fr;
-                gap: 0.8rem;
-            }
-
-            .producto-imagen, .producto-sin-imagen {
-                height: 140px;
-            }
-
-            .producto-info {
-                padding: 0.6rem;
-            }
-
-            .producto-titulo {
-                font-size: 0.85rem;
-            }
-
-            .producto-precio {
-                font-size: 0.95rem;
-            }
-
-            .producto-btn {
-                font-size: 0.7rem;
-                padding: 0.5rem;
-            }
-
-            main {
-                padding: 0 0.8rem;
-            }
+            .grid-productos { grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+            .producto-imagen, .producto-sin-imagen { height: 150px; }
+            .producto-info { padding: 0.8rem; }
+            .producto-titulo { font-size: 0.9rem; }
+            .producto-precio { font-size: 1rem; }
+            .main-content { padding: 0 0.8rem; margin: 1.5rem auto; }
         }
     </style>
 </head>
 <body>
     <header>
-        <div class="header-top">
-            <div class="logo">
-                <a href="index.html">🌸 Modas La 34</a>
-            </div>
-            <nav class="nav">
-                <a href="index.html" class="btn-inicio">🏠 Inicio</a>
+        <div class="header-inner">
+            <a href="#" class="logo">
+                <i class="fas fa-flower"></i> Modas <span>La 34</span>
+            </a>
+            <nav>
+                <a href="#" class="btn-outline"><i class="fas fa-home"></i> Inicio</a>
                 <div class="dropdown">
-                    <button class="dropbtn">Colección ▼</button>
+                    <button class="dropbtn">Colección <i class="fas fa-chevron-down" style="font-size:0.6rem;"></i></button>
                     <div class="dropdown-content">
                         <a href="#" onclick="filtrarPorCategoria('todos')">✨ Todos los productos</a>
                         <a href="#" onclick="filtrarPorCategoria('vestidos')">👗 Vestidos</a>
@@ -632,18 +504,19 @@
                         <a href="#" onclick="filtrarPorCategoria('accesorios')">🎀 Accesorios</a>
                     </div>
                 </div>
-                <a href="index.html#novedades">🌿 Novedades</a>
-                <a href="admin/login.html" class="admin-link">🔑 Admin</a>
+                <a href="admin/login.html" style="font-size:0.65rem; color:#c4b8ac;">🔑 Admin</a>
             </nav>
         </div>
     </header>
 
-    <main>
-        <h2>🛍️ Nuestro Catálogo</h2>
-        <p>Explora todas nuestras prendas con esencia y estilo atemporal</p>
+    <main class="main-content">
+        <div class="hero-text">
+            <h2>🛍️ Descubre nuestra colección</h2>
+            <p>Prendas con esencia para almas libres y auténticas</p>
+        </div>
 
-        <div class="buscador-container">
-            <input type="text" id="buscador-productos" placeholder="🔍 Buscar productos..." class="buscador-input">
+        <div class="buscador-wrapper">
+            <input type="text" id="buscador-productos" placeholder="🔍 Buscar por nombre, talla o color..." class="buscador-input">
         </div>
 
         <div class="grid-productos" id="catalogo-productos">
@@ -657,384 +530,35 @@
         </div>
     </main>
 
-    <!-- MODAL DE PRODUCTO -->
+    <!-- Modal -->
     <div id="modal-producto" class="modal" style="display: none;">
         <div class="modal-contenido">
-            <span class="modal-cerrar" onclick="cerrarModal()">&times;</span>
+            <button class="modal-cerrar" onclick="cerrarModal()">&times;</button>
             <div id="modal-contenido-producto"></div>
         </div>
     </div>
 
-    <!-- WHATSAPP FLOTANTE -->
-    <a href="https://wa.me/573001234567?text=Hola%20Modas%20La%2034%2C%20vi%20el%20catálogo%20y%20me%20interesa%20un%20producto" 
-       class="whatsapp-float" 
-       target="_blank" 
-       title="Contáctanos por WhatsApp">
+    <!-- WhatsApp Float -->
+    <a href="https://wa.me/573001234567?text=Hola%20Modas%20La%2034" class="wa-float" target="_blank">
         <i class="fab fa-whatsapp"></i>
     </a>
 
     <footer>
         <p>© 2026 Modas La 34 — Diseño atemporal para almas libres</p>
-        <div class="footer-links">
-            <a href="index.html">🏠 Inicio</a>
-            <a href="https://wa.me/573001234567" target="_blank">💬 WhatsApp</a>
-            <a href="admin/login.html">🔑 Administración</a>
-        </div>
-    </footer>
-
-    <script src="js/supabase-config.js"></script>
-    <script>
-        // ============================================
-        // 🌸 CATÁLOGO - MODAS LA 34
-        // ============================================
-
-        let todosLosProductos = [];
-        let categoriaActual = 'todos';
-        let productoActual = null;
-
-        document.addEventListener('DOMContentLoaded', async () => {
-            await cargarProductos();
-            configurarBuscador();
-        });
-
-        async function cargarProductos() {
-            try {
-                const catalogo = document.getElementById('catalogo-productos');
-                catalogo.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 2rem;">Cargando productos...</div>';
-
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/vista_productos_completa?order=nombre`, {
-                    headers: { 'apikey': SUPABASE_KEY }
-                });
-
-                if (!response.ok) throw new Error('Error al cargar productos');
-
-                todosLosProductos = await response.json();
-                console.log('✅ Productos cargados:', todosLosProductos.length);
-                mostrarProductos('todos');
-
-            } catch (error) {
-                console.error('❌ Error:', error);
-                document.getElementById('catalogo-productos').innerHTML = `
-                    <div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: #b87c4e;">
-                        ❌ Error al cargar los productos. Intenta de nuevo más tarde.
-                    </div>
-                `;
-            }
-        }
-
-        function filtrarPorCategoria(categoria) {
-            categoriaActual = categoria;
-            mostrarProductos(categoria);
-            
-            const dropbtn   background: #b87c4e;
-        border-radius: 10px;
-    }
-
-    .tallas-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-        gap: 10px;
-    }
-
-    .talla-card {
-        background: #faf7f2;
-        border: 1.5px solid #e8e0d5;
-        border-radius: 12px;
-        padding: 10px 5px;
-        text-align: center;
-        cursor: pointer;
-        transition: all 0.2s ease;
-    }
-
-    .talla-card:hover {
-        border-color: #b87c4e;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    }
-
-    .talla-card.selected {
-        border-color: #b87c4e;
-        background: #b87c4e10;
-    }
-
-    .talla-numero {
-        font-size: 1rem;
-        font-weight: 700;
-        color: #4a3728;
-    }
-
-    .talla-precio {
-        font-size: 0.7rem;
-        color: #b87c4e;
-        font-weight: 600;
-        margin-top: 4px;
-    }
-
-    .talla-stock {
-        font-size: 0.65rem;
-        color: #aaa;
-        margin-top: 4px;
-    }
-
-    .talla-con-stock .talla-stock { color: #5a7a5a; }
-    .talla-stock-bajo .talla-stock { color: #e67e22; }
-    .talla-sin-stock { opacity: 0.5; }
-
-    /* Colores con scroll */
-    .colores-scroll-container {
-        max-height: 180px;
-        overflow-y: auto;
-        margin: 1rem 0;
-    }
-
-    .colores-scroll-container::-webkit-scrollbar {
-        width: 5px;
-    }
-
-    .colores-scroll-container::-webkit-scrollbar-track {
-        background: #f0ebe4;
-        border-radius: 10px;
-    }
-
-    .colores-scroll-container::-webkit-scrollbar-thumb {
-        background: #b87c4e;
-        border-radius: 10px;
-    }
-
-    .colores-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
-        gap: 10px;
-    }
-
-    .color-card {
-        background: #faf7f2;
-        border-radius: 12px;
-        padding: 8px 4px;
-        text-align: center;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        border: 1.5px solid transparent;
-    }
-
-    .color-card:hover {
-        border-color: #b87c4e;
-        transform: translateY(-2px);
-    }
-
-    .color-card.selected {
-        border-color: #b87c4e;
-        background: #b87c4e10;
-    }
-
-    .color-circulo {
-        width: 35px;
-        height: 35px;
-        border-radius: 50%;
-        margin: 0 auto 6px;
-        border: 2px solid #fff;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-
-    .color-nombre {
-        font-size: 0.7rem;
-        font-weight: 500;
-        color: #4a3728;
-    }
-
-    .color-stock {
-        font-size: 0.6rem;
-        color: #aaa;
-        margin-top: 3px;
-    }
-
-    .color-sin-stock {
-        opacity: 0.5;
-        cursor: not-allowed;
-    }
-
-    .seleccion-info {
-        background: #e8f0e8;
-        padding: 10px 12px;
-        border-radius: 12px;
-        margin: 1rem 0;
-        text-align: center;
-    }
-
-    .seleccion-info p {
-        margin: 0;
-        font-size: 0.85rem;
-        color: #2c5e2c;
-    }
-
-    .modal-botones {
-        display: flex;
-        gap: 12px;
-        margin-top: 1.5rem;
-        flex-wrap: wrap;
-    }
-
-    .modal-btn {
-        flex: 1;
-        padding: 12px 16px;
-        border: none;
-        border-radius: 50px;
-        font-size: 0.85rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.2s;
-        font-family: 'Inter', sans-serif;
-    }
-
-    .btn-consultar {
-        background: #b87c4e;
-        color: white;
-    }
-
-    .btn-consultar:hover {
-        background: #9a663f;
-        transform: translateY(-2px);
-    }
-
-    .btn-cerrar {
-        background: #f5f0ea;
-        color: #4a3728;
-        border: 1px solid #e8e0d5;
-    }
-
-    .btn-cerrar:hover {
-        background: #e8e0d5;
-        transform: translateY(-2px);
-    }
-
-    @media (max-width: 768px) {
-        .modal-grid {
-            grid-template-columns: 1fr;
-            max-height: 90vh;
-        }
-        
-        .modal-contenido {
-            margin: 5% auto;
-            width: 95%;
-        }
-        
-        .modal-imagen {
-            padding: 1rem;
-            max-height: 250px;
-        }
-        
-        .modal-info {
-            max-height: 50vh;
-        }
-        
-        .modal-info h2 {
-            font-size: 1.3rem;
-        }
-        
-        .modal-precio {
-            font-size: 1.4rem;
-        }
-        
-        .tallas-grid {
-            grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
-            gap: 8px;
-        }
-        
-        .colores-grid {
-            grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
-        }
-        
-        .grid-productos {
-            gap: 1rem;
-        }
-        
-        nav {
-            gap: 1rem;
-        }
-        
-        header h1 {
-            font-size: 1.5rem;
-        }
-    }
-</style>
-</head>
-<body>
-    <header>
-        <h1>Modas La 34</h1>
-        
-        <nav>
-            <div class="dropdown">
-                <a href="#" class="dropbtn">Colección ▼</a>
-                <div class="dropdown-content">
-                    <a href="#" onclick="filtrarPorCategoria('todos')">✨ Todos los productos</a>
-                    <a href="#" onclick="filtrarPorCategoria('vestidos')">👗 Vestidos</a>
-                    <a href="#" onclick="filtrarPorCategoria('blusas')">👚 Blusas</a>
-                    <a href="#" onclick="filtrarPorCategoria('pantalones')">👖 Pantalones</a>
-                    <a href="#" onclick="filtrarPorCategoria('deportivo')">⚽ Deportivo</a>
-                    <a href="#" onclick="filtrarPorCategoria('caballero')">👔 Caballero</a>
-                    <a href="#" onclick="filtrarPorCategoria('accesorios')">🎀 Accesorios</a>
-                </div>
-            </div>
-            
-            <a href="#">🌿 Novedades</a>
-        </nav>
-    </header>
-    
-    <main>
-        <h2>Prendas con esencia</h2>
-        <p>Hechas para quienes buscan autenticidad y estilo atemporal</p>
-        
-        <div class="grid-productos" id="catalogo-productos">
-            <div class="producto-card">
-                <div class="producto-sin-imagen">🌿</div>
-                <div class="producto-info">
-                    <h3 class="producto-titulo">Cargando...</h3>
-                    <p class="producto-precio">$0</p>
-                </div>
-            </div>
-        </div>
-    </main>
-    
-    <footer>
-        <p>© 2026 Modas La 34 — Diseño atemporal para almas libres</p>
         <a href="admin/login.html" class="admin-link">🔑 Acceso administrador</a>
     </footer>
 
-    <!-- MODAL -->
-    <div id="modal-producto" class="modal" style="display: none;">
-        <div class="modal-contenido">
-            <span class="modal-cerrar" onclick="cerrarModal()">&times;</span>
-            <div id="modal-contenido-producto"></div>
-        </div>
-    </div>
-    
     <script src="js/supabase-config.js"></script>
     <script src="js/catalogo.js"></script>
-    <script src="../js/permisos.js"></script>    
-
     <script>
-    // Cerrar menú móvil
-    document.addEventListener('click', function(event) {
-        const dropdown = document.querySelector('.dropdown');
-        if (dropdown && !dropdown.contains(event.target)) {
-            const dropdownContent = document.querySelector('.dropdown-content');
-            if (dropdownContent && dropdownContent.style.display === 'block') {
-                dropdownContent.style.display = 'none';
-            }
-        }
-    });
-    
-    // Menú móvil
-    const dropbtn = document.querySelector('.dropbtn');
-    if (dropbtn) {
-        dropbtn.addEventListener('click', function(e) {
-            if (window.innerWidth <= 768) {
-                e.preventDefault();
-                const dropdownContent = document.querySelector('.dropdown-content');
-                dropdownContent.style.display = dropdownContent.style.display === 'block' ? 'none' : 'block';
+        // Menú móvil
+        document.addEventListener('click', function(e) {
+            const dropdown = document.querySelector('.dropdown');
+            if (dropdown && !dropdown.contains(e.target)) {
+                const content = dropdown.querySelector('.dropdown-content');
+                if (content) content.style.display = 'none';
             }
         });
-    }
     </script>
 </body>
-  </html>
+</html>
