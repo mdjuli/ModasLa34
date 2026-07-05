@@ -22,6 +22,18 @@ function ordenarVariantesPorTalla(variantes) {
     });
 }
 
+async function cargarProductos() {
+    try {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/vista_productos_completa?visible=eq.true&order=nombre`, {
+            headers: { 'apikey': SUPABASE_KEY }
+        });
+        
+        // ... resto del código
+    } catch (error) {
+        // ...
+    }
+}
+
 // Cargar productos al iniciar la página
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('🚀 Catálogo iniciado');
