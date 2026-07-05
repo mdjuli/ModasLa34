@@ -5,15 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
     <title>Catálogo - Modas La 34</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;500;600;700&family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
+
         body {
             font-family: 'Inter', sans-serif;
-            background: #f5f0eb;
-            color: #2d2a24;
+            background: #fdf9f5;
+            color: #3d352e;
             min-height: 100vh;
         }
 
@@ -21,9 +21,10 @@
 
         /* ===== HEADER ===== */
         header {
-            background: #ffffff;
-            padding: 1.5rem 2rem;
-            box-shadow: 0 2px 20px rgba(0,0,0,0.03);
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(10px);
+            padding: 1.2rem 2rem;
+            border-bottom: 1px solid #f0e6dc;
             position: sticky;
             top: 0;
             z-index: 100;
@@ -41,7 +42,7 @@
 
         .logo {
             font-family: 'Playfair Display', serif;
-            font-size: 1.6rem;
+            font-size: 1.8rem;
             font-weight: 700;
             color: #4a3728;
             text-decoration: none;
@@ -49,7 +50,6 @@
             align-items: center;
             gap: 8px;
         }
-
         .logo span { color: #b87c4e; }
         .logo i { color: #d4a5a9; }
 
@@ -60,25 +60,24 @@
             font-size: 0.8rem;
             font-weight: 500;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
             transition: color 0.3s;
         }
         nav a:hover { color: #b87c4e; }
 
-        .btn-outline {
+        .btn-nav {
             background: #b87c4e;
             color: white !important;
-            padding: 0.5rem 1.2rem;
-            border-radius: 50px;
+            padding: 0.5rem 1.5rem;
+            border-radius: 30px;
+            letter-spacing: 0.5px;
             transition: all 0.3s;
         }
-        .btn-outline:hover {
+        .btn-nav:hover {
             background: #9a663f;
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(184,124,78,0.3);
         }
 
-        /* Dropdown */
         .dropdown { position: relative; display: inline-block; }
         .dropbtn {
             background: none;
@@ -87,7 +86,7 @@
             font-size: 0.8rem;
             font-weight: 500;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
             cursor: pointer;
             font-family: 'Inter', sans-serif;
         }
@@ -96,23 +95,24 @@
             display: none;
             position: absolute;
             background: white;
-            min-width: 220px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-            border-radius: 12px;
+            min-width: 210px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+            border-radius: 16px;
             overflow: hidden;
             top: 100%;
             left: 0;
             margin-top: 0.5rem;
+            border: 1px solid #f0e6dc;
         }
         .dropdown-content a {
-            color: #4a3728 !important;
             padding: 0.8rem 1.2rem;
             display: block;
             font-size: 0.8rem;
             text-transform: none;
-            border-bottom: 1px solid #f5f0eb;
+            letter-spacing: normal;
+            border-bottom: 1px solid #f5ede6;
         }
-        .dropdown-content a:hover { background: #faf7f2; color: #b87c4e !important; padding-left: 1.8rem; }
+        .dropdown-content a:hover { background: #fdf9f5; color: #b87c4e !important; padding-left: 1.8rem; }
         .dropdown-content a:last-child { border-bottom: none; }
         .dropdown:hover .dropdown-content { display: block; }
 
@@ -123,43 +123,46 @@
             padding: 0 2rem;
         }
 
-        .hero-text {
+        .hero-section {
             text-align: center;
+            padding: 2rem 0;
+            background: linear-gradient(135deg, #fdf9f5, #f5ede6);
+            border-radius: 40px;
             margin-bottom: 3rem;
         }
-        .hero-text h2 {
-            font-size: 2.5rem;
+        .hero-section h2 {
+            font-size: 2.8rem;
             color: #4a3728;
-            font-weight: 600;
+            font-weight: 700;
         }
-        .hero-text p {
+        .hero-section p {
             color: #8b7a6b;
-            font-size: 1.05rem;
+            font-size: 1.1rem;
             margin-top: 0.5rem;
+            font-family: 'Quicksand', sans-serif;
         }
 
-        /* Buscador */
         .buscador-wrapper {
-            max-width: 500px;
-            margin: 0 auto 2.5rem;
+            max-width: 480px;
+            margin: -1.5rem auto 2.5rem;
         }
         .buscador-input {
             width: 100%;
             padding: 1rem 1.5rem;
-            border: 2px solid #e8e0d5;
+            border: 2px solid #e8ddd2;
             border-radius: 60px;
             font-size: 0.9rem;
             background: white;
             transition: all 0.3s;
             font-family: 'Inter', sans-serif;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
         }
         .buscador-input:focus {
             outline: none;
             border-color: #b87c4e;
-            box-shadow: 0 0 0 4px rgba(184,124,78,0.1);
+            box-shadow: 0 0 0 4px rgba(184,124,78,0.08);
         }
 
-        /* Grid */
         .grid-productos {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -168,17 +171,17 @@
 
         .producto-card {
             background: white;
-            border-radius: 20px;
+            border-radius: 24px;
             overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            border: 1px solid #f0ebe4;
+            transition: all 0.4s ease;
+            border: 1px solid #f0e6dc;
             cursor: pointer;
             display: flex;
             flex-direction: column;
         }
         .producto-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.06);
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px rgba(184,124,78,0.08);
             border-color: #d4a5a9;
         }
 
@@ -186,16 +189,16 @@
             width: 100%;
             height: 300px;
             object-fit: cover;
-            background: #f5f0ea;
+            background: #f5ede6;
         }
         .producto-sin-imagen {
             width: 100%;
             height: 300px;
-            background: linear-gradient(135deg, #f5f0ea, #e8e0d5);
+            background: linear-gradient(135deg, #f5ede6, #e8ddd2);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 4rem;
+            font-size: 4.5rem;
         }
 
         .producto-info {
@@ -205,21 +208,20 @@
             flex-direction: column;
         }
         .producto-titulo {
-            font-size: 1.15rem;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
             font-weight: 600;
             color: #4a3728;
-            margin-bottom: 0.3rem;
         }
-        .producto-categoria {
-            font-size: 0.7rem;
-            color: #b8a38e;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+        .producto-tallas {
+            font-size: 0.75rem;
+            color: #8b7a6b;
+            margin: 4px 0;
         }
         .producto-colores {
             display: flex;
             gap: 6px;
-            margin: 10px 0;
+            margin: 8px 0;
             flex-wrap: wrap;
         }
         .color-dot {
@@ -227,35 +229,29 @@
             height: 22px;
             border-radius: 50%;
             border: 2px solid white;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-            transition: transform 0.2s;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
         }
-        .color-dot:hover { transform: scale(1.15); }
-
         .producto-precio {
             font-size: 1.3rem;
             font-weight: 700;
             color: #b87c4e;
             margin: 0.5rem 0;
         }
-
-        .producto-stock {
-            font-size: 0.75rem;
+        .producto-stock-status {
+            font-size: 0.7rem;
             font-weight: 500;
             padding: 0.2rem 0.6rem;
             border-radius: 30px;
             display: inline-block;
+            width: fit-content;
             margin-bottom: 0.5rem;
         }
-        .stock-available { background: #e8f5e9; color: #2e7d32; }
-        .stock-low { background: #fff3e0; color: #e67e22; }
-        .stock-out { background: #ffebee; color: #c62828; }
 
         .producto-btn {
             width: 100%;
             padding: 0.8rem;
-            background: #faf7f2;
-            border: 1px solid #e8e0d5;
+            background: #fdf9f5;
+            border: 1.5px solid #e8ddd2;
             border-radius: 60px;
             font-family: 'Inter', sans-serif;
             font-weight: 600;
@@ -269,6 +265,7 @@
             background: #b87c4e;
             border-color: #b87c4e;
             color: white;
+            box-shadow: 0 4px 15px rgba(184,124,78,0.2);
         }
 
         /* ===== MODAL ===== */
@@ -280,53 +277,50 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(6px);
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
         }
         .modal-contenido {
             background: white;
-            margin: 3% auto;
+            margin: 2% auto;
             padding: 0;
             width: 92%;
-            max-width: 1000px;
-            border-radius: 28px;
+            max-width: 950px;
+            border-radius: 32px;
             position: relative;
             overflow: hidden;
-            animation: modalIn 0.3s ease;
+            animation: modalPop 0.3s ease;
         }
-        @keyframes modalIn {
+        @keyframes modalPop {
             from { transform: scale(0.95); opacity: 0; }
             to { transform: scale(1); opacity: 1; }
         }
 
         .modal-cerrar {
             position: absolute;
-            right: 20px;
-            top: 20px;
-            width: 40px;
-            height: 40px;
+            right: 16px;
+            top: 16px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             background: rgba(0,0,0,0.5);
             color: white;
-            font-size: 1.4rem;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 1.2rem;
             cursor: pointer;
             z-index: 10;
             border: none;
-            transition: background 0.3s;
         }
-        .modal-cerrar:hover { background: rgba(0,0,0,0.7); }
 
         .modal-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 0;
-            min-height: 500px;
         }
         .modal-imagen {
-            background: #faf7f2;
+            background: #fdf9f5;
             padding: 2rem;
             display: flex;
             align-items: center;
@@ -338,43 +332,18 @@
             object-fit: contain;
             border-radius: 16px;
         }
-        .modal-imagen-placeholder {
-            font-size: 6rem;
-        }
+        .modal-imagen-placeholder { font-size: 6rem; }
 
         .modal-info {
             padding: 2rem;
             overflow-y: auto;
-            max-height: 85vh;
+            max-height: 80vh;
         }
-        .modal-info h2 {
-            font-size: 1.8rem;
-            color: #4a3728;
-            margin-bottom: 0.3rem;
-        }
-        .modal-codigo {
-            font-family: monospace;
-            font-size: 0.75rem;
-            color: #8b7a6b;
-            background: #f5f0ea;
-            padding: 0.2rem 0.8rem;
-            border-radius: 30px;
-            display: inline-block;
-        }
-        .modal-precio {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #b87c4e;
-            margin: 1rem 0;
-        }
-        .modal-stock-badge {
-            padding: 0.2rem 0.8rem;
-            border-radius: 30px;
-            font-size: 0.8rem;
-            font-weight: 500;
-        }
+        .modal-info h2 { font-size: 1.8rem; color: #4a3728; }
+        .modal-codigo { font-family: monospace; font-size: 0.7rem; color: #8b7a6b; background: #f5ede6; padding: 0.2rem 0.8rem; border-radius: 30px; display: inline-block; }
+        .modal-precio { font-size: 2rem; font-weight: 700; color: #b87c4e; margin: 1rem 0; }
 
-        /* Tallas en modal */
+        /* Tallas */
         .tallas-scroll {
             max-height: 200px;
             overflow-y: auto;
@@ -386,9 +355,9 @@
             gap: 10px;
         }
         .talla-card {
-            background: #faf7f2;
-            border: 2px solid #e8e0d5;
-            border-radius: 12px;
+            background: #fdf9f5;
+            border: 2px solid #e8ddd2;
+            border-radius: 14px;
             padding: 10px 5px;
             text-align: center;
             cursor: pointer;
@@ -419,12 +388,12 @@
             transition: all 0.3s;
             font-family: 'Inter', sans-serif;
         }
-        .btn-whatsapp { background: #25D366; color: white; }
-        .btn-whatsapp:hover { background: #1da851; transform: translateY(-2px); }
-        .btn-cerrar-modal { background: #f5f0ea; color: #4a3728; border: 1px solid #e8e0d5; }
-        .btn-cerrar-modal:hover { background: #e8e0d5; }
+        .btn-wa { background: #25D366; color: white; }
+        .btn-wa:hover { background: #1da851; transform: translateY(-2px); }
+        .btn-close-modal { background: #f5ede6; color: #4a3728; border: 1px solid #e8ddd2; }
+        .btn-close-modal:hover { background: #e8ddd2; }
 
-        /* ===== WHATSAPP FLOTANTE ===== */
+        /* ===== WHATSAPP ===== */
         .wa-float {
             position: fixed;
             bottom: 25px;
@@ -443,35 +412,42 @@
             text-decoration: none;
             transition: all 0.3s;
         }
-        .wa-float:hover { transform: scale(1.05); }
+        .wa-float:hover { transform: scale(1.05); background: #1da851; }
 
         /* ===== FOOTER ===== */
         footer {
             text-align: center;
-            padding: 2rem;
+            padding: 2.5rem;
             color: #8b7a6b;
             font-size: 0.8rem;
-            border-top: 1px solid #e8e0d5;
+            border-top: 1px solid #f0e6dc;
             margin-top: 3rem;
             background: white;
         }
-
-        .admin-link {
-            font-size: 0.7rem;
-            color: #c4b8ac;
-            text-decoration: none;
+        .footer-social {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin: 0.5rem 0 1rem;
         }
+        .footer-social a {
+            color: #8b7a6b;
+            font-size: 1.2rem;
+            transition: color 0.3s;
+        }
+        .footer-social a:hover { color: #b87c4e; }
+
+        .admin-link { font-size: 0.7rem; color: #c4b8ac; text-decoration: none; }
         .admin-link:hover { color: #b87c4e; }
 
-        /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
             .header-inner { flex-direction: column; text-align: center; }
-            nav { justify-content: center; }
+            nav { justify-content: center; gap: 1rem; }
             .grid-productos { grid-template-columns: 1fr 1fr; gap: 1rem; }
             .producto-imagen, .producto-sin-imagen { height: 200px; }
             .modal-grid { grid-template-columns: 1fr; }
-            .hero-text h2 { font-size: 1.8rem; }
-            .modal-info { max-height: 60vh; }
+            .hero-section h2 { font-size: 2rem; }
+            .hero-section { padding: 1.5rem; }
         }
 
         @media (max-width: 480px) {
@@ -491,7 +467,7 @@
                 <i class="fas fa-flower"></i> Modas <span>La 34</span>
             </a>
             <nav>
-                <a href="#" class="btn-outline"><i class="fas fa-home"></i> Inicio</a>
+                <a href="#" class="btn-nav"><i class="fas fa-home"></i> Inicio</a>
                 <div class="dropdown">
                     <button class="dropbtn">Colección <i class="fas fa-chevron-down" style="font-size:0.6rem;"></i></button>
                     <div class="dropdown-content">
@@ -510,13 +486,13 @@
     </header>
 
     <main class="main-content">
-        <div class="hero-text">
-            <h2>🛍️ Descubre nuestra colección</h2>
-            <p>Prendas con esencia para almas libres y auténticas</p>
+        <div class="hero-section">
+            <h2>🛍️ Prendas con esencia</h2>
+            <p>Diseños atemporales para almas libres</p>
         </div>
 
         <div class="buscador-wrapper">
-            <input type="text" id="buscador-productos" placeholder="🔍 Buscar por nombre, talla o color..." class="buscador-input">
+            <input type="text" id="buscador-productos" placeholder="🔍 Buscar productos..." class="buscador-input">
         </div>
 
         <div class="grid-productos" id="catalogo-productos">
@@ -538,12 +514,17 @@
         </div>
     </div>
 
-    <!-- WhatsApp Float -->
+    <!-- WhatsApp -->
     <a href="https://wa.me/573001234567?text=Hola%20Modas%20La%2034" class="wa-float" target="_blank">
         <i class="fab fa-whatsapp"></i>
     </a>
 
     <footer>
+        <div class="footer-social">
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-tiktok"></i></a>
+        </div>
         <p>© 2026 Modas La 34 — Diseño atemporal para almas libres</p>
         <a href="admin/login.html" class="admin-link">🔑 Acceso administrador</a>
     </footer>
@@ -551,7 +532,6 @@
     <script src="js/supabase-config.js"></script>
     <script src="js/catalogo.js"></script>
     <script>
-        // Menú móvil
         document.addEventListener('click', function(e) {
             const dropdown = document.querySelector('.dropdown');
             if (dropdown && !dropdown.contains(e.target)) {
