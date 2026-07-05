@@ -707,6 +707,18 @@
                         <div class="form-group"><label>💰 Precio de venta (general)</label><input type="number" id="producto-precio-venta-general" placeholder="0" step="1000"></div>
                     </div>
                     <div class="form-group"><label>🖼️ URL Imagen</label><input type="url" id="producto-imagen" placeholder="https://..."></div>
+
+                    <!-- Agrega esto después del campo URL imagen -->
+                    <div class="form-group">
+                        <label>👁️ Visibilidad en catálogo</label>
+                        <select id="producto-visible" style="width: 100%; padding: 0.75rem 1rem; border: 1.5px solid #f0e4d8; border-radius: 14px;">
+                            <option value="true">✅ Visible en catálogo</option>
+                            <option value="false">❌ Oculto (no aparece en la tienda)</option>
+                        </select>
+                        <small style="color: #b8a38e; display: block; margin-top: 0.3rem;">
+                            Los productos ocultos no se mostrarán en el catálogo público, pero seguirán visibles en el dashboard.
+                        </small>
+                    </div>
                     
                     <h4 style="margin: 1rem 0 0.5rem;">📦 Variantes</h4>
                     <div id="variantes-container"></div>
