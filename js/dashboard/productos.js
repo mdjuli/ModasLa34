@@ -1,7 +1,7 @@
 // ============================================
 // PRODUCTOS.JS - COMPLETO Y FUNCIONAL
 // ============================================
-
+ 
 let productosData = [];
 let varianteCount = 0;
 let sortProductosColumn = 'nombre';
