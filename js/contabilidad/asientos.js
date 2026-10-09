@@ -1132,46 +1132,150 @@ function eliminarAsientoDesdeModal() {
     eliminarAsiento(id);
 }
 
-// ============================================
-// VER ASIENTO
-// ============================================
-
 async function verAsiento(id) {
     try {
+        console.log('📄 Ver asiento:', id);
+        
+        // ============================================
+        // VALIDAR TOKEN
+        // ============================================
+        const token = obtenerToken();
+        if (!token) {
+            mostrarToast('Sesión expirada. Inicia sesión de nuevo.', 'error');
+            return;
+        }
+        
+        // ============================================
+        // CARGAR ASIENTO
+        // ============================================
         const response = await fetch(
             `${SUPABASE_URL}/rest/v1/asientos_contables?id=eq.${id}`,
-            { headers: { 'apikey': SUPABASE_KEY } }
+            {
+                headers: {
+                    'apikey': SUPABASE_KEY,
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json'
+                }
+            }
         );
-        const [asiento] = await response.json();
         
-        const lineasRes = await fetch(
+        // Verificar status HTTP
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('❌ Error HTTP:', response.status, errorText);
+            throw new Error(`Error ${response.status}: ${errorText}`);
+        }
+        
+        // Leer como texto primero para diagnosticar
+        const textoRespuesta = await response.text();
+        console.log('📥 Respuesta cruda:', textoRespuesta);
+        
+        let data;
+        try {
+            data = JSON.parse(textoRespuesta);
+        } catch (e) {
+            throw new Error('La respuesta no es JSON válido: ' + textoRespuesta);
+        }
+        
+        // ============================================
+        // VALIDAR QUE SEA UN ARRAY
+        // ============================================
+        if (!Array.isArray(data)) {
+            console.error('❌ La respuesta no es un array:', data);
+            
+            // Si es un objeto de error
+            if (data && data.message) {
+                throw new Error('Error de Supabase: ' + data.message);
+            }
+            if (data && data.error) {
+                throw new Error('Error: ' + data.error);
+            }
+            throw new Error('Respuesta inesperada del servidor');
+        }
+        
+        // ============================================
+        // VALIDAR QUE EXISTA AL MENOS UN ASIENTO
+        // ============================================
+        if (data.length === 0) {
+            mostrarToast('No se encontró el asiento #' + id, 'error');
+            return;
+        }
+        
+        const asiento = data[0];
+        console.log('✅ Asiento cargado:', asiento);
+        
+        // ============================================
+        // CARGAR LÍNEAS
+        // ============================================
+        const lineasResponse = await fetch(
             `${SUPABASE_URL}/rest/v1/lineas_asiento?asiento_id=eq.${id}&order=orden.asc`,
-            { headers: { 'apikey': SUPABASE_KEY } }
+            {
+                headers: {
+                    'apikey': SUPABASE_KEY,
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json'
+                }
+            }
         );
-        const lineas = await lineasRes.json();
         
+        if (!lineasResponse.ok) {
+            const errorText = await lineasResponse.text();
+            console.error('❌ Error cargando líneas:', errorText);
+            throw new Error('Error al cargar las líneas del asiento');
+        }
+        
+        const lineasTexto = await lineasResponse.text();
+        let lineas;
+        try {
+            lineas = JSON.parse(lineasTexto);
+        } catch (e) {
+            throw new Error('Las líneas no son JSON válido');
+        }
+        
+        if (!Array.isArray(lineas)) {
+            lineas = [];
+        }
+        
+        console.log(`📋 ${lineas.length} líneas cargadas`);
+        
+        // ============================================
+        // GENERAR HTML
+        // ============================================
         const body = document.getElementById('ver-asiento-body');
-        if (!body) return;
+        if (!body) {
+            console.error('❌ No existe #ver-asiento-body');
+            return;
+        }
         
-        let lineasHTML = lineas.map(l => `
-            <tr>
-                <td>${l.codigo_cuenta} - ${l.nombre_cuenta}</td>
-                <td class="monto-debito">${l.debito > 0 ? formatearMoneda(l.debito) : '—'}</td>
-                <td class="monto-credito">${l.credito > 0 ? formatearMoneda(l.credito) : '—'}</td>
-            </tr>
-        `).join('');
+        let lineasHTML = '';
+        if (lineas.length === 0) {
+            lineasHTML = '<tr><td colspan="3" style="text-align:center; color:#a0a0b0;">Sin líneas</td></tr>';
+        } else {
+            lineasHTML = lineas.map(l => `
+                <tr>
+                    <td>${l.codigo_cuenta || ''} - ${l.nombre_cuenta || ''}</td>
+                    <td class="monto-debito">${(parseFloat(l.debito) || 0) > 0 ? formatearMoneda(l.debito) : '—'}</td>
+                    <td class="monto-credito">${(parseFloat(l.credito) || 0) > 0 ? formatearMoneda(l.credito) : '—'}</td>
+                </tr>
+            `).join('');
+        }
         
         body.innerHTML = `
             <div style="padding: 1rem; background: rgba(0,0,0,0.2); border-radius: 12px; margin-bottom: 1rem;">
-                <p><strong>Número:</strong> ${asiento.numero}</p>
+                <p><strong>Número:</strong> ${asiento.numero || '-'}</p>
                 <p><strong>Fecha:</strong> ${formatearFecha(asiento.fecha)}</p>
-                <p><strong>Concepto:</strong> ${escaparHTML(asiento.concepto)}</p>
+                <p><strong>Concepto:</strong> ${escaparHTML(asiento.concepto || '')}</p>
                 <p><strong>Tercero:</strong> ${escaparHTML(asiento.tercero || '-')}</p>
                 <p><strong>Referencia:</strong> ${escaparHTML(asiento.referencia || '-')}</p>
+                <p><strong>Estado:</strong> ${asiento.estado || '-'}</p>
             </div>
             <table class="asientos-table">
                 <thead>
-                    <tr><th>Cuenta</th><th style="text-align:right;">Débito</th><th style="text-align:right;">Crédito</th></tr>
+                    <tr>
+                        <th>Cuenta</th>
+                        <th style="text-align:right;">Débito</th>
+                        <th style="text-align:right;">Crédito</th>
+                    </tr>
                 </thead>
                 <tbody>${lineasHTML}</tbody>
                 <tfoot>
@@ -1184,6 +1288,7 @@ async function verAsiento(id) {
             </table>
         `;
         
+        // Mostrar modal
         const modal = document.getElementById('modal-ver-asiento');
         if (modal) {
             modal.classList.add('active');
@@ -1191,43 +1296,9 @@ async function verAsiento(id) {
         }
         
     } catch (error) {
-        console.error('Error:', error);
-        mostrarToast('Error: ' + error.message, 'error');
+        console.error('❌ Error en verAsiento:', error);
+        mostrarToast('Error al abrir asiento: ' + error.message, 'error');
     }
-}
-
-function cerrarVerAsiento() {
-    const modal = document.getElementById('modal-ver-asiento');
-    if (modal) {
-        modal.classList.remove('active');
-        modal.style.display = 'none';
-    }
-}
-
-// ============================================
-// HELPERS
-// ============================================
-
-function obtenerUserId() {
-    const userStr = localStorage.getItem('admin_user');
-    if (userStr) {
-        try {
-            const user = JSON.parse(userStr);
-            return user.id;
-        } catch (e) { return null; }
-    }
-    return null;
-}
-
-function getNombreCuenta(codigo) {
-    if (typeof planCuentasCache === 'undefined') return codigo;
-    const cuenta = planCuentasCache.find(c => c.codigo === codigo);
-    return cuenta ? cuenta.nombre : codigo;
-}
-
-async function sincronizarAsientos() {
-    mostrarToast('Sincronizando asientos...', 'info');
-    await cargarAsientos();
 }
 
 // ============================================
