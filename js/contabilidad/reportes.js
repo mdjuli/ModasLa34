@@ -10,7 +10,6 @@ async function cargarEstadoResultados() {
     try {
         const saldos = await calcularSaldosCuentas();
         
-        // Calcular valores de cada categoría
         let ingresos = 0;
         let costoVentas = 0;
         const gastos = {};
@@ -38,42 +37,27 @@ async function cargarEstadoResultados() {
         const utilidadBruta = ingresos - costoVentas;
         const utilidadOperacional = utilidadBruta - totalGastos;
         
-        // Actualizar UI
         const rowIngresos = document.getElementById('row-ingresos');
         if (rowIngresos) {
-            rowIngresos.innerHTML = `
-                <td>Ventas totales</td>
-                <td class="valor">${formatearMoneda(ingresos)}</td>
-            `;
+            rowIngresos.innerHTML = '<td>Ventas totales</td><td class="valor">' + formatearMoneda(ingresos) + '</td>';
         }
         
         const rowCosto = document.getElementById('row-costo');
         if (rowCosto) {
-            rowCosto.innerHTML = `
-                <td>Costo de ventas</td>
-                <td class="valor">${formatearMoneda(costoVentas)}</td>
-            `;
+            rowCosto.innerHTML = '<td>Costo de ventas</td><td class="valor">' + formatearMoneda(costoVentas) + '</td>';
         }
         
         const elUtilidadBruta = document.getElementById('utilidad-bruta');
         if (elUtilidadBruta) elUtilidadBruta.textContent = formatearMoneda(utilidadBruta);
         
-        // Gastos detallados
         const gastosBody = document.getElementById('gastos-body');
         if (gastosBody) {
-            gastosBody.innerHTML = Object.entries(gastos).map(([cod, g]) => `
-                <tr>
-                    <td>${cod} - ${g.nombre}</td>
-                    <td class="valor">${formatearMoneda(g.monto)}</td>
-                </tr>
-            `).join('');
-            
-            gastosBody.innerHTML += `
-                <tr class="total-row">
-                    <td><strong>Total gastos operacionales</strong></td>
-                    <td class="valor"><strong>${formatearMoneda(totalGastos)}</strong></td>
-                </tr>
-            `;
+            let gastosHTML = '';
+            Object.entries(gastos).forEach(([cod, g]) => {
+                gastosHTML += '<tr><td>' + cod + ' - ' + g.nombre + '</td><td class="valor">' + formatearMoneda(g.monto) + '</td></tr>';
+            });
+            gastosHTML += '<tr class="total-row"><td><strong>Total gastos operacionales</strong></td><td class="valor"><strong>' + formatearMoneda(totalGastos) + '</strong></td></tr>';
+            gastosBody.innerHTML = gastosHTML;
         }
         
         const elUtilidadOp = document.getElementById('utilidad-operacional');
@@ -116,7 +100,6 @@ async function cargarBalanceGeneral() {
             }
         });
         
-        // Calcular utilidad del período
         let ingresos = 0, gastos = 0;
         planCuentasCache.forEach(c => {
             const s = saldos[c.id];
@@ -126,24 +109,24 @@ async function cargarBalanceGeneral() {
         });
         const utilidad = ingresos - gastos;
         
-        // Renderizar activos
+        // Activos
         const tablaActivos = document.getElementById('tabla-activos');
         if (tablaActivos) {
             let html = '';
             let totalActivos = 0;
             
             Object.entries(activos).forEach(([cod, a]) => {
-                html += `<tr><td>${cod} - ${a.nombre}</td><td class="valor">${formatearMoneda(a.saldo)}</td></tr>`;
+                html += '<tr><td>' + cod + ' - ' + a.nombre + '</td><td class="valor">' + formatearMoneda(a.saldo) + '</td></tr>';
                 totalActivos += a.saldo;
             });
             
-            tablaActivos.innerHTML = `<tbody>${html}</tbody>`;
+            tablaActivos.innerHTML = '<tbody>' + html + '</tbody>';
             
             const elTotalActivos = document.getElementById('total-activos');
             if (elTotalActivos) elTotalActivos.textContent = formatearMoneda(totalActivos);
         }
         
-        // Renderizar pasivos + patrimonio
+        // Pasivos + Patrimonio
         const tablaPasivos = document.getElementById('tabla-pasivos');
         if (tablaPasivos) {
             let html = '';
@@ -151,22 +134,22 @@ async function cargarBalanceGeneral() {
             let totalPatrimonio = 0;
             
             Object.entries(pasivos).forEach(([cod, p]) => {
-                html += `<tr><td>${cod} - ${p.nombre}</td><td class="valor">${formatearMoneda(p.saldo)}</td></tr>`;
+                html += '<tr><td>' + cod + ' - ' + p.nombre + '</td><td class="valor">' + formatearMoneda(p.saldo) + '</td></tr>';
                 totalPasivos += p.saldo;
             });
             
-            html += `<tr><td colspan="2" style="padding:0.5rem;"></td></tr>`;
-            html += `<tr><td style="font-weight:bold; color:#d4a5a9;">PATRIMONIO</td><td></td></tr>`;
+            html += '<tr><td colspan="2" style="padding:0.5rem;"></td></tr>';
+            html += '<tr><td style="font-weight:bold; color:#d4a5a9;">PATRIMONIO</td><td></td></tr>';
             
             Object.entries(patrimonio).forEach(([cod, p]) => {
-                html += `<tr><td>${cod} - ${p.nombre}</td><td class="valor">${formatearMoneda(p.saldo)}</td></tr>`;
+                html += '<tr><td>' + cod + ' - ' + p.nombre + '</td><td class="valor">' + formatearMoneda(p.saldo) + '</td></tr>';
                 totalPatrimonio += p.saldo;
             });
             
-            html += `<tr><td><strong>Utilidad del período</strong></td><td class="valor"><strong>${formatearMoneda(utilidad)}</strong></td></tr>`;
+            html += '<tr><td><strong>Utilidad del período</strong></td><td class="valor"><strong>' + formatearMoneda(utilidad) + '</strong></td></tr>';
             totalPatrimonio += utilidad;
             
-            tablaPasivos.innerHTML = `<tbody>${html}</tbody>`;
+            tablaPasivos.innerHTML = '<tbody>' + html + '</tbody>';
             
             const elTotalPasivos = document.getElementById('total-pasivos');
             const elTotalPatrimonio = document.getElementById('total-patrimonio');
@@ -195,8 +178,11 @@ async function cargarBalancePrueba() {
         
         const saldos = await calcularSaldosCuentas();
         
-        let totalInicial = 0, totalDebitos = 0, totalCreditos = 0, totalFinal = 0;
-        let filas = [];
+        let totalInicial = 0;
+        let totalDebitos = 0;
+        let totalCreditos = 0;
+        let totalFinal = 0;
+        let filas = '';
         
         planCuentasCache.forEach(c => {
             if (!c.permite_movimiento) return;
@@ -214,35 +200,32 @@ async function cargarBalancePrueba() {
             totalCreditos += credito;
             totalFinal += saldoFinal;
             
-            filas.push(`
-                <tr>
-                    <td>${c.codigo}</td>
-                    <td>${escaparHTML(c.nombre)}</td>
-                    <td class="monto-debito">$0</td>
-                    <td class="monto-debito">${formatearMoneda(debito)}</td>
-                    <td class="monto-credito">${formatearMoneda(credito)}</td>
-                    <td class="monto-${saldoFinal >= 0 ? 'debito' : 'credito'}">${formatearMoneda(Math.abs(saldoFinal))}</td>
-                </tr>
-            `);
+            filas += '<tr>';
+            filas += '<td>' + c.codigo + '</td>';
+            filas += '<td>' + escaparHTML(c.nombre) + '</td>';
+            filas += '<td class="monto-debito">' + formatearMoneda(0) + '</td>';
+            filas += '<td class="monto-debito">' + formatearMoneda(debito) + '</td>';
+            filas += '<td class="monto-credito">' + formatearMoneda(credito) + '</td>';
+            filas += '<td class="monto-' + (saldoFinal >= 0 ? 'debito' : 'credito') + '">' + formatearMoneda(Math.abs(saldoFinal)) + '</td>';
+            filas += '</tr>';
         });
         
-        if (filas.length === 0) {
+        if (filas === '') {
             tbody.innerHTML = '<tr><td colspan="6" class="empty-message">No hay movimientos en el período</td></tr>';
             return;
         }
         
-        tbody.innerHTML = filas.join('');
+        tbody.innerHTML = filas;
         
-        // Actualizar totales
         const elTotalIni = document.getElementById('bp-total-inicial');
         const elTotalDeb = document.getElementById('bp-total-debitos');
         const elTotalCred = document.getElementById('bp-total-creditos');
         const elTotalFin = document.getElementById('bp-total-final');
         
-        if (elTotalIni) elTotalIni.innerHTML = `<strong>${formatearMoneda(totalInicial)}</strong>`;
-        if (elTotalDeb) elTotalDeb.innerHTML = `<strong>${formatearMoneda(totalDebitos)}</strong>`;
-        if (elTotalCred) elTotalCred.innerHTML = `<strong>${formatearMoneda(totalCreditos)}</strong>`;
-        if (elTotalFin) elTotalFin.innerHTML = `<strong>${formatearMoneda(totalFinal)}</strong>`;
+        if (elTotalIni) elTotalIni.innerHTML = '<strong>' + formatearMoneda(totalInicial) + '</strong>';
+        if (elTotalDeb) elTotalDeb.innerHTML = '<strong>' + formatearMoneda(totalDebitos) + '</strong>';
+        if (elTotalCred) elTotalCred.innerHTML = '<strong>' + formatearMoneda(totalCreditos) + '</strong>';
+        if (elTotalFin) elTotalFin.innerHTML = '<strong>' + formatearMoneda(totalFinal) + '</strong>';
         
     } catch (error) {
         console.error('Error en balance de prueba:', error);
@@ -250,7 +233,7 @@ async function cargarBalancePrueba() {
 }
 
 // ============================================
-// EXPORTAR
+// EXPORTACIONES
 // ============================================
 
 async function exportarEstadoResultados() {
@@ -268,13 +251,13 @@ async function exportarEstadoResultados() {
             if (c.tipo === 'GASTO') gastosTotal += (s.debito - s.credito);
         });
         
-        csv += `"Ventas Totales",${ingresos}\n`;
-        csv += `"Costo de Ventas",${costoVentas}\n`;
-        csv += `"Utilidad Bruta",${ingresos - costoVentas}\n`;
-        csv += `"Gastos Operacionales",${gastosTotal}\n`;
-        csv += `"Utilidad Neta",${ingresos - costoVentas - gastosTotal}\n`;
+        csv += '"Ventas Totales",' + ingresos + '\n';
+        csv += '"Costo de Ventas",' + costoVentas + '\n';
+        csv += '"Utilidad Bruta",' + (ingresos - costoVentas) + '\n';
+        csv += '"Gastos Operacionales",' + gastosTotal + '\n';
+        csv += '"Utilidad Neta",' + (ingresos - costoVentas - gastosTotal) + '\n';
         
-        descargarCSV(csv, `estado_resultados_${fechaInicio.toISOString().split('T')[0]}.csv`);
+        descargarCSV(csv, 'estado_resultados_' + fechaInicio.toISOString().split('T')[0] + '.csv');
         mostrarToast('Estado de resultados exportado', 'success');
     } catch (error) {
         mostrarToast('Error al exportar: ' + error.message, 'error');
@@ -293,10 +276,10 @@ async function exportarBalance() {
             if (!s) return;
             const saldo = s.debito - s.credito;
             if (saldo === 0) return;
-            csv += `"${c.codigo}","${c.nombre}",${saldo}\n`;
+            csv += '"' + c.codigo + '","' + c.nombre + '",' + saldo + '\n';
         });
         
-        descargarCSV(csv, `balance_${fechaInicio.toISOString().split('T')[0]}.csv`);
+        descargarCSV(csv, 'balance_' + fechaInicio.toISOString().split('T')[0] + '.csv');
         mostrarToast('Balance exportado', 'success');
     } catch (error) {
         mostrarToast('Error al exportar: ' + error.message, 'error');
@@ -314,10 +297,10 @@ async function exportarBalancePrueba() {
             const s = saldos[c.id];
             if (!s) return;
             if (s.debito === 0 && s.credito === 0) return;
-            csv += `"${c.codigo}","${c.nombre}",0,${s.debito},${s.credito},${s.debito - s.credito}\n`;
+            csv += '"' + c.codigo + '","' + c.nombre + '",0,' + s.debito + ',' + s.credito + ',' + (s.debito - s.credito) + '\n';
         });
         
-        descargarCSV(csv, `balance_prueba_${fechaInicio.toISOString().split('T')[0]}.csv`);
+        descargarCSV(csv, 'balance_prueba_' + fechaInicio.toISOString().split('T')[0] + '.csv');
         mostrarToast('Balance de prueba exportado', 'success');
     } catch (error) {
         mostrarToast('Error al exportar: ' + error.message, 'error');
@@ -325,53 +308,65 @@ async function exportarBalancePrueba() {
 }
 
 function exportarLibroDiario() {
-    let csv = 'Comprobante,Fecha,Cuenta,Débito,Crédito\n';
-    
-    asientosCache.forEach(a => {
-        (a.lineas || []).forEach(l => {
-            csv += `"${a.numero || a.id}","${formatearFecha(a.fecha)}","${l.codigo} - ${l.nombre}",${l.debito},${l.credito}\n`;
+    try {
+        let csv = 'Comprobante,Fecha,Cuenta,Débito,Crédito\n';
+        
+        asientosCache.forEach(a => {
+            (a.lineas || []).forEach(l => {
+                csv += '"' + (a.numero || a.id) + '","' + formatearFecha(a.fecha) + '","' + l.codigo + ' - ' + l.nombre + '",' + l.debito + ',' + l.credito + '\n';
+            });
         });
-    });
-    
-    descargarCSV(csv, `libro_diario_${fechaInicio.toISOString().split('T')[0]}.csv`);
-    mostrarToast('Libro diario exportado', 'success');
+        
+        descargarCSV(csv, 'libro_diario_' + fechaInicio.toISOString().split('T')[0] + '.csv');
+        mostrarToast('Libro diario exportado', 'success');
+    } catch (error) {
+        mostrarToast('Error al exportar: ' + error.message, 'error');
+    }
 }
 
 function exportarMayor() {
-    const codigo = document.getElementById('select-cuenta-mayor')?.value;
-    if (!codigo) {
-        mostrarToast('Selecciona una cuenta', 'error');
-        return;
-    }
-    
-    const filas = document.querySelectorAll('.mayor-table tbody tr');
-    let csv = 'Fecha,Comprobante,Concepto,Tercero,Débito,Crédito,Saldo\n';
-    
-    filas.forEach(tr => {
-        const celdas = tr.querySelectorAll('td');
-        if (celdas.length >= 7) {
-            const vals = Array.from(celdas).map(td => `"${td.textContent.trim()}"`).join(',');
-            csv += vals + '\n';
+    try {
+        const codigo = document.getElementById('select-cuenta-mayor')?.value;
+        if (!codigo) {
+            mostrarToast('Selecciona una cuenta', 'error');
+            return;
         }
-    });
-    
-    descargarCSV(csv, `mayor_${codigo}.csv`);
-    mostrarToast('Mayor exportado', 'success');
+        
+        const filas = document.querySelectorAll('.mayor-table tbody tr');
+        let csv = 'Fecha,Comprobante,Concepto,Tercero,Débito,Crédito,Saldo\n';
+        
+        filas.forEach(tr => {
+            const celdas = tr.querySelectorAll('td');
+            if (celdas.length >= 7) {
+                const vals = Array.from(celdas).map(td => '"' + td.textContent.trim() + '"').join(',');
+                csv += vals + '\n';
+            }
+        });
+        
+        descargarCSV(csv, 'mayor_' + codigo + '.csv');
+        mostrarToast('Mayor exportado', 'success');
+    } catch (error) {
+        mostrarToast('Error al exportar: ' + error.message, 'error');
+    }
 }
 
 function exportarPlanCuentas() {
-    let csv = 'Código,Nombre,Tipo,Naturaleza,Nivel,Permite Movimiento,Estado\n';
-    
-    planCuentasCache.forEach(c => {
-        csv += `"${c.codigo}","${c.nombre}","${c.tipo}","${c.naturaleza}",${c.nivel},${c.permite_movimiento},"${c.estado || 'activa'}"\n`;
-    });
-    
-    descargarCSV(csv, `plan_cuentas_${new Date().toISOString().split('T')[0]}.csv`);
-    mostrarToast('Plan de cuentas exportado', 'success');
+    try {
+        let csv = 'Código,Nombre,Tipo,Naturaleza,Nivel,Permite Movimiento,Estado\n';
+        
+        planCuentasCache.forEach(c => {
+            csv += '"' + c.codigo + '","' + c.nombre + '","' + c.tipo + '","' + c.naturaleza + '",' + c.nivel + ',' + c.permite_movimiento + ',"' + (c.estado || 'activa') + '"\n';
+        });
+        
+        descargarCSV(csv, 'plan_cuentas_' + new Date().toISOString().split('T')[0] + '.csv');
+        mostrarToast('Plan de cuentas exportado', 'success');
+    } catch (error) {
+        mostrarToast('Error al exportar: ' + error.message, 'error');
+    }
 }
 
 // ============================================
-// HELPER DESCARGAR CSV
+// HELPER: DESCARGAR CSV
 // ============================================
 
 function descargarCSV(contenido, nombreArchivo) {
@@ -387,7 +382,7 @@ function descargarCSV(contenido, nombreArchivo) {
 }
 
 // ============================================
-// EXPORTAR
+// EXPORTAR AL SCOPE GLOBAL
 // ============================================
 
 window.cargarEstadoResultados = cargarEstadoResultados;
