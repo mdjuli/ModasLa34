@@ -462,4 +462,23 @@ window.cargarSelectCuentaPadre = cargarSelectCuentaPadre;
 window.obtenerToken = obtenerToken;
 window.mostrarToast = mostrarToast;
 
+// ============================================
+// HELPER: OBTENER NOMBRE DE CUENTA POR CÓDIGO
+// ============================================
+
+function getNombreCuenta(codigo) {
+    if (!codigo) return '';
+    if (!planCuentasCache || planCuentasCache.length === 0) {
+        return codigo;
+    }
+    const cuenta = planCuentasCache.find(c => c.codigo === codigo);
+    return cuenta ? cuenta.nombre : codigo;
+}
+
+// ============================================
+// EXPORTAR TODO AL SCOPE GLOBAL
+// ============================================
+
+window.getNombreCuenta = getNombreCuenta;
+
 console.log('✅ plan-cuentas.js cargado');
