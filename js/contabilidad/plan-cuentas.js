@@ -481,4 +481,19 @@ function getNombreCuenta(codigo) {
 
 window.getNombreCuenta = getNombreCuenta;
 
+// ============================================
+// HELPER: OBTENER NOMBRE DE CUENTA
+// ============================================
+
+function getNombreCuenta(codigo) {
+    if (!codigo) return '';
+    if (!planCuentasCache || planCuentasCache.length === 0) {
+        return codigo;
+    }
+    const cuenta = planCuentasCache.find(c => c.codigo === codigo);
+    return cuenta ? cuenta.nombre : codigo;
+}
+
+window.getNombreCuenta = getNombreCuenta;
+
 console.log('✅ plan-cuentas.js cargado');
