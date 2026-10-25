@@ -4,287 +4,241 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
-<title>Dashboard - Modas La 34</title>
-<script>
-/* Tema antes de pintar (evita parpadeo) */
-(function(){try{var t=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t)}catch(e){}})();
-</script>
+<title>Panel - Modas La 34</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
 :root{
-  --rosa:#e8a8b5; --rosa-osc:#c9758a; --rosa-cl:#fce4ec; --rosa-xcl:#fef6f8;
-  --bg:#fbf7f8; --card:#fff; --head:rgba(255,255,255,.95);
-  --tx:#3d2e33; --tx2:#7d646c; --tx3:#a8929a;
-  --bd:#f1dfe4; --sh:0 2px 12px rgba(150,90,105,.08); --sh2:0 12px 32px rgba(150,90,105,.16);
-  --sw:240px; --hh:64px; --r:12px; --rl:18px; --rf:50px;
-  --ok:#2e7d32; --ok-bg:#e8f5e9; --warn:#ef6c00; --warn-bg:#fff3e0; --err:#c62828; --err-bg:#ffebee; --info:#1565c0; --info-bg:#e3f2fd;
+  --rosa:#d48494; --rosa-suave:#e8a8b5; --rosa-bg:#fce4ec; --rosa-tenue:#fef6f8;
+  --bg:#fff8fa; --card:#fff; --txt:#3d2e33; --txt2:#7a5f67; --txt3:#a8929a;
+  --borde:#f3d9e0; --ok:#2e7d32; --ok-bg:#e8f5e9; --warn:#ef6c00; --warn-bg:#fff3e0; --err:#c62828; --err-bg:#ffebee; --info:#1565c0; --info-bg:#e3f2fd;
+  --side:240px; --head:60px; --r:12px; --sombra:0 2px 12px rgba(212,132,148,.10);
 }
 [data-theme="dark"]{
-  --bg:#171114; --card:#221a1e; --head:rgba(34,26,30,.95);
-  --tx:#f5e8ec; --tx2:#c4a8b0; --tx3:#8f747c; --bd:#3a2c32;
-  --rosa-cl:#3d2a30; --rosa-xcl:#2a1e23; --rosa-osc:#e59aad;
-  --ok-bg:#1d3322; --warn-bg:#3a2a14; --err-bg:#3d1c1f; --info-bg:#1a2b3d;
-  --ok:#7ad08a; --warn:#ffb866; --err:#ff8a8a; --info:#7db8f0;
+  --bg:#1a1216; --card:#241a1f; --txt:#f5e8ec; --txt2:#c4a8b0; --txt3:#8b6b73;
+  --borde:#3d2e33; --rosa-bg:#3d2a30; --rosa-tenue:#2a1e23;
+  --ok-bg:#1e3a24; --ok:#81c784; --warn-bg:#3d2d17; --warn:#ffb74d; --err-bg:#3d1c20; --err:#ef9a9a; --info-bg:#172b3d; --info:#90caf9;
 }
 *{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;font-size:14px;line-height:1.5}
-h1,h2,h3,.logo-text{font-family:'Playfair Display',serif}
-button,input,select,textarea{font-family:inherit}
-:focus-visible{outline:2px solid var(--rosa-osc);outline-offset:2px}
-::-webkit-scrollbar{width:8px;height:8px}::-webkit-scrollbar-thumb{background:var(--rosa);border-radius:8px}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;font-size:14px}
+h1,h2,h3,.logo{font-family:'Playfair Display',serif}
+:focus-visible{outline:2px solid var(--rosa);outline-offset:2px}
+button{font-family:inherit}
 
-/* HEADER */
-.header{position:fixed;inset:0 0 auto 0;height:var(--hh);background:var(--head);backdrop-filter:blur(10px);border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;z-index:100;gap:1rem}
-.header-left,.header-right{display:flex;align-items:center;gap:1rem}
-.menu-btn{display:none;background:var(--rosa-cl);border:0;width:40px;height:40px;border-radius:var(--r);cursor:pointer;color:var(--rosa-osc)}
-.logo{display:flex;align-items:center;gap:.6rem}
-.logo-text{font-size:1.25rem;font-weight:600}.logo-text span{color:var(--rosa-osc)}
-.logo-badge{background:var(--rosa-cl);color:var(--rosa-osc);padding:.15rem .6rem;border-radius:var(--rf);font-size:.65rem;font-weight:700;letter-spacing:.5px}
-.global-search{display:flex;align-items:center;gap:.5rem;background:var(--rosa-xcl);border:1px solid var(--bd);border-radius:var(--rf);padding:.4rem 1rem;width:300px}
-.global-search:focus-within{border-color:var(--rosa);background:var(--card)}
-.global-search input{border:0;background:none;outline:0;width:100%;color:var(--tx);font-size:.85rem}
-.global-search kbd,kbd{background:var(--rosa-cl);color:var(--rosa-osc);padding:.1rem .4rem;border-radius:4px;font-size:.65rem;font-family:monospace}
-.icon-btn{background:var(--rosa-cl);border:0;height:38px;padding:0 .9rem;border-radius:var(--r);cursor:pointer;color:var(--rosa-osc);font-size:.8rem;font-weight:600}
-.icon-btn:hover{background:var(--rosa);color:#fff}
-.user-info{display:flex;align-items:center;gap:.6rem;background:var(--rosa-xcl);border:1px solid var(--bd);border-radius:var(--rf);padding:.3rem .9rem .3rem .3rem}
-.user-avatar{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--rosa),var(--rosa-osc));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem}
-#userNameDisplay{font-size:.85rem;font-weight:500}
-.user-rol-badge{background:var(--rosa-cl);color:var(--rosa-osc);padding:.1rem .5rem;border-radius:var(--rf);font-size:.65rem;font-weight:700}
+.header{position:fixed;inset:0 0 auto 0;height:var(--head);background:var(--card);border-bottom:1px solid var(--borde);display:flex;align-items:center;justify-content:space-between;padding:0 1.2rem;z-index:100}
+.header-left,.header-right{display:flex;align-items:center;gap:.8rem}
+.logo{font-size:1.25rem;font-weight:600}.logo>span:first-of-type{color:var(--rosa)}
+.logo-badge{font:600 .65rem 'Inter';background:var(--rosa-bg);color:var(--rosa);padding:.2rem .6rem;border-radius:20px;margin-left:.4rem}
+.menu-btn{display:none}
+.icon-btn,.menu-btn{background:var(--rosa-bg);border:0;width:38px;height:38px;border-radius:10px;cursor:pointer;color:var(--rosa);position:relative}
+.icon-btn:hover,.menu-btn:hover{background:var(--rosa-suave);color:#fff}
+.dot{position:absolute;top:-4px;right:-4px;min-width:16px;height:16px;border-radius:8px;background:#e74c3c;color:#fff;font-size:.6rem;font-weight:700;display:none;align-items:center;justify-content:center;padding:0 4px}
+.global-search{display:flex;align-items:center;gap:.5rem;background:var(--rosa-tenue);border:1px solid var(--borde);border-radius:20px;padding:.35rem .9rem;min-width:300px}
+.global-search input{border:0;background:none;outline:0;color:var(--txt);width:100%;font-size:.85rem}
+.global-search i{color:var(--txt3)}
+.user-info{display:flex;align-items:center;gap:.5rem;font-size:.85rem;font-weight:500}
+.user-rol-badge{background:var(--rosa-bg);color:var(--rosa);padding:.15rem .6rem;border-radius:20px;font-size:.65rem;font-weight:600}
 .user-rol-badge:empty{display:none}
 
-/* SIDEBAR */
-.sidebar{position:fixed;top:var(--hh);left:0;bottom:0;width:var(--sw);background:var(--card);border-right:1px solid var(--bd);overflow-y:auto;z-index:90;transition:transform .3s}
+.sidebar{position:fixed;top:var(--head);bottom:0;left:0;width:var(--side);background:var(--card);border-right:1px solid var(--borde);overflow-y:auto;z-index:90;transition:transform .25s}
 .sidebar-nav{padding:1rem .8rem}
-.nav-title{font-size:.68rem;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:1px;padding:.4rem .8rem;margin-top:.8rem}
-.nav-title:first-child{margin-top:0}
-.nav-item{display:flex;align-items:center;width:100%;gap:.5rem;padding:.7rem .9rem;margin-bottom:2px;background:none;border:0;border-radius:var(--r);color:var(--tx2);font-size:.9rem;font-weight:500;text-align:left;cursor:pointer;position:relative}
-.nav-item:hover{background:var(--rosa-xcl);color:var(--tx)}
-.nav-item.active{background:var(--rosa-cl);color:var(--rosa-osc);font-weight:600}
-.nav-item.active::before{content:'';position:absolute;left:0;top:25%;height:50%;width:3px;background:var(--rosa-osc);border-radius:0 3px 3px 0}
-.nav-badge{margin-left:auto;background:var(--err);color:#fff;padding:.05rem .5rem;border-radius:var(--rf);font-size:.65rem;font-weight:700}
-.nav-ext{margin-left:auto;font-size:.65rem;opacity:.6}
-.sidebar-overlay{position:fixed;inset:var(--hh) 0 0 0;background:rgba(0,0,0,.4);z-index:85;display:none}
-.sidebar-overlay.active{display:block}
+.nav-title{font-size:.72rem;font-weight:600;color:var(--txt3);padding:.9rem .8rem .4rem}
+.nav-item{display:flex;align-items:center;width:100%;padding:.65rem .8rem;margin-bottom:2px;background:none;border:0;border-radius:10px;color:var(--txt2);font-size:.9rem;font-weight:500;cursor:pointer;text-align:left}
+.nav-item:hover{background:var(--rosa-tenue);color:var(--txt)}
+.nav-item.active{background:var(--rosa-bg);color:var(--rosa);font-weight:600}
+.nav-badge{margin-left:auto;background:#e74c3c;color:#fff;border-radius:20px;padding:.1rem .5rem;font-size:.65rem;font-weight:700;display:none}
+.overlay{position:fixed;inset:var(--head) 0 0 0;background:rgba(0,0,0,.4);z-index:85;display:none}.overlay.active{display:block}
 
-/* CONTENIDO */
-.main-content{margin:var(--hh) 0 0 var(--sw);padding:1.5rem 2rem 3rem;max-width:1500px}
-.breadcrumbs{font-size:.78rem;color:var(--tx3);margin-bottom:1rem}
-.breadcrumbs .current{color:var(--rosa-osc);font-weight:600}
-.page-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;margin-bottom:1.5rem}
-.page-title{font-size:1.8rem;font-weight:700}
-.page-subtitle{color:var(--tx2);font-size:.88rem}
-.module-section{animation:fade .25s ease}
-@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.main-content{margin:var(--head) 0 0 var(--side);padding:1.6rem;max-width:1500px}
+.page-header{display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;flex-wrap:wrap;margin-bottom:1.3rem}
+.page-title{font-size:1.7rem;font-weight:700}
+.page-subtitle{color:var(--txt2);margin-top:.2rem}
+.btn{padding:.6rem 1.2rem;border-radius:10px;font-size:.85rem;font-weight:600;cursor:pointer;border:1.5px solid transparent}
+.btn-primary{background:var(--rosa);color:#fff}.btn-primary:hover{background:#c26f80}
+.btn-secondary{background:var(--card);color:var(--txt);border-color:var(--borde)}.btn-secondary:hover{border-color:var(--rosa)}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-bottom:1.3rem}
+.stat-card{background:var(--card);border:1px solid var(--borde);border-radius:var(--r);padding:1.1rem 1.2rem}
+.stat-title{font-size:.78rem;color:var(--txt2);font-weight:500}
+.stat-value{font-size:1.9rem;font-weight:700;margin-top:.3rem;line-height:1.1}
+.stat-sub{font-size:.75rem;color:var(--txt3);margin-top:.35rem}
+.stat-card.link{cursor:pointer}.stat-card.link:hover{border-color:var(--rosa)}
+.tone-ok .stat-value{color:var(--ok)}.tone-err .stat-value{color:var(--err)}.tone-warn .stat-value{color:var(--warn)}
 
-/* BOTONES */
-.btn{display:inline-flex;align-items:center;gap:.4rem;padding:.65rem 1.3rem;border-radius:var(--rf);font-size:.85rem;font-weight:600;cursor:pointer;border:0;transition:.2s}
-.btn-primary{background:linear-gradient(135deg,var(--rosa),var(--rosa-osc));color:#fff;box-shadow:0 3px 12px rgba(201,117,138,.3)}
-.btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(201,117,138,.4)}
-.btn-secondary{background:var(--card);color:var(--tx);border:1.5px solid var(--bd)}
-.btn-secondary:hover{border-color:var(--rosa);background:var(--rosa-xcl)}
-
-/* ESTADISTICAS */
-.stats-grid,.stock-cards,.ventas-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1rem;margin-bottom:1.5rem}
-.stat-card{background:var(--card);border:1px solid var(--bd);border-radius:var(--rl);padding:1.2rem 1.4rem;transition:.2s}
-.stat-card:hover{border-color:var(--rosa);box-shadow:var(--sh)}
-.stat-card.clickable{cursor:pointer}
-.stat-title,.stat-card p{font-size:.72rem;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.7px}
-.stat-value,.stat-card h3{font-family:'Inter',sans-serif;font-size:2rem;font-weight:700;line-height:1.2;margin-top:.3rem}
-.stat-sub{font-size:.75rem;color:var(--tx3);margin-top:.2rem}
-.stat-card.alerta .stat-value{color:var(--err)}
-
-/* FILTROS */
-.filters-section{display:flex;flex-wrap:wrap;gap:.8rem;align-items:center;background:var(--card);border:1px solid var(--bd);border-radius:var(--rl);padding:.9rem 1.2rem;margin-bottom:1.2rem}
-.search-box,.filter-group{display:flex;align-items:center;background:var(--rosa-xcl);border:1px solid var(--bd);border-radius:var(--rf);padding:.2rem 1rem}
+.filters-section{display:flex;flex-wrap:wrap;gap:.7rem;margin-bottom:1.1rem}
+.search-box,.filter-group{background:var(--card);border:1px solid var(--borde);border-radius:10px;padding:0 .8rem;display:flex;align-items:center}
 .search-box{flex:1;min-width:220px}
-.search-box:focus-within,.filter-group:focus-within{border-color:var(--rosa)}
-.search-box input,.filter-group select{border:0;background:none;outline:0;padding:.5rem 0;color:var(--tx);font-size:.85rem;width:100%}
-.filter-group select{cursor:pointer}
-.filter-group select option{background:var(--card);color:var(--tx)}
-.btn-clear{background:none;border:1px solid var(--bd);padding:.55rem 1rem;border-radius:var(--rf);font-size:.8rem;cursor:pointer;color:var(--tx2)}
-.btn-clear:hover{background:var(--rosa-cl);color:var(--rosa-osc)}
+.search-box input,.filter-group select{border:0;background:none;outline:0;padding:.65rem 0;color:var(--txt);font-size:.85rem;width:100%}
+.filter-group select{cursor:pointer}.filter-group select option{background:var(--card);color:var(--txt)}
+.btn-clear{background:none;border:1px solid var(--borde);border-radius:10px;padding:0 1rem;color:var(--txt2);cursor:pointer}
+.btn-clear:hover{border-color:var(--rosa);color:var(--rosa)}
 
-/* TABLAS */
-.data-card,.table-container{background:var(--card);border:1px solid var(--bd);border-radius:var(--rl);overflow:hidden;box-shadow:var(--sh);margin-bottom:1.2rem}
-.data-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;padding:1rem 1.4rem;border-bottom:1px solid var(--bd)}
-.data-header h2{font-size:1.05rem;font-weight:600}
+.data-card,.guide{background:var(--card);border:1px solid var(--borde);border-radius:var(--r);overflow:hidden;margin-bottom:1.2rem;box-shadow:var(--sombra)}
+.data-header{padding:1rem 1.2rem;border-bottom:1px solid var(--borde);display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
+.data-header h2{font-size:1.05rem}
 .table-responsive{overflow-x:auto}
 .data-table{width:100%;border-collapse:collapse;font-size:.85rem}
-.data-table th{text-align:left;padding:.85rem 1.1rem;background:var(--rosa-xcl);color:var(--tx2);font-size:.7rem;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--bd);white-space:nowrap}
-.data-table td{padding:.85rem 1.1rem;border-bottom:1px solid var(--bd)}
-.data-table tbody tr:hover{background:var(--rosa-xcl)}
+.data-table th{text-align:left;padding:.75rem 1rem;background:var(--rosa-tenue);color:var(--txt2);font-weight:600;font-size:.78rem;border-bottom:1px solid var(--borde);white-space:nowrap}
+.data-table td{padding:.75rem 1rem;border-bottom:1px solid var(--borde)}
+.data-table tr:hover td{background:var(--rosa-tenue)}
 .data-table tr:last-child td{border-bottom:0}
-.data-table img{width:46px;height:46px;object-fit:cover;border-radius:8px}
-.action-buttons{display:flex;gap:.3rem}
-.action-btn{background:none;border:0;padding:.4rem .6rem;border-radius:8px;cursor:pointer;color:var(--tx3)}
-.action-btn:hover{background:var(--rosa-cl);color:var(--rosa-osc)}
-.action-btn.delete-btn:hover{background:var(--err-bg);color:var(--err)}
-.estado-badge{display:inline-flex;padding:.2rem .7rem;border-radius:var(--rf);font-size:.7rem;font-weight:700}
-.estado-pagada{background:var(--ok-bg);color:var(--ok)}
+.data-table img{width:44px;height:44px;object-fit:cover;border-radius:8px}
+.action-btn{background:none;border:0;padding:.35rem .6rem;border-radius:6px;cursor:pointer;color:var(--txt2);font-size:.8rem}
+.action-btn:hover{background:var(--rosa-bg);color:var(--rosa)}.delete-btn:hover{background:var(--err-bg);color:var(--err)}
+.estado-badge{padding:.2rem .7rem;border-radius:20px;font-size:.72rem;font-weight:600;display:inline-block}
+.estado-pagada,.estado-completada{background:var(--ok-bg);color:var(--ok)}
 .estado-pendiente{background:var(--warn-bg);color:var(--warn)}
 .estado-recibida{background:var(--info-bg);color:var(--info)}
-.badge-visible{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:var(--ok-bg);color:var(--ok);font-size:.8rem;cursor:help}
-.badge-visible.oculto{background:var(--err-bg);color:var(--err)}
-.stock-critico{color:var(--warn);font-weight:700}.stock-agotado{color:var(--err);font-weight:700}
-.stock-agotado-row{background:var(--err-bg)}
-.skeleton{height:18px;margin:.4rem 0;border-radius:6px;background:linear-gradient(90deg,var(--rosa-cl) 25%,var(--rosa-xcl) 50%,var(--rosa-cl) 75%);background-size:200% 100%;animation:sk 1.4s infinite}
-@keyframes sk{0%{background-position:200% 0}100%{background-position:-200% 0}}
-.empty-state{text-align:center;padding:3rem 1rem;color:var(--tx3)}
-.empty-state h3{color:var(--tx2);margin-bottom:.3rem}
-.table-container{padding:0}
-.table-container h3{padding:1rem 1.4rem;border-bottom:1px solid var(--bd);font-size:1.05rem}
-.aviso{background:var(--warn-bg);color:var(--warn);border-radius:var(--r);padding:.7rem 1rem;font-size:.82rem;margin-bottom:1rem}
+.stock-agotado{color:var(--err);font-weight:700}.stock-critico{color:var(--warn);font-weight:700}
+.stock-agotado-row td{background:var(--err-bg)}
+.empty-state{text-align:center;padding:2.5rem 1rem;color:var(--txt3)}
+.skeleton{height:18px;border-radius:6px;background:linear-gradient(90deg,var(--rosa-bg) 25%,var(--rosa-tenue) 50%,var(--rosa-bg) 75%);background-size:200% 100%;animation:sk 1.5s infinite}
+@keyframes sk{to{background-position:-200% 0}}
 
-/* MODALES */
-.form-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(6px);z-index:9999;align-items:center;justify-content:center;padding:1rem}
-.form-modal.active{display:flex}
-.form-modal-content{background:var(--card);border-radius:var(--rl);max-width:760px;width:100%;max-height:92vh;overflow-y:auto;box-shadow:var(--sh2);animation:fade .25s ease}
-.form-modal-header{position:sticky;top:0;z-index:5;display:flex;justify-content:space-between;align-items:center;padding:1rem 1.4rem;background:var(--card);border-bottom:1px solid var(--bd)}
+.guide summary{padding:.9rem 1.2rem;cursor:pointer;font-weight:600}
+.guide-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:.6rem;padding:0 1.2rem 1.2rem}
+.guide-item{background:var(--rosa-tenue);border:1px solid var(--borde);border-radius:10px;padding:.7rem .9rem;font-size:.82rem}
+.guide-item b{font-family:monospace;font-size:.95rem;color:var(--rosa)}
+.guide-item span{display:block;color:var(--txt2);margin-top:.15rem}
+.guide p{padding:0 1.2rem 1rem;color:var(--txt2);font-size:.82rem}
+
+.form-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;align-items:center;justify-content:center;padding:1rem}
+.form-modal.active{display:flex!important}
+.form-modal-content{background:var(--card);border-radius:16px;max-width:760px;width:100%;max-height:92vh;overflow-y:auto}
+.form-modal-header{display:flex;justify-content:space-between;align-items:center;padding:1rem 1.4rem;border-bottom:1px solid var(--borde);position:sticky;top:0;background:var(--card);z-index:5}
 .form-modal-header h3{font-size:1.2rem}
-.close{width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;line-height:1;border-radius:50%;background:var(--rosa-xcl);color:var(--tx3);cursor:pointer}
+.close{font-size:1.6rem;cursor:pointer;color:var(--txt3);width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:50%;line-height:1}
 .close:hover{background:var(--err-bg);color:var(--err)}
-.form-modal-body{padding:1.4rem}
+.form-modal-body{padding:1.3rem 1.4rem}
 .form-group{margin-bottom:1rem}
 .form-group label{display:block;margin-bottom:.35rem;font-size:.82rem;font-weight:600}
-.required{color:var(--err)}
-.form-group input,.form-group select,.form-group textarea{width:100%;padding:.7rem .9rem;border:1.5px solid var(--bd);border-radius:var(--r);background:var(--card);color:var(--tx);font-size:.9rem}
-.form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:0;border-color:var(--rosa);box-shadow:0 0 0 3px rgba(232,168,181,.2)}
-.form-group small{display:block;margin-top:.3rem;font-size:.75rem;color:var(--tx3)}
+.required{color:#e74c3c}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:.7rem .9rem;border:1.5px solid var(--borde);border-radius:10px;background:var(--card);color:var(--txt);font:inherit}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:0;border-color:var(--rosa)}
+.form-group small{display:block;margin-top:.3rem;font-size:.75rem;color:var(--txt3)}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
-.form-modal h4{margin:1.3rem 0 .6rem;font-size:.95rem}
-.submit-btn{width:100%;margin-top:.8rem;padding:.9rem;border:0;border-radius:var(--rf);background:linear-gradient(135deg,var(--rosa),var(--rosa-osc));color:#fff;font-size:.95rem;font-weight:600;cursor:pointer}
-.submit-btn:hover{box-shadow:0 6px 18px rgba(201,117,138,.4)}
-.cancel-btn{width:100%;margin-top:.5rem;padding:.75rem;border:0;border-radius:var(--rf);background:var(--rosa-xcl);color:var(--tx2);cursor:pointer}
-.cancel-btn:hover{background:var(--rosa-cl);color:var(--rosa-osc)}
-.btn-danger{background:var(--err-bg);color:var(--err);border:0;padding:.9rem 1.3rem;border-radius:var(--rf);font-weight:600;cursor:pointer}
+.submit-btn{width:100%;background:var(--rosa);color:#fff;border:0;border-radius:10px;padding:.85rem;font-weight:600;font-size:.95rem;cursor:pointer;margin-top:.6rem}
+.submit-btn:hover{background:#c26f80}
+.cancel-btn{width:100%;background:var(--rosa-tenue);color:var(--txt2);border:0;border-radius:10px;padding:.7rem;margin-top:.5rem;cursor:pointer}
+.btn-secondary-sm{background:var(--card);border:1px solid var(--borde);padding:.45rem 1rem;border-radius:8px;font-size:.78rem;cursor:pointer;color:var(--txt2);white-space:nowrap}
+.btn-secondary-sm:hover{border-color:var(--rosa);color:var(--rosa)}
+.codigo-wrap{display:flex;gap:.5rem}
+.codigo-wrap input{font-family:monospace;font-weight:700;letter-spacing:.5px}
+.codigo-wrap input[readonly]{background:var(--rosa-tenue)}
+.codigo-hint{font-size:.78rem;color:var(--txt2);margin-top:.35rem}
 
-/* VARIANTES (las genera productos.js) */
-.variante-card{background:var(--rosa-xcl);border:1px solid var(--bd);border-radius:var(--r);padding:1rem;margin-bottom:1rem}
-.variante-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.8rem;margin-bottom:.8rem}
-.btn-secondary-sm{background:var(--card);border:1px solid var(--bd);padding:.4rem 1rem;border-radius:var(--rf);font-size:.78rem;cursor:pointer;color:var(--tx2)}
-.btn-secondary-sm:hover{background:var(--rosa-cl);color:var(--rosa-osc);border-color:var(--rosa)}
-.color-row{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin-bottom:.5rem;background:var(--card);padding:.5rem;border-radius:8px;border:1px solid var(--bd)}
-.color-picker{width:42px;height:42px;border:2px solid var(--bd);border-radius:8px;cursor:pointer;background:none}
-.color-hex-text,.color-nombre-input,.color-stock-input{padding:.55rem;border:1px solid var(--bd);border-radius:8px;background:var(--card);color:var(--tx)}
-.color-hex-text{flex:1;min-width:90px;font-family:monospace}
-.color-nombre-input{flex:2;min-width:110px}
-.color-stock-input{width:85px;text-align:center}
+.variante-card{background:var(--rosa-tenue);border:1px solid var(--borde);border-radius:10px;padding:.9rem;margin-bottom:.8rem}
+.variante-header{display:flex;justify-content:space-between;align-items:center;gap:.8rem;flex-wrap:wrap;margin-bottom:.8rem}
+.color-row{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;background:var(--card);border:1px solid var(--borde);border-radius:8px;padding:.5rem;margin-bottom:.5rem}
+.color-row.activa{border-color:var(--rosa);box-shadow:0 0 0 2px var(--rosa-bg)}
+.color-picker{width:42px;height:42px;border:2px solid var(--borde);border-radius:8px;cursor:pointer;background:none}
+.color-hex-text{flex:1;min-width:100px;padding:.55rem;border:1px solid var(--borde);border-radius:8px;font-family:monospace;background:var(--card);color:var(--txt)}
+.color-nombre-input{flex:2;min-width:120px;padding:.55rem;border:1px solid var(--borde);border-radius:8px;background:var(--card);color:var(--txt)}
+.color-stock-input{width:80px;padding:.55rem;border:1px solid var(--borde);border-radius:8px;text-align:center;background:var(--card);color:var(--txt)}
+.recientes{background:var(--rosa-tenue);border:1px dashed var(--borde);border-radius:10px;padding:.7rem .9rem;margin-bottom:.8rem}
+.recientes-top{display:flex;justify-content:space-between;align-items:center;font-size:.8rem;font-weight:600;margin-bottom:.5rem}
+.recientes-top button{background:none;border:0;color:var(--txt3);cursor:pointer;font-size:.75rem}
+.chips{display:flex;flex-wrap:wrap;gap:.4rem}
+.chip{display:inline-flex;align-items:center;gap:.4rem;background:var(--card);border:1px solid var(--borde);border-radius:20px;padding:.25rem .7rem .25rem .3rem;font-size:.75rem;cursor:pointer;color:var(--txt)}
+.chip:hover{border-color:var(--rosa)}
+.chip i{width:18px;height:18px;border-radius:50%;border:1px solid rgba(0,0,0,.2);display:inline-block}
+.recientes small{display:block;margin-top:.5rem;color:var(--txt3);font-size:.73rem}
 
-/* AVISOS */
-.toast-container{position:fixed;top:78px;right:16px;z-index:10000;display:flex;flex-direction:column;gap:.5rem}
-.toast{background:var(--card);border:1px solid var(--bd);border-left:4px solid var(--rosa);padding:.8rem 1.1rem;border-radius:var(--r);box-shadow:var(--sh2);min-width:260px;max-width:380px;animation:tin .3s ease}
-.toast.success{border-left-color:#27ae60}.toast.error{border-left-color:#e74c3c}.toast.warning{border-left-color:#f39c12}.toast.info{border-left-color:#3498db}
-.toast-title{font-weight:600;font-size:.85rem}.toast-message{font-size:.78rem;color:var(--tx2)}
-@keyframes tin{from{transform:translateX(120%);opacity:0}to{transform:none;opacity:1}}
-.alert{display:none;padding:.8rem 1.1rem;border-radius:var(--r);margin-bottom:1rem;font-size:.85rem;font-weight:500}
-.alert.success{background:var(--ok-bg);color:var(--ok);border-left:4px solid var(--ok)}
-.alert.error{background:var(--err-bg);color:var(--err);border-left:4px solid var(--err)}
-.atajos-hint{position:fixed;bottom:16px;left:calc(var(--sw) + 16px);font-size:.7rem;color:var(--tx3);cursor:pointer;background:var(--card);border:1px solid var(--bd);padding:.4rem .8rem;border-radius:var(--r);z-index:50}
-.atajo-fila{display:flex;justify-content:space-between;padding:.7rem .9rem;background:var(--rosa-xcl);border-radius:var(--r);margin-bottom:.5rem}
+.toast-container{position:fixed;top:70px;right:16px;z-index:10000;display:flex;flex-direction:column;gap:.5rem}
+.toast{background:var(--card);border:1px solid var(--borde);border-left:4px solid var(--rosa);padding:.8rem 1rem;border-radius:10px;box-shadow:var(--sombra);min-width:260px;max-width:360px}
+.toast.success{border-left-color:#27ae60}.toast.error{border-left-color:#e74c3c}.toast.warning{border-left-color:#f39c12}
+.toast b{display:block;font-size:.85rem}.toast span{font-size:.78rem;color:var(--txt2)}
+.alert{display:none;padding:.8rem 1rem;border-radius:10px;margin-bottom:1rem;font-weight:500}
+.alert.show{display:block}.alert.success{background:var(--ok-bg);color:var(--ok)}.alert.error{background:var(--err-bg);color:var(--err)}
+.breadcrumbs{font-size:.8rem;color:var(--txt3);margin-bottom:1rem}.breadcrumbs b{color:var(--rosa)}
+.module-section{display:none}.module-section.visible{display:block}
+.kbd-note{color:var(--txt3);font-size:.75rem;margin-top:1rem}
+kbd{background:var(--rosa-bg);padding:.1rem .4rem;border-radius:4px;font-family:monospace;font-size:.75rem;color:var(--rosa)}
 
-/* RESPONSIVE */
 @media(max-width:1024px){
-  .sidebar{transform:translateX(-100%)}.sidebar.open{transform:none;box-shadow:var(--sh2)}
-  .main-content{margin-left:0}.menu-btn{display:block}.atajos-hint{display:none}
+  .sidebar{transform:translateX(-100%)}.sidebar.open{transform:none;box-shadow:0 10px 40px rgba(0,0,0,.2)}
+  .main-content{margin-left:0}.menu-btn{display:block}.global-search{display:none}
 }
 @media(max-width:768px){
-  .header{padding:0 .8rem}.global-search,.logo-text,#userNameDisplay,.user-rol-badge{display:none}
   .main-content{padding:1rem}.form-row{grid-template-columns:1fr}
-  .page-header{flex-direction:column;align-items:flex-start}.page-title{font-size:1.5rem}
-  .filters-section{flex-direction:column;align-items:stretch}
-  .data-table th,.data-table td{padding:.65rem .7rem}
+  #userNameDisplay,.user-rol-badge,.logo-badge{display:none}.page-title{font-size:1.4rem}
+  .filters-section>*{width:100%}
 }
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
 <header class="header">
   <div class="header-left">
     <button class="menu-btn" onclick="toggleMenu()" aria-label="Abrir menú"><i class="fas fa-bars"></i></button>
-    <div class="logo">
-      <span class="logo-text">Modas <span>La 34</span></span>
-      <span class="logo-badge">ADMIN</span>
+    <div class="logo"><span>Modas</span> <span style="color:var(--rosa)">La 34</span><span class="logo-badge">ADMIN</span></div>
+    <div class="global-search">
+      <i class="fas fa-search"></i>
+      <input type="text" id="globalSearchInput" placeholder="Filtrar la tabla actual (Ctrl+K)" autocomplete="off">
     </div>
-  </div>
-  <div class="global-search">
-    <input type="search" id="globalSearchInput" placeholder="Filtrar la tabla que estás viendo..." autocomplete="off">
-    <kbd>Ctrl K</kbd>
   </div>
   <div class="header-right">
-    <button class="icon-btn" onclick="toggleTheme()" id="themeBtn" title="Cambiar tema (Alt+T)">Oscuro</button>
-    <div class="user-info">
-      <div class="user-avatar" id="userAvatar">U</div>
-      <span id="userNameDisplay">Cargando...</span>
-      <span id="userRolDisplay" class="user-rol-badge"></span>
-    </div>
-    <button class="icon-btn" onclick="logout()" title="Cerrar sesión">Salir</button>
+    <button class="icon-btn" onclick="toggleTheme()" title="Cambiar tema (Ctrl+D)" aria-label="Cambiar tema"><i class="fas fa-moon" id="themeIcon"></i></button>
+    <button class="icon-btn" onclick="mostrarNotificaciones()" title="Avisos" aria-label="Avisos"><i class="fas fa-bell"></i><span class="dot" id="notifDot"></span></button>
+    <div class="user-info"><span id="userNameDisplay">Cargando…</span><span id="userRolDisplay" class="user-rol-badge"></span></div>
+    <button class="icon-btn" onclick="logout()" title="Cerrar sesión" aria-label="Cerrar sesión"><i class="fas fa-sign-out-alt"></i></button>
   </div>
 </header>
 
-<!-- SIDEBAR -->
-<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMenu()"></div>
+<div class="overlay" id="sidebarOverlay" onclick="toggleMenu()"></div>
 <aside class="sidebar" id="sidebar">
   <nav class="sidebar-nav">
-    <div class="nav-title">Principal</div>
-    <button class="nav-item active" data-modulo="productos" onclick="cambiarModulo('productos', event)">Productos</button>
-    <button class="nav-item" data-modulo="stock" onclick="cambiarModulo('stock', event)">Sin stock <span class="nav-badge" id="nav-badge-stock">0</span></button>
+    <div class="nav-title">Inventario</div>
+    <button class="nav-item active" onclick="cambiarModulo('productos')" data-modulo="productos">Productos</button>
+    <button class="nav-item" onclick="cambiarModulo('stock')" data-modulo="stock">Agotados <span class="nav-badge" id="nav-badge-stock">0</span></button>
 
     <div class="nav-title">Operaciones</div>
-    <button class="nav-item" data-modulo="ventas" onclick="cambiarModulo('ventas', event)">Ventas</button>
-    <button class="nav-item" onclick="window.open('ventas.html', '_blank')">Punto de venta <span class="nav-ext">abre otra pestaña</span></button>
-    <button class="nav-item" data-modulo="compras" onclick="cambiarModulo('compras', event)">Compras</button>
+    <button class="nav-item" onclick="cambiarModulo('ventas')" data-modulo="ventas">Ventas</button>
+    <button class="nav-item" onclick="window.open('ventas.html','_blank')">Punto de venta <i class="fas fa-external-link-alt" style="font-size:.65rem;margin-left:auto;opacity:.5"></i></button>
+    <button class="nav-item" onclick="cambiarModulo('compras')" data-modulo="compras">Compras</button>
 
     <div class="nav-title">Administración</div>
-    <button class="nav-item" data-modulo="gastos" onclick="cambiarModulo('gastos', event)">Gastos</button>
-    <button class="nav-item" data-modulo="proveedores" onclick="cambiarModulo('proveedores', event)">Proveedores</button>
-    <button class="nav-item" data-modulo="perfiles" onclick="cambiarModulo('perfiles', event)">Usuarios</button>
-    <button class="nav-item" data-modulo="contabilidad" onclick="cambiarModulo('contabilidad', event)">Contabilidad</button>
+    <button class="nav-item" onclick="cambiarModulo('gastos')" data-modulo="gastos">Gastos</button>
+    <button class="nav-item" onclick="cambiarModulo('proveedores')" data-modulo="proveedores">Proveedores</button>
+    <button class="nav-item" onclick="cambiarModulo('perfiles')" data-modulo="perfiles">Usuarios</button>
+    <button class="nav-item" onclick="cambiarModulo('contabilidad')" data-modulo="contabilidad">Contabilidad</button>
   </nav>
 </aside>
 
 <main class="main-content">
-  <div class="breadcrumbs">Inicio / <span class="current" id="breadcrumbActual">Productos</span></div>
+  <div class="breadcrumbs">Inicio / <b id="breadcrumbActual">Productos</b></div>
   <div id="alertMessage" class="alert"></div>
 
-  <!-- PRODUCTOS -->
-  <section id="modulo-productos" class="module-section">
+  <section id="modulo-productos" class="module-section visible">
     <div class="page-header">
-      <div><h1 class="page-title">Productos</h1><p class="page-subtitle">Catálogo, precios y variantes</p></div>
-      <button class="btn btn-primary" onclick="mostrarFormulario('producto')">+ Nuevo producto</button>
+      <div><h1 class="page-title">Productos</h1><p class="page-subtitle">Catálogo con tallas, colores y stock</p></div>
+      <button class="btn btn-primary" onclick="mostrarFormulario('producto')">Nuevo producto</button>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-title">Productos en catálogo</div><div class="stat-value" id="stats-total-productos">0</div></div>
+      <div class="stat-card tone-warn"><div class="stat-title">Con stock bajo</div><div class="stat-value" id="stats-stock-bajo">0</div><div class="stat-sub">Menos de 5 unidades</div></div>
+      <div class="stat-card tone-err link" onclick="cambiarModulo('stock')"><div class="stat-title">Agotados</div><div class="stat-value" id="stats-agotados">0</div><div class="stat-sub">Ver lista</div></div>
     </div>
 
-    <div class="stats-grid">
-      <div class="stat-card"><div class="stat-title">Total productos</div><div class="stat-value" id="stats-total-productos">0</div><div class="stat-sub">En catálogo</div></div>
-      <div class="stat-card alerta clickable" onclick="verAgotados()"><div class="stat-title">Sin stock</div><div class="stat-value" id="stats-stock-bajo">0</div><div class="stat-sub">Clic para ver cuáles</div></div>
-    </div>
+    <details class="guide">
+      <summary>Guía de códigos de prendas</summary>
+      <p>El código se genera solo: prefijo de la categoría + número consecutivo (VES-001, VES-002…). Cada prefijo lleva su propia cuenta.</p>
+      <div class="guide-grid" id="guiaCodigos"></div>
+    </details>
 
     <div class="filters-section">
-      <div class="search-box"><input type="text" id="search-productos" placeholder="Buscar por nombre o código..."></div>
-      <div class="filter-group">
-        <select id="filter-categoria-productos">
-          <option value="">Todas las categorías</option>
-          <option value="vestidos">Vestidos</option><option value="blusas">Blusas</option>
-          <option value="pantalones">Pantalones</option><option value="deportivo">Deportivo</option>
-          <option value="caballero">Caballero</option><option value="accesorios">Accesorios</option>
-        </select>
-      </div>
-      <div class="filter-group">
-        <select id="filter-stock-productos">
-          <option value="">Todo el stock</option>
-          <option value="agotado">Agotados (0)</option>
-          <option value="normal">Con stock</option>
-        </select>
-      </div>
-      <div class="filter-group">
-        <select id="filter-visibilidad">
-          <option value="">Toda visibilidad</option>
-          <option value="visible">Visibles</option>
-          <option value="oculto">Ocultos</option>
-        </select>
-      </div>
+      <div class="search-box"><input type="text" id="search-productos" placeholder="Buscar por nombre o código"></div>
+      <div class="filter-group"><select id="filter-categoria-productos">
+        <option value="">Todas las categorías</option>
+        <option value="vestidos">Vestidos</option><option value="blusas">Blusas</option><option value="pantalones">Pantalones</option>
+        <option value="deportivo">Deportivo</option><option value="caballero">Caballero</option><option value="accesorios">Accesorios</option><option value="agora">Agora</option>
+      </select></div>
+      <div class="filter-group"><select id="filter-stock-productos">
+        <option value="">Todo el stock</option><option value="bajo">Stock bajo (&lt;5)</option><option value="agotado">Agotados</option><option value="normal">Stock normal</option>
+      </select></div>
+      <div class="filter-group"><select id="filter-visibilidad">
+        <option value="">Toda visibilidad</option><option value="visible">Visibles</option><option value="oculto">Ocultos</option>
+      </select></div>
       <button class="btn-clear" onclick="limpiarFiltrosProductos()">Limpiar</button>
     </div>
 
@@ -293,29 +247,22 @@ button,input,select,textarea{font-family:inherit}
       <div class="table-responsive">
         <table class="data-table" id="tabla-productos">
           <thead><tr><th>Imagen</th><th>Código</th><th>Nombre</th><th>Categoría</th><th>Tallas</th><th>Stock</th><th>Precio</th><th>Estado</th><th>Acciones</th></tr></thead>
-          <tbody>
-            <tr><td colspan="9"><div class="skeleton"></div></td></tr>
-            <tr><td colspan="9"><div class="skeleton"></div></td></tr>
-            <tr><td colspan="9"><div class="skeleton"></div></td></tr>
-          </tbody>
+          <tbody><tr><td colspan="9"><div class="skeleton"></div></td></tr><tr><td colspan="9"><div class="skeleton"></div></td></tr></tbody>
         </table>
       </div>
     </div>
   </section>
 
-  <!-- STOCK: SOLO AGOTADOS -->
-  <section id="modulo-stock" class="module-section" style="display:none">
+  <section id="modulo-stock" class="module-section">
     <div class="page-header">
-      <div><h1 class="page-title">Sin stock</h1><p class="page-subtitle">Prendas con 0 unidades, listas para reponer</p></div>
-      <button class="btn btn-secondary" onclick="cargarDatosModulo && cargarDatosModulo('stock')">Actualizar</button>
+      <div><h1 class="page-title">Agotados</h1><p class="page-subtitle">Prendas con 0 unidades que debes reponer</p></div>
     </div>
-
-    <div class="stock-cards">
-      <div class="stat-card alerta"><div class="stat-title">Variantes agotadas</div><div class="stat-value" id="stock-agotado-count">0</div></div>
+    <div class="stats-grid">
+      <div class="stat-card tone-err"><div class="stat-title">Variantes agotadas</div><div class="stat-value" id="stock-agotado-count">0</div></div>
     </div>
-
-    <div class="table-container">
-      <h3>Prendas agotadas</h3>
+    <div style="display:none"><span id="stock-bajo-count"></span><span id="stock-normal-count"></span><table><tbody id="stock-bajo-body"></tbody></table></div>
+    <div class="data-card">
+      <div class="data-header"><h2>Prendas agotadas</h2></div>
       <div class="table-responsive">
         <table class="data-table" id="tabla-stock-agotado">
           <thead><tr><th>Producto</th><th>Talla</th><th>Color</th><th>Estado</th><th>Acción</th></tr></thead>
@@ -323,24 +270,17 @@ button,input,select,textarea{font-family:inherit}
         </table>
       </div>
     </div>
-
-    <!-- Elementos heredados: stock.js puede seguir escribiendo aquí sin errores. Ocultos. -->
-    <div hidden>
-      <span id="stock-bajo-count">0</span><span id="stock-normal-count">0</span>
-      <table id="tabla-stock-bajo"><tbody id="stock-bajo-body"></tbody></table>
-    </div>
   </section>
 
-  <!-- VENTAS -->
-  <section id="modulo-ventas" class="module-section" style="display:none">
+  <section id="modulo-ventas" class="module-section">
     <div class="page-header">
-      <div><h1 class="page-title">Ventas</h1><p class="page-subtitle">Historial y resumen de ventas</p></div>
-      <button class="btn btn-primary" onclick="window.open('ventas.html', '_blank')">+ Nueva venta</button>
+      <div><h1 class="page-title">Ventas</h1><p class="page-subtitle">Historial y resumen</p></div>
+      <button class="btn btn-primary" onclick="window.open('ventas.html','_blank')">Nueva venta</button>
     </div>
-    <div class="ventas-cards">
-      <div class="stat-card"><div class="stat-title">Ventas hoy</div><h3 id="ventas-hoy-total">$0</h3></div>
-      <div class="stat-card"><div class="stat-title">Ventas del mes</div><h3 id="ventas-mes-total">$0</h3></div>
-      <div class="stat-card"><div class="stat-title">Cambios / devoluciones</div><h3 id="ventas-cambios-count">0</h3></div>
+    <div class="stats-grid">
+      <div class="stat-card tone-ok"><div class="stat-title">Ventas de hoy</div><div class="stat-value" id="ventas-hoy-total">$0</div></div>
+      <div class="stat-card"><div class="stat-title">Ventas del mes</div><div class="stat-value" id="ventas-mes-total">$0</div></div>
+      <div class="stat-card tone-warn"><div class="stat-title">Cambios y devoluciones</div><div class="stat-value" id="ventas-cambios-count">0</div></div>
     </div>
     <div class="data-card">
       <div class="data-header"><h2>Historial de ventas</h2></div>
@@ -353,15 +293,14 @@ button,input,select,textarea{font-family:inherit}
     </div>
   </section>
 
-  <!-- COMPRAS -->
-  <section id="modulo-compras" class="module-section" style="display:none">
+  <section id="modulo-compras" class="module-section">
     <div class="page-header">
       <div><h1 class="page-title">Compras</h1><p class="page-subtitle">Pedidos a proveedores</p></div>
-      <button class="btn btn-primary" onclick="mostrarFormulario('compra')">+ Nueva compra</button>
+      <button class="btn btn-primary" onclick="mostrarFormulario('compra')">Nueva compra</button>
     </div>
     <div class="stats-grid">
       <div class="stat-card"><div class="stat-title">Compras del mes</div><div class="stat-value" id="stats-compras-mes">$0</div></div>
-      <div class="stat-card"><div class="stat-title">Pendientes</div><div class="stat-value" id="stats-compras-pendientes">0</div></div>
+      <div class="stat-card tone-warn"><div class="stat-title">Pendientes</div><div class="stat-value" id="stats-compras-pendientes">0</div></div>
     </div>
     <div class="data-card">
       <div class="data-header"><h2>Historial de compras</h2></div>
@@ -374,14 +313,13 @@ button,input,select,textarea{font-family:inherit}
     </div>
   </section>
 
-  <!-- GASTOS -->
-  <section id="modulo-gastos" class="module-section" style="display:none">
+  <section id="modulo-gastos" class="module-section">
     <div class="page-header">
-      <div><h1 class="page-title">Gastos</h1><p class="page-subtitle">Registra y controla tus gastos</p></div>
-      <button class="btn btn-primary" onclick="mostrarFormulario('gasto')">+ Nuevo gasto</button>
+      <div><h1 class="page-title">Gastos</h1><p class="page-subtitle">Registra lo que sale del negocio</p></div>
+      <button class="btn btn-primary" onclick="mostrarFormulario('gasto')">Nuevo gasto</button>
     </div>
     <div class="stats-grid">
-      <div class="stat-card"><div class="stat-title">Gastos del mes</div><div class="stat-value" id="stats-gastos-mes">$0</div></div>
+      <div class="stat-card tone-err"><div class="stat-title">Gastos del mes</div><div class="stat-value" id="stats-gastos-mes">$0</div></div>
     </div>
     <div class="data-card">
       <div class="data-header"><h2>Historial de gastos</h2></div>
@@ -394,11 +332,10 @@ button,input,select,textarea{font-family:inherit}
     </div>
   </section>
 
-  <!-- PROVEEDORES -->
-  <section id="modulo-proveedores" class="module-section" style="display:none">
+  <section id="modulo-proveedores" class="module-section">
     <div class="page-header">
-      <div><h1 class="page-title">Proveedores</h1><p class="page-subtitle">Contactos de tus proveedores</p></div>
-      <button class="btn btn-primary" onclick="mostrarFormulario('proveedor')">+ Nuevo proveedor</button>
+      <div><h1 class="page-title">Proveedores</h1><p class="page-subtitle">Contactos de quienes te surten</p></div>
+      <button class="btn btn-primary" onclick="mostrarFormulario('proveedor')">Nuevo proveedor</button>
     </div>
     <div class="data-card">
       <div class="data-header"><h2>Lista de proveedores</h2></div>
@@ -411,11 +348,10 @@ button,input,select,textarea{font-family:inherit}
     </div>
   </section>
 
-  <!-- USUARIOS -->
-  <section id="modulo-perfiles" class="module-section" style="display:none">
+  <section id="modulo-perfiles" class="module-section">
     <div class="page-header">
       <div><h1 class="page-title">Usuarios</h1><p class="page-subtitle">Quién puede entrar al sistema</p></div>
-      <button class="btn btn-primary" onclick="mostrarFormulario('perfil')">+ Nuevo usuario</button>
+      <button class="btn btn-primary" onclick="mostrarFormulario('perfil')">Nuevo usuario</button>
     </div>
     <div class="data-card">
       <div class="data-header"><h2>Usuarios del sistema</h2></div>
@@ -428,55 +364,67 @@ button,input,select,textarea{font-family:inherit}
     </div>
   </section>
 
-  <!-- CONTABILIDAD -->
-  <section id="modulo-contabilidad" class="module-section" style="display:none">
+  <section id="modulo-contabilidad" class="module-section">
     <div class="page-header">
-      <div><h1 class="page-title">Contabilidad</h1><p class="page-subtitle">Resumen financiero del negocio</p></div>
-      <button class="btn btn-secondary" onclick="window.open('contabilidad.html', '_blank')">Abrir contabilidad completa</button>
+      <div><h1 class="page-title">Contabilidad</h1><p class="page-subtitle">Resumen financiero</p></div>
+      <button class="btn btn-secondary" onclick="window.open('contabilidad.html','_blank')">Abrir contabilidad completa</button>
     </div>
     <div class="stats-grid">
-      <div class="stat-card"><div class="stat-title">Ingresos</div><div class="stat-value" id="stats-ingresos" style="color:var(--ok)">$0</div></div>
-      <div class="stat-card"><div class="stat-title">Egresos</div><div class="stat-value" id="stats-egresos" style="color:var(--err)">$0</div></div>
+      <div class="stat-card tone-ok"><div class="stat-title">Ingresos</div><div class="stat-value" id="stats-ingresos">$0</div></div>
+      <div class="stat-card tone-err"><div class="stat-title">Egresos</div><div class="stat-value" id="stats-egresos">$0</div></div>
       <div class="stat-card"><div class="stat-title">Utilidad</div><div class="stat-value" id="stats-utilidad">$0</div></div>
     </div>
   </section>
+
+  <p class="kbd-note">Atajos: <kbd>Ctrl</kbd>+<kbd>K</kbd> filtrar · <kbd>Alt</kbd>+<kbd>1-8</kbd> cambiar módulo · <kbd>Ctrl</kbd>+<kbd>D</kbd> tema · <kbd>Esc</kbd> cerrar</p>
 </main>
 
 <div class="toast-container" id="toastContainer"></div>
-<div class="atajos-hint" onclick="mostrarAyudaAtajos()">Atajos de teclado: <kbd>?</kbd></div>
 
-<!-- MODAL PRODUCTO -->
 <div id="form-producto" class="form-modal">
   <div class="form-modal-content">
     <div class="form-modal-header"><h3>Nuevo producto</h3><span class="close" onclick="cerrarFormulario('producto')">&times;</span></div>
     <div class="form-modal-body">
-      <form onsubmit="event.preventDefault(); guardarProductoBase()">
+      <form onsubmit="event.preventDefault(); registrarColoresRecientes(); registrarCodigoUsado(); guardarProductoBase()">
         <div class="form-row">
-          <div class="form-group"><label>Código <span class="required">*</span></label><input type="text" id="producto-codigo" placeholder="Ej: PANT-001" required></div>
-          <div class="form-group"><label>Categoría <span class="required">*</span></label>
-            <select id="producto-categoria" required>
+          <div class="form-group">
+            <label for="producto-categoria">Categoría <span class="required">*</span></label>
+            <select id="producto-categoria" required onchange="generarCodigo()">
               <option value="">Seleccionar</option>
-              <option value="vestidos">Vestidos</option><option value="blusas">Blusas</option>
-              <option value="pantalones">Pantalones</option><option value="deportivo">Deportivo</option>
-              <option value="caballero">Caballero</option><option value="accesorios">Accesorios</option>
-            </select></div>
+              <option value="vestidos">Vestidos</option><option value="blusas">Blusas</option><option value="pantalones">Pantalones</option>
+              <option value="deportivo">Deportivo</option><option value="caballero">Caballero</option><option value="accesorios">Accesorios</option><option value="agora">Agora</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="producto-codigo">Código <span class="required">*</span></label>
+            <div class="codigo-wrap">
+              <input type="text" id="producto-codigo" placeholder="Elige la categoría" readonly required>
+              <button type="button" class="btn-secondary-sm" id="btnEditarCodigo" onclick="alternarCodigoManual()">Editar</button>
+            </div>
+            <div class="codigo-hint" id="codigoHint">Se genera según la categoría.</div>
+          </div>
         </div>
-        <div class="form-group"><label>Nombre del producto <span class="required">*</span></label><input type="text" id="producto-nombre" placeholder="Ej: Vestido floral" required></div>
+        <div class="form-group"><label for="producto-nombre">Nombre <span class="required">*</span></label><input type="text" id="producto-nombre" placeholder="Ej: Vestido floral largo" required></div>
         <div class="form-row">
-          <div class="form-group"><label>Precio de compra</label><input type="number" id="producto-precio-compra" placeholder="0" min="0" step="1000"></div>
-          <div class="form-group"><label>Precio de venta (general)</label><input type="number" id="producto-precio-venta-general" placeholder="0" min="0" step="1000"></div>
+          <div class="form-group"><label for="producto-precio-compra">Precio de compra</label><input type="number" id="producto-precio-compra" placeholder="0" step="1000" min="0"></div>
+          <div class="form-group"><label for="producto-precio-venta-general">Precio de venta</label><input type="number" id="producto-precio-venta-general" placeholder="0" step="1000" min="0"></div>
         </div>
-        <div class="form-group"><label>URL de la imagen</label><input type="url" id="producto-imagen" placeholder="https://..."></div>
-        <div class="form-group"><label>Visibilidad en el catálogo</label>
-          <select id="producto-visible">
-            <option value="true">Visible en catálogo</option>
-            <option value="false">Oculto (no aparece en la tienda)</option>
-          </select>
-          <small>Los productos ocultos no se muestran en el catálogo público.</small>
+        <div class="form-group"><label for="producto-imagen">URL de la imagen</label><input type="url" id="producto-imagen" placeholder="https://…"></div>
+        <div class="form-group">
+          <label for="producto-visible">Visibilidad en la tienda</label>
+          <select id="producto-visible"><option value="true">Visible</option><option value="false">Oculto</option></select>
+          <small>Los productos ocultos no aparecen en el catálogo público.</small>
         </div>
-        <h4>Variantes (tallas y colores)</h4>
+
+        <h4 style="margin:1.2rem 0 .6rem">Tallas y colores</h4>
+        <div class="recientes">
+          <div class="recientes-top"><span>Colores recientes</span><button type="button" onclick="limpiarColoresRecientes()">Borrar historial</button></div>
+          <div class="chips" id="coloresRecientes"></div>
+          <small>Toca un color para aplicarlo a la fila de color seleccionada. Puedes escribir el código con o sin #.</small>
+        </div>
         <div id="variantes-container"></div>
         <button type="button" class="btn-secondary-sm" onclick="agregarVariante()" style="margin-bottom:1rem">+ Agregar talla</button>
+
         <button type="submit" class="submit-btn">Guardar producto</button>
         <button type="button" class="cancel-btn" onclick="cerrarFormulario('producto')">Cancelar</button>
       </form>
@@ -484,136 +432,90 @@ button,input,select,textarea{font-family:inherit}
   </div>
 </div>
 
-<!-- MODAL COMPRA -->
-<div id="form-compra" class="form-modal">
-  <div class="form-modal-content">
-    <div class="form-modal-header"><h3>Nueva compra</h3><span class="close" onclick="cerrarFormulario('compra')">&times;</span></div>
-    <div class="form-modal-body">
-      <form onsubmit="event.preventDefault(); guardarCompra()">
-        <div class="form-row">
-          <div class="form-group"><label>Proveedor <span class="required">*</span></label><select id="compra-proveedor" required><option value="">Seleccionar proveedor</option></select></div>
-          <div class="form-group"><label>Fecha <span class="required">*</span></label><input type="date" id="compra-fecha" required></div>
-        </div>
-        <div class="form-group"><label>Producto <span class="required">*</span></label><input type="text" id="compra-producto" required></div>
-        <div class="form-row">
-          <div class="form-group"><label>Cantidad <span class="required">*</span></label><input type="number" id="compra-cantidad" min="1" required></div>
-          <div class="form-group"><label>Precio unitario <span class="required">*</span></label><input type="number" id="compra-precio" min="0" required></div>
-        </div>
-        <div class="form-group"><label>Estado</label>
-          <select id="compra-estado"><option value="Pendiente">Pendiente</option><option value="Recibida">Recibida</option><option value="Pagada">Pagada</option></select></div>
-        <button type="submit" class="submit-btn">Guardar compra</button>
-        <button type="button" class="cancel-btn" onclick="cerrarFormulario('compra')">Cancelar</button>
-      </form>
+<div id="form-compra" class="form-modal"><div class="form-modal-content">
+  <div class="form-modal-header"><h3>Nueva compra</h3><span class="close" onclick="cerrarFormulario('compra')">&times;</span></div>
+  <div class="form-modal-body"><form onsubmit="event.preventDefault(); guardarCompra()">
+    <div class="form-row">
+      <div class="form-group"><label>Proveedor <span class="required">*</span></label><select id="compra-proveedor" required><option value="">Seleccionar</option></select></div>
+      <div class="form-group"><label>Fecha <span class="required">*</span></label><input type="date" id="compra-fecha" required></div>
     </div>
-  </div>
-</div>
+    <div class="form-group"><label>Producto <span class="required">*</span></label><input type="text" id="compra-producto" required></div>
+    <div class="form-row">
+      <div class="form-group"><label>Cantidad <span class="required">*</span></label><input type="number" id="compra-cantidad" min="1" required></div>
+      <div class="form-group"><label>Precio unitario <span class="required">*</span></label><input type="number" id="compra-precio" min="0" required></div>
+    </div>
+    <div class="form-group"><label>Estado</label><select id="compra-estado"><option value="Pendiente">Pendiente</option><option value="Recibida">Recibida</option><option value="Pagada">Pagada</option></select></div>
+    <button type="submit" class="submit-btn">Guardar compra</button>
+    <button type="button" class="cancel-btn" onclick="cerrarFormulario('compra')">Cancelar</button>
+  </form></div>
+</div></div>
 
-<!-- MODAL GASTO -->
-<div id="form-gasto" class="form-modal">
-  <div class="form-modal-content">
-    <div class="form-modal-header"><h3>Nuevo gasto</h3><span class="close" onclick="cerrarFormulario('gasto')">&times;</span></div>
-    <div class="form-modal-body">
-      <form onsubmit="event.preventDefault(); guardarGasto()">
-        <div class="form-row">
-          <div class="form-group"><label>Fecha <span class="required">*</span></label><input type="date" id="gasto-fecha" required></div>
-          <div class="form-group"><label>Monto <span class="required">*</span></label><input type="number" id="gasto-monto" min="0" required></div>
-        </div>
-        <div class="form-group"><label>Concepto <span class="required">*</span></label><input type="text" id="gasto-concepto" placeholder="Ej: Pago de arriendo" required></div>
-        <div class="form-row">
-          <div class="form-group"><label>Categoría</label>
-            <select id="gasto-categoria"><option value="Alquiler">Alquiler</option><option value="Servicios">Servicios</option><option value="Sueldos">Sueldos</option><option value="Marketing">Marketing</option><option value="Otros">Otros</option></select></div>
-          <div class="form-group"><label>Método de pago</label>
-            <select id="gasto-metodo"><option value="Efectivo">Efectivo</option><option value="Transferencia">Transferencia</option><option value="Tarjeta">Tarjeta</option></select></div>
-        </div>
-        <button type="submit" class="submit-btn">Guardar gasto</button>
-        <button type="button" class="cancel-btn" onclick="cerrarFormulario('gasto')">Cancelar</button>
-      </form>
+<div id="form-gasto" class="form-modal"><div class="form-modal-content">
+  <div class="form-modal-header"><h3>Nuevo gasto</h3><span class="close" onclick="cerrarFormulario('gasto')">&times;</span></div>
+  <div class="form-modal-body"><form onsubmit="event.preventDefault(); guardarGasto()">
+    <div class="form-row">
+      <div class="form-group"><label>Fecha <span class="required">*</span></label><input type="date" id="gasto-fecha" required></div>
+      <div class="form-group"><label>Monto <span class="required">*</span></label><input type="number" id="gasto-monto" min="0" required></div>
     </div>
-  </div>
-</div>
+    <div class="form-group"><label>Concepto <span class="required">*</span></label><input type="text" id="gasto-concepto" placeholder="Ej: Pago de arriendo" required></div>
+    <div class="form-row">
+      <div class="form-group"><label>Categoría</label><select id="gasto-categoria"><option value="Alquiler">Alquiler</option><option value="Servicios">Servicios</option><option value="Sueldos">Sueldos</option><option value="Marketing">Marketing</option><option value="Otros">Otros</option></select></div>
+      <div class="form-group"><label>Método de pago</label><select id="gasto-metodo"><option value="Efectivo">Efectivo</option><option value="Transferencia">Transferencia</option><option value="Tarjeta">Tarjeta</option></select></div>
+    </div>
+    <button type="submit" class="submit-btn">Guardar gasto</button>
+    <button type="button" class="cancel-btn" onclick="cerrarFormulario('gasto')">Cancelar</button>
+  </form></div>
+</div></div>
 
-<!-- MODAL USUARIO -->
-<div id="form-perfil" class="form-modal">
-  <div class="form-modal-content">
-    <div class="form-modal-header"><h3>Nuevo usuario</h3><span class="close" onclick="cerrarFormulario('perfil')">&times;</span></div>
-    <div class="form-modal-body">
-      <form onsubmit="event.preventDefault(); guardarPerfil()">
-        <div class="form-group"><label>Nombre <span class="required">*</span></label><input type="text" id="perfil-nombre" required></div>
-        <div class="form-group"><label>Email <span class="required">*</span></label><input type="email" id="perfil-email" required></div>
-        <div class="form-row">
-          <div class="form-group"><label>Contraseña <span class="required">*</span></label><input type="password" id="perfil-password" minlength="6" autocomplete="new-password" required><small>Mínimo 6 caracteres</small></div>
-          <div class="form-group"><label>Rol</label><select id="perfil-rol"><option value="empleado">Empleado</option><option value="admin">Administrador</option></select></div>
-        </div>
-        <button type="submit" class="submit-btn">Crear usuario</button>
-        <button type="button" class="cancel-btn" onclick="cerrarFormulario('perfil')">Cancelar</button>
-      </form>
+<div id="form-perfil" class="form-modal"><div class="form-modal-content">
+  <div class="form-modal-header"><h3>Nuevo usuario</h3><span class="close" onclick="cerrarFormulario('perfil')">&times;</span></div>
+  <div class="form-modal-body"><form onsubmit="event.preventDefault(); guardarPerfil()">
+    <div class="form-group"><label>Nombre <span class="required">*</span></label><input type="text" id="perfil-nombre" required></div>
+    <div class="form-group"><label>Email <span class="required">*</span></label><input type="email" id="perfil-email" required></div>
+    <div class="form-row">
+      <div class="form-group"><label>Contraseña <span class="required">*</span></label><input type="password" id="perfil-password" minlength="6" required><small>Mínimo 6 caracteres</small></div>
+      <div class="form-group"><label>Rol</label><select id="perfil-rol"><option value="empleado">Empleado</option><option value="admin">Administrador</option></select></div>
     </div>
-  </div>
-</div>
+    <button type="submit" class="submit-btn">Crear usuario</button>
+    <button type="button" class="cancel-btn" onclick="cerrarFormulario('perfil')">Cancelar</button>
+  </form></div>
+</div></div>
 
-<!-- MODAL PROVEEDOR -->
-<div id="form-proveedor" class="form-modal">
-  <div class="form-modal-content">
-    <div class="form-modal-header"><h3>Nuevo proveedor</h3><span class="close" onclick="cerrarFormulario('proveedor')">&times;</span></div>
-    <div class="form-modal-body">
-      <form onsubmit="event.preventDefault(); guardarProveedor()">
-        <div class="form-row">
-          <div class="form-group"><label>Nombre <span class="required">*</span></label><input type="text" id="proveedor-nombre" required></div>
-          <div class="form-group"><label>Contacto</label><input type="text" id="proveedor-contacto" placeholder="Persona de contacto"></div>
-        </div>
-        <div class="form-row">
-          <div class="form-group"><label>Teléfono</label><input type="tel" id="proveedor-telefono"></div>
-          <div class="form-group"><label>Email</label><input type="email" id="proveedor-email"></div>
-        </div>
-        <div class="form-group"><label>Dirección</label><textarea id="proveedor-direccion" rows="2"></textarea></div>
-        <button type="submit" class="submit-btn">Guardar proveedor</button>
-        <button type="button" class="cancel-btn" onclick="cerrarFormulario('proveedor')">Cancelar</button>
-      </form>
+<div id="form-proveedor" class="form-modal"><div class="form-modal-content">
+  <div class="form-modal-header"><h3>Nuevo proveedor</h3><span class="close" onclick="cerrarFormulario('proveedor')">&times;</span></div>
+  <div class="form-modal-body"><form onsubmit="event.preventDefault(); guardarProveedor()">
+    <div class="form-row">
+      <div class="form-group"><label>Nombre <span class="required">*</span></label><input type="text" id="proveedor-nombre" required></div>
+      <div class="form-group"><label>Contacto</label><input type="text" id="proveedor-contacto" placeholder="Persona de contacto"></div>
     </div>
-  </div>
-</div>
+    <div class="form-row">
+      <div class="form-group"><label>Teléfono</label><input type="tel" id="proveedor-telefono"></div>
+      <div class="form-group"><label>Email</label><input type="email" id="proveedor-email"></div>
+    </div>
+    <div class="form-group"><label>Dirección</label><textarea id="proveedor-direccion" rows="2"></textarea></div>
+    <button type="submit" class="submit-btn">Guardar proveedor</button>
+    <button type="button" class="cancel-btn" onclick="cerrarFormulario('proveedor')">Cancelar</button>
+  </form></div>
+</div></div>
 
-<!-- MODAL EDITAR VENTA -->
-<div id="modal-editar-venta" class="form-modal">
-  <div class="form-modal-content">
-    <div class="form-modal-header"><h3>Editar venta</h3><span class="close" onclick="cerrarModalEditarVenta()">&times;</span></div>
-    <div class="form-modal-body">
-      <form id="editar-venta-form" onsubmit="event.preventDefault(); actualizarVenta();">
-        <input type="hidden" id="editar-venta-id">
-        <div class="form-row">
-          <div class="form-group"><label>Fecha</label><input type="date" id="editar-venta-fecha" required></div>
-          <div class="form-group"><label>Cliente</label><input type="text" id="editar-venta-cliente"></div>
-        </div>
-        <div class="form-row">
-          <div class="form-group"><label>Método de pago</label>
-            <select id="editar-venta-metodo" required><option value="Efectivo">Efectivo</option><option value="Tarjeta">Tarjeta</option><option value="Transferencia">Transferencia</option></select></div>
-          <div class="form-group"><label>Estado</label>
-            <select id="editar-venta-estado"><option value="completada">Completada</option><option value="pendiente">Pendiente</option><option value="cambiado">Cambio solicitado</option><option value="devuelto">Devuelto</option></select></div>
-        </div>
-        <div class="form-group"><label>Notas</label><textarea id="editar-venta-notas" rows="2" placeholder="Motivo del cambio..."></textarea></div>
-        <div style="display:flex;gap:1rem">
-          <button type="submit" class="submit-btn" style="margin-top:0">Guardar</button>
-          <button type="button" class="btn-danger" onclick="if(confirm('¿Eliminar esta venta? No se puede deshacer.')) eliminarVenta()">Eliminar</button>
-        </div>
-        <button type="button" class="cancel-btn" onclick="cerrarModalEditarVenta()">Cancelar</button>
-      </form>
+<div id="modal-editar-venta" class="form-modal"><div class="form-modal-content">
+  <div class="form-modal-header"><h3>Editar venta</h3><span class="close" onclick="cerrarModalEditarVenta()">&times;</span></div>
+  <div class="form-modal-body"><form id="editar-venta-form" onsubmit="event.preventDefault(); actualizarVenta();">
+    <input type="hidden" id="editar-venta-id">
+    <div class="form-row">
+      <div class="form-group"><label>Fecha</label><input type="date" id="editar-venta-fecha" required></div>
+      <div class="form-group"><label>Cliente</label><input type="text" id="editar-venta-cliente"></div>
     </div>
-  </div>
-</div>
-
-<!-- MODAL ATAJOS -->
-<div id="modal-ayuda" class="form-modal">
-  <div class="form-modal-content" style="max-width:460px">
-    <div class="form-modal-header"><h3>Atajos de teclado</h3><span class="close" onclick="cerrarModalAyuda()">&times;</span></div>
-    <div class="form-modal-body">
-      <div class="atajo-fila"><span>Filtrar la tabla actual</span><span><kbd>Ctrl</kbd> + <kbd>K</kbd> o <kbd>/</kbd></span></div>
-      <div class="atajo-fila"><span>Ir a Productos / Sin stock / Ventas / Compras</span><kbd>Alt + 1 a 4</kbd></div>
-      <div class="atajo-fila"><span>Ir a Gastos / Proveedores / Usuarios / Contabilidad</span><kbd>Alt + 5 a 8</kbd></div>
-      <div class="atajo-fila"><span>Cambiar tema claro/oscuro</span><kbd>Alt + T</kbd></div>
-      <div class="atajo-fila"><span>Cerrar ventanas</span><kbd>Esc</kbd></div>
+    <div class="form-row">
+      <div class="form-group"><label>Método de pago</label><select id="editar-venta-metodo" required><option value="Efectivo">Efectivo</option><option value="Tarjeta">Tarjeta</option><option value="Transferencia">Transferencia</option></select></div>
+      <div class="form-group"><label>Estado</label><select id="editar-venta-estado"><option value="completada">Completada</option><option value="pendiente">Pendiente</option><option value="cambiado">Cambio solicitado</option><option value="devuelto">Devuelto</option></select></div>
     </div>
-  </div>
-</div>
+    <div class="form-group"><label>Notas</label><textarea id="editar-venta-notas" rows="2" placeholder="Motivo del cambio…"></textarea></div>
+    <button type="submit" class="submit-btn">Guardar cambios</button>
+    <button type="button" onclick="eliminarVenta()" class="cancel-btn" style="background:var(--err-bg);color:var(--err)">Eliminar venta</button>
+    <button type="button" class="cancel-btn" onclick="cerrarModalEditarVenta()">Cancelar</button>
+  </form></div>
+</div></div>
 
 <!-- SCRIPTS EXISTENTES (sin cambios) -->
 <script src="../js/supabase-config.js"></script>
@@ -630,131 +532,210 @@ button,input,select,textarea{font-family:inherit}
 <script src="../js/dashboard/contabilidad.js"></script>
 
 <script>
-/* ===== Funciones de interfaz del dashboard ===== */
-var ORDEN_MODULOS = ['productos','stock','ventas','compras','gastos','proveedores','perfiles','contabilidad'];
-var NOMBRES = {productos:'Productos',stock:'Sin stock',ventas:'Ventas',compras:'Compras',gastos:'Gastos',proveedores:'Proveedores',perfiles:'Usuarios',contabilidad:'Contabilidad'};
+const $ = id => document.getElementById(id);
+const store = {
+  get(k, d){ try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; }catch(e){ return d; } },
+  set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+};
 
-function toggleMenu(){
-  document.getElementById('sidebar').classList.toggle('open');
-  document.getElementById('sidebarOverlay').classList.toggle('active');
-}
+/* ===== Navegación ===== */
+const MODULOS = {productos:'Productos', stock:'Agotados', ventas:'Ventas', compras:'Compras', gastos:'Gastos', proveedores:'Proveedores', perfiles:'Usuarios', contabilidad:'Contabilidad'};
+let moduloActual = 'productos';
+
+function toggleMenu(){ $('sidebar').classList.toggle('open'); $('sidebarOverlay').classList.toggle('active'); }
 
 function cambiarModulo(modulo){
-  document.querySelectorAll('.module-section').forEach(function(s){ s.style.display='none'; });
-  var sec = document.getElementById('modulo-'+modulo);
-  if (sec) sec.style.display='block';
-  document.querySelectorAll('.nav-item').forEach(function(b){
-    b.classList.toggle('active', b.dataset.modulo === modulo);
+  moduloActual = modulo;
+  document.querySelectorAll('.module-section').forEach(s => s.classList.remove('visible'));
+  const sec = $('modulo-' + modulo); if(sec) sec.classList.add('visible');
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.toggle('active', b.dataset.modulo === modulo));
+  $('breadcrumbActual').textContent = MODULOS[modulo] || modulo;
+  $('globalSearchInput').value = ''; filtrarTablaActual('');
+  if(window.innerWidth <= 1024){ $('sidebar').classList.remove('open'); $('sidebarOverlay').classList.remove('active'); }
+  if(typeof cargarDatosModulo === 'function'){ try{ cargarDatosModulo(modulo); }catch(e){ console.error(e); } }
+  setTimeout(sincronizarContadores, 600);
+}
+
+function filtrarTablaActual(q){
+  q = q.trim().toLowerCase();
+  document.querySelectorAll('#modulo-' + moduloActual + ' .data-table tbody tr').forEach(tr => {
+    tr.style.display = (!q || tr.textContent.toLowerCase().includes(q)) ? '' : 'none';
   });
-  document.getElementById('breadcrumbActual').textContent = NOMBRES[modulo] || modulo;
-  var q = document.getElementById('globalSearchInput');
-  if (q) { q.value=''; filtrarTablaActual(''); }
-  if (window.innerWidth <= 1024) {
-    document.getElementById('sidebar').classList.remove('open');
-    document.getElementById('sidebarOverlay').classList.remove('active');
-  }
-  window.scrollTo({top:0});
-  try { if (typeof cargarDatosModulo === 'function') cargarDatosModulo(modulo); }
-  catch(e){ console.error('Error cargando '+modulo, e); mostrarToast('error','Error','No se pudieron cargar los datos de '+(NOMBRES[modulo]||modulo)); }
 }
+$('globalSearchInput').addEventListener('input', e => filtrarTablaActual(e.target.value));
 
-function verAgotados(){
-  var f = document.getElementById('filter-stock-productos');
-  if (f) { f.value='agotado'; f.dispatchEvent(new Event('change',{bubbles:true})); }
-  cambiarModulo('stock');
-}
-
-/* Tema */
+/* ===== Tema ===== */
 function aplicarTema(t){
   document.documentElement.setAttribute('data-theme', t);
-  var b = document.getElementById('themeBtn');
-  if (b) b.textContent = t === 'dark' ? 'Claro' : 'Oscuro';
+  $('themeIcon').className = t === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
 }
 function toggleTheme(){
-  var nuevo = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-  aplicarTema(nuevo);
-  try { localStorage.setItem('theme', nuevo); } catch(e){}
+  const t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  aplicarTema(t); try{ localStorage.setItem('theme', t); }catch(e){}
+}
+try{ aplicarTema(localStorage.getItem('theme') || 'light'); }catch(e){}
+
+/* ===== Avisos ===== */
+function mostrarToast(tipo, titulo, mensaje){
+  const c = $('toastContainer'); if(!c) return;
+  const t = document.createElement('div'); t.className = 'toast ' + tipo;
+  const b = document.createElement('b'); b.textContent = titulo;
+  const s = document.createElement('span'); s.textContent = mensaje || '';
+  t.append(b, s); c.appendChild(t);
+  setTimeout(() => t.remove(), 3500);
+}
+function mostrarNotificaciones(){
+  const n = contarAgotados();
+  if(n > 0) mostrarToast('warning', 'Agotados', n + ' variante(s) en 0. Revisa la sección Agotados.');
+  else mostrarToast('info', 'Sin avisos', 'No hay prendas agotadas.');
 }
 
-/* Avisos (si utils.js ya trae mostrarToast, se respeta el suyo) */
-if (typeof window.mostrarToast !== 'function') {
-  window.mostrarToast = function(tipo, titulo, mensaje){
-    var c = document.getElementById('toastContainer'); if(!c) return;
-    var t = document.createElement('div'); t.className = 'toast '+tipo;
-    var a = document.createElement('div'); a.className='toast-title'; a.textContent = titulo;
-    var m = document.createElement('div'); m.className='toast-message'; m.textContent = mensaje||'';
-    t.appendChild(a); t.appendChild(m); c.appendChild(t);
-    setTimeout(function(){ t.remove(); }, 3500);
-  };
+/* ===== Contadores de agotados (lee lo que stock.js dibuja) ===== */
+function contarAgotados(){
+  let n = 0;
+  document.querySelectorAll('#stock-agotado-body tr').forEach(tr => { if(tr.children.length > 1) n++; });
+  return n;
 }
+function sincronizarContadores(){
+  const n = contarAgotados();
+  const badge = $('nav-badge-stock'), dot = $('notifDot');
+  badge.textContent = n; badge.style.display = n ? 'inline-block' : 'none';
+  dot.textContent = n; dot.style.display = n ? 'flex' : 'none';
+  const c = $('stock-agotado-count');
+  if(c && (!c.textContent.trim() || c.textContent.trim() === '0')) c.textContent = n;
+  $('stats-agotados').textContent = c.textContent || n;
+}
+new MutationObserver(sincronizarContadores).observe($('stock-agotado-body'), {childList:true, subtree:true});
+setInterval(sincronizarContadores, 4000);
 
-/* Abrir / cerrar formularios (respaldo si los .js no los definen) */
-if (typeof window.mostrarFormulario !== 'function') {
-  window.mostrarFormulario = function(t){ var m=document.getElementById('form-'+t); if(m) m.classList.add('active'); };
-}
-if (typeof window.cerrarFormulario !== 'function') {
-  window.cerrarFormulario = function(t){ var m=document.getElementById('form-'+t); if(m) m.classList.remove('active'); };
-}
-function mostrarAyudaAtajos(){ document.getElementById('modal-ayuda').classList.add('active'); }
-function cerrarModalAyuda(){ document.getElementById('modal-ayuda').classList.remove('active'); }
+/* ===== Formularios: respaldo y ganchos ===== */
+if(typeof window.cerrarFormulario !== 'function'){ window.cerrarFormulario = t => $('form-' + t)?.classList.remove('active'); }
+if(typeof window.mostrarFormulario !== 'function'){ window.mostrarFormulario = t => $('form-' + t)?.classList.add('active'); }
+const _mostrar = window.mostrarFormulario;
+window.mostrarFormulario = function(tipo){
+  const r = _mostrar.apply(this, arguments);
+  $('form-' + tipo)?.classList.add('active');
+  const hoy = new Date().toISOString().slice(0,10);
+  ['compra-fecha','gasto-fecha'].forEach(id => { const el = $(id); if(el && !el.value) el.value = hoy; });
+  if(tipo === 'producto'){ generarCodigo(); pintarRecientes(); }
+  return r;
+};
 
-/* Filtro rápido de la tabla visible */
-function filtrarTablaActual(texto){
-  var sec = Array.prototype.find.call(document.querySelectorAll('.module-section'), function(s){ return s.style.display !== 'none'; });
-  if (!sec) return;
-  var q = texto.trim().toLowerCase();
-  sec.querySelectorAll('tbody tr').forEach(function(tr){
-    if (tr.querySelector('.skeleton') || tr.closest('[hidden]')) return;
-    tr.style.display = (!q || tr.textContent.toLowerCase().indexOf(q) !== -1) ? '' : 'none';
+/* ===== Códigos de prenda ===== */
+const PREFIJOS = {
+  vestidos:   {p:'VES', n:'Vestidos',   d:'Vestidos de todo tipo'},
+  blusas:     {p:'BLU', n:'Blusas',     d:'Blusas, camisas y tops'},
+  pantalones: {p:'PAN', n:'Pantalones', d:'Pantalones, jeans y leggins'},
+  deportivo:  {p:'DEP', n:'Deportivo',  d:'Ropa deportiva'},
+  caballero:  {p:'CAB', n:'Caballero',  d:'Ropa para hombre'},
+  accesorios: {p:'ACC', n:'Accesorios', d:'Bolsos, cinturones y complementos'},
+  agora:      {p:'AGO', n:'Agora',      d:'Prendas de la marca Agora'}
+};
+$('guiaCodigos').innerHTML = Object.values(PREFIJOS).map(v =>
+  `<div class="guide-item"><b>${v.p}-001</b><span>${v.n}: ${v.d}</span></div>`).join('');
+
+function ultimoNumero(prefijo){
+  let max = store.get('m34_cod_' + prefijo, 0);
+  const re = new RegExp('^' + prefijo + '[-\\s]?(\\d+)$', 'i');
+  document.querySelectorAll('#tabla-productos tbody tr').forEach(tr => {
+    const m = (tr.children[1]?.textContent || '').trim().match(re);
+    if(m) max = Math.max(max, parseInt(m[1], 10));
   });
+  return max;
+}
+function generarCodigo(){
+  const cat = $('producto-categoria').value, input = $('producto-codigo');
+  if(!cat || !PREFIJOS[cat]){ if(input.readOnly) input.value = ''; $('codigoHint').textContent = 'Se genera según la categoría.'; return; }
+  if(!input.readOnly) return;
+  const p = PREFIJOS[cat].p, n = String(ultimoNumero(p) + 1).padStart(3, '0');
+  input.value = p + '-' + n;
+  $('codigoHint').textContent = p + ' = ' + PREFIJOS[cat].d + '. Consecutivo ' + n + '.';
+}
+function alternarCodigoManual(){
+  const i = $('producto-codigo');
+  i.readOnly = !i.readOnly;
+  $('btnEditarCodigo').textContent = i.readOnly ? 'Editar' : 'Automático';
+  if(i.readOnly) generarCodigo(); else i.focus();
+}
+function registrarCodigoUsado(){
+  const m = ($('producto-codigo').value || '').trim().match(/^([A-Za-z]+)[-\s]?(\d+)$/);
+  if(m){ const p = m[1].toUpperCase(), n = parseInt(m[2], 10); if(n > store.get('m34_cod_' + p, 0)) store.set('m34_cod_' + p, n); }
 }
 
-/* Insignia roja de "Sin stock": solo se ve si hay agotados */
-function sincronizarInsignia(){
-  var b = document.getElementById('nav-badge-stock'); if(!b) return;
-  b.style.display = (parseInt(b.textContent,10) > 0) ? '' : 'none';
+/* ===== Colores recientes ===== */
+function normHex(v){
+  v = (v || '').replace(/[^0-9a-f]/gi, '');
+  if(v.length === 3) v = v.split('').map(c => c + c).join('');
+  return v.length === 6 ? '#' + v.toLowerCase() : null;
 }
-
-document.addEventListener('DOMContentLoaded', function(){
-  aplicarTema(document.documentElement.getAttribute('data-theme') || 'light');
-
-  var inp = document.getElementById('globalSearchInput');
-  inp.addEventListener('input', function(){ filtrarTablaActual(inp.value); });
-
-  var b = document.getElementById('nav-badge-stock');
-  sincronizarInsignia();
-  if (b) new MutationObserver(sincronizarInsignia).observe(b,{childList:true,characterData:true,subtree:true});
-
-  /* Inicial del usuario en el avatar */
-  var n = document.getElementById('userNameDisplay');
-  if (n) new MutationObserver(function(){
-    var t = n.textContent.trim();
-    if (t && t !== 'Cargando...') document.getElementById('userAvatar').textContent = t.charAt(0).toUpperCase();
-  }).observe(n,{childList:true,characterData:true,subtree:true});
-
-  /* Fecha de hoy por defecto en formularios */
-  var hoy = new Date(Date.now() - new Date().getTimezoneOffset()*60000).toISOString().slice(0,10);
-  ['compra-fecha','gasto-fecha'].forEach(function(id){ var e=document.getElementById(id); if(e && !e.value) e.value=hoy; });
-
-  /* Clic fuera de una ventana la cierra */
-  document.querySelectorAll('.form-modal').forEach(function(m){
-    m.addEventListener('mousedown', function(e){ if (e.target === m) m.classList.remove('active'); });
-  });
+let filaColorActiva = null;
+document.addEventListener('focusin', e => {
+  const fila = e.target.closest?.('.color-row'); if(!fila) return;
+  document.querySelectorAll('.color-row.activa').forEach(f => f.classList.remove('activa'));
+  fila.classList.add('activa'); filaColorActiva = fila;
 });
-
-/* Atajos de teclado */
-document.addEventListener('keydown', function(e){
-  var enCampo = /INPUT|TEXTAREA|SELECT/.test((e.target.tagName||''));
-  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); document.getElementById('globalSearchInput').focus(); return; }
-  if (e.key === '/' && !enCampo) { e.preventDefault(); document.getElementById('globalSearchInput').focus(); return; }
-  if (e.key === '?' && !enCampo) { mostrarAyudaAtajos(); return; }
-  if (e.altKey && e.key.toLowerCase() === 't') { e.preventDefault(); toggleTheme(); return; }
-  if (e.altKey && e.key >= '1' && e.key <= '8') { e.preventDefault(); cambiarModulo(ORDEN_MODULOS[parseInt(e.key,10)-1]); return; }
-  if (e.key === 'Escape') {
-    document.querySelectorAll('.form-modal.active').forEach(function(m){ m.classList.remove('active'); });
-    if (document.activeElement && document.activeElement.id === 'globalSearchInput') { document.activeElement.value=''; filtrarTablaActual(''); document.activeElement.blur(); }
+document.addEventListener('input', e => {
+  const t = e.target;
+  if(t.classList?.contains('color-picker')){
+    const txt = t.closest('.color-row')?.querySelector('.color-hex-text'); if(txt) txt.value = t.value;
+  } else if(t.classList?.contains('color-hex-text')){
+    const h = normHex(t.value), pick = t.closest('.color-row')?.querySelector('.color-picker');
+    if(h && pick) pick.value = h;
   }
 });
+document.addEventListener('focusout', e => {
+  if(e.target.classList?.contains('color-hex-text')){ const h = normHex(e.target.value); if(h) e.target.value = h; }
+});
+function pintarRecientes(){
+  const lista = store.get('m34_colores', []), box = $('coloresRecientes');
+  box.innerHTML = '';
+  if(!lista.length){ box.innerHTML = '<span style="font-size:.78rem;color:var(--txt3)">Aún no hay colores. Aparecerán aquí al guardar un producto.</span>'; return; }
+  lista.forEach(c => {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.title = c.hex;
+    const i = document.createElement('i'); i.style.background = c.hex;
+    b.append(i, document.createTextNode(c.nombre || c.hex));
+    b.onclick = () => aplicarColor(c); box.appendChild(b);
+  });
+}
+function aplicarColor(c){
+  const filas = document.querySelectorAll('#variantes-container .color-row');
+  const fila = (filaColorActiva && document.body.contains(filaColorActiva)) ? filaColorActiva : filas[filas.length - 1];
+  if(!fila){ mostrarToast('warning', 'Falta una talla', 'Agrega una talla y un color primero.'); return; }
+  const pick = fila.querySelector('.color-picker'), txt = fila.querySelector('.color-hex-text'), nom = fila.querySelector('.color-nombre-input');
+  if(pick) pick.value = c.hex; if(txt) txt.value = c.hex; if(nom && !nom.value) nom.value = c.nombre || '';
+}
+function registrarColoresRecientes(){
+  let lista = store.get('m34_colores', []);
+  document.querySelectorAll('#variantes-container .color-row').forEach(f => {
+    const hex = normHex(f.querySelector('.color-hex-text')?.value || f.querySelector('.color-picker')?.value);
+    if(!hex) return;
+    const nombre = (f.querySelector('.color-nombre-input')?.value || '').trim();
+    lista = lista.filter(c => c.hex !== hex); lista.unshift({hex, nombre});
+  });
+  store.set('m34_colores', lista.slice(0, 16));
+}
+function limpiarColoresRecientes(){ store.set('m34_colores', []); pintarRecientes(); }
+
+/* ===== Alerta compatible con los JS existentes ===== */
+const _alert = $('alertMessage');
+new MutationObserver(() => {
+  const visible = _alert.textContent.trim().length > 0;
+  _alert.classList.toggle('show', visible);
+  if(visible){ clearTimeout(_alert._t); _alert._t = setTimeout(() => _alert.classList.remove('show'), 5000); }
+}).observe(_alert, {childList:true, characterData:true, subtree:true});
+
+/* ===== Teclado y modales ===== */
+document.addEventListener('keydown', e => {
+  if(e.ctrlKey && e.key.toLowerCase() === 'k'){ e.preventDefault(); $('globalSearchInput').focus(); }
+  if(e.ctrlKey && e.key.toLowerCase() === 'd'){ e.preventDefault(); toggleTheme(); }
+  if(e.altKey && e.key >= '1' && e.key <= '8'){
+    e.preventDefault();
+    cambiarModulo(['productos','stock','ventas','compras','gastos','proveedores','perfiles','contabilidad'][+e.key - 1]);
+  }
+  if(e.key === 'Escape') document.querySelectorAll('.form-modal.active').forEach(m => m.classList.remove('active'));
+});
+document.querySelectorAll('.form-modal').forEach(m => m.addEventListener('mousedown', e => { if(e.target === m) m.classList.remove('active'); }));
+window.addEventListener('load', () => setTimeout(sincronizarContadores, 1200));
 </script>
 </body>
 </html>
