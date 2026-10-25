@@ -10,284 +10,358 @@
     <link rel="stylesheet" href="../css/contabilidad.css">
 </head>
 <body>
-<div class="app">
-
-    <!-- ========== BARRA LATERAL ========== -->
-    <aside class="side">
-        <div class="brand">Modas La 34<small>Contabilidad</small></div>
-        <nav id="nav">
-            <div class="grp">Registro</div>
-            <button data-act="vista" data-v="diario" class="on">Libro diario</button>
-            <button data-act="vista" data-v="mayor">Libro mayor</button>
-            <div class="grp">Reportes</div>
-            <button data-act="vista" data-v="prueba">Balance de prueba</button>
-            <button data-act="vista" data-v="pyg">Estado de resultados</button>
-            <button data-act="vista" data-v="balance">Balance general</button>
-            <div class="grp">Configuración</div>
-            <button data-act="vista" data-v="plan">Plan de cuentas</button>
-        </nav>
-        <div class="side-foot">
-            <a href="dashboard.html">← Volver al panel</a>
-            <small>Alt+N nuevo comprobante</small>
+    <header class="header">
+        <h1><i class="fas fa-chart-line" style="color:#d4a5a9;"></i> CONTABILIDAD <span>| Modas La 34</span></h1>
+        <div class="header-buttons">
+            <button class="btn-outline" onclick="abrirNuevoAsiento()"><i class="fas fa-plus"></i> Nuevo Asiento</button>
+            <button class="btn-outline" onclick="abrirPlanCuentas()"><i class="fas fa-book"></i> Plan de Cuentas</button>
+            <a href="dashboard.html" class="btn-outline"><i class="fas fa-arrow-left"></i> Volver</a>
         </div>
-    </aside>
+    </header>
 
-    <main class="main">
-
-        <!-- ========== BARRA SUPERIOR ========== -->
-        <header class="top">
-            <h1 id="titulo">Libro diario</h1>
-            <div class="periodo">
-                <select id="p-preset" title="Período">
-                    <option value="mes">Este mes</option>
-                    <option value="ant">Mes anterior</option>
-                    <option value="trim">Últimos 3 meses</option>
-                    <option value="anio">Este año</option>
-                    <option value="anioant">Año anterior</option>
-                    <option value="custom">Personalizado</option>
-                </select>
-                <input type="date" id="p-desde" aria-label="Desde">
-                <span>a</span>
-                <input type="date" id="p-hasta" aria-label="Hasta">
+    <div class="container">
+        <!-- PERIODO -->
+        <div class="periodo-card">
+            <div class="periodo-buttons">
+                <button class="periodo-btn active" onclick="cambiarPeriodo('mes', event)">📅 Este Mes</button>
+                <button class="periodo-btn" onclick="cambiarPeriodo('trimestre', event)">📊 Último Trimestre</button>
+                <button class="periodo-btn" onclick="cambiarPeriodo('año', event)">📈 Este Año</button>
             </div>
-            <span class="sp"></span>
-            <span id="carga" class="carga" hidden>Cargando…</span>
-            <button class="btn" data-act="recargar" title="Volver a leer los datos">Actualizar</button>
-            <button class="btn primary" data-act="nuevo">+ Nuevo comprobante</button>
-        </header>
-
-        <div id="print-head" class="print-head"></div>
-        <section class="kpis" id="kpis"></section>
-
-        <!-- ========== LIBRO DIARIO ========== -->
-        <section id="v-diario" class="vista">
-            <div class="tools">
-                <input type="search" id="q" placeholder="Buscar por número, concepto, tercero o cuenta…">
-                <select id="f-estado">
-                    <option value="">Todos los estados</option>
-                    <option value="borrador">Borradores</option>
-                    <option value="contabilizado">Contabilizados</option>
-                    <option value="anulado">Anulados</option>
-                    <option value="automatico">Automáticos</option>
-                </select>
-                <select id="f-tipo">
-                    <option value="">Todos los tipos</option>
-                    <option value="venta">Ventas</option>
-                    <option value="compra">Compras</option>
-                    <option value="gasto">Gastos</option>
-                    <option value="manual">Manuales</option>
-                    <option value="ajuste">Ajustes</option>
-                    <option value="apertura">Apertura</option>
-                    <option value="cierre">Cierre</option>
-                </select>
-                <span class="sp"></span>
-                <button class="btn" data-act="exportar">Exportar CSV</button>
-                <button class="btn" data-act="imprimir">Imprimir</button>
-            </div>
-            <div id="diario-res" class="res"></div>
-        </section>
-
-        <!-- ========== LIBRO MAYOR ========== -->
-        <section id="v-mayor" class="vista" hidden>
-            <div class="tools">
-                <input type="search" id="mayor-cuenta" list="dl-mayor" placeholder="Escribe el código o nombre de la cuenta…" style="min-width:320px">
-                <span class="sp"></span>
-                <button class="btn" data-act="exportar">Exportar CSV</button>
-                <button class="btn" data-act="imprimir">Imprimir</button>
-            </div>
-            <div id="mayor-res" class="res"></div>
-        </section>
-
-        <!-- ========== BALANCE DE PRUEBA ========== -->
-        <section id="v-prueba" class="vista" hidden>
-            <div class="tools">
-                <label class="inl">Nivel
-                    <select id="bp-nivel">
-                        <option value="mov">Cuentas con movimiento</option>
-                        <option value="1">1 · Clase</option>
-                        <option value="2">2 · Grupo</option>
-                        <option value="3">3 · Cuenta</option>
-                        <option value="4">4 · Subcuenta</option>
-                    </select>
-                </label>
-                <span class="sp"></span>
-                <button class="btn" data-act="exportar">Exportar CSV</button>
-                <button class="btn" data-act="imprimir">Imprimir</button>
-            </div>
-            <div id="prueba-res" class="res"></div>
-        </section>
-
-        <!-- ========== ESTADO DE RESULTADOS ========== -->
-        <section id="v-pyg" class="vista" hidden>
-            <div class="tools">
-                <label class="inl">Detalle
-                    <select id="pyg-nivel">
-                        <option value="1">Clases</option>
-                        <option value="2">Grupos</option>
-                        <option value="3">Cuentas</option>
-                        <option value="4" selected>Subcuentas</option>
-                    </select>
-                </label>
-                <label class="inl chk"><input type="checkbox" id="pyg-comp" checked> Comparar con período anterior</label>
-                <span class="sp"></span>
-                <button class="btn" data-act="exportar">Exportar CSV</button>
-                <button class="btn" data-act="imprimir">Imprimir</button>
-            </div>
-            <div id="pyg-res" class="res"></div>
-        </section>
-
-        <!-- ========== BALANCE GENERAL ========== -->
-        <section id="v-balance" class="vista" hidden>
-            <div class="tools">
-                <label class="inl">Detalle
-                    <select id="bg-nivel">
-                        <option value="1">Clases</option>
-                        <option value="2">Grupos</option>
-                        <option value="3">Cuentas</option>
-                        <option value="4" selected>Subcuentas</option>
-                    </select>
-                </label>
-                <span class="hint">Saldos acumulados al cierre del período</span>
-                <span class="sp"></span>
-                <button class="btn" data-act="exportar">Exportar CSV</button>
-                <button class="btn" data-act="imprimir">Imprimir</button>
-            </div>
-            <div id="balance-res" class="res"></div>
-        </section>
-
-        <!-- ========== PLAN DE CUENTAS ========== -->
-        <section id="v-plan" class="vista" hidden>
-            <div class="tools">
-                <input type="search" id="p-q" placeholder="Buscar por código o nombre…">
-                <select id="p-tipo">
-                    <option value="">Todos los tipos</option>
-                    <option>ACTIVO</option><option>PASIVO</option><option>PATRIMONIO</option>
-                    <option>INGRESO</option><option>GASTO</option><option>COSTO</option>
-                </select>
-                <select id="p-nivel">
-                    <option value="">Todos los niveles</option>
-                    <option value="1">Nivel 1</option><option value="2">Nivel 2</option>
-                    <option value="3">Nivel 3</option><option value="4">Nivel 4</option>
-                </select>
-                <label class="inl chk"><input type="checkbox" id="p-solomov"> Solo con movimiento</label>
-                <span class="sp"></span>
-                <button class="btn" data-act="exportar">Exportar CSV</button>
-                <button class="btn primary" data-act="cuenta-nueva">+ Nueva cuenta</button>
-            </div>
-            <div id="plan-res" class="res"></div>
-        </section>
-    </main>
-</div>
-
-<datalist id="dl-cuentas"></datalist>
-<datalist id="dl-mayor"></datalist>
-
-<!-- ========== MODAL: COMPROBANTE (nuevo / editar) ========== -->
-<dialog id="m-asiento" class="modal wide">
-    <form id="f-asiento" autocomplete="off">
-        <header><h2 id="a-titulo">Nuevo comprobante</h2><button type="button" class="x" data-act="cerrar" aria-label="Cerrar">✕</button></header>
-        <div class="body">
-            <div class="grid4">
-                <label>Fecha<input type="date" id="a-fecha" required></label>
-                <label>Tipo
-                    <select id="a-tipo">
-                        <option value="manual">Manual</option><option value="ajuste">Ajuste</option>
-                        <option value="apertura">Apertura</option><option value="cierre">Cierre</option>
-                    </select>
-                </label>
-                <label>Referencia<input id="a-ref" maxlength="60" placeholder="Ej: AJ-001, Factura 123"></label>
-                <label>Tercero<input id="a-ter" maxlength="100" placeholder="Cliente / proveedor / empleado"></label>
-            </div>
-            <label>Concepto<input id="a-concepto" maxlength="200" required placeholder="Ej: Ajuste por depreciación mensual"></label>
-            <div class="tw">
-                <table class="lineas">
-                    <thead><tr><th style="width:36%">Cuenta</th><th>Descripción</th><th style="width:130px">Débito</th><th style="width:130px">Crédito</th><th style="width:36px"></th></tr></thead>
-                    <tbody id="a-lineas"></tbody>
-                </table>
-            </div>
-            <div class="tot">
-                <button type="button" class="lk" data-act="linea-add">+ Agregar línea</button>
-                <span class="sp"></span>
-                <span>Débito <b id="a-td">$0</b></span>
-                <span>Crédito <b id="a-tc">$0</b></span>
-                <span id="a-dif" class="b"></span>
+            <div class="periodo-custom">
+                <input type="date" id="fecha-inicio" aria-label="Fecha inicial">
+                <span>→</span>
+                <input type="date" id="fecha-fin" aria-label="Fecha final">
+                <button class="btn-aplicar" onclick="aplicarPeriodoPersonalizado()"><i class="fas fa-check"></i> Aplicar</button>
             </div>
         </div>
-        <footer>
-            <button type="button" class="btn danger" id="a-del" data-act="eliminar-modal" hidden>Eliminar</button>
-            <span class="sp"></span>
-            <small class="hint">Ctrl+Enter para contabilizar</small>
-            <button type="button" class="btn" data-act="cerrar">Cancelar</button>
-            <button type="button" class="btn" data-act="guardar-borrador">Guardar borrador</button>
-            <button type="button" class="btn primary" data-act="guardar-contab">Contabilizar</button>
-        </footer>
-    </form>
-</dialog>
 
-<!-- ========== MODAL: VER COMPROBANTE ========== -->
-<dialog id="m-ver" class="modal">
-    <header><h2 id="ver-titulo">Comprobante</h2><button type="button" class="x" data-act="cerrar" aria-label="Cerrar">✕</button></header>
-    <div class="body" id="ver-body"></div>
-    <footer id="ver-acc"></footer>
-</dialog>
+        <!-- RESUMEN -->
+        <div class="resumen-grid">
+            <div class="resumen-card"><h4><i class="fas fa-arrow-up"></i> INGRESOS</h4><div class="valor positivo" id="total-ingresos">$0</div></div>
+            <div class="resumen-card"><h4><i class="fas fa-arrow-down"></i> EGRESOS</h4><div class="valor negativo" id="total-egresos">$0</div></div>
+            <div class="resumen-card"><h4><i class="fas fa-chart-simple"></i> UTILIDAD</h4><div class="valor" id="utilidad">$0</div></div>
+            <div class="resumen-card"><h4><i class="fas fa-coins"></i> CAJA</h4><div class="valor positivo" id="saldo-caja">$0</div></div>
+            <div class="resumen-card"><h4><i class="fas fa-building-columns"></i> BANCOS</h4><div class="valor positivo" id="saldo-bancos">$0</div></div>
+            <div class="resumen-card"><h4><i class="fas fa-box"></i> INVENTARIO</h4><div class="valor" id="saldo-inventario">$0</div></div>
+        </div>
 
-<!-- ========== MODAL: ANULAR ========== -->
-<dialog id="m-anular" class="modal sm">
-    <header><h2>Anular comprobante</h2><button type="button" class="x" data-act="cerrar" aria-label="Cerrar">✕</button></header>
-    <div class="body">
-        <p id="anular-info"></p>
-        <label>Motivo de anulación<textarea id="anular-motivo" rows="3" placeholder="Explica por qué se anula este comprobante"></textarea></label>
-        <p class="aviso">Se crea un comprobante de reversión con fecha de hoy y el original queda marcado como anulado. Ambos permanecen en el libro diario.</p>
-        <input type="hidden" id="anular-k">
+        <!-- TABS -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="mostrarTab('libro', event)"><i class="fas fa-book"></i> Libro Diario</button>
+            <button class="tab-btn" onclick="mostrarTab('resultados', event)"><i class="fas fa-chart-line"></i> Estado Resultados</button>
+            <button class="tab-btn" onclick="mostrarTab('balance', event)"><i class="fas fa-scale-balanced"></i> Balance General</button>
+            <button class="tab-btn" onclick="mostrarTab('mayor', event)"><i class="fas fa-list"></i> Mayor de Cuentas</button>
+            <button class="tab-btn" onclick="mostrarTab('balance-prueba', event)"><i class="fas fa-check-double"></i> Balance de Prueba</button>
+        </div>
+
+        <!-- LIBRO DIARIO -->
+        <div id="tab-libro" class="tab-content active">
+            <div class="libro-card">
+                <div class="libro-header">
+                    <h2><i class="fas fa-book-open"></i> LIBRO DIARIO CONTABLE</h2>
+                    <div class="libro-actions">
+                        <input type="search" id="buscar-asiento" placeholder="Buscar número, tercero, concepto..." oninput="buscarAsientos()">
+                        <select id="filtro-estado-asientos" class="filtro-select" onchange="aplicarFiltros()">
+                            <option value="">Todos los estados</option>
+                            <option value="borrador">📝 Borradores</option>
+                            <option value="contabilizado">✅ Contabilizados</option>
+                            <option value="anulado">❌ Anulados</option>
+                            <option value="automatico">🔒 Automáticos</option>
+                        </select>
+                        <button class="btn-export" onclick="sincronizarAsientos()"><i class="fas fa-sync-alt"></i> Sincronizar</button>
+                        <button class="btn-export" onclick="exportarLibroDiario()"><i class="fas fa-download"></i> Exportar</button>
+                    </div>
+                </div>
+                <div id="asientos-container">
+                    <div class="loading-state"><i class="fas fa-spinner fa-spin"></i><p>Cargando asientos...</p></div>
+                </div>
+                <div class="totales-footer" id="totales-footer" style="display:none;">
+                    <strong>TOTALES DEL PERIODO:</strong>
+                    <span id="total-debitos" class="monto-debito">$0</span> =
+                    <span id="total-creditos" class="monto-credito">$0</span>
+                    <span id="estado-cuadre" class="estado-cuadre"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ESTADO DE RESULTADOS -->
+        <div id="tab-resultados" class="tab-content">
+            <div class="estado-card">
+                <div class="card-header-actions">
+                    <h2><i class="fas fa-chart-line"></i> ESTADO DE RESULTADOS (PyG)</h2>
+                    <button class="btn-export" onclick="exportarEstadoResultados()"><i class="fas fa-download"></i> Exportar</button>
+                </div>
+                <table class="estado-table" id="tabla-resultados"><tbody id="resultados-body"></tbody></table>
+            </div>
+        </div>
+
+        <!-- BALANCE GENERAL -->
+        <div id="tab-balance" class="tab-content">
+            <div class="balance-card">
+                <div class="card-header-actions">
+                    <h2><i class="fas fa-scale-balanced"></i> BALANCE GENERAL</h2>
+                    <div><span id="balance-estado" class="estado-cuadre"></span>
+                    <button class="btn-export" onclick="exportarBalance()"><i class="fas fa-download"></i> Exportar</button></div>
+                </div>
+                <div class="balance-grid">
+                    <div class="balance-section">
+                        <h3><i class="fas fa-box"></i> ACTIVOS</h3>
+                        <table class="estado-table" id="tabla-activos"><tbody></tbody></table>
+                        <div class="total-section">TOTAL ACTIVOS: <span id="total-activos">$0</span></div>
+                    </div>
+                    <div class="balance-section">
+                        <h3><i class="fas fa-landmark"></i> PASIVOS Y PATRIMONIO</h3>
+                        <table class="estado-table" id="tabla-pasivos"><tbody></tbody></table>
+                        <div class="total-section">TOTAL PASIVOS: <span id="total-pasivos">$0</span></div>
+                        <div class="total-section">PATRIMONIO: <span id="total-patrimonio">$0</span></div>
+                        <div class="total-section final">TOTAL PASIVO + PATRIMONIO: <span id="total-pasivo-patrimonio">$0</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MAYOR -->
+        <div id="tab-mayor" class="tab-content">
+            <div class="mayor-card">
+                <div class="card-header-actions"><h2><i class="fas fa-list-ul"></i> MAYOR DE CUENTAS</h2></div>
+                <div class="cuenta-selector">
+                    <select id="select-cuenta-mayor" onchange="cargarMayorCuenta()"><option value="">Seleccionar cuenta...</option></select>
+                    <button class="btn-export" onclick="exportarMayor()"><i class="fas fa-download"></i> Exportar</button>
+                </div>
+                <div id="mayor-contenido"><p class="empty-message">Selecciona una cuenta para ver su movimiento</p></div>
+            </div>
+        </div>
+
+        <!-- BALANCE DE PRUEBA -->
+        <div id="tab-balance-prueba" class="tab-content">
+            <div class="balance-prueba-card">
+                <div class="card-header-actions">
+                    <h2><i class="fas fa-check-double"></i> BALANCE DE PRUEBA</h2>
+                    <div><span id="bp-estado" class="estado-cuadre"></span>
+                    <button class="btn-export" onclick="exportarBalancePrueba()"><i class="fas fa-download"></i> Exportar</button></div>
+                </div>
+                <div class="table-responsive">
+                    <table class="balance-prueba-table" id="tabla-balance-prueba">
+                        <thead><tr><th>Código</th><th>Cuenta</th><th>Saldo Inicial</th><th>Débitos</th><th>Créditos</th><th>Saldo Final</th></tr></thead>
+                        <tbody id="balance-prueba-body"><tr><td colspan="6" class="empty-message">Cargando...</td></tr></tbody>
+                        <tfoot id="balance-prueba-totales"><tr>
+                            <td colspan="2">TOTALES</td>
+                            <td id="bp-total-inicial">$0</td><td id="bp-total-debitos">$0</td><td id="bp-total-creditos">$0</td><td id="bp-total-final">$0</td>
+                        </tr></tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
-    <footer>
-        <span class="sp"></span>
-        <button type="button" class="btn" data-act="cerrar">Cancelar</button>
-        <button type="button" class="btn danger" data-act="anular-ok">Anular</button>
-    </footer>
-</dialog>
 
-<!-- ========== MODAL: CUENTA ========== -->
-<dialog id="m-cuenta" class="modal">
-    <form id="f-cuenta" autocomplete="off">
-        <header><h2 id="c-titulo">Nueva cuenta</h2><button type="button" class="x" data-act="cerrar" aria-label="Cerrar">✕</button></header>
-        <div class="body">
-            <input type="hidden" id="c-id">
-            <div class="grid2">
-                <label>Código<input id="c-codigo" required maxlength="20" placeholder="Ej: 110505"></label>
-                <label>Nivel<input id="c-nivel" readonly placeholder="Automático"></label>
-            </div>
-            <label>Nombre<input id="c-nombre" required maxlength="150" placeholder="Ej: CAJA GENERAL"></label>
-            <label>Descripción<textarea id="c-desc" rows="2" placeholder="Opcional"></textarea></label>
-            <div class="grid2">
-                <label>Tipo
-                    <select id="c-tipo"><option>ACTIVO</option><option>PASIVO</option><option>PATRIMONIO</option><option>INGRESO</option><option>GASTO</option><option>COSTO</option></select>
-                </label>
-                <label>Naturaleza
-                    <select id="c-nat"><option value="DEUDORA">Deudora (aumenta con débito)</option><option value="ACREEDORA">Acreedora (aumenta con crédito)</option></select>
-                </label>
-            </div>
-            <label>Cuenta padre<select id="c-padre"></select></label>
-            <div class="grid2">
-                <label>Estado<select id="c-estado"><option value="activa">Activa</option><option value="inactiva">Inactiva</option></select></label>
-                <label class="inl chk" style="align-self:end;padding-bottom:9px"><input type="checkbox" id="c-mov" checked> Permite movimientos</label>
+    <!-- MODAL: PLAN DE CUENTAS -->
+    <div id="modal-plan-cuentas" class="modal">
+        <div class="modal-content modal-lg">
+            <div class="modal-header"><h2><i class="fas fa-book"></i> Plan de Cuentas</h2><button class="close-modal" onclick="cerrarPlanCuentas()" aria-label="Cerrar">&times;</button></div>
+            <div class="modal-body">
+                <div class="modal-toolbar">
+                    <div class="search-input-wrapper"><i class="fas fa-search"></i>
+                        <input type="text" id="buscar-cuenta" placeholder="Buscar por código o nombre..." oninput="filtrarPlanCuentas()"></div>
+                    <select id="filtro-tipo-cuenta" class="filtro-select" onchange="filtrarPlanCuentas()">
+                        <option value="">Todos los tipos</option>
+                        <option>ACTIVO</option><option>PASIVO</option><option>PATRIMONIO</option><option>INGRESO</option><option>GASTO</option><option>COSTO</option>
+                    </select>
+                    <select id="filtro-nivel-cuenta" class="filtro-select" onchange="filtrarPlanCuentas()">
+                        <option value="">Todos los niveles</option>
+                        <option value="1">Nivel 1 (Clase)</option><option value="2">Nivel 2 (Grupo)</option>
+                        <option value="3">Nivel 3 (Cuenta)</option><option value="4">Nivel 4 (Subcuenta)</option>
+                    </select>
+                    <button class="btn-crear" onclick="abrirNuevaCuenta()"><i class="fas fa-plus"></i> Nueva Cuenta</button>
+                    <button class="btn-export" onclick="exportarPlanCuentas()"><i class="fas fa-download"></i> Exportar</button>
+                </div>
+                <div class="table-responsive" style="max-height:500px;">
+                    <table class="asientos-table" id="tabla-plan-cuentas">
+                        <thead><tr><th>Código</th><th>Nombre</th><th>Tipo</th><th>Naturaleza</th><th>Nivel</th><th>Movimiento</th><th>Acciones</th></tr></thead>
+                        <tbody id="plan-cuentas-body"><tr><td colspan="7" class="empty-message">Cargando...</td></tr></tbody>
+                    </table>
+                </div>
             </div>
         </div>
-        <footer>
-            <span class="sp"></span>
-            <button type="button" class="btn" data-act="cerrar">Cancelar</button>
-            <button type="button" class="btn primary" data-act="cuenta-guardar">Guardar</button>
-        </footer>
-    </form>
-</dialog>
+    </div>
 
-<div id="toasts" class="toasts"></div>
+    <!-- MODAL: CUENTA -->
+    <div id="modal-editar-cuenta" class="modal">
+        <div class="modal-content">
+            <div class="modal-header"><h2 id="modal-cuenta-title">✏️ Editar Cuenta</h2><button class="close-modal" onclick="cerrarModalCuenta()" aria-label="Cerrar">&times;</button></div>
+            <div class="modal-body">
+                <form id="form-cuenta-plan" onsubmit="guardarCuenta(event)">
+                    <input type="hidden" id="cuenta-plan-id">
+                    <div class="form-row">
+                        <div class="form-group"><label>Código <span class="required">*</span></label>
+                            <input type="text" id="cuenta-codigo" required placeholder="Ej: 110505" maxlength="20"><small>Debe ser único en el plan de cuentas</small></div>
+                        <div class="form-group"><label>Nivel</label><input type="text" id="cuenta-nivel-display" readonly placeholder="Se calcula automáticamente"></div>
+                    </div>
+                    <div class="form-group"><label>Nombre <span class="required">*</span></label>
+                        <input type="text" id="cuenta-nombre" required placeholder="Ej: CAJA GENERAL" maxlength="150"></div>
+                    <div class="form-group"><label>Descripción</label>
+                        <textarea id="cuenta-descripcion" rows="2" placeholder="Descripción opcional de la cuenta..."></textarea></div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Tipo <span class="required">*</span></label>
+                            <select id="cuenta-tipo" required><option>ACTIVO</option><option>PASIVO</option><option>PATRIMONIO</option><option>INGRESO</option><option>GASTO</option><option>COSTO</option></select></div>
+                        <div class="form-group"><label>Naturaleza <span class="required">*</span></label>
+                            <select id="cuenta-naturaleza" required>
+                                <option value="DEUDORA">DEUDORA (aumenta con débito)</option>
+                                <option value="ACREEDORA">ACREEDORA (aumenta con crédito)</option></select></div>
+                    </div>
+                    <div class="form-group"><label>Cuenta Padre</label>
+                        <select id="cuenta-padre"><option value="">Sin cuenta padre (raíz)</option></select>
+                        <small>Selecciona la cuenta superior en la jerarquía</small></div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Estado</label>
+                            <select id="cuenta-estado"><option value="activa">✅ Activa</option><option value="inactiva">🔒 Inactiva</option></select></div>
+                        <div class="form-group checkbox-group">
+                            <label><input type="checkbox" id="cuenta-permite-movimiento" checked> ¿Permite movimientos contables?</label>
+                            <small>Desmarca si es una cuenta título (solo agrupa)</small></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn-cancelar" onclick="cerrarModalCuenta()">Cancelar</button>
+                        <button type="submit" class="btn-guardar"><i class="fas fa-save"></i> Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
-<script src="../js/supabase-config.js"></script>
-<script src="../js/contabilidad/contabilidad-main.js"></script>
-<script src="../js/contabilidad/plan-cuentas.js"></script>
-<script src="../js/contabilidad/asientos.js"></script>
-<script src="../js/contabilidad/saldos.js"></script>
-<script src="../js/contabilidad/reportes.js"></script>
+    <!-- MODAL: NUEVO ASIENTO -->
+    <div id="modal-nuevo-asiento" class="modal">
+        <div class="modal-content modal-lg">
+            <div class="modal-header"><h2><i class="fas fa-plus-circle"></i> Nuevo Asiento Contable</h2><button class="close-modal" onclick="cerrarNuevoAsiento()" aria-label="Cerrar">&times;</button></div>
+            <div class="modal-body">
+                <form id="form-nuevo-asiento" onsubmit="guardarNuevoAsiento(event)">
+                    <div class="form-row">
+                        <div class="form-group"><label>📅 Fecha <span class="required">*</span></label><input type="date" id="nuevo-fecha" required></div>
+                        <div class="form-group"><label>🏷️ Tipo</label>
+                            <select id="nuevo-tipo"><option value="manual">Manual</option><option value="ajuste">Ajuste</option><option value="apertura">Apertura</option><option value="cierre">Cierre</option></select></div>
+                    </div>
+                    <div class="form-group"><label>📝 Concepto <span class="required">*</span></label>
+                        <input type="text" id="nuevo-concepto" required placeholder="Ej: Ajuste por depreciación mensual" maxlength="200"></div>
+                    <div class="form-row">
+                        <div class="form-group"><label>🏷️ Referencia</label><input type="text" id="nuevo-referencia" placeholder="Ej: AJ-001, Factura #123"></div>
+                        <div class="form-group"><label>👤 Tercero</label><input type="text" id="nuevo-tercero" placeholder="Cliente / Proveedor / Empleado"></div>
+                    </div>
+                    <div class="lineas-section">
+                        <div class="lineas-header"><label>📊 Líneas del asiento <span class="required">*</span></label>
+                            <button type="button" class="btn-agregar-linea" onclick="agregarLineaNuevo()"><i class="fas fa-plus"></i> Agregar línea</button></div>
+                        <div class="lineas-table-wrapper">
+                            <table class="lineas-table">
+                                <thead><tr><th style="width:32%">Cuenta Contable</th><th style="width:28%">Descripción</th><th style="width:15%">Débito</th><th style="width:15%">Crédito</th><th style="width:10%"></th></tr></thead>
+                                <tbody id="nuevo-lineas-body"></tbody>
+                            </table>
+                        </div>
+                        <div class="total-lineas">
+                            <div class="total-item"><span>Total Débito:</span><span class="monto-debito" id="nuevo-total-debito">$0</span></div>
+                            <div class="total-item"><span>Total Crédito:</span><span class="monto-credito" id="nuevo-total-credito">$0</span></div>
+                            <div class="total-item estado-cuadre" id="nuevo-estado-cuadre"></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn-cancelar" onclick="cerrarNuevoAsiento()">Cancelar</button>
+                        <button type="button" class="btn-borrador" onclick="guardarNuevoAsiento(event, 'borrador')"><i class="fas fa-file"></i> Guardar Borrador</button>
+                        <button type="submit" class="btn-guardar"><i class="fas fa-save"></i> Guardar y Contabilizar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: EDITAR ASIENTO -->
+    <div id="modal-editar-asiento" class="modal">
+        <div class="modal-content modal-lg">
+            <div class="modal-header"><h2 id="modal-asiento-title">✏️ Editar Asiento</h2><button class="close-modal" onclick="cerrarModalAsiento()" aria-label="Cerrar">&times;</button></div>
+            <div class="modal-body">
+                <form id="form-editar-asiento" onsubmit="guardarEdicionAsiento(event)">
+                    <input type="hidden" id="editar-asiento-id">
+                    <div class="asiento-info-badge" id="editar-asiento-info"></div>
+                    <div class="form-row">
+                        <div class="form-group"><label>📅 Fecha <span class="required">*</span></label><input type="date" id="editar-fecha" required></div>
+                        <div class="form-group"><label>🏷️ Tipo</label><input type="text" id="editar-tipo" readonly></div>
+                    </div>
+                    <div class="form-group"><label>📝 Concepto <span class="required">*</span></label><input type="text" id="editar-concepto" required maxlength="200"></div>
+                    <div class="form-row">
+                        <div class="form-group"><label>🏷️ Referencia</label><input type="text" id="editar-referencia"></div>
+                        <div class="form-group"><label>👤 Tercero</label><input type="text" id="editar-tercero"></div>
+                    </div>
+                    <div class="lineas-section">
+                        <div class="lineas-header"><label>📊 Líneas del asiento</label>
+                            <button type="button" class="btn-agregar-linea" onclick="agregarLineaEditar()"><i class="fas fa-plus"></i> Agregar línea</button></div>
+                        <div class="lineas-table-wrapper">
+                            <table class="lineas-table">
+                                <thead><tr><th style="width:32%">Cuenta Contable</th><th style="width:28%">Descripción</th><th style="width:15%">Débito</th><th style="width:15%">Crédito</th><th style="width:10%"></th></tr></thead>
+                                <tbody id="editar-lineas-body"></tbody>
+                            </table>
+                        </div>
+                        <div class="total-lineas">
+                            <div class="total-item"><span>Total Débito:</span><span class="monto-debito" id="editar-total-debito">$0</span></div>
+                            <div class="total-item"><span>Total Crédito:</span><span class="monto-credito" id="editar-total-credito">$0</span></div>
+                            <div class="total-item estado-cuadre" id="editar-estado-cuadre"></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn-eliminar-asiento" onclick="eliminarAsientoDesdeModal()"><i class="fas fa-trash"></i> Eliminar</button>
+                        <button type="button" class="btn-cancelar" onclick="cerrarModalAsiento()">Cancelar</button>
+                        <button type="submit" class="btn-guardar"><i class="fas fa-save"></i> Guardar Cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: VER ASIENTO -->
+    <div id="modal-ver-asiento" class="modal">
+        <div class="modal-content">
+            <div class="modal-header"><h2>📄 Detalle del Asiento</h2><button class="close-modal" onclick="cerrarVerAsiento()" aria-label="Cerrar">&times;</button></div>
+            <div class="modal-body" id="ver-asiento-body"></div>
+        </div>
+    </div>
+
+    <!-- MODAL: CONTABILIZAR -->
+    <div id="modal-contabilizar" class="modal">
+        <div class="modal-content modal-sm">
+            <div class="modal-header"><h2>✅ Contabilizar Asiento</h2><button class="close-modal" onclick="cerrarModalContabilizar()" aria-label="Cerrar">&times;</button></div>
+            <div class="modal-body">
+                <p style="margin-bottom:1rem;">¿Estás seguro de contabilizar este asiento?</p>
+                <div id="contabilizar-resumen" class="resumen-asiento"></div>
+                <p class="warning-text"><i class="fas fa-exclamation-triangle"></i> Una vez contabilizado, el asiento afectará los saldos y reportes. Solo podrá corregirse anulándolo (se genera un asiento de reversión).</p>
+                <input type="hidden" id="contabilizar-asiento-id">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-cancelar" onclick="cerrarModalContabilizar()">Cancelar</button>
+                <button type="button" class="btn-guardar" onclick="confirmarContabilizar()"><i class="fas fa-check"></i> Sí, contabilizar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: ANULAR -->
+    <div id="modal-anular" class="modal">
+        <div class="modal-content modal-sm">
+            <div class="modal-header"><h2>❌ Anular Asiento</h2><button class="close-modal" onclick="cerrarModalAnular()" aria-label="Cerrar">&times;</button></div>
+            <div class="modal-body">
+                <p style="margin-bottom:1rem;">¿Estás seguro de anular este asiento contabilizado?</p>
+                <div class="form-group"><label>Motivo de anulación <span class="required">*</span></label>
+                    <textarea id="motivo-anulacion" rows="3" required placeholder="Explica por qué se anula este asiento..."></textarea></div>
+                <p class="warning-text"><i class="fas fa-exclamation-triangle"></i> Se creará un asiento de reversión automático. El original quedará marcado como anulado.</p>
+                <input type="hidden" id="anular-asiento-id">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-cancelar" onclick="cerrarModalAnular()">Cancelar</button>
+                <button type="button" class="btn-eliminar-asiento" style="margin-right:0" onclick="confirmarAnular()"><i class="fas fa-ban"></i> Sí, anular</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- SCRIPTS (el orden importa: config → main → resto) -->
+    <script src="../js/supabase-config.js"></script>
+    <script src="../js/contabilidad/contabilidad-main.js"></script>
+    <script src="../js/contabilidad/plan-cuentas.js"></script>
+    <script src="../js/contabilidad/asientos.js"></script>
+    <script src="../js/contabilidad/saldos.js"></script>
+    <script src="../js/contabilidad/reportes.js"></script>
 </body>
 </html>
