@@ -1,381 +1,315 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Venta Rápida - Modas La 34</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Inter', system-ui, sans-serif;
-            background: #f4f6f8;
-            color: #1f2937;
-            min-height: 100vh;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Venta Rápida — Modas La 34</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{
+        --bg:#f1f5f9; --card:#fff; --border:#e2e8f0;
+        --text:#0f172a; --muted:#64748b;
+        --primary:#4f46e5; --primary-d:#4338ca;
+        --success:#059669; --success-d:#047857;
+        --danger:#dc2626; --warn:#d97706;
+        --ring:rgba(79,70,229,.15);
+    }
+    body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 
-        /* Header */
-        .header {
-            background: #fff;
-            padding: 0.75rem 1.5rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #e5e7eb;
-            position: sticky; top: 0; z-index: 100;
-        }
-        .logo { display: flex; align-items: center; gap: 0.5rem; font-weight: 600; }
-        .volver-btn {
-            background: #f3f4f6; color: #4b5563; text-decoration: none;
-            padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.85rem;
-        }
-        .volver-btn:hover { background: #e5e7eb; }
+    /* HEADER */
+    .header{background:#fff;padding:.75rem 1.5rem;display:flex;justify-content:space-between;
+        align-items:center;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;
+        box-shadow:0 1px 3px rgba(0,0,0,.04)}
+    .logo{display:flex;align-items:center;gap:.6rem;font-weight:700;font-size:1rem}
+    .logo .badge{background:linear-gradient(135deg,var(--primary),#8b5cf6);color:#fff;
+        padding:.25rem .6rem;border-radius:8px;font-size:.7rem;font-weight:700;letter-spacing:.5px}
+    .volver-btn{background:#f1f5f9;color:var(--muted);text-decoration:none;padding:.5rem 1rem;
+        border-radius:10px;font-size:.85rem;font-weight:500;transition:.15s}
+    .volver-btn:hover{background:#e2e8f0;color:var(--text)}
 
-        /* Layout */
-        .venta-container {
-            display: grid;
-            grid-template-columns: 1fr 400px;
-            gap: 1.25rem;
-            padding: 1.25rem;
-            max-width: 1400px;
-            margin: 0 auto;
-            align-items: start;
-        }
+    /* LAYOUT */
+    .venta-container{display:grid;grid-template-columns:1fr 440px;gap:1.25rem;
+        padding:1.25rem;max-width:1500px;margin:0 auto;align-items:start}
 
-        .panel {
-            background: #fff;
-            border-radius: 12px;
-            border: 1px solid #e5e7eb;
-            padding: 1.25rem;
-        }
+    .panel{background:var(--card);border-radius:16px;border:1px solid var(--border);
+        padding:1.25rem;box-shadow:0 1px 2px rgba(0,0,0,.03)}
 
-        /* Productos */
-        .productos-panel h2, .carrito-panel h2 {
-            font-size: 1rem;
-            margin-bottom: 1rem;
-            display: flex; align-items: center; gap: 0.5rem;
-        }
-        .buscador {
-            display: flex; gap: 0.5rem; margin-bottom: 0.75rem;
-        }
-        .buscador input {
-            flex: 1; padding: 0.65rem 0.9rem;
-            border: 1px solid #d1d5db; border-radius: 8px;
-            font-size: 0.9rem; font-family: inherit;
-        }
-        .buscador input:focus {
-            outline: none; border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-        }
+    /* PRODUCTOS */
+    .panel h2{font-size:1rem;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem;
+        font-weight:700}
+    .buscador{margin-bottom:.85rem}
+    .buscador input{width:100%;padding:.7rem 1rem;border:1.5px solid var(--border);
+        border-radius:12px;font-size:.9rem;font-family:inherit;transition:.15s}
+    .buscador input:focus{outline:none;border-color:var(--primary);
+        box-shadow:0 0 0 3px var(--ring)}
 
-        .categorias {
-            display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.75rem;
-        }
-        .cat-btn {
-            background: #f3f4f6; border: 1px solid transparent;
-            padding: 0.4rem 0.85rem; border-radius: 20px;
-            font-size: 0.8rem; cursor: pointer; font-family: inherit;
-            transition: all 0.15s;
-        }
-        .cat-btn:hover { background: #e5e7eb; }
-        .cat-btn.active { background: #2563eb; color: #fff; }
+    .categorias{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.85rem}
+    .cat-btn{background:#f8fafc;border:1px solid var(--border);padding:.4rem .85rem;
+        border-radius:20px;font-size:.78rem;cursor:pointer;font-family:inherit;
+        font-weight:500;transition:.15s;color:var(--muted)}
+    .cat-btn:hover{background:#eef2ff;border-color:#c7d2fe;color:var(--primary)}
+    .cat-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
 
-        .grid-productos {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 0.6rem;
-            max-height: calc(100vh - 260px);
-            overflow-y: auto;
-            padding-right: 4px;
-        }
+    .grid-productos{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+        gap:.6rem;max-height:calc(100vh - 280px);overflow-y:auto;padding-right:4px}
+    .grid-productos::-webkit-scrollbar{width:6px}
+    .grid-productos::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}
 
-        .producto-card {
-            background: #fff; border: 1px solid #e5e7eb;
-            border-radius: 10px; padding: 0.75rem;
-            cursor: pointer; transition: all 0.15s;
-            display: flex; flex-direction: column; gap: 0.25rem;
-        }
-        .producto-card:hover {
-            border-color: #2563eb;
-            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.12);
-            transform: translateY(-1px);
-        }
-        .producto-card:active { transform: scale(0.98); }
-        .producto-nombre {
-            font-weight: 600; font-size: 0.85rem;
-            display: -webkit-box; -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical; overflow: hidden;
-        }
-        .producto-precio { color: #059669; font-weight: 700; font-size: 0.95rem; }
-        .producto-stock { font-size: 0.7rem; color: #6b7280; }
-        .producto-stock.bajo { color: #dc2626; font-weight: 600; }
-        .producto-codigo { font-size: 0.7rem; color: #9ca3af; }
+    .producto-card{background:#fff;border:1.5px solid var(--border);border-radius:12px;
+        padding:.75rem;cursor:pointer;transition:.15s;display:flex;flex-direction:column;gap:.3rem}
+    .producto-card:hover{border-color:var(--primary);
+        box-shadow:0 4px 12px rgba(79,70,229,.12);transform:translateY(-2px)}
+    .producto-card:active{transform:scale(.98)}
+    .producto-nombre{font-weight:600;font-size:.85rem;line-height:1.3;
+        display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+    .producto-precio{color:var(--success);font-weight:700;font-size:.95rem}
+    .producto-stock{font-size:.7rem;color:var(--muted);font-weight:500}
+    .producto-stock.bajo{color:var(--danger)}
+    .producto-codigo{font-size:.68rem;color:#94a3b8;font-family:monospace}
 
-        /* Carrito */
-        .carrito-panel { position: sticky; top: 80px; }
+    /* CARRITO */
+    .carrito-panel{position:sticky;top:80px}
+    .carrito-header{display:flex;justify-content:space-between;align-items:center;
+        margin-bottom:.85rem;padding-bottom:.75rem;border-bottom:1px solid var(--border)}
+    .carrito-badge{background:var(--primary);color:#fff;padding:.15rem .6rem;
+        border-radius:12px;font-size:.75rem;font-weight:700}
 
-        .carrito-header {
-            display: flex; justify-content: space-between;
-            align-items: center; margin-bottom: 0.75rem;
-            padding-bottom: 0.75rem; border-bottom: 1px solid #e5e7eb;
-        }
-        .carrito-badge {
-            background: #2563eb; color: #fff;
-            padding: 0.15rem 0.55rem; border-radius: 12px;
-            font-size: 0.75rem; font-weight: 600;
-        }
+    .iva-selector{background:#f8fafc;border-radius:10px;padding:.6rem .75rem;margin-bottom:.85rem}
+    .iva-selector label{font-size:.72rem;color:var(--muted);display:block;
+        margin-bottom:.4rem;font-weight:600;text-transform:uppercase;letter-spacing:.4px}
+    .iva-opciones{display:flex;gap:.4rem}
+    .iva-opcion{flex:1;text-align:center;padding:.4rem;background:#fff;
+        border:1.5px solid var(--border);border-radius:8px;cursor:pointer;
+        font-size:.8rem;font-weight:600;color:var(--muted);transition:.15s}
+    .iva-opcion.active{background:var(--primary);color:#fff;border-color:var(--primary)}
 
-        .iva-selector {
-            background: #f9fafb; border-radius: 8px;
-            padding: 0.6rem; margin-bottom: 0.75rem;
-        }
-        .iva-selector label {
-            font-size: 0.75rem; color: #6b7280;
-            display: block; margin-bottom: 0.4rem; font-weight: 500;
-        }
-        .iva-opciones { display: flex; gap: 0.4rem; }
-        .iva-opcion {
-            flex: 1; text-align: center; padding: 0.4rem;
-            background: #fff; border: 1px solid #d1d5db;
-            border-radius: 6px; cursor: pointer;
-            font-size: 0.8rem; transition: all 0.15s;
-        }
-        .iva-opcion.active {
-            background: #2563eb; color: #fff; border-color: #2563eb;
-        }
+    .carrito-items{max-height:290px;overflow-y:auto;margin-bottom:.75rem}
+    .carrito-items::-webkit-scrollbar{width:6px}
+    .carrito-items::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}
+    .carrito-vacio{text-align:center;color:#94a3b8;padding:2.5rem 1rem;font-size:.85rem}
+    .carrito-vacio i{font-size:2rem;display:block;margin-bottom:.5rem;opacity:.4}
 
-        .carrito-items {
-            max-height: 320px; overflow-y: auto;
-            margin-bottom: 0.75rem;
-        }
-        .carrito-vacio {
-            text-align: center; color: #9ca3af;
-            padding: 2rem 1rem; font-size: 0.85rem;
-        }
-        .carrito-item {
-            display: flex; align-items: center;
-            gap: 0.5rem; padding: 0.6rem;
-            background: #f9fafb; border-radius: 8px;
-            margin-bottom: 0.4rem;
-        }
-        .item-info { flex: 1; min-width: 0; }
-        .item-nombre {
-            font-weight: 600; font-size: 0.8rem;
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-        }
-        .item-detalle { font-size: 0.7rem; color: #6b7280; }
-        .item-cantidad {
-            display: flex; align-items: center; gap: 0.25rem;
-        }
-        .item-cantidad button {
-            width: 24px; height: 24px; border-radius: 6px;
-            border: 1px solid #d1d5db; background: #fff;
-            cursor: pointer; font-weight: 700;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .item-cantidad button:hover { background: #2563eb; color: #fff; border-color: #2563eb; }
-        .item-cantidad span {
-            min-width: 20px; text-align: center;
-            font-weight: 600; font-size: 0.8rem;
-        }
-        .item-precio {
-            font-weight: 700; color: #059669;
-            font-size: 0.8rem; min-width: 60px; text-align: right;
-        }
-        .item-eliminar {
-            background: none; border: none;
-            color: #9ca3af; cursor: pointer; padding: 0.25rem;
-        }
-        .item-eliminar:hover { color: #dc2626; }
+    .carrito-item{background:#f8fafc;border-radius:10px;padding:.65rem;
+        margin-bottom:.45rem;display:flex;flex-direction:column;gap:.4rem}
+    .item-fila{display:flex;align-items:center;gap:.5rem}
+    .item-info{flex:1;min-width:0}
+    .item-nombre{font-weight:600;font-size:.82rem;white-space:nowrap;
+        overflow:hidden;text-overflow:ellipsis}
+    .item-detalle{font-size:.7rem;color:var(--muted)}
+    .item-cantidad{display:flex;align-items:center;gap:.25rem}
+    .item-cantidad button{width:26px;height:26px;border-radius:7px;border:1px solid var(--border);
+        background:#fff;cursor:pointer;font-weight:700;font-size:.9rem;
+        display:flex;align-items:center;justify-content:center;transition:.15s}
+    .item-cantidad button:hover{background:var(--primary);color:#fff;border-color:var(--primary)}
+    .item-cantidad span{min-width:22px;text-align:center;font-weight:700;font-size:.85rem}
+    .item-precio{font-weight:700;color:var(--success);font-size:.85rem;
+        min-width:70px;text-align:right}
+    .item-eliminar{background:none;border:none;color:#94a3b8;cursor:pointer;
+        padding:.25rem;transition:.15s}
+    .item-eliminar:hover{color:var(--danger)}
 
-        .carrito-resumen { border-top: 1px solid #e5e7eb; padding-top: 0.75rem; }
-        .resumen-linea {
-            display: flex; justify-content: space-between;
-            margin-bottom: 0.4rem; font-size: 0.85rem; color: #4b5563;
-        }
-        .resumen-total {
-            display: flex; justify-content: space-between;
-            font-size: 1.15rem; font-weight: 700; color: #059669;
-            margin: 0.6rem 0; padding-top: 0.6rem;
-            border-top: 2px solid #e5e7eb;
-        }
-        .metodo-pago select {
-            width: 100%; padding: 0.65rem;
-            border: 1px solid #d1d5db; border-radius: 8px;
-            font-size: 0.85rem; margin-bottom: 0.6rem;
-            font-family: inherit; background: #fff;
-        }
-        .finalizar-btn {
-            background: #059669; color: #fff;
-            border: none; padding: 0.85rem;
-            border-radius: 10px; font-weight: 600;
-            width: 100%; cursor: pointer;
-            font-size: 0.95rem; font-family: inherit;
-            transition: background 0.15s;
-        }
-        .finalizar-btn:hover:not(:disabled) { background: #047857; }
-        .finalizar-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-        .vaciar-btn {
-            background: none; border: 1px solid #d1d5db;
-            padding: 0.55rem; border-radius: 10px;
-            width: 100%; margin-top: 0.5rem;
-            cursor: pointer; font-size: 0.8rem;
-            font-family: inherit; color: #6b7280;
-        }
-        .vaciar-btn:hover { background: #fef2f2; color: #dc2626; border-color: #fca5a5; }
+    /* Editor de precio inline */
+    .item-precio-editor{display:flex;align-items:center;gap:.4rem;
+        background:#fff;border:1px solid var(--border);border-radius:8px;
+        padding:.25rem .5rem;font-size:.78rem}
+    .item-precio-editor label{color:var(--muted);font-size:.7rem;font-weight:600}
+    .item-precio-editor input{width:80px;border:none;font-family:inherit;
+        font-size:.8rem;font-weight:700;color:var(--text);text-align:right;background:transparent}
+    .item-precio-editor input:focus{outline:none;color:var(--primary)}
+    .btn-edit-precio{background:#eef2ff;color:var(--primary);border:none;
+        padding:.25rem .5rem;border-radius:6px;font-size:.7rem;cursor:pointer;
+        font-weight:600;display:flex;align-items:center;gap:.25rem}
+    .btn-edit-precio:hover{background:#c7d2fe}
 
-        /* Modales */
-        .modal {
-            display: none; position: fixed;
-            inset: 0; background: rgba(0,0,0,0.5);
-            z-index: 1000; padding: 1rem;
-            align-items: center; justify-content: center;
-        }
-        .modal.active { display: flex; }
-        .modal-content {
-            background: #fff; border-radius: 16px;
-            padding: 1.5rem; max-width: 420px;
-            width: 100%; max-height: 90vh; overflow-y: auto;
-        }
-        .modal-content h3 {
-            font-size: 1.1rem; margin-bottom: 1rem;
-            display: flex; align-items: center; gap: 0.5rem;
-        }
-        .variante-opcion {
-            display: flex; justify-content: space-between;
-            align-items: center; padding: 0.75rem;
-            border: 1px solid #e5e7eb; border-radius: 10px;
-            margin-bottom: 0.5rem; cursor: pointer;
-            transition: all 0.15s;
-        }
-        .variante-opcion:hover { border-color: #2563eb; background: #eff6ff; }
-        .variante-opcion.sin-stock { opacity: 0.4; cursor: not-allowed; }
-        .variante-talla { font-weight: 600; }
-        .variante-precio { color: #059669; font-weight: 700; }
-        .variante-stock { font-size: 0.75rem; color: #6b7280; }
+    /* RESUMEN */
+    .carrito-resumen{border-top:2px solid var(--border);padding-top:.85rem}
+    .resumen-linea{display:flex;justify-content:space-between;margin-bottom:.4rem;
+        font-size:.85rem;color:var(--muted)}
+    .resumen-linea strong{color:var(--text)}
+    .resumen-total{display:flex;justify-content:space-between;font-size:1.3rem;
+        font-weight:800;color:var(--text);margin:.6rem 0;padding-top:.6rem;
+        border-top:2px dashed var(--border)}
+    .resumen-total span:last-child{color:var(--success)}
 
-        .btn-cancelar {
-            width: 100%; padding: 0.65rem;
-            border: 1px solid #d1d5db; border-radius: 10px;
-            background: #fff; cursor: pointer;
-            font-size: 0.85rem; margin-top: 0.5rem;
-            font-family: inherit;
-        }
+    /* PAGO */
+    .pago-box{background:linear-gradient(135deg,#f8fafc,#eef2ff);
+        border-radius:12px;padding:.85rem;margin-bottom:.75rem;border:1px solid var(--border)}
+    .pago-box h4{font-size:.72rem;color:var(--muted);text-transform:uppercase;
+        letter-spacing:.5px;margin-bottom:.5rem;font-weight:700}
+    .metodo-pago select{width:100%;padding:.6rem;border:1.5px solid var(--border);
+        border-radius:8px;font-size:.85rem;font-family:inherit;font-weight:500;
+        margin-bottom:.6rem;background:#fff}
 
-        /* Modal factura */
-        .factura-icono { font-size: 3rem; text-align: center; margin-bottom: 0.75rem; }
-        .factura-info {
-            background: #f9fafb; border-radius: 10px;
-            padding: 1rem; margin: 1rem 0;
-        }
-        .factura-info p {
-            display: flex; justify-content: space-between;
-            margin-bottom: 0.4rem; font-size: 0.9rem;
-        }
-        .factura-info p:last-child { margin-bottom: 0; }
-        .modal-buttons { display: flex; gap: 0.6rem; }
-        .modal-buttons button {
-            flex: 1; padding: 0.75rem;
-            border: none; border-radius: 10px;
-            cursor: pointer; font-weight: 600;
-            font-size: 0.85rem; font-family: inherit;
-        }
-        .btn-imprimir { background: #2563eb; color: #fff; }
-        .btn-nueva { background: #f3f4f6; color: #374151; }
+    .efectivo-box{display:none;background:#fff;border-radius:8px;padding:.6rem;
+        margin-bottom:.6rem;border:1.5px solid var(--border)}
+    .efectivo-box.active{display:block;animation:slideDown .2s ease}
+    @keyframes slideDown{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
 
-        /* Toast */
-        .toast {
-            position: fixed; bottom: 20px; left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background: #1f2937; color: #fff;
-            padding: 0.75rem 1.25rem; border-radius: 10px;
-            font-size: 0.85rem; z-index: 2000;
-            opacity: 0; transition: all 0.3s;
-            pointer-events: none;
-            max-width: 90%; text-align: center;
-        }
-        .toast.show {
-            opacity: 1; transform: translateX(-50%) translateY(0);
-        }
-        .toast.error { background: #dc2626; }
-        .toast.success { background: #059669; }
+    .efectivo-box label{font-size:.72rem;color:var(--muted);font-weight:600;
+        display:block;margin-bottom:.3rem}
+    .efectivo-input{display:flex;gap:.4rem;margin-bottom:.5rem}
+    .efectivo-input input{flex:1;padding:.55rem .7rem;border:1.5px solid var(--border);
+        border-radius:8px;font-size:1rem;font-weight:700;font-family:inherit;text-align:right}
+    .efectivo-input input:focus{outline:none;border-color:var(--primary);
+        box-shadow:0 0 0 3px var(--ring)}
 
-        /* Responsive */
-        @media (max-width: 900px) {
-            .venta-container { grid-template-columns: 1fr; }
-            .carrito-panel { position: static; }
-            .grid-productos { max-height: 400px; }
-        }
-    </style>
+    .quick-bills{display:flex;gap:.3rem;flex-wrap:wrap;margin-bottom:.5rem}
+    .quick-bill{background:#f1f5f9;border:1px solid var(--border);padding:.3rem .55rem;
+        border-radius:6px;font-size:.7rem;cursor:pointer;font-weight:600;
+        color:var(--muted);transition:.15s;font-family:inherit}
+    .quick-bill:hover{background:var(--primary);color:#fff;border-color:var(--primary)}
+
+    .cambio-box{background:#f0fdf4;border:1.5px solid #86efac;border-radius:8px;
+        padding:.55rem .7rem;display:flex;justify-content:space-between;align-items:center}
+    .cambio-box.faltante{background:#fef2f2;border-color:#fca5a5}
+    .cambio-label{font-size:.75rem;font-weight:600;color:var(--success)}
+    .cambio-box.faltante .cambio-label{color:var(--danger)}
+    .cambio-valor{font-size:1.1rem;font-weight:800;color:var(--success)}
+    .cambio-box.faltante .cambio-valor{color:var(--danger)}
+
+    .finalizar-btn{background:var(--success);color:#fff;border:none;padding:.9rem;
+        border-radius:12px;font-weight:700;width:100%;cursor:pointer;font-size:.95rem;
+        font-family:inherit;transition:.15s;display:flex;align-items:center;
+        justify-content:center;gap:.5rem;box-shadow:0 2px 8px rgba(5,150,105,.25)}
+    .finalizar-btn:hover:not(:disabled){background:var(--success-d);
+        box-shadow:0 4px 12px rgba(5,150,105,.35);transform:translateY(-1px)}
+    .finalizar-btn:disabled{opacity:.4;cursor:not-allowed;box-shadow:none}
+    .vaciar-btn{background:none;border:1.5px solid var(--border);padding:.6rem;
+        border-radius:12px;width:100%;margin-top:.5rem;cursor:pointer;font-size:.8rem;
+        font-family:inherit;color:var(--muted);font-weight:600;transition:.15s}
+    .vaciar-btn:hover{background:#fef2f2;color:var(--danger);border-color:#fca5a5}
+
+    /* MODALES */
+    .modal{display:none;position:fixed;inset:0;background:rgba(15,23,42,.6);
+        z-index:1000;padding:1rem;align-items:center;justify-content:center;
+        backdrop-filter:blur(4px)}
+    .modal.active{display:flex}
+    .modal-content{background:#fff;border-radius:20px;padding:1.75rem;max-width:460px;
+        width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3);
+        animation:pop .25s ease}
+    @keyframes pop{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:none}}
+    .modal-content h3{font-size:1.1rem;margin-bottom:1rem;display:flex;
+        align-items:center;gap:.5rem;font-weight:700}
+
+    .variante-opcion{display:flex;justify-content:space-between;align-items:center;
+        padding:.85rem;border:1.5px solid var(--border);border-radius:12px;
+        margin-bottom:.5rem;cursor:pointer;transition:.15s}
+    .variante-opcion:hover{border-color:var(--primary);background:#eef2ff;
+        transform:translateX(2px)}
+    .variante-opcion.sin-stock{opacity:.4;cursor:not-allowed}
+    .variante-opcion.sin-stock:hover{transform:none;background:#fff}
+    .variante-talla{font-weight:700;font-size:.9rem}
+    .variante-precio{color:var(--success);font-weight:800;font-size:.95rem}
+    .variante-stock{font-size:.72rem;color:var(--muted);margin-top:.15rem}
+
+    .btn-cancelar{width:100%;padding:.7rem;border:1.5px solid var(--border);
+        border-radius:10px;background:#fff;cursor:pointer;font-size:.85rem;
+        margin-top:.5rem;font-family:inherit;font-weight:600;color:var(--muted);transition:.15s}
+    .btn-cancelar:hover{background:#f8fafc;color:var(--text)}
+
+    /* FACTURA */
+    .factura-icono{font-size:3.5rem;text-align:center;margin-bottom:.5rem}
+    .factura-info{background:#f8fafc;border-radius:12px;padding:1rem;margin:1rem 0;
+        border:1px solid var(--border)}
+    .factura-info p{display:flex;justify-content:space-between;margin-bottom:.5rem;
+        font-size:.9rem}
+    .factura-info p:last-child{margin-bottom:0}
+    .factura-info .destacado{font-size:1.1rem;font-weight:800;color:var(--success)}
+    .cambio-destacado{background:#f0fdf4;border-radius:10px;padding:.75rem;
+        margin-top:.75rem;display:flex;justify-content:space-between;align-items:center}
+    .cambio-destacado span:first-child{font-weight:600;color:var(--success);font-size:.85rem}
+    .cambio-destacado span:last-child{font-weight:800;color:var(--success);font-size:1.3rem}
+
+    .modal-buttons{display:flex;gap:.6rem}
+    .modal-buttons button{flex:1;padding:.8rem;border:none;border-radius:12px;
+        cursor:pointer;font-weight:700;font-size:.85rem;font-family:inherit;
+        transition:.15s;display:flex;align-items:center;justify-content:center;gap:.4rem}
+    .btn-imprimir{background:var(--primary);color:#fff}
+    .btn-imprimir:hover{background:var(--primary-d)}
+    .btn-nueva{background:#f1f5f9;color:var(--text)}
+    .btn-nueva:hover{background:#e2e8f0}
+
+    /* TOAST */
+    .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(120px);
+        background:#0f172a;color:#fff;padding:.8rem 1.3rem;border-radius:12px;
+        font-size:.85rem;font-weight:500;z-index:2000;opacity:0;transition:all .3s;
+        pointer-events:none;max-width:90%;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.2)}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+    .toast.error{background:var(--danger)}
+    .toast.success{background:var(--success)}
+
+    /* RESPONSIVE */
+    @media(max-width:960px){
+        .venta-container{grid-template-columns:1fr}
+        .carrito-panel{position:static}
+        .grid-productos{max-height:400px}
+    }
+</style>
 </head>
 <body>
-    <header class="header">
-        <div class="logo">
-            <span>🌸</span>
-            <span>Modas La 34 — Venta Rápida</span>
+<header class="header">
+    <div class="logo">
+        <span>🌸</span>
+        <span>Modas La 34</span>
+        <span class="badge">POS</span>
+    </div>
+    <a href="dashboard.html" class="volver-btn"><i class="fas fa-arrow-left"></i> Volver</a>
+</header>
+
+<div class="venta-container">
+    <!-- PRODUCTOS -->
+    <div class="panel productos-panel">
+        <h2><i class="fas fa-box"></i> Productos</h2>
+        <div class="buscador">
+            <input type="text" id="buscador" placeholder="Buscar por nombre o código..." autocomplete="off">
         </div>
-        <a href="dashboard.html" class="volver-btn">
-            <i class="fas fa-arrow-left"></i> Volver
-        </a>
-    </header>
+        <div class="categorias" id="categorias">
+            <button class="cat-btn active" data-cat="todos">Todos</button>
+            <button class="cat-btn" data-cat="vestidos">Vestidos</button>
+            <button class="cat-btn" data-cat="blusas">Blusas</button>
+            <button class="cat-btn" data-cat="pantalones">Pantalones</button>
+            <button class="cat-btn" data-cat="deportivo">Deportivo</button>
+            <button class="cat-btn" data-cat="caballero">Caballero</button>
+            <button class="cat-btn" data-cat="accesorios">Accesorios</button>
+        </div>
+        <div class="grid-productos" id="grid-productos">
+            <div style="text-align:center;padding:2rem;color:#94a3b8;grid-column:1/-1">Cargando...</div>
+        </div>
+    </div>
 
-    <div class="venta-container">
-        <!-- Productos -->
-        <div class="panel productos-panel">
-            <h2><i class="fas fa-box"></i> Productos</h2>
-            <div class="buscador">
-                <input type="text" id="buscador" placeholder="Buscar por nombre o código..." autocomplete="off">
-            </div>
-            <div class="categorias" id="categorias">
-                <button class="cat-btn active" data-cat="todos">Todos</button>
-                <button class="cat-btn" data-cat="vestidos">Vestidos</button>
-                <button class="cat-btn" data-cat="blusas">Blusas</button>
-                <button class="cat-btn" data-cat="pantalones">Pantalones</button>
-                <button class="cat-btn" data-cat="deportivo">Deportivo</button>
-                <button class="cat-btn" data-cat="caballero">Caballero</button>
-                <button class="cat-btn" data-cat="accesorios">Accesorios</button>
-            </div>
-            <div class="grid-productos" id="grid-productos">
-                <div style="text-align:center; padding:2rem; color:#9ca3af;">Cargando...</div>
+    <!-- CARRITO -->
+    <div class="panel carrito-panel">
+        <div class="carrito-header">
+            <h2 style="margin:0"><i class="fas fa-cart-shopping"></i> Carrito</h2>
+            <span class="carrito-badge" id="carrito-badge">0</span>
+        </div>
+
+        <div class="iva-selector">
+            <label>IVA incluido en precios</label>
+            <div class="iva-opciones" id="iva-opciones">
+                <div class="iva-opcion active" data-iva="0">0%</div>
+                <div class="iva-opcion" data-iva="5">5%</div>
+                <div class="iva-opcion" data-iva="19">19%</div>
             </div>
         </div>
 
-        <!-- Carrito -->
-        <div class="panel carrito-panel">
-            <div class="carrito-header">
-                <h2><i class="fas fa-cart-shopping"></i> Carrito</h2>
-                <span class="carrito-badge" id="carrito-badge">0</span>
+        <div class="carrito-items" id="carrito-items">
+            <div class="carrito-vacio"><i class="fas fa-cart-shopping"></i>Carrito vacío</div>
+        </div>
+
+        <div class="carrito-resumen">
+            <div class="resumen-linea"><span>Base gravable:</span><span id="subtotal">$0</span></div>
+            <div class="resumen-linea" id="iva-linea" style="display:none">
+                <span>IVA <span id="iva-porcentaje">0</span>%:</span>
+                <span id="iva-valor">$0</span>
             </div>
+            <div class="resumen-total"><span>TOTAL</span><span id="total">$0</span></div>
 
-            <div class="iva-selector">
-                <label>IVA incluido en precios</label>
-                <div class="iva-opciones" id="iva-opciones">
-                    <div class="iva-opcion active" data-iva="0">0%</div>
-                    <div class="iva-opcion" data-iva="5">5%</div>
-                    <div class="iva-opcion" data-iva="19">19%</div>
-                </div>
-            </div>
-
-            <div class="carrito-items" id="carrito-items">
-                <div class="carrito-vacio">Carrito vacío</div>
-            </div>
-
-            <div class="carrito-resumen">
-                <div class="resumen-linea">
-                    <span>Base:</span>
-                    <span id="subtotal">$0</span>
-                </div>
-                <div class="resumen-linea" id="iva-linea" style="display:none;">
-                    <span>IVA <span id="iva-porcentaje">0</span>%:</span>
-                    <span id="iva-valor">$0</span>
-                </div>
-                <div class="resumen-total">
-                    <span>TOTAL</span>
-                    <span id="total">$0</span>
-                </div>
-
-                <select id="metodo-pago">
+            <div class="pago-box">
+                <h4><i class="fas fa-wallet"></i> Pago</h4>
+                <select class="metodo-pago" id="metodo-pago">
                     <option value="Efectivo">💵 Efectivo</option>
                     <option value="Tarjeta Débito">💳 Tarjeta Débito</option>
                     <option value="Tarjeta Crédito">💳 Tarjeta Crédito</option>
@@ -384,295 +318,308 @@
                     <option value="DaviPlata">📱 DaviPlata</option>
                 </select>
 
-                <button class="finalizar-btn" id="finalizar-btn" disabled>
-                    <i class="fas fa-check"></i> Finalizar Venta
-                </button>
-                <button class="vaciar-btn" id="vaciar-btn">Vaciar carrito</button>
+                <div class="efectivo-box" id="efectivo-box">
+                    <label>Efectivo recibido</label>
+                    <div class="efectivo-input">
+                        <input type="number" id="efectivo-recibido" placeholder="0" min="0" step="100">
+                    </div>
+                    <div class="quick-bills" id="quick-bills">
+                        <button class="quick-bill" data-val="5000">$5.000</button>
+                        <button class="quick-bill" data-val="10000">$10.000</button>
+                        <button class="quick-bill" data-val="20000">$20.000</button>
+                        <button class="quick-bill" data-val="50000">$50.000</button>
+                        <button class="quick-bill" data-val="100000">$100.000</button>
+                        <button class="quick-bill" data-val="exacto">Exacto</button>
+                    </div>
+                    <div class="cambio-box" id="cambio-box">
+                        <span class="cambio-label">Cambio</span>
+                        <span class="cambio-valor" id="cambio-valor">$0</span>
+                    </div>
+                </div>
             </div>
+
+            <button class="finalizar-btn" id="finalizar-btn" disabled>
+                <i class="fas fa-check"></i> Finalizar venta
+            </button>
+            <button class="vaciar-btn" id="vaciar-btn">Vaciar carrito</button>
         </div>
     </div>
+</div>
 
-    <!-- Modal variantes -->
-    <div class="modal" id="modal-variantes">
-        <div class="modal-content">
-            <h3 id="variante-titulo"><i class="fas fa-tags"></i> Seleccionar talla</h3>
-            <div id="variante-lista"></div>
-            <button class="btn-cancelar" id="variante-cancelar">Cancelar</button>
-        </div>
+<!-- MODAL VARIANTES -->
+<div class="modal" id="modal-variantes">
+    <div class="modal-content">
+        <h3 id="variante-titulo"><i class="fas fa-tags"></i> Seleccionar talla</h3>
+        <div id="variante-lista"></div>
+        <button class="btn-cancelar" id="variante-cancelar">Cancelar</button>
     </div>
+</div>
 
-    <!-- Modal factura -->
-    <div class="modal" id="modal-factura">
-        <div class="modal-content">
-            <div class="factura-icono">🧾</div>
-            <h3 style="justify-content:center;">Venta completada</h3>
-            <div class="factura-info">
-                <p><span>Total:</span> <strong id="factura-total">$0</strong></p>
-                <p><span>IVA:</span> <span id="factura-iva">0%</span></p>
-                <p><span>Método:</span> <span id="factura-metodo">—</span></p>
-            </div>
-            <div class="modal-buttons">
-                <button class="btn-imprimir" id="btn-imprimir">
-                    <i class="fas fa-print"></i> Imprimir
-                </button>
-                <button class="btn-nueva" id="btn-nueva">
-                    <i class="fas fa-plus"></i> Nueva venta
-                </button>
+<!-- MODAL FACTURA -->
+<div class="modal" id="modal-factura">
+    <div class="modal-content">
+        <div class="factura-icono">🧾</div>
+        <h3 style="justify-content:center">Venta completada</h3>
+        <div class="factura-info">
+            <p><span>Total:</span><span class="destacado" id="factura-total">$0</span></p>
+            <p><span>IVA:</span><span id="factura-iva">0%</span></p>
+            <p><span>Método:</span><span id="factura-metodo">—</span></p>
+            <div class="cambio-destacado" id="factura-cambio-box" style="display:none">
+                <span><i class="fas fa-hand-holding-dollar"></i> Cambio</span>
+                <span id="factura-cambio">$0</span>
             </div>
         </div>
+        <div class="modal-buttons">
+            <button class="btn-imprimir" id="btn-imprimir"><i class="fas fa-print"></i> Imprimir</button>
+            <button class="btn-nueva" id="btn-nueva"><i class="fas fa-plus"></i> Nueva venta</button>
+        </div>
     </div>
+</div>
 
-    <!-- Toast -->
-    <div class="toast" id="toast"></div>
+<!-- MODAL EDITAR PRECIO -->
+<div class="modal" id="modal-precio">
+    <div class="modal-content">
+        <h3><i class="fas fa-pen-to-square"></i> Editar precio</h3>
+        <p style="color:#64748b;font-size:.85rem;margin-bottom:1rem" id="precio-producto-nombre"></p>
+        <div style="margin-bottom:1rem">
+            <label style="font-size:.75rem;color:#64748b;font-weight:600;display:block;margin-bottom:.4rem">
+                Precio unitario
+            </label>
+            <input type="number" id="precio-input" min="0" step="100"
+                style="width:100%;padding:.8rem;border:1.5px solid #e2e8f0;border-radius:10px;
+                font-size:1.2rem;font-weight:700;font-family:inherit;text-align:right">
+        </div>
+        <div style="background:#fef3c7;border-radius:8px;padding:.6rem;font-size:.75rem;
+            color:#92400e;margin-bottom:1rem;display:flex;gap:.5rem;align-items:flex-start">
+            <i class="fas fa-info-circle" style="margin-top:2px"></i>
+            <span>Este cambio solo aplica a esta venta. El precio del catálogo no se modifica.</span>
+        </div>
+        <div class="modal-buttons">
+            <button class="btn-nueva" id="precio-cancelar">Cancelar</button>
+            <button class="btn-imprimir" id="precio-guardar"><i class="fas fa-check"></i> Aplicar</button>
+        </div>
+    </div>
+</div>
 
-    <script src="../js/supabase-config.js"></script>
-    <script>
-    (function() {
-        'use strict';
+<div class="toast" id="toast"></div>
 
-        // ============ ESTADO ============
-        const state = {
-            productos: [],
-            carrito: [],
-            iva: 0,
-            filtroCategoria: 'todos',
-            busqueda: '',
-            ultimaVenta: null,
-            productoPendiente: null
-        };
+<script src="../js/supabase-config.js"></script>
+<script>
+(function(){
+'use strict';
 
-        // ============ HELPERS ============
-        const $ = (id) => document.getElementById(id);
-        const fmt = (n) => '$' + Math.round(n).toLocaleString('es-CO');
+// ============ ESTADO ============
+const state = {
+    productos: [],
+    carrito: [],
+    iva: 0,
+    filtroCategoria: 'todos',
+    busqueda: '',
+    ultimaVenta: null,
+    productoPendiente: null,
+    editandoIdx: null
+};
 
-        let toastTimer = null;
-        function toast(msg, tipo = '') {
-            const el = $('toast');
-            el.textContent = msg;
-            el.className = 'toast show ' + tipo;
-            clearTimeout(toastTimer);
-            toastTimer = setTimeout(() => el.className = 'toast', 2500);
+const $ = id => document.getElementById(id);
+const fmt = n => '$' + Math.round(n).toLocaleString('es-CO');
+
+let toastTimer = null;
+function toast(msg, tipo=''){
+    const el = $('toast');
+    el.textContent = msg;
+    el.className = 'toast show ' + tipo;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.className = 'toast', 2500);
+}
+
+function getToken(){
+    try { return JSON.parse(localStorage.getItem('admin_token')); }
+    catch { return null; }
+}
+
+function escapeHtml(s){
+    return String(s ?? '').replace(/[&<>"']/g, c => ({
+        '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    }[c]));
+}
+
+// ============ CARGA ============
+async function cargarProductos(){
+    try {
+        const res = await fetch(
+            `${SUPABASE_URL}/rest/v1/vista_productos_completa?select=*`,
+            { headers: { 'apikey': SUPABASE_KEY } }
+        );
+        if(!res.ok) throw new Error('HTTP ' + res.status);
+        state.productos = await res.json();
+        renderProductos();
+    } catch(e){
+        console.error(e);
+        $('grid-productos').innerHTML =
+            '<div style="text-align:center;padding:2rem;color:#dc2626;grid-column:1/-1">Error al cargar productos</div>';
+        toast('No se pudieron cargar los productos', 'error');
+    }
+}
+
+function renderProductos(){
+    const q = state.busqueda.toLowerCase().trim();
+    let lista = state.productos.filter(p => (p.stock_total || 0) > 0);
+
+    if(state.filtroCategoria !== 'todos'){
+        lista = lista.filter(p => (p.categoria || '').toLowerCase() === state.filtroCategoria);
+    }
+    if(q){
+        lista = lista.filter(p =>
+            (p.nombre || '').toLowerCase().includes(q) ||
+            (p.codigo || '').toLowerCase().includes(q)
+        );
+    }
+
+    const grid = $('grid-productos');
+    if(lista.length === 0){
+        grid.innerHTML = '<div style="text-align:center;padding:2rem;color:#94a3b8;grid-column:1/-1">Sin productos</div>';
+        return;
+    }
+
+    grid.innerHTML = lista.map(p => {
+        const bajo = (p.stock_total || 0) <= 3;
+        return `
+            <div class="producto-card" data-id="${p.id}">
+                <div class="producto-nombre">${escapeHtml(p.nombre)}</div>
+                <div class="producto-precio">${fmt(p.precio_min || 0)}</div>
+                <div class="producto-stock ${bajo?'bajo':''}">Stock: ${p.stock_total}</div>
+                <div class="producto-codigo">${escapeHtml(p.codigo || '')}</div>
+            </div>`;
+    }).join('');
+
+    grid.querySelectorAll('.producto-card').forEach(card => {
+        card.addEventListener('click', () => seleccionarProducto(Number(card.dataset.id)));
+    });
+}
+
+// ============ VARIANTES ============
+function stockDeVariante(v){
+    if(typeof v.stock_total === 'number') return v.stock_total;
+    return (v.colores || []).reduce((s,c) => s + (c.stock || 0), 0);
+}
+
+async function seleccionarProducto(id){
+    const producto = state.productos.find(p => p.id === id);
+    if(!producto) return;
+
+    let variantes = [];
+    try {
+        const res = await fetch(
+            `${SUPABASE_URL}/rest/v1/variantes_producto?producto_id=eq.${id}&select=*`,
+            { headers: { 'apikey': SUPABASE_KEY } }
+        );
+        if(res.ok) variantes = await res.json();
+    } catch(e){ console.error('variantes', e); }
+
+    variantes = variantes.filter(v => stockDeVariante(v) > 0);
+
+    if(variantes.length === 0){
+        agregarAlCarrito(producto, null, producto.precio_min || 0, producto.stock_total || 999);
+        return;
+    }
+    if(variantes.length === 1){
+        const v = variantes[0];
+        agregarAlCarrito(producto, v, v.precio_venta || producto.precio_min || 0, stockDeVariante(v));
+        return;
+    }
+
+    state.productoPendiente = producto;
+    $('variante-titulo').innerHTML = `<i class="fas fa-tags"></i> ${escapeHtml(producto.nombre)}`;
+    $('variante-lista').innerHTML = variantes.map(v => {
+        const stock = stockDeVariante(v);
+        return `
+            <div class="variante-opcion" data-variante='${escapeAttr(JSON.stringify(v))}'>
+                <div>
+                    <div class="variante-talla">Talla ${escapeHtml(v.talla || 'Única')}</div>
+                    <div class="variante-stock">Stock: ${stock}</div>
+                </div>
+                <div class="variante-precio">${fmt(v.precio_venta || producto.precio_min || 0)}</div>
+            </div>`;
+    }).join('');
+
+    $('variante-lista').querySelectorAll('.variante-opcion').forEach(el => {
+        el.addEventListener('click', () => {
+            const v = JSON.parse(el.dataset.variante);
+            agregarAlCarrito(
+                state.productoPendiente,
+                v,
+                v.precio_venta || state.productoPendiente.precio_min || 0,
+                stockDeVariante(v)
+            );
+            cerrarModalVariantes();
+        });
+    });
+
+    $('modal-variantes').classList.add('active');
+}
+
+function escapeAttr(s){
+    return String(s).replace(/&/g,'&amp;').replace(/'/g,'&#39;').replace(/"/g,'&quot;');
+}
+
+function cerrarModalVariantes(){
+    $('modal-variantes').classList.remove('active');
+    state.productoPendiente = null;
+}
+
+// ============ CARRITO ============
+function agregarAlCarrito(producto, variante, precio, stockMax){
+    const key = variante ? `v-${variante.id}` : `p-${producto.id}`;
+    const existente = state.carrito.find(i => i.key === key);
+    const stockReal = stockMax ?? 999;
+
+    if(existente){
+        if(existente.cantidad >= stockReal){
+            toast(`Stock máximo alcanzado (${stockReal})`, 'error');
+            return;
         }
+        existente.cantidad++;
+    } else {
+        if(stockReal <= 0){ toast('Sin stock disponible', 'error'); return; }
+        state.carrito.push({
+            key,
+            id: variante?.id || producto.id,
+            producto_id: producto.id,
+            variante_id: variante?.id || null,
+            nombre: producto.nombre,
+            talla: variante?.talla || 'Única',
+            precioOriginal: Number(precio) || 0,
+            precio: Number(precio) || 0,
+            cantidad: 1,
+            stockMax: stockReal
+        });
+    }
+    renderCarrito();
+    toast(`${producto.nombre} agregado`, 'success');
+}
 
-        function getToken() {
-            try {
-                return JSON.parse(localStorage.getItem('admin_token'));
-            } catch { return null; }
-        }
+function renderCarrito(){
+    const totalItems = state.carrito.reduce((s,i) => s + i.cantidad, 0);
+    $('carrito-badge').textContent = totalItems;
 
-        // ============ CARGA DE PRODUCTOS ============
-        async function cargarProductos() {
-            try {
-                const res = await fetch(
-                    `${SUPABASE_URL}/rest/v1/vista_productos_completa?select=*`,
-                    { headers: { 'apikey': SUPABASE_KEY } }
-                );
-                if (!res.ok) throw new Error('Error HTTP ' + res.status);
-                state.productos = await res.json();
-                renderProductos();
-            } catch (e) {
-                console.error(e);
-                $('grid-productos').innerHTML =
-                    '<div style="text-align:center; padding:2rem; color:#dc2626;">Error al cargar productos</div>';
-                toast('No se pudieron cargar los productos', 'error');
-            }
-        }
+    const cont = $('carrito-items');
+    if(state.carrito.length === 0){
+        cont.innerHTML = '<div class="carrito-vacio"><i class="fas fa-cart-shopping"></i>Carrito vacío</div>';
+        $('finalizar-btn').disabled = true;
+        $('subtotal').textContent = '$0';
+        $('total').textContent = '$0';
+        $('iva-linea').style.display = 'none';
+        actualizarCambio();
+        return;
+    }
 
-        // ============ RENDER PRODUCTOS ============
-        function renderProductos() {
-            const q = state.busqueda.toLowerCase().trim();
-            let lista = state.productos.filter(p => (p.stock_total || 0) > 0);
+    $('finalizar-btn').disabled = false;
 
-            if (state.filtroCategoria !== 'todos') {
-                lista = lista.filter(p =>
-                    (p.categoria || '').toLowerCase() === state.filtroCategoria
-                );
-            }
-            if (q) {
-                lista = lista.filter(p =>
-                    (p.nombre || '').toLowerCase().includes(q) ||
-                    (p.codigo || '').toLowerCase().includes(q)
-                );
-            }
-
-            const grid = $('grid-productos');
-            if (lista.length === 0) {
-                grid.innerHTML =
-                    '<div style="text-align:center; padding:2rem; color:#9ca3af;">Sin productos</div>';
-                return;
-            }
-
-            grid.innerHTML = lista.map(p => {
-                const bajo = (p.stock_total || 0) <= 3;
-                return `
-                    <div class="producto-card" data-id="${p.id}">
-                        <div class="producto-nombre">${escapeHtml(p.nombre)}</div>
-                        <div class="producto-precio">${fmt(p.precio_min || 0)}</div>
-                        <div class="producto-stock ${bajo ? 'bajo' : ''}">
-                            Stock: ${p.stock_total}
-                        </div>
-                        <div class="producto-codigo">${escapeHtml(p.codigo || '')}</div>
-                    </div>`;
-            }).join('');
-
-            // Event delegation (más limpio que onclick inline)
-            grid.querySelectorAll('.producto-card').forEach(card => {
-                card.addEventListener('click', () => {
-                    const id = Number(card.dataset.id);
-                    seleccionarProducto(id);
-                });
-            });
-        }
-
-        function escapeHtml(s) {
-            return String(s ?? '').replace(/[&<>"']/g, c => ({
-                '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
-            }[c]));
-        }
-
-        // ============ SELECCIÓN DE PRODUCTO ============
-        async function seleccionarProducto(id) {
-            const producto = state.productos.find(p => p.id === id);
-            if (!producto) return;
-
-            // Cargar variantes reales desde la tabla
-            let variantes = [];
-            try {
-                const res = await fetch(
-                    `${SUPABASE_URL}/rest/v1/variantes_producto?producto_id=eq.${id}&select=*`,
-                    { headers: { 'apikey': SUPABASE_KEY } }
-                );
-                if (res.ok) variantes = await res.json();
-            } catch (e) {
-                console.error('Error variantes:', e);
-            }
-
-            // Filtrar variantes con stock
-            variantes = variantes.filter(v => {
-                const colores = v.colores || [];
-                const stock = colores.reduce((s, c) => s + (c.stock || 0), 0);
-                return stock > 0 || (v.stock_total || 0) > 0;
-            });
-
-            if (variantes.length === 0) {
-                // Sin variantes: agregar directo
-                agregarAlCarrito(producto, null, producto.precio_min || 0);
-                return;
-            }
-
-            if (variantes.length === 1) {
-                // Una sola variante: agregar directo
-                const v = variantes[0];
-                const stock = stockDeVariante(v);
-                agregarAlCarrito(producto, v, v.precio_venta || producto.precio_min || 0, stock);
-                return;
-            }
-
-            // Múltiples variantes: mostrar modal
-            state.productoPendiente = producto;
-            $('variante-titulo').innerHTML =
-                `<i class="fas fa-tags"></i> ${escapeHtml(producto.nombre)}`;
-
-            $('variante-lista').innerHTML = variantes.map(v => {
-                const stock = stockDeVariante(v);
-                const sinStock = stock <= 0;
-                return `
-                    <div class="variante-opcion ${sinStock ? 'sin-stock' : ''}"
-                         data-variante='${escapeAttr(JSON.stringify(v))}'>
-                        <div>
-                            <div class="variante-talla">Talla: ${escapeHtml(v.talla || 'Única')}</div>
-                            <div class="variante-stock">Stock: ${stock}</div>
-                        </div>
-                        <div class="variante-precio">${fmt(v.precio_venta || producto.precio_min || 0)}</div>
-                    </div>`;
-            }).join('');
-
-            $('variante-lista').querySelectorAll('.variante-opcion').forEach(el => {
-                if (el.classList.contains('sin-stock')) return;
-                el.addEventListener('click', () => {
-                    const v = JSON.parse(el.dataset.variante);
-                    const stock = stockDeVariante(v);
-                    agregarAlCarrito(
-                        state.productoPendiente,
-                        v,
-                        v.precio_venta || state.productoPendiente.precio_min || 0,
-                        stock
-                    );
-                    cerrarModalVariantes();
-                });
-            });
-
-            $('modal-variantes').classList.add('active');
-        }
-
-        function escapeAttr(s) {
-            return String(s).replace(/&/g,'&amp;').replace(/'/g,'&#39;').replace(/"/g,'&quot;');
-        }
-
-        function stockDeVariante(v) {
-            if (typeof v.stock_total === 'number') return v.stock_total;
-            const colores = v.colores || [];
-            return colores.reduce((s, c) => s + (c.stock || 0), 0);
-        }
-
-        function cerrarModalVariantes() {
-            $('modal-variantes').classList.remove('active');
-            state.productoPendiente = null;
-        }
-
-        // ============ CARRITO ============
-        function agregarAlCarrito(producto, variante, precio, stockMax) {
-            const key = variante ? `v-${variante.id}` : `p-${producto.id}`;
-            const existente = state.carrito.find(i => i.key === key);
-            const stockReal = stockMax ?? (variante
-                ? stockDeVariante(variante)
-                : (producto.stock_total || 999));
-
-            if (existente) {
-                if (existente.cantidad >= stockReal) {
-                    toast(`Stock máximo alcanzado (${stockReal})`, 'error');
-                    return;
-                }
-                existente.cantidad++;
-            } else {
-                if (stockReal <= 0) {
-                    toast('Sin stock disponible', 'error');
-                    return;
-                }
-                state.carrito.push({
-                    key,
-                    id: variante?.id || producto.id,
-                    producto_id: producto.id,
-                    variante_id: variante?.id || null,
-                    nombre: producto.nombre,
-                    talla: variante?.talla || 'Única',
-                    precio: Number(precio) || 0,
-                    cantidad: 1,
-                    stockMax: stockReal
-                });
-            }
-            renderCarrito();
-            toast(`${producto.nombre} agregado`, 'success');
-        }
-
-        function renderCarrito() {
-            const totalItems = state.carrito.reduce((s, i) => s + i.cantidad, 0);
-            $('carrito-badge').textContent = totalItems;
-
-            const cont = $('carrito-items');
-            if (state.carrito.length === 0) {
-                cont.innerHTML = '<div class="carrito-vacio">Carrito vacío</div>';
-                $('finalizar-btn').disabled = true;
-                $('subtotal').textContent = '$0';
-                $('total').textContent = '$0';
-                $('iva-linea').style.display = 'none';
-                return;
-            }
-
-            $('finalizar-btn').disabled = false;
-
-            cont.innerHTML = state.carrito.map((item, idx) => `
-                <div class="carrito-item">
+    cont.innerHTML = state.carrito.map((item, idx) => {
+        const precioModificado = item.precio !== item.precioOriginal;
+        return `
+            <div class="carrito-item">
+                <div class="item-fila">
                     <div class="item-info">
                         <div class="item-nombre">${escapeHtml(item.nombre)}</div>
                         <div class="item-detalle">Talla: ${escapeHtml(item.talla)}</div>
@@ -687,279 +634,353 @@
                         <i class="fas fa-trash"></i>
                     </button>
                 </div>
-            `).join('');
+                <div class="item-fila" style="justify-content:flex-end">
+                    <button class="btn-edit-precio" data-accion="edit" data-idx="${idx}">
+                        <i class="fas fa-pen"></i>
+                        ${precioModificado ? 'Precio modificado' : 'Cambiar precio'}
+                    </button>
+                </div>
+            </div>`;
+    }).join('');
 
-            cont.querySelectorAll('button[data-accion]').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const idx = Number(btn.dataset.idx);
-                    const accion = btn.dataset.accion;
-                    if (accion === 'inc') cambiarCantidad(idx, 1);
-                    else if (accion === 'dec') cambiarCantidad(idx, -1);
-                    else if (accion === 'del') eliminarDelCarrito(idx);
-                });
-            });
+    cont.querySelectorAll('button[data-accion]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const idx = Number(btn.dataset.idx);
+            const acc = btn.dataset.accion;
+            if(acc === 'inc') cambiarCantidad(idx, 1);
+            else if(acc === 'dec') cambiarCantidad(idx, -1);
+            else if(acc === 'del') eliminarDelCarrito(idx);
+            else if(acc === 'edit') abrirEditorPrecio(idx);
+        });
+    });
 
-            calcularTotales();
+    calcularTotales();
+}
+
+function calcularTotales(){
+    const total = state.carrito.reduce((s,i) => s + i.precio * i.cantidad, 0);
+    const pct = state.iva;
+
+    if(pct > 0){
+        const base = total / (1 + pct / 100);
+        const iva = total - base;
+        $('iva-linea').style.display = 'flex';
+        $('iva-porcentaje').textContent = pct;
+        $('iva-valor').textContent = fmt(iva);
+        $('subtotal').textContent = fmt(base);
+    } else {
+        $('iva-linea').style.display = 'none';
+        $('subtotal').textContent = fmt(total);
+    }
+    $('total').textContent = fmt(total);
+    actualizarCambio();
+}
+
+function cambiarCantidad(idx, delta){
+    const item = state.carrito[idx];
+    if(!item) return;
+    const nueva = item.cantidad + delta;
+    if(nueva <= 0){ eliminarDelCarrito(idx); return; }
+    if(nueva > item.stockMax){
+        toast(`Stock máximo: ${item.stockMax}`, 'error');
+        return;
+    }
+    item.cantidad = nueva;
+    renderCarrito();
+}
+
+function eliminarDelCarrito(idx){
+    state.carrito.splice(idx, 1);
+    renderCarrito();
+}
+
+function vaciarCarrito(){
+    if(state.carrito.length === 0) return;
+    if(!confirm('¿Vaciar el carrito?')) return;
+    state.carrito = [];
+    $('efectivo-recibido').value = '';
+    renderCarrito();
+}
+
+// ============ EDITOR DE PRECIO ============
+function abrirEditorPrecio(idx){
+    const item = state.carrito[idx];
+    if(!item) return;
+    state.editandoIdx = idx;
+    $('precio-producto-nombre').textContent =
+        `${item.nombre} (Talla ${item.talla})`;
+    $('precio-input').value = item.precio;
+    $('modal-precio').classList.add('active');
+    setTimeout(() => $('precio-input').select(), 100);
+}
+
+function guardarPrecio(){
+    const idx = state.editandoIdx;
+    if(idx === null || idx === undefined) return;
+    const nuevo = Number($('precio-input').value);
+
+    if(!Number.isFinite(nuevo) || nuevo < 0){
+        toast('Precio inválido', 'error');
+        return;
+    }
+
+    const item = state.carrito[idx];
+    if(!item) return;
+    item.precio = nuevo;
+
+    $('modal-precio').classList.remove('active');
+    state.editandoIdx = null;
+    renderCarrito();
+
+    if(nuevo !== item.precioOriginal){
+        toast(`Precio actualizado a ${fmt(nuevo)}`, 'success');
+    } else {
+        toast('Precio restaurado', 'success');
+    }
+}
+
+function cerrarEditorPrecio(){
+    $('modal-precio').classList.remove('active');
+    state.editandoIdx = null;
+}
+
+// ============ CÁLCULO DE CAMBIO ============
+function actualizarCambio(){
+    const efectivoBox = $('efectivo-box');
+    const metodo = $('metodo-pago').value;
+
+    if(metodo === 'Efectivo'){
+        efectivoBox.classList.add('active');
+    } else {
+        efectivoBox.classList.remove('active');
+    }
+
+    const total = state.carrito.reduce((s,i) => s + i.precio * i.cantidad, 0);
+    const recibido = Number($('efectivo-recibido').value) || 0;
+    const cambio = recibido - total;
+    const box = $('cambio-box');
+    const val = $('cambio-valor');
+
+    if(cambio < 0){
+        box.classList.add('faltante');
+        val.textContent = '- ' + fmt(Math.abs(cambio));
+    } else {
+        box.classList.remove('faltante');
+        val.textContent = fmt(cambio);
+    }
+}
+
+// ============ FINALIZAR ============
+async function finalizarVenta(){
+    if(state.carrito.length === 0) return;
+
+    const token = getToken();
+    if(!token?.access_token){
+        toast('Sesión expirada. Vuelve a iniciar sesión.', 'error');
+        return;
+    }
+
+    const metodo = $('metodo-pago').value;
+    const total = state.carrito.reduce((s,i) => s + i.precio * i.cantidad, 0);
+    const base = state.iva > 0 ? total / (1 + state.iva / 100) : total;
+    const iva = total - base;
+
+    let efectivoRecibido = null;
+    let cambio = null;
+
+    if(metodo === 'Efectivo'){
+        efectivoRecibido = Number($('efectivo-recibido').value) || 0;
+        if(efectivoRecibido < total){
+            toast('El efectivo recibido es menor al total', 'error');
+            return;
         }
+        cambio = efectivoRecibido - total;
+    }
 
-        function calcularTotales() {
-            const total = state.carrito.reduce((s, i) => s + i.precio * i.cantidad, 0);
-            const ivaPct = state.iva;
+    const msg = metodo === 'Efectivo'
+        ? `¿Confirmar venta?\nTotal: ${fmt(total)}\nRecibido: ${fmt(efectivoRecibido)}\nCambio: ${fmt(cambio)}`
+        : `¿Confirmar venta por ${fmt(total)}?`;
 
-            if (ivaPct > 0) {
-                const base = total / (1 + ivaPct / 100);
-                const iva = total - base;
-                $('iva-linea').style.display = 'flex';
-                $('iva-porcentaje').textContent = ivaPct;
-                $('iva-valor').textContent = fmt(iva);
-                $('subtotal').textContent = fmt(base);
-            } else {
-                $('iva-linea').style.display = 'none';
-                $('subtotal').textContent = fmt(total);
+    if(!confirm(msg)) return;
+
+    const btn = $('finalizar-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando...';
+
+    try {
+        const userRes = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${token.access_token}`
             }
-            $('total').textContent = fmt(total);
+        });
+        if(!userRes.ok) throw new Error('Sesión inválida');
+        const user = await userRes.json();
+
+        const ventaData = {
+            total: total,
+            subtotal: base,
+            iva: iva,
+            iva_porcentaje: state.iva,
+            metodo_pago: metodo,
+            productos: state.carrito
+                .map(i => `${i.cantidad}x ${i.nombre} (${i.talla}) @ ${fmt(i.precio)}`)
+                .join(' | '),
+            vendedor_id: user.id
+        };
+
+        // Si tu tabla ventas tiene estas columnas, se guardan automáticamente
+        if(efectivoRecibido !== null){
+            ventaData.efectivo_recibido = efectivoRecibido;
+            ventaData.cambio = cambio;
         }
 
-        function cambiarCantidad(idx, delta) {
-            const item = state.carrito[idx];
-            if (!item) return;
-            const nueva = item.cantidad + delta;
-            if (nueva <= 0) { eliminarDelCarrito(idx); return; }
-            if (nueva > item.stockMax) {
-                toast(`Stock máximo: ${item.stockMax}`, 'error');
-                return;
-            }
-            item.cantidad = nueva;
-            renderCarrito();
+        const ventaRes = await fetch(`${SUPABASE_URL}/rest/v1/ventas`, {
+            method: 'POST',
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${token.access_token}`,
+                'Content-Type': 'application/json',
+                'Prefer': 'return=representation'
+            },
+            body: JSON.stringify(ventaData)
+        });
+
+        if(!ventaRes.ok){
+            const errTxt = await ventaRes.text();
+            throw new Error('Error al crear venta: ' + errTxt);
         }
 
-        function eliminarDelCarrito(idx) {
-            state.carrito.splice(idx, 1);
-            renderCarrito();
-        }
+        const arr = await ventaRes.json();
+        const ventaId = Array.isArray(arr) ? arr[0]?.id : arr?.id;
 
-        function vaciarCarrito() {
-            if (state.carrito.length === 0) return;
-            if (!confirm('¿Vaciar el carrito?')) return;
-            state.carrito = [];
-            renderCarrito();
-        }
-
-        // ============ FINALIZAR VENTA ============
-        async function finalizarVenta() {
-            if (state.carrito.length === 0) return;
-
-            const token = getToken();
-            if (!token?.access_token) {
-                toast('Sesión expirada. Vuelve a iniciar sesión.', 'error');
-                return;
-            }
-
-            const metodoPago = $('metodo-pago').value;
-            const total = state.carrito.reduce((s, i) => s + i.precio * i.cantidad, 0);
-            const base = state.iva > 0 ? total / (1 + state.iva / 100) : total;
-            const iva = total - base;
-
-            if (!confirm(`¿Confirmar venta por ${fmt(total)}?`)) return;
-
-            const btn = $('finalizar-btn');
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando...';
-
+        // Descontar stock
+        const erroresStock = [];
+        for(const item of state.carrito){
+            if(!item.variante_id) continue;
             try {
-                // 1) Obtener usuario actual
-                const userRes = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
-                    headers: {
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${token.access_token}`
-                    }
-                });
-                if (!userRes.ok) throw new Error('Sesión inválida');
-                const user = await userRes.json();
+                const vr = await fetch(
+                    `${SUPABASE_URL}/rest/v1/variantes_producto?id=eq.${item.variante_id}&select=*`,
+                    { headers: { 'apikey': SUPABASE_KEY } }
+                );
+                if(!vr.ok) throw new Error('read');
+                const vArr = await vr.json();
+                if(!vArr.length) continue;
 
-                // 2) Crear la venta
-                const ventaData = {
-                    total: total,
-                    subtotal: base,
-                    iva: iva,
-                    iva_porcentaje: state.iva,
-                    metodo_pago: metodoPago,
-                    productos: state.carrito
-                        .map(i => `${i.cantidad}x ${i.nombre} (${i.talla})`)
-                        .join(', '),
-                    vendedor_id: user.id
-                };
+                const v = vArr[0];
+                const stockActual = stockDeVariante(v);
+                const nuevoStock = Math.max(0, stockActual - item.cantidad);
 
-                const ventaRes = await fetch(`${SUPABASE_URL}/rest/v1/ventas`, {
-                    method: 'POST',
-                    headers: {
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${token.access_token}`,
-                        'Content-Type': 'application/json',
-                        'Prefer': 'return=representation'
-                    },
-                    body: JSON.stringify(ventaData)
+                let colores = v.colores || [];
+                let restante = item.cantidad;
+                colores = colores.map(c => {
+                    if(restante <= 0) return c;
+                    const desc = Math.min(c.stock || 0, restante);
+                    restante -= desc;
+                    return { ...c, stock: (c.stock || 0) - desc };
                 });
 
-                if (!ventaRes.ok) {
-                    const err = await ventaRes.text();
-                    throw new Error('Error al crear venta: ' + err);
-                }
-
-                const ventaArr = await ventaRes.json();
-                const ventaId = Array.isArray(ventaArr) ? ventaArr[0]?.id : ventaArr?.id;
-
-                // 3) Registrar detalle (si la tabla existe)
-                // Si tienes tabla 'detalle_ventas', descomenta este bloque
-                /*
-                for (const item of state.carrito) {
-                    await fetch(`${SUPABASE_URL}/rest/v1/detalle_ventas`, {
-                        method: 'POST',
+                const pr = await fetch(
+                    `${SUPABASE_URL}/rest/v1/variantes_producto?id=eq.${item.variante_id}`,
+                    {
+                        method: 'PATCH',
                         headers: {
                             'apikey': SUPABASE_KEY,
                             'Authorization': `Bearer ${token.access_token}`,
-                            'Content-Type': 'application/json'
+                            'Content-Type': 'application/json',
+                            'Prefer': 'return=minimal'
                         },
                         body: JSON.stringify({
-                            venta_id: ventaId,
-                            producto_id: item.producto_id,
-                            variante_id: item.variante_id,
-                            cantidad: item.cantidad,
-                            precio_unitario: item.precio,
-                            subtotal: item.precio * item.cantidad
+                            stock_total: nuevoStock,
+                            colores: colores
                         })
-                    });
-                }
-                */
-
-                // 4) Descontar stock (solo variantes con variante_id)
-                const erroresStock = [];
-                for (const item of state.carrito) {
-                    if (!item.variante_id) continue;
-                    try {
-                        // Leer variante actual
-                        const varRes = await fetch(
-                            `${SUPABASE_URL}/rest/v1/variantes_producto?id=eq.${item.variante_id}&select=*`,
-                            { headers: { 'apikey': SUPABASE_KEY } }
-                        );
-                        if (!varRes.ok) throw new Error('No se pudo leer variante');
-                        const varArr = await varRes.json();
-                        if (!varArr.length) continue;
-
-                        const v = varArr[0];
-                        const stockActual = stockDeVariante(v);
-                        const nuevoStock = Math.max(0, stockActual - item.cantidad);
-
-                        // Recalcular colores para reflejar descuento
-                        let colores = v.colores || [];
-                        let restante = item.cantidad;
-                        colores = colores.map(c => {
-                            if (restante <= 0) return c;
-                            const desc = Math.min(c.stock || 0, restante);
-                            restante -= desc;
-                            return { ...c, stock: (c.stock || 0) - desc };
-                        });
-
-                        const patchRes = await fetch(
-                            `${SUPABASE_URL}/rest/v1/variantes_producto?id=eq.${item.variante_id}`,
-                            {
-                                method: 'PATCH',
-                                headers: {
-                                    'apikey': SUPABASE_KEY,
-                                    'Authorization': `Bearer ${token.access_token}`,
-                                    'Content-Type': 'application/json',
-                                    'Prefer': 'return=minimal'
-                                },
-                                body: JSON.stringify({
-                                    stock_total: nuevoStock,
-                                    colores: colores
-                                })
-                            }
-                        );
-                        if (!patchRes.ok) throw new Error('No se pudo actualizar stock');
-                    } catch (e) {
-                        console.error('Stock:', e);
-                        erroresStock.push(item.nombre);
                     }
-                }
-
-                // 5) Guardar última venta y mostrar modal
-                state.ultimaVenta = {
-                    id: ventaId,
-                    items: state.carrito.map(i => ({ ...i })),
-                    total,
-                    base,
-                    iva,
-                    ivaPct: state.iva,
-                    metodo: metodoPago,
-                    fecha: new Date()
-                };
-
-                $('factura-total').textContent = fmt(total);
-                $('factura-iva').textContent =
-                    state.iva > 0 ? `${state.iva}%` : 'Exento';
-                $('factura-metodo').textContent = metodoPago;
-                $('modal-factura').classList.add('active');
-
-                // 6) Limpiar carrito y recargar productos
-                state.carrito = [];
-                renderCarrito();
-
-                if (erroresStock.length > 0) {
-                    toast(
-                        `Venta guardada. Stock no actualizado en: ${erroresStock.join(', ')}`,
-                        'error'
-                    );
-                } else {
-                    toast('Venta registrada correctamente', 'success');
-                }
-
-                await cargarProductos();
-
-            } catch (e) {
-                console.error(e);
-                toast(e.message || 'Error al procesar la venta', 'error');
-            } finally {
-                btn.disabled = state.carrito.length === 0;
-                btn.innerHTML = '<i class="fas fa-check"></i> Finalizar Venta';
+                );
+                if(!pr.ok) throw new Error('patch');
+            } catch(e){
+                console.error('stock', e);
+                erroresStock.push(item.nombre);
             }
         }
 
-        // ============ IMPRIMIR FACTURA ============
-        function imprimirFactura() {
-            const v = state.ultimaVenta;
-            if (!v) return;
+        // Guardar última venta
+        state.ultimaVenta = {
+            id: ventaId,
+            items: state.carrito.map(i => ({ ...i })),
+            total,
+            base,
+            iva,
+            ivaPct: state.iva,
+            metodo,
+            efectivoRecibido,
+            cambio,
+            fecha: new Date()
+        };
 
-            const fecha = v.fecha;
-            const fechaStr =
-                fecha.toLocaleDateString('es-CO') + ' ' +
-                fecha.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' });
+        $('factura-total').textContent = fmt(total);
+        $('factura-iva').textContent = state.iva > 0 ? `${state.iva}%` : 'Exento';
+        $('factura-metodo').textContent = metodo;
 
-            const html = `
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Factura ${v.id || ''}</title>
-<style>
-    * { margin:0; padding:0; box-sizing:border-box; }
-    body {
-        font-family: 'Courier New', monospace;
-        max-width: 80mm; margin: 0 auto; padding: 8px;
-        font-size: 11px; color: #000;
+        if(metodo === 'Efectivo'){
+            $('factura-cambio-box').style.display = 'flex';
+            $('factura-cambio').textContent = fmt(cambio);
+        } else {
+            $('factura-cambio-box').style.display = 'none';
+        }
+
+        $('modal-factura').classList.add('active');
+
+        state.carrito = [];
+        $('efectivo-recibido').value = '';
+        renderCarrito();
+
+        if(erroresStock.length > 0){
+            toast(`Venta guardada. Stock no actualizado en: ${erroresStock.join(', ')}`, 'error');
+        } else {
+            toast('Venta registrada correctamente', 'success');
+        }
+
+        await cargarProductos();
+
+    } catch(e){
+        console.error(e);
+        toast(e.message || 'Error al procesar la venta', 'error');
+    } finally {
+        btn.disabled = state.carrito.length === 0;
+        btn.innerHTML = '<i class="fas fa-check"></i> Finalizar venta';
     }
-    .center { text-align: center; }
-    .bold { font-weight: bold; }
-    .sep { border-top: 1px dashed #000; margin: 6px 0; }
-    .titulo { font-size: 14px; font-weight: bold; }
-    table { width: 100%; border-collapse: collapse; }
-    th, td { padding: 2px 0; vertical-align: top; }
-    th { text-align: left; font-size: 10px; border-bottom: 1px solid #000; }
-    .right { text-align: right; }
-    .total { font-size: 13px; font-weight: bold; }
-    .footer { font-size: 10px; margin-top: 12px; }
-</style>
-</head>
+}
+
+// ============ IMPRIMIR ============
+function imprimirFactura(){
+    const v = state.ultimaVenta;
+    if(!v) return;
+
+    const fecha = v.fecha;
+    const fechaStr = fecha.toLocaleDateString('es-CO') + ' ' +
+        fecha.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' });
+
+    const cambioLinea = (v.metodo === 'Efectivo' && v.efectivoRecibido !== null) ? `
+        <tr><td>Recibido:</td><td class="right">${fmt(v.efectivoRecibido)}</td></tr>
+        <tr class="total"><td>CAMBIO:</td><td class="right">${fmt(v.cambio)}</td></tr>
+    ` : '';
+
+    const html = `
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><title>Factura ${v.id || ''}</title>
+<style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'Courier New',monospace;max-width:80mm;margin:0 auto;padding:8px;font-size:11px}
+    .center{text-align:center}.bold{font-weight:bold}.right{text-align:right}
+    .sep{border-top:1px dashed #000;margin:6px 0}
+    .titulo{font-size:14px;font-weight:bold}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:2px 0;vertical-align:top}
+    th{text-align:left;font-size:10px;border-bottom:1px solid #000}
+    .total{font-size:13px;font-weight:bold}
+    .footer{font-size:10px;margin-top:12px}
+    .cambio{background:#e5e7eb;padding:4px;margin:4px 0;font-weight:bold}
+</style></head>
 <body>
     <div class="center">
         <div class="titulo">MODAS LA 34</div>
@@ -969,158 +990,167 @@
     </div>
     <div class="sep"></div>
     <table>
-        <thead>
-            <tr>
-                <th>Cant</th>
-                <th>Producto</th>
-                <th class="right">Valor</th>
-            </tr>
-        </thead>
+        <thead><tr><th>Cant</th><th>Producto</th><th class="right">Valor</th></tr></thead>
         <tbody>
-            ${v.items.map(i => `
-                <tr>
+            ${v.items.map(i => {
+                const mod = i.precio !== i.precioOriginal ? ' *' : '';
+                return `<tr>
                     <td>${i.cantidad}</td>
-                    <td>${escapeHtml(i.nombre)}<br><small>(${escapeHtml(i.talla)})</small></td>
+                    <td>${escapeHtml(i.nombre)}<br><small>(${escapeHtml(i.talla)})${mod}</small></td>
                     <td class="right">${fmt(i.precio * i.cantidad)}</td>
-                </tr>
-            `).join('')}
+                </tr>`;
+            }).join('')}
         </tbody>
     </table>
     <div class="sep"></div>
     <table>
-        <tr>
-            <td>Base:</td>
-            <td class="right">${fmt(v.base)}</td>
-        </tr>
-        ${v.ivaPct > 0 ? `
-        <tr>
-            <td>IVA ${v.ivaPct}%:</td>
-            <td class="right">${fmt(v.iva)}</td>
-        </tr>` : ''}
-        <tr class="total">
-            <td>TOTAL:</td>
-            <td class="right">${fmt(v.total)}</td>
-        </tr>
-        <tr>
-            <td>Pago:</td>
-            <td class="right">${escapeHtml(v.metodo)}</td>
-        </tr>
+        <tr><td>Base:</td><td class="right">${fmt(v.base)}</td></tr>
+        ${v.ivaPct > 0 ? `<tr><td>IVA ${v.ivaPct}%:</td><td class="right">${fmt(v.iva)}</td></tr>` : ''}
+        <tr class="total"><td>TOTAL:</td><td class="right">${fmt(v.total)}</td></tr>
+        <tr><td>Pago:</td><td class="right">${escapeHtml(v.metodo)}</td></tr>
+        ${cambioLinea}
     </table>
     <div class="sep"></div>
     <div class="center footer">
         <p>¡Gracias por su compra!</p>
         <p>Modas La 34</p>
+        ${v.items.some(i => i.precio !== i.precioOriginal) ? '<p style="font-size:9px;margin-top:4px">* Precio ajustado en caja</p>' : ''}
     </div>
     <script>
-        window.onload = function() {
+        window.onload = function(){
             window.print();
-            window.onafterprint = function() { window.close(); };
+            window.onafterprint = function(){ window.close(); };
         };
     <\/script>
-</body>
-</html>`;
+</body></html>`;
 
-            const win = window.open('', '_blank', 'width=400,height=600');
-            if (!win) {
-                toast('Permite ventanas emergentes para imprimir', 'error');
-                return;
-            }
-            win.document.open();
-            win.document.write(html);
-            win.document.close();
-        }
+    const win = window.open('', '_blank', 'width=400,height=600');
+    if(!win){ toast('Permite ventanas emergentes para imprimir', 'error'); return; }
+    win.document.open();
+    win.document.write(html);
+    win.document.close();
+}
 
-        function nuevaVenta() {
-            $('modal-factura').classList.remove('active');
-            state.ultimaVenta = null;
-            $('metodo-pago').value = 'Efectivo';
-        }
+function nuevaVenta(){
+    $('modal-factura').classList.remove('active');
+    state.ultimaVenta = null;
+    $('metodo-pago').value = 'Efectivo';
+    $('efectivo-recibido').value = '';
+    actualizarCambio();
+}
 
-        // ============ EVENTOS ============
-        function configurarEventos() {
-            // Categorías
-            $('categorias').addEventListener('click', (e) => {
-                const btn = e.target.closest('.cat-btn');
-                if (!btn) return;
-                document.querySelectorAll('.cat-btn')
-                    .forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                state.filtroCategoria = btn.dataset.cat;
-                renderProductos();
-            });
+// ============ EVENTOS ============
+function configurarEventos(){
+    // Categorías
+    $('categorias').addEventListener('click', e => {
+        const btn = e.target.closest('.cat-btn');
+        if(!btn) return;
+        document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        state.filtroCategoria = btn.dataset.cat;
+        renderProductos();
+    });
 
-            // Buscador con debounce
-            let busqTimer = null;
-            $('buscador').addEventListener('input', (e) => {
-                clearTimeout(busqTimer);
-                busqTimer = setTimeout(() => {
-                    state.busqueda = e.target.value;
-                    renderProductos();
-                }, 200);
-            });
+    // Buscador con debounce
+    let busqTimer = null;
+    $('buscador').addEventListener('input', e => {
+        clearTimeout(busqTimer);
+        busqTimer = setTimeout(() => {
+            state.busqueda = e.target.value;
+            renderProductos();
+        }, 200);
+    });
 
-            // Selector IVA
-            $('iva-opciones').addEventListener('click', (e) => {
-                const opt = e.target.closest('.iva-opcion');
-                if (!opt) return;
-                document.querySelectorAll('.iva-opcion')
-                    .forEach(o => o.classList.remove('active'));
-                opt.classList.add('active');
-                state.iva = parseInt(opt.dataset.iva, 10) || 0;
-                calcularTotales();
-            });
+    // IVA
+    $('iva-opciones').addEventListener('click', e => {
+        const opt = e.target.closest('.iva-opcion');
+        if(!opt) return;
+        document.querySelectorAll('.iva-opcion').forEach(o => o.classList.remove('active'));
+        opt.classList.add('active');
+        state.iva = parseInt(opt.dataset.iva, 10) || 0;
+        calcularTotales();
+    });
 
-            // Finalizar / vaciar
-            $('finalizar-btn').addEventListener('click', finalizarVenta);
-            $('vaciar-btn').addEventListener('click', vaciarCarrito);
+    // Método de pago
+    $('metodo-pago').addEventListener('change', actualizarCambio);
 
-            // Modal variantes
-            $('variante-cancelar').addEventListener('click', cerrarModalVariantes);
-            $('modal-variantes').addEventListener('click', (e) => {
-                if (e.target.id === 'modal-variantes') cerrarModalVariantes();
-            });
+    // Efectivo recibido
+    $('efectivo-recibido').addEventListener('input', actualizarCambio);
 
-            // Modal factura
-            $('btn-imprimir').addEventListener('click', imprimirFactura);
-            $('btn-nueva').addEventListener('click', nuevaVenta);
-
-            // Atajos de teclado (útil en caja)
-            document.addEventListener('keydown', (e) => {
-                // F2 = finalizar venta
-                if (e.key === 'F2') {
-                    e.preventDefault();
-                    if (! $('finalizar-btn').disabled) finalizarVenta();
-                }
-                // F4 = enfocar buscador
-                if (e.key === 'F4') {
-                    e.preventDefault();
-                    $('buscador').focus();
-                }
-                // ESC = cerrar modales
-                if (e.key === 'Escape') {
-                    cerrarModalVariantes();
-                    if (state.ultimaVenta) nuevaVenta();
-                }
-                // Enter en buscador con 1 resultado → agregar
-                if (e.key === 'Enter' && document.activeElement === $('buscador')) {
-                    const cards = document.querySelectorAll('.producto-card');
-                    if (cards.length === 1) cards[0].click();
-                }
-            });
-        }
-
-        // ============ INIT ============
-        async function init() {
-            configurarEventos();
-            await cargarProductos();
-        }
-
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', init);
+    // Billetes rápidos
+    $('quick-bills').addEventListener('click', e => {
+        const btn = e.target.closest('.quick-bill');
+        if(!btn) return;
+        const val = btn.dataset.val;
+        if(val === 'exacto'){
+            const total = state.carrito.reduce((s,i) => s + i.precio * i.cantidad, 0);
+            $('efectivo-recibido').value = total;
         } else {
-            init();
+            $('efectivo-recibido').value = Number(val);
         }
-    })();
-    </script>
+        actualizarCambio();
+    });
+
+    // Finalizar / vaciar
+    $('finalizar-btn').addEventListener('click', finalizarVenta);
+    $('vaciar-btn').addEventListener('click', vaciarCarrito);
+
+    // Modal variantes
+    $('variante-cancelar').addEventListener('click', cerrarModalVariantes);
+    $('modal-variantes').addEventListener('click', e => {
+        if(e.target.id === 'modal-variantes') cerrarModalVariantes();
+    });
+
+    // Modal precio
+    $('precio-cancelar').addEventListener('click', cerrarEditorPrecio);
+    $('precio-guardar').addEventListener('click', guardarPrecio);
+    $('modal-precio').addEventListener('click', e => {
+        if(e.target.id === 'modal-precio') cerrarEditorPrecio();
+    });
+    $('precio-input').addEventListener('keydown', e => {
+        if(e.key === 'Enter'){ e.preventDefault(); guardarPrecio(); }
+    });
+
+    // Modal factura
+    $('btn-imprimir').addEventListener('click', imprimirFactura);
+    $('btn-nueva').addEventListener('click', nuevaVenta);
+
+    // Atajos de teclado
+    document.addEventListener('keydown', e => {
+        if(e.key === 'F2'){
+            e.preventDefault();
+            if(!$('finalizar-btn').disabled) finalizarVenta();
+        }
+        if(e.key === 'F4'){
+            e.preventDefault();
+            $('buscador').focus();
+        }
+        if(e.key === 'Escape'){
+            cerrarModalVariantes();
+            cerrarEditorPrecio();
+            if(state.ultimaVenta) nuevaVenta();
+        }
+        if(e.key === 'Enter' && document.activeElement === $('buscador')){
+            const cards = document.querySelectorAll('.producto-card');
+            if(cards.length === 1) cards[0].click();
+        }
+    });
+}
+
+// ============ INIT ============
+async function init(){
+    configurarEventos();
+    actualizarCambio();
+    await cargarProductos();
+}
+
+if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', init);
+} else {
+    init();
+}
+
+})();
+</script>
 </body>
 </html>
