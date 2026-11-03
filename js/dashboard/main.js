@@ -83,84 +83,57 @@ function cambiarModulo(modulo, event = null) {
     cargarDatosModulo(modulo);
 }
 
-// ===== CARGA DE DATOS POR MÓDULO (¡ESTA ES LA PARTE IMPORTANTE!) =====
+// ===== CARGA DE DATOS POR MÓDULO =====
 async function cargarDatosModulo(modulo) {
     console.log('📦 Cargando datos del módulo:', modulo);
-    
-    switch(modulo) {
-        case 'productos':
-            if (typeof cargarProductos === 'function') {
-                await cargarProductos();
-            } else {
-                console.error('❌ cargarProductos no está definida');
-            }
-            break;
-        case 'stock':
-            if (typeof cargarStock === 'function') {
-                await cargarStock();
-            } else {
-                console.error('❌ cargarStock no está definida');
-            }
-            break;
-        case 'compras':
-            if (typeof cargarCompras === 'function') {
-                await cargarCompras();
-            } else {
-                console.error('❌ cargarCompras no está definida');
-            }
-            break;
-        case 'gastos':
-            if (typeof cargarGastos === 'function') {
-                await cargarGastos();
-            } else {
-                console.error('❌ cargarGastos no está definida');
-            }
-            break;
-        case 'perfiles':
-            if (typeof cargarPerfiles === 'function') {
-                await cargarPerfiles();
-            } else {
-                console.error('❌ cargarPerfiles no está definida');
-            }
-            break;
-        case 'proveedores':
-            if (typeof cargarProveedores === 'function') {
-                await cargarProveedores();
-            } else {
-                console.error('❌ cargarProveedores no está definida');
-            }
-            break;
-        case 'ventas':
-            if (typeof cargarVentas === 'function') {
-                await cargarVentas();
-            } else {
-                console.error('❌ cargarVentas no está definida');
-            }
-            break;
-        case 'contabilidad':
-            if (typeof cargarContabilidad === 'function') {
-                await cargarContabilidad();
-            } else {
-                console.log('📊 cargarContabilidad no está definida, usando versión simple');
-                // Versión simple si no existe la función
-                try {
-                    const [ventas, compras, gastos] = await Promise.all([
-                        fetch(`${SUPABASE_URL}/rest/v1/ventas`, { headers: { 'apikey': SUPABASE_KEY } }).then(r => r.json()),
-                        fetch(`${SUPABASE_URL}/rest/v1/compras`, { headers: { 'apikey': SUPABASE_KEY } }).then(r => r.json()),
-                        fetch(`${SUPABASE_URL}/rest/v1/gastos`, { headers: { 'apikey': SUPABASE_KEY } }).then(r => r.json())
-                    ]);
-                    const ingresos = ventas.reduce((s, v) => s + (v.total || 0), 0);
-                    const egresos = compras.reduce((s, c) => s + (c.total || 0), 0) + gastos.reduce((s, g) => s + (g.monto || 0), 0);
-                    const ingresosElem = document.getElementById('stats-ingresos');
-                    const egresosElem = document.getElementById('stats-egresos');
-                    if (ingresosElem) ingresosElem.textContent = `$${ingresos.toLocaleString()}`;
-                    if (egresosElem) egresosElem.textContent = `$${egresos.toLocaleString()}`;
-                } catch(e) { console.error('Error contabilidad simple:', e); }
-            }
-            break;
-        default:
-            console.log(`Módulo ${modulo} no reconocido`);
+
+    const modulos = {
+        productos: 'cargarProductos',
+        stock: 'cargarStock',
+        compras: 'cargarCompras',
+        gastos: 'cargarGastos',
+        perfiles: 'cargarPerfiles',
+        proveedores: 'cargarProveedores',
+        ventas: 'cargarVentas',
+        clientes: 'cargarClientes'        // ← NUEVO
+    };
+
+    // Módulos simples: llamar la función si existe
+    if (modulos[modulo]) {
+        const fnName = modulos[modulo];
+        if (typeof window[fnName] === 'function') {
+            await window[fnName]();
+        } else {
+            console.error(`❌ ${fnName} no está definida`);
+        }
+        return;
     }
+
+    // Módulo contabilidad (lógica especial con fallback)
+    if (modulo === 'contabilidad') {
+        if (typeof cargarContabilidad === 'function') {
+            await cargarContabilidad();
+        } else {
+            try {
+                const [ventas, compras, gastos] = await Promise.all([
+                    fetch(`${SUPABASE_URL}/rest/v1/ventas`, { headers: { 'apikey': SUPABASE_KEY } }).then(r => r.json()),
+                    fetch(`${SUPABASE_URL}/rest/v1/compras`, { headers: { 'apikey': SUPABASE_KEY } }).then(r => r.json()),
+                    fetch(`${SUPABASE_URL}/rest/v1/gastos`, { headers: { 'apikey': SUPABASE_KEY } }).then(r => r.json())
+                ]);
+                const ingresos = ventas.reduce((s, v) => s + (v.total || 0), 0);
+                const egresos = compras.reduce((s, c) => s + (c.total || 0), 0) + gastos.reduce((s, g) => s + (g.monto || 0), 0);
+                const ingresosElem = document.getElementById('stats-ingresos');
+                const egresosElem = document.getElementById('stats-egresos');
+                const utilidadElem = document.getElementById('stats-utilidad');
+                if (ingresosElem) ingresosElem.textContent = `$${ingresos.toLocaleString('es-CO')}`;
+                if (egresosElem) egresosElem.textContent = `$${egresos.toLocaleString('es-CO')}`;
+                if (utilidadElem) utilidadElem.textContent = `$${(ingresos - egresos).toLocaleString('es-CO')}`;
+            } catch(e) { console.error('Error contabilidad simple:', e); }
+        }
+        return;
+    }
+
+    console.log(`Módulo ${modulo} no reconocido`);
 }
 
 // ===== UTILIDADES =====
