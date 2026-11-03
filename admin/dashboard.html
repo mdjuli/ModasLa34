@@ -1146,6 +1146,10 @@ document.addEventListener('DOMContentLoaded', () => {
       .observe(badge, {childList: true, characterData: true, subtree: true});
   }
 });
+
+  // Al final del archivo, ANTES del DOMContentLoaded
+window.cargarClientes = cargarClientes;
+  
 </script>
 </body>
 </html>
