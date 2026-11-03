@@ -67,6 +67,7 @@ button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit
 .page-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;margin-bottom:1.5rem}
 .page-title{font-size:1.8rem;font-weight:700}
 .page-subtitle{color:var(--tx2);margin-top:.2rem}
+.page-actions{display:flex;gap:.6rem;flex-wrap:wrap}
 .module-section{animation:fade .25s ease}
 @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
@@ -78,7 +79,7 @@ button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit
 .btn-secondary:hover{background:var(--rosa-xcl);border-color:var(--rosa)}
 
 /* Stats */
-.stats-grid,.stock-cards,.ventas-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-bottom:1.5rem}
+.stats-grid,.stock-cards,.ventas-cards,.clientes-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-bottom:1.5rem}
 .stat-card{background:var(--card);border:1px solid var(--bd);border-radius:var(--r-lg);padding:1.2rem 1.4rem;transition:.2s}
 .stat-card:hover{border-color:var(--rosa);box-shadow:var(--sh)}
 .stat-card.click{cursor:pointer}
@@ -113,7 +114,7 @@ button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit
 .action-btn{background:none;border:0;padding:.4rem .6rem;border-radius:var(--r-sm);cursor:pointer;color:var(--tx3)}
 .action-btn:hover{background:var(--rosa-cl);color:var(--rosa-osc)}
 .action-btn.delete-btn:hover{background:var(--err-bg);color:var(--err)}
-.estado-badge{padding:.25rem .7rem;border-radius:50px;font-size:.7rem;font-weight:700;display:inline-flex;gap:.3rem}
+.estado-badge{padding:.25rem .7rem;border-radius:50px;font-size:.7rem;font-weight:700;display:inline-flex;gap:.3rem;white-space:nowrap}
 .estado-pagada,.estado-completada{background:var(--ok-bg);color:var(--ok)}
 .estado-pendiente{background:var(--warn-bg);color:var(--warn)}
 .estado-recibida{background:var(--info-bg);color:var(--info)}
@@ -129,7 +130,7 @@ button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit
 .table-container{padding:1.2rem 1.3rem}.table-container h3{margin-bottom:.8rem;font-size:1rem}
 .nota{font-size:.8rem;color:var(--tx3);margin-top:.6rem}
 
-/* Modales */
+/* Modal */
 .form-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(6px);z-index:9999;align-items:center;justify-content:center;padding:1rem}
 .form-modal.active{display:flex}
 .form-modal-content{background:var(--card);border-radius:var(--r-lg);max-width:820px;width:100%;max-height:92vh;overflow-y:auto;box-shadow:var(--sh2);animation:pop .25s ease}
@@ -154,14 +155,14 @@ button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit
 .inline-btns{display:flex;gap:.5rem;align-items:center}
 .inline-btns input{flex:1}
 
-/* Código automático */
+/* Código auto */
 .codigo-wrap{display:flex;gap:.5rem}
 .codigo-wrap input{flex:1;font-weight:700;letter-spacing:.5px}
 .btn-link{background:none;border:1px solid var(--bd);border-radius:var(--r-md);padding:0 .9rem;cursor:pointer;color:var(--rosa-osc);font-weight:600;white-space:nowrap}
 .btn-link:hover{background:var(--rosa-cl)}
 .prefijo-desc{background:var(--rosa-xcl);border-left:3px solid var(--rosa);padding:.5rem .8rem;border-radius:var(--r-sm);font-size:.78rem;color:var(--tx2);margin-top:.4rem}
 
-/* Variantes y colores */
+/* Variantes */
 .variante-card{background:var(--rosa-xcl);border:1px solid var(--bd);border-radius:var(--r-md);padding:1rem;margin-bottom:1rem}
 .variante-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.8rem;margin-bottom:.8rem}
 .btn-secondary-sm{background:var(--card);border:1px solid var(--bd);padding:.4rem .9rem;border-radius:50px;font-size:.75rem;cursor:pointer;color:var(--tx2)}
@@ -187,7 +188,7 @@ button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit
 .guia-table th{font-size:.72rem;text-transform:uppercase;color:var(--tx2)}
 .guia-table b{font-family:monospace;color:var(--rosa-osc);font-size:.95rem}
 
-/* Toast / alert */
+/* Toast */
 .toast-container{position:fixed;top:76px;right:16px;z-index:10000;display:flex;flex-direction:column;gap:.5rem}
 .toast{background:var(--card);border:1px solid var(--bd);border-left:4px solid var(--rosa);padding:.8rem 1.1rem;border-radius:var(--r-md);box-shadow:var(--sh2);min-width:260px;max-width:380px;animation:tin .25s ease}
 @keyframes tin{from{transform:translateX(110%);opacity:0}to{transform:none;opacity:1}}
@@ -197,6 +198,13 @@ button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit
 .alert.success{display:block;background:var(--ok-bg);color:var(--ok);border-left:4px solid var(--ok)}
 .alert.error{display:block;background:var(--err-bg);color:var(--err);border-left:4px solid var(--err)}
 .keyboard-hint{position:fixed;bottom:16px;left:calc(var(--sw) + 16px);background:var(--card);border:1px solid var(--bd);border-radius:var(--r-md);padding:.5rem .9rem;font-size:.72rem;color:var(--tx3);cursor:pointer;z-index:50}
+
+/* Clientes específicos */
+.doc-hint{font-size:.72rem;margin-top:.35rem;font-weight:600}
+.doc-hint.ok{color:var(--ok)}
+.doc-hint.error{color:var(--err)}
+.cliente-doc{font-family:monospace;font-weight:700;color:var(--rosa-osc)}
+.cliente-tipo-doc{display:inline-block;background:var(--rosa-cl);color:var(--rosa-osc);padding:.1rem .4rem;border-radius:4px;font-size:.65rem;font-weight:700;margin-right:.4rem}
 
 @media(max-width:1024px){
   .sidebar{transform:translateX(-100%)}.sidebar.open{transform:none;box-shadow:var(--sh2)}
@@ -243,6 +251,7 @@ button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit
 
     <div class="nav-title">Operaciones</div>
     <button class="nav-item" onclick="cambiarModulo('ventas', event)" data-modulo="ventas"><span>Ventas</span></button>
+    <button class="nav-item" onclick="cambiarModulo('clientes', event)" data-modulo="clientes"><span>Clientes</span><span class="nav-badge cero" id="nav-badge-clientes">0</span></button>
     <button class="nav-item" onclick="window.open('ventas.html', '_blank')"><span>Punto de Venta</span><i class="fas fa-external-link-alt" style="font-size:.7rem;margin-left:auto;opacity:.5"></i></button>
     <button class="nav-item" onclick="cambiarModulo('compras', event)" data-modulo="compras"><span>Compras</span></button>
 
@@ -262,17 +271,15 @@ button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit
   <div id="modulo-productos" class="module-section">
     <div class="page-header">
       <div><h1 class="page-title">Productos</h1><p class="page-subtitle">Gestiona tu catálogo</p></div>
-      <div class="page-actions" style="display:flex;gap:.6rem;flex-wrap:wrap">
+      <div class="page-actions">
         <button class="btn btn-secondary" onclick="abrirGuia()">Guía de códigos</button>
         <button class="btn btn-primary" onclick="mostrarFormulario('producto')">+ Nuevo producto</button>
       </div>
     </div>
-
     <div class="stats-grid">
       <div class="stat-card"><div class="stat-title">Total productos</div><div class="stat-value" id="stats-total-productos">0</div><div class="stat-sub">En catálogo</div></div>
       <div class="stat-card click" onclick="cambiarModulo('stock')"><div class="stat-title">Agotados</div><div class="stat-value" id="stats-stock-bajo">0</div><div class="stat-sub">Ver detalle en Stock</div></div>
     </div>
-
     <div class="filters-section">
       <div class="search-box"><i class="fas fa-search"></i><input type="text" id="search-productos" placeholder="Buscar por nombre o código..."></div>
       <div class="filter-group"><select id="filter-categoria-productos">
@@ -288,7 +295,6 @@ button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit
       </select></div>
       <button class="btn-clear" onclick="limpiarFiltrosProductos()">Limpiar</button>
     </div>
-
     <div class="data-card">
       <div class="data-header"><h2>Productos registrados</h2></div>
       <div class="table-responsive">
@@ -304,17 +310,13 @@ button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit
     </div>
   </div>
 
-  <!-- STOCK (solo agotados) -->
+  <!-- STOCK -->
   <div id="modulo-stock" class="module-section" style="display:none">
-    <div class="page-header">
-      <div><h1 class="page-title">Stock agotado</h1><p class="page-subtitle">Solo prendas con 0 unidades</p></div>
-    </div>
+    <div class="page-header"><div><h1 class="page-title">Stock agotado</h1><p class="page-subtitle">Solo prendas con 0 unidades</p></div></div>
     <div class="stock-cards">
       <div class="stat-card"><div class="stat-title">Variantes agotadas</div><div class="stat-value neg" id="stock-agotado-count">0</div><div class="stat-sub">Talla / color en 0</div></div>
     </div>
-    <!-- Elementos ocultos para no romper stock.js si aún los escribe -->
     <div style="display:none"><span id="stock-bajo-count">0</span><span id="stock-normal-count">0</span><table><tbody id="stock-bajo-body"></tbody></table></div>
-
     <div class="table-container">
       <h3>Productos agotados</h3>
       <div class="table-responsive">
@@ -344,6 +346,97 @@ button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit
         <table class="data-table" id="tabla-ventas">
           <thead><tr><th>ID</th><th>Fecha</th><th>Cliente</th><th>Productos</th><th>Total</th><th>Método</th><th>Estado</th><th>Acciones</th></tr></thead>
           <tbody id="ventas-body"><tr><td colspan="8"><div class="skeleton"></div></td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- CLIENTES -->
+  <div id="modulo-clientes" class="module-section" style="display:none">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Clientes</h1>
+        <p class="page-subtitle">Base de datos e historial de compras</p>
+      </div>
+      <div class="page-actions">
+        <button class="btn btn-secondary" onclick="exportarClientesCSV()">
+          <i class="fas fa-file-csv"></i> Exportar
+        </button>
+        <button class="btn btn-primary" onclick="mostrarFormulario('cliente')">+ Nuevo cliente</button>
+      </div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-title">Total clientes</div>
+        <div class="stat-value" id="clientes-total">0</div>
+        <div class="stat-sub">En base de datos</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-title">Nuevos este mes</div>
+        <div class="stat-value pos" id="clientes-nuevos-mes">0</div>
+        <div class="stat-sub">Registrados este mes</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-title">Con compras</div>
+        <div class="stat-value" id="clientes-con-compras">0</div>
+        <div class="stat-sub">Han comprado al menos 1 vez</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-title">Ticket promedio</div>
+        <div class="stat-value" id="clientes-ticket-promedio">$0</div>
+        <div class="stat-sub">Por compra registrada</div>
+      </div>
+    </div>
+
+    <div class="filters-section">
+      <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" id="search-clientes" placeholder="Buscar por nombre, cédula, teléfono o email...">
+      </div>
+      <div class="filter-group">
+        <select id="filter-tipodoc-clientes">
+          <option value="">Todo tipo de documento</option>
+          <option value="CC">CC - Cédula de ciudadanía</option>
+          <option value="NIT">NIT - Empresa</option>
+          <option value="CE">CE - Cédula extranjería</option>
+          <option value="TI">TI - Tarjeta identidad</option>
+          <option value="PP">PP - Pasaporte</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <select id="filter-compras-clientes">
+          <option value="">Todos</option>
+          <option value="con">Con compras</option>
+          <option value="sin">Sin compras</option>
+        </select>
+      </div>
+      <button class="btn-clear" onclick="limpiarFiltrosClientes()">Limpiar</button>
+    </div>
+
+    <div class="data-card">
+      <div class="data-header">
+        <h2>Clientes registrados</h2>
+        <span class="badge-admin" id="clientes-contador">0</span>
+      </div>
+      <div class="table-responsive">
+        <table class="data-table" id="tabla-clientes">
+          <thead>
+            <tr>
+              <th>Documento</th>
+              <th>Nombre</th>
+              <th>Teléfono</th>
+              <th>Email</th>
+              <th>Ciudad</th>
+              <th>Compras</th>
+              <th>Total</th>
+              <th>Última compra</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="clientes-body">
+            <tr><td colspan="9"><div class="skeleton"></div></td></tr>
+          </tbody>
         </table>
       </div>
     </div>
@@ -440,6 +533,10 @@ button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit
 
 <div class="toast-container" id="toastContainer"></div>
 <div class="keyboard-hint" onclick="abrirModal('modal-ayuda')">Atajos: <kbd>Ctrl</kbd>+<kbd>K</kbd></div>
+
+<!-- ================================================== -->
+<!-- MODALES -->
+<!-- ================================================== -->
 
 <!-- Modal Producto -->
 <div id="form-producto" class="form-modal">
@@ -599,6 +696,118 @@ button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit
   </div>
 </div>
 
+<!-- ================================================== -->
+<!-- NUEVOS MODALES: CLIENTES -->
+<!-- ================================================== -->
+
+<!-- Formulario Cliente -->
+<div id="form-cliente" class="form-modal">
+  <div class="form-modal-content" style="max-width:640px">
+    <div class="form-modal-header">
+      <h3 id="cliente-modal-titulo">Nuevo cliente</h3>
+      <span class="close" onclick="cerrarFormulario('cliente')">&times;</span>
+    </div>
+    <div class="form-modal-body">
+      <form onsubmit="event.preventDefault(); guardarCliente()" autocomplete="off">
+        <input type="hidden" id="cliente-id">
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Tipo de documento <span class="required">*</span></label>
+            <select id="cliente-tipo-doc" required onchange="actualizarValidacionDoc()">
+              <option value="CC">CC - Cédula de ciudadanía</option>
+              <option value="NIT">NIT - Empresa</option>
+              <option value="CE">CE - Cédula de extranjería</option>
+              <option value="TI">TI - Tarjeta de identidad</option>
+              <option value="PP">PP - Pasaporte</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Número de documento <span class="required">*</span></label>
+            <input type="text" id="cliente-documento" required inputmode="numeric"
+                   oninput="validarDocumentoInput()" onblur="validarDocumentoInput()">
+            <small id="cliente-doc-hint" class="doc-hint">Sin puntos ni guiones.</small>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nombre completo / Razón social <span class="required">*</span></label>
+            <input type="text" id="cliente-nombre" required placeholder="Ej: María Fernanda López">
+          </div>
+          <div class="form-group">
+            <label>Teléfono</label>
+            <input type="tel" id="cliente-telefono" placeholder="Ej: 300 123 4567" inputmode="tel">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="cliente-email" placeholder="cliente@email.com">
+          </div>
+          <div class="form-group">
+            <label>Ciudad</label>
+            <input type="text" id="cliente-ciudad" placeholder="Ej: Bogotá" list="ciudades-colombia">
+            <datalist id="ciudades-colombia">
+              <option>Bogotá</option><option>Medellín</option><option>Cali</option>
+              <option>Barranquilla</option><option>Cartagena</option><option>Cúcuta</option>
+              <option>Bucaramanga</option><option>Pereira</option><option>Santa Marta</option>
+              <option>Ibagué</option><option>Manizales</option><option>Villavicencio</option>
+              <option>Neiva</option><option>Pasto</option><option>Armenia</option>
+              <option>Valledupar</option><option>Montería</option><option>Sincelejo</option>
+              <option>Popayán</option><option>Tunja</option>
+            </datalist>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Dirección</label>
+          <input type="text" id="cliente-direccion" placeholder="Dirección de residencia">
+        </div>
+
+        <div class="form-group">
+          <label>Notas</label>
+          <textarea id="cliente-notas" rows="2" placeholder="Preferencias, observaciones, etc."></textarea>
+        </div>
+
+        <button type="submit" class="submit-btn" id="cliente-submit-btn">Guardar cliente</button>
+        <button type="button" class="cancel-btn" onclick="cerrarFormulario('cliente')">Cancelar</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Historial Cliente -->
+<div id="modal-historial-cliente" class="form-modal">
+  <div class="form-modal-content" style="max-width:820px">
+    <div class="form-modal-header">
+      <h3 id="historial-cliente-titulo">Historial de compras</h3>
+      <span class="close" onclick="cerrarModal('modal-historial-cliente')">&times;</span>
+    </div>
+    <div class="form-modal-body">
+      <div id="historial-cliente-stats" style="display:flex;gap:.8rem;flex-wrap:wrap;margin-bottom:1rem;"></div>
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Fecha</th>
+              <th>Productos</th>
+              <th>Total</th>
+              <th>Método</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody id="historial-cliente-body">
+            <tr><td colspan="6" class="empty-state">Cargando...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Editar venta -->
 <div id="modal-editar-venta" class="form-modal">
   <div class="form-modal-content" style="max-width:600px">
@@ -632,8 +841,9 @@ button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit
     <div class="form-modal-body">
       <table class="guia-table">
         <tr><td>Filtrar tabla actual</td><td><kbd>Ctrl</kbd> + <kbd>K</kbd></td></tr>
-        <tr><td>Productos / Stock / Ventas / Compras</td><td><kbd>Alt</kbd> + <kbd>1</kbd> a <kbd>4</kbd></td></tr>
-        <tr><td>Gastos / Proveedores / Usuarios / Contabilidad</td><td><kbd>Alt</kbd> + <kbd>5</kbd> a <kbd>8</kbd></td></tr>
+        <tr><td>Productos / Stock / Ventas / Clientes</td><td><kbd>Alt</kbd> + <kbd>1</kbd> a <kbd>4</kbd></td></tr>
+        <tr><td>Compras / Gastos / Proveedores / Usuarios</td><td><kbd>Alt</kbd> + <kbd>5</kbd> a <kbd>8</kbd></td></tr>
+        <tr><td>Contabilidad</td><td><kbd>Alt</kbd> + <kbd>9</kbd></td></tr>
         <tr><td>Cambiar tema</td><td><kbd>Alt</kbd> + <kbd>D</kbd></td></tr>
         <tr><td>Cerrar ventanas</td><td><kbd>Esc</kbd></td></tr>
       </table>
@@ -641,7 +851,9 @@ button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit
   </div>
 </div>
 
-<!-- Scripts originales (sin cambios) -->
+<!-- ================================================== -->
+<!-- SCRIPTS -->
+<!-- ================================================== -->
 <script src="../js/supabase-config.js"></script>
 <script src="../js/permisos.js"></script>
 <script src="../js/dashboard/utils.js"></script>
@@ -655,13 +867,20 @@ button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit
 <script src="../js/dashboard/stock.js"></script>
 <script src="../js/dashboard/contabilidad.js"></script>
 
+<!-- ================================================== -->
+<!-- LÓGICA GLOBAL DEL DASHBOARD -->
+<!-- ================================================== -->
 <script>
 /* ============ Utilidades ============ */
 const $ = id => document.getElementById(id);
 const lsGet = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k)); return v == null ? d : v; } catch (e) { return d; } };
 const lsSet = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
-const MODULOS = ['productos','stock','ventas','compras','gastos','proveedores','perfiles','contabilidad'];
-const NOMBRES = {productos:'Productos',stock:'Stock agotado',ventas:'Ventas',compras:'Compras',gastos:'Gastos',proveedores:'Proveedores',perfiles:'Usuarios',contabilidad:'Contabilidad'};
+const MODULOS = ['productos','stock','ventas','clientes','compras','gastos','proveedores','perfiles','contabilidad'];
+const NOMBRES = {
+  productos:'Productos', stock:'Stock agotado', ventas:'Ventas', clientes:'Clientes',
+  compras:'Compras', gastos:'Gastos', proveedores:'Proveedores',
+  perfiles:'Usuarios', contabilidad:'Contabilidad'
+};
 
 /* ============ Navegación ============ */
 function toggleMenu() {
@@ -717,7 +936,7 @@ document.addEventListener('mousedown', e => {
   if (e.target.classList && e.target.classList.contains('form-modal')) e.target.classList.remove('active');
 });
 
-/* ============ Filtro rápido de la tabla visible ============ */
+/* ============ Filtro rápido ============ */
 function busquedaGlobal(q) {
   q = (q || '').toLowerCase().trim();
   const sec = document.querySelector('.module-section:not([style*="display: none"])');
@@ -754,7 +973,8 @@ function siguienteCodigo(prefijo) {
   return prefijo + '-' + String(maxNumero(prefijo) + 1).padStart(3, '0');
 }
 function pintarPrefijos() {
-  const sel = $('producto-prefijo'); const actual = sel.value;
+  const sel = $('producto-prefijo'); if (!sel) return;
+  const actual = sel.value;
   sel.innerHTML = '';
   getPrefijos().forEach(x => {
     const o = document.createElement('option');
@@ -764,14 +984,15 @@ function pintarPrefijos() {
   if (actual) sel.value = actual;
 }
 function actualizarCodigo(desdeCategoria) {
-  const sel = $('producto-prefijo'); if (!sel.value) return;
+  const sel = $('producto-prefijo'); if (!sel || !sel.value) return;
   const x = getPrefijos().find(p => p.p === sel.value);
   $('producto-codigo').value = siguienteCodigo(sel.value);
   $('prefijo-desc').textContent = x ? x.p + ': ' + x.d : '';
   if (x && x.c && !desdeCategoria) $('producto-categoria').value = x.c;
 }
 function abrirGuia() {
-  const tb = $('guia-body'); tb.innerHTML = '';
+  const tb = $('guia-body'); if (!tb) return;
+  tb.innerHTML = '';
   const base = PREFIJOS_BASE.map(x => x.p);
   getPrefijos().forEach(x => {
     const tr = document.createElement('tr');
@@ -803,7 +1024,7 @@ function agregarPrefijo() {
   mostrarToast('success', 'Prefijo agregado', p + ' ya está disponible.');
 }
 
-/* Al abrir el formulario de producto: generar código */
+/* Hook del formulario de producto */
 const _mostrarFormulario = window.mostrarFormulario;
 window.mostrarFormulario = function (tipo) {
   _mostrarFormulario.apply(this, arguments);
@@ -812,8 +1033,11 @@ window.mostrarFormulario = function (tipo) {
     actualizarCodigo(false);
     pintarRecientes();
   }
+  if (tipo === 'cliente') {
+    if (typeof limpiarFormularioCliente === 'function') limpiarFormularioCliente();
+  }
 };
-/* Al guardar: registrar el número usado y los colores */
+
 if (typeof window.guardarProductoBase === 'function') {
   const _guardar = window.guardarProductoBase;
   window.guardarProductoBase = function () {
@@ -827,8 +1051,8 @@ if (typeof window.guardarProductoBase === 'function') {
     return _guardar.apply(this, arguments);
   };
 }
-$('producto-prefijo').addEventListener('change', () => actualizarCodigo(false));
-$('producto-categoria').addEventListener('change', e => {
+if ($('producto-prefijo')) $('producto-prefijo').addEventListener('change', () => actualizarCodigo(false));
+if ($('producto-categoria')) $('producto-categoria').addEventListener('change', e => {
   const x = getPrefijos().find(p => p.c === e.target.value);
   if (x) { $('producto-prefijo').value = x.p; actualizarCodigo(true); }
 });
@@ -850,7 +1074,8 @@ function guardarColorDeFila(fila) {
   pintarRecientes();
 }
 function pintarRecientes() {
-  const box = $('colores-recientes'); box.innerHTML = '';
+  const box = $('colores-recientes'); if (!box) return;
+  box.innerHTML = '';
   const lista = lsGet('colores', []);
   if (!lista.length) { box.innerHTML = '<span class="vacio">Aún no hay colores recientes. Se guardan solos al usarlos.</span>'; return; }
   lista.forEach(c => {
@@ -877,41 +1102,49 @@ function aplicarColor(c) {
 function limpiarRecientes() { lsSet('colores', []); pintarRecientes(); }
 
 const vc = $('variantes-container');
-vc.addEventListener('focusin', e => {
-  const f = e.target.closest('.color-row'); if (!f) return;
-  if (filaColor) filaColor.classList.remove('foco');
-  filaColor = f; f.classList.add('foco');
-});
-vc.addEventListener('change', e => {
-  const f = e.target.closest('.color-row'); if (!f) return;
-  if (e.target.classList.contains('color-hex-text')) {
-    e.target.value = normHex(e.target.value);
-    const p = f.querySelector('.color-picker');
-    if (p && hexOk(e.target.value)) p.value = e.target.value;
-  }
-  guardarColorDeFila(f);
-});
+if (vc) {
+  vc.addEventListener('focusin', e => {
+    const f = e.target.closest('.color-row'); if (!f) return;
+    if (filaColor) filaColor.classList.remove('foco');
+    filaColor = f; f.classList.add('foco');
+  });
+  vc.addEventListener('change', e => {
+    const f = e.target.closest('.color-row'); if (!f) return;
+    if (e.target.classList.contains('color-hex-text')) {
+      e.target.value = normHex(e.target.value);
+      const p = f.querySelector('.color-picker');
+      if (p && hexOk(e.target.value)) p.value = e.target.value;
+    }
+    guardarColorDeFila(f);
+  });
+}
 
 /* ============ Atajos ============ */
 document.addEventListener('keydown', e => {
   if (e.ctrlKey && e.key.toLowerCase() === 'k') { e.preventDefault(); $('globalSearchInput').focus(); }
   if (e.altKey && e.key.toLowerCase() === 'd') { e.preventDefault(); toggleTheme(); }
-  if (e.altKey && e.key >= '1' && e.key <= '8') { e.preventDefault(); cambiarModulo(MODULOS[parseInt(e.key, 10) - 1]); }
+  if (e.altKey && e.key >= '1' && e.key <= '9') {
+    e.preventDefault();
+    cambiarModulo(MODULOS[parseInt(e.key, 10) - 1]);
+  }
   if (e.key === 'Escape') document.querySelectorAll('.form-modal.active').forEach(m => m.classList.remove('active'));
 });
 
-/* ============ Inicio ============ */
+/* ============ Init ============ */
 document.addEventListener('DOMContentLoaded', () => {
   aplicarTema(lsGet('theme', 'light'));
   pintarPrefijos();
-  /* Avatar con la inicial del usuario cuando main.js lo cargue */
   const nombre = $('userNameDisplay');
-  new MutationObserver(() => { $('userAvatar').textContent = (nombre.textContent.trim()[0] || 'U').toUpperCase(); })
-    .observe(nombre, {childList: true, characterData: true, subtree: true});
-  /* Insignia de stock: rojo solo si hay agotados */
+  if (nombre) {
+    new MutationObserver(() => {
+      $('userAvatar').textContent = (nombre.textContent.trim()[0] || 'U').toUpperCase();
+    }).observe(nombre, {childList: true, characterData: true, subtree: true});
+  }
   const badge = $('nav-badge-stock');
-  new MutationObserver(() => badge.classList.toggle('cero', badge.textContent.trim() === '0'))
-    .observe(badge, {childList: true, characterData: true, subtree: true});
+  if (badge) {
+    new MutationObserver(() => badge.classList.toggle('cero', badge.textContent.trim() === '0'))
+      .observe(badge, {childList: true, characterData: true, subtree: true});
+  }
 });
 </script>
 </body>
