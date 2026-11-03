@@ -17,7 +17,7 @@ const ROLES_CONFIG = {
     [ROLES.ADMIN_TOTAL]: {
         nombre: "👑 Administradora General",
         color: "#ff6b6b",
-        modulos_visibles: ['productos', 'stock', 'compras', 'gastos', 'proveedores', 'ventas', 'perfiles', 'contabilidad'],
+        modulos_visibles: ['productos', 'stock', 'clientes', 'compras', 'gastos', 'proveedores', 'ventas', 'perfiles', 'contabilidad'],
         permisos: {
             productos: { ver: true, crear: true, editar: true, eliminar: true },
             stock: { ver: true, ajustar: true },
